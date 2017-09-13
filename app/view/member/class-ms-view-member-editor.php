@@ -285,39 +285,39 @@ class MS_View_Member_Editor extends MS_View {
 				unset( $unused_memberships[$the_membership->id] );
 
 				$stati = array(
-					MS_Model_Relationship::STATUS_PENDING => __( 'Pending (activate on next payment)', 'membership2' ),
-					MS_Model_Relationship::STATUS_WAITING => __( 'Waiting (activate on start date)', 'membership2' ),
-					MS_Model_Relationship::STATUS_TRIAL => __( 'Trial Active', 'membership2' ),
-					MS_Model_Relationship::STATUS_ACTIVE => __( 'Active', 'membership2' ),
-					MS_Model_Relationship::STATUS_CANCELED => __( 'Cancelled (deactivate on expire date)', 'membership2' ),
+					MS_Model_Relationship::STATUS_PENDING 		=> __( 'Pending (activate on next payment)', 'membership2' ),
+					MS_Model_Relationship::STATUS_WAITING 		=> __( 'Waiting (activate on start date)', 'membership2' ),
+					MS_Model_Relationship::STATUS_TRIAL 		=> __( 'Trial Active', 'membership2' ),
+					MS_Model_Relationship::STATUS_ACTIVE 		=> __( 'Active', 'membership2' ),
+					MS_Model_Relationship::STATUS_CANCELED 		=> __( 'Cancelled (deactivate on expire date)', 'membership2' ),
 					MS_Model_Relationship::STATUS_TRIAL_EXPIRED => __( 'Trial Expired (activate on next payment)', 'membership2' ),
-					MS_Model_Relationship::STATUS_EXPIRED => __( 'Expired (no access) ', 'membership2' ),
-					MS_Model_Relationship::STATUS_DEACTIVATED => __( 'Deactivated (no access)', 'membership2' ),
+					MS_Model_Relationship::STATUS_EXPIRED 		=> __( 'Expired (no access) ', 'membership2' ),
+					MS_Model_Relationship::STATUS_DEACTIVATED 	=> __( 'Deactivated (no access)', 'membership2' ),
 				);
 
 				// Start date not yet reached:
 				if ( strtotime( $subscription->start_date ) > strtotime( MS_Helper_Period::current_date() ) ) {
 					$valid_stati = array(
-						MS_Model_Relationship::STATUS_WAITING => true,
-						MS_Model_Relationship::STATUS_DEACTIVATED => true,
+						MS_Model_Relationship::STATUS_WAITING 		=> true,
+						MS_Model_Relationship::STATUS_DEACTIVATED 	=> true,
 					);
 				}
 				// Expire date already reached:
 				elseif ( ! empty( $subscription->expire_date ) && strtotime( $subscription->expire_date ) < strtotime( MS_Helper_Period::current_date() ) ) {
 					$valid_stati = array(
-						MS_Model_Relationship::STATUS_EXPIRED => true,
-						MS_Model_Relationship::STATUS_DEACTIVATED => true,
+						MS_Model_Relationship::STATUS_EXPIRED 		=> true,
+						MS_Model_Relationship::STATUS_DEACTIVATED 	=> true,
 					);
 				}
 				// Active subscription:
 				else {
 					$valid_stati = array(
-						MS_Model_Relationship::STATUS_PENDING => true,
-						MS_Model_Relationship::STATUS_TRIAL => true,
-						MS_Model_Relationship::STATUS_ACTIVE => true,
-						MS_Model_Relationship::STATUS_CANCELED => true,
+						MS_Model_Relationship::STATUS_PENDING 		=> true,
+						MS_Model_Relationship::STATUS_TRIAL 		=> true,
+						MS_Model_Relationship::STATUS_ACTIVE 		=> true,
+						MS_Model_Relationship::STATUS_CANCELED 		=> true,
 						MS_Model_Relationship::STATUS_TRIAL_EXPIRED => true,
-						MS_Model_Relationship::STATUS_DEACTIVATED => true,
+						MS_Model_Relationship::STATUS_DEACTIVATED 	=> true,
 					);
 				}
 
@@ -452,39 +452,39 @@ class MS_View_Member_Editor extends MS_View {
 
 		if ( $user->subscriptions ) {
 			$fields['subscriptions'][] = array(
-				'type' => MS_Helper_Html::TYPE_HTML_SEPARATOR,
+				'type' 	=> MS_Helper_Html::TYPE_HTML_SEPARATOR,
 			);
 			$fields['subscriptions'][] = array(
-				'type' => MS_Helper_Html::TYPE_HTML_TEXT,
+				'type' 	=> MS_Helper_Html::TYPE_HTML_TEXT,
 				'value' => '<sup>*)</sup> ' . __( 'Subscription Dates and Status are validated when saved and might result in a different value then the one specified above.', 'membership2' ),
 				'class' => 'info-field',
 			);
 		}
 		$fields['subscriptions'][] = array(
-			'id' => 'btn_modify',
-			'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
+			'id' 	=> 'btn_modify',
+			'type' 	=> MS_Helper_Html::INPUT_TYPE_SUBMIT,
 			'value' => __( 'Save Changes', 'membership2' ),
 		);
 		$fields['subscriptions'][] = array(
-			'id' => 'history',
-			'type' => MS_Helper_Html::TYPE_HTML_LINK,
-			'value' => '<i class="dashicons dashicons-id"></i>' . __( 'History and logs', 'membership2' ),
-			'url' => '#history',
-			'class' => 'button wpmui-field-input',
-			'config' => array(
-				'data-ms-dialog' => 'View_Member_Dialog',
-				'data-ms-data' => array( 'member_id' => $user->id ),
+			'id' 		=> 'history',
+			'type' 		=> MS_Helper_Html::TYPE_HTML_LINK,
+			'value' 	=> '<i class="dashicons dashicons-id"></i>' . __( 'History and logs', 'membership2' ),
+			'url' 		=> '#history',
+			'class' 	=> 'button wpmui-field-input',
+			'config' 	=> array(
+				'data-ms-dialog' 	=> 'View_Member_Dialog',
+				'data-ms-data' 		=> array( 'member_id' => $user->id ),
 			),
 		);
 		$fields['subscriptions'][] = array(
-			'id' => 'action',
-			'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+			'id' 	=> 'action',
+			'type' 	=> MS_Helper_Html::INPUT_TYPE_HIDDEN,
 			'value' => $action_modify,
 		);
 
 		$fields['subscriptions'][] = array(
-			'id' => '_wpnonce',
-			'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+			'id' 	=> '_wpnonce',
+			'type' 	=> MS_Helper_Html::INPUT_TYPE_HIDDEN,
 			'value' => wp_create_nonce( $action_modify ),
 		);
 

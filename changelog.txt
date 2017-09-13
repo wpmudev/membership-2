@@ -9,6 +9,7 @@ Change Log:
 - Fixed: Styling for Membership Attributes Pop
 - Fixed: Dripped Membership Url protection and menu protection
 - Fixed: Buddypress media protection conflict
+- Fixed: Update Member status
 
 1.1.1
 - Fixed: Menu Protection items not showing to all users except admin
