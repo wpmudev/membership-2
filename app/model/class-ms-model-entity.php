@@ -221,7 +221,7 @@ class MS_Model_Entity extends MS_Model {
 			wp_cache_set( $this->id, $this, $class );
 			$this->after_save();
 		} else {
-			$this->debug_log( 'Error saving Data ' . $this->table_name );
+			$this->log( 'Error saving Data ' . $this->table_name );
 		}
 
 		MS_Factory::revert_blog();
