@@ -221,7 +221,7 @@ class MS_Model_Entity extends MS_Model {
 			wp_cache_set( $this->id, $this, $class );
 			$this->after_save();
 		} else {
-			$this->log( 'Error saving Data ' . $this->table_name );
+			$this->log( 'Error saving Data to ' . $this->table_name );
 		}
 
 		MS_Factory::revert_blog();
@@ -278,7 +278,7 @@ class MS_Model_Entity extends MS_Model {
 	 */
 	private function _maybe_insert( $data ) {
 		global $wpdb;
-		if ( empty( $data ) ){
+		if ( empty( $data ) ) {
 			return false;
 		}
 		$result = $wpdb->insert( $this->table_name, $data );
@@ -313,7 +313,7 @@ class MS_Model_Entity extends MS_Model {
 				unset( $data['id'] );
 			}
 			$result = $wpdb->update( $this->table_name, $data, array(
-				'id' => $this->id
+				'ID' => $this->id
 			) );
 			if ( $result )
 				return true;
