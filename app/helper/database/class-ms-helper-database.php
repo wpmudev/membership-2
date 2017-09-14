@@ -111,6 +111,24 @@ class MS_Helper_Database extends MS_Helper {
         } else {
             return $sanitized_title;
         }
-    }
+	}
+	
+	/**
+	 * Check if post type exists
+	 *
+	 * @param String $post_type - the post type
+	 * @param bool|object $db - WP_DB object
+	 *
+	 * @return bool
+	 */
+	public static function post_type_exists( $post_type , $db = false ) {
+		if ( !$db ) {
+			global $wpdb;
+			$db = $wpdb;
+		}
+		$sql 	= "SELECT count(ID) FROM $db->posts WHERE post_type = %s";
+		$total 	= $db->get_var( $db->prepare( $sql, $post_type ) );
+		return ( $total > 0 );
+	}
 }
 ?>

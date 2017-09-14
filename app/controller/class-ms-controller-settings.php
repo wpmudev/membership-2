@@ -70,6 +70,13 @@ class MS_Controller_Settings extends MS_Controller {
 			exit;
 		}
 
+		if ( isset( $_REQUEST['migrate'] ) ) {
+			$url = esc_url_raw( remove_query_arg( 'migrate' ) );
+			do_action( 'ms_upgrade_migrate_data' );
+			wp_safe_redirect( $url );
+			exit;
+		}
+
 		$this->add_action(
 			'ms_controller_membership_setup_completed',
 			'auto_setup_settings'

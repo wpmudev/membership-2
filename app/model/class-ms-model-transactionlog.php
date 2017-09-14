@@ -178,7 +178,7 @@ class MS_Model_Transactionlog extends MS_Model_Entity {
 		$this->meta_name 	= MS_Helper_Database_TableMeta::TRANSACTION_TYPE;
 		$this->ignore_meta 	= array(
 			'id', 'gateway_id', 'method', 'success', 'subscription_id', 'invoice_id','member_id','amount','data',
-			'author', 'date_created', 'last_updated'
+			'user_id', 'date_created', 'last_updated'
 		);
 	}
 
@@ -391,8 +391,8 @@ class MS_Model_Transactionlog extends MS_Model_Entity {
 			'invoice_id' 		=> $this->invoice_id,
 			'member_id' 		=> $this->member_id,
 			'amount' 			=> $this->amount,
-			'data' 				=> $this->data,
-			'author' 			=> $this->user_id,
+			'custom_data' 		=> $this->data,
+			'user_id' 			=> $this->user_id,
 			'date_created' 		=> MS_Helper_Period::current_date( 'Y-m-d H:i:s' ),
 			'last_updated'  	=> MS_Helper_Period::current_date( 'Y-m-d H:i:s' )
 		) );

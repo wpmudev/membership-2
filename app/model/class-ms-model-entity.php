@@ -283,7 +283,7 @@ class MS_Model_Entity extends MS_Model {
 		}
 		$result = $wpdb->insert( $this->table_name, $data );
 
-		if ( ! $result )
+		if ( false === $result )
             return false;
 
         $object_id 	= (int) $wpdb->insert_id;
@@ -312,10 +312,13 @@ class MS_Model_Entity extends MS_Model {
 			if ( isset( $data['id'] ) ) {
 				unset( $data['id'] );
 			}
+			if ( isset( $data['ID'] ) ) {
+				unset( $data['ID'] );
+			}
 			$result = $wpdb->update( $this->table_name, $data, array(
 				'ID' => $this->id
 			) );
-			if ( $result )
+			if ( false !== $result )
 				return true;
 		} else {
 			return $this->_maybe_insert( $data );
@@ -332,7 +335,7 @@ class MS_Model_Entity extends MS_Model {
 	 *
 	 * @return int|bool
 	 */
-	 protected function save_meta( $id, $key, $value ) {
+	protected function save_meta( $id, $key, $value ) {
 		if ( $this->has_meta ) {
 			return MS_Helper_Database_TableMeta::update( $this->meta_name, $id, $key, $value );
 		}
@@ -386,7 +389,7 @@ class MS_Model_Entity extends MS_Model {
 			//Delete all meta first
 			$this->delete_meta( $this->id, '', true );
 
-			$query 	= "DELETE FROM {$this->table_name} WHERE `id` = %d";
+			$query 	= "DELETE FROM {$this->table_name} WHERE `ID` = %d";
        	 	$res 	= $wpdb->query( $wpdb->prepare( $query, $this->id ) );
 		}
 
