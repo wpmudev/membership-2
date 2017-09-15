@@ -105,17 +105,19 @@ class MS_View_Settings_Edit extends MS_View {
 
 			$desc[] = sprintf(
 				'<div class="error" style="width:600px;margin:20px auto;text-align:center"><p><b>%1$s</b></p><hr />%2$s</div>',
-				'Careful: This will completely erase all your Membership2 settings and details!',
+				__( 'Careful: This will completely erase all your Membership2 settings and details!', 'membership2' ),
 				sprintf(
 					'<form method="POST" action="%s" style="padding:20px 0">' .
 					'<label style="line-height:28px">' .
-					'<input type="checkbox" name="confirm" value="yes" /> Yes, reset everything!' .
+					'<input type="checkbox" name="confirm" value="yes" /> %s' .
 					'</label><p>' .
 					'<button class="button-primary">Do it!</button> ' .
-					'<a href="%s" class="button">Cancel</a>' .
+					'<a href="%s" class="button">%s</a>' .
 					'</p></form>',
 					$reset_url,
-					$cancel_url
+					__( 'Yes, reset everything!', 'membership2' ),
+					$cancel_url,
+					__( 'Cancel', 'membership2' )
 				)
 			);
 		}
@@ -145,7 +147,8 @@ class MS_View_Settings_Edit extends MS_View {
 					$date = substr( $parts[1], 0, 4 ) . '-' . substr( $parts[1], 4, 2 ) . '-' . substr( $parts[1], 6, 2 );
 					$time = substr( $parts[2], 0, 2 ) . ':' . substr( $parts[2], 2, 2 ) . ':' . substr( $parts[2], 4, 2 );
 					$label = sprintf(
-						'%2$s (%3$s) - Upgrade to %1$s',
+						'%3$s (%4$s) - %1$s %2$s',
+						__( 'Upgrade to', 'membership2' ),
 						$version,
 						$date,
 						$time
@@ -163,19 +166,23 @@ class MS_View_Settings_Edit extends MS_View {
 
 			$desc[] = sprintf(
 				'<div class="error" style="width:600px;margin:20px auto;text-align:center"><p><b>%1$s</b></p><hr />%2$s</div>',
-				'Careful: This will overwrite and replace existing data with old data from the Snapshot!',
+				__( 'Careful: This will overwrite and replace existing data with old data from the Snapshot!', 'membership2' ),
 				sprintf(
 					'<form method="POST" action="%s" style="padding:20px 0">' .
-					'<label style="line-height:28px">Snapshot:</label><p>' .
+					'<label style="line-height:28px">%s:</label><p>' .
 					'<select name="restore_snapshot">' . implode( '', $options ) . '</select>' .
 					'</p><label style="line-height:28px">' .
-					'<input type="checkbox" name="confirm" value="yes" /> Yes, overwrite data!' .
+					'<input type="checkbox" name="confirm" value="yes" /> %s' .
 					'</label><p>' .
-					'<button class="button-primary">Do it!</button> ' .
-					'<a href="%s" class="button">Cancel</a>' .
+					'<button class="button-primary">%s</button> ' .
+					'<a href="%s" class="button">%s</a>' .
 					'</p></form>',
 					$restore_url,
-					$cancel_url
+					__( 'Snapshot', 'membership2' ),
+					__( 'Yes, overwrite data!', 'membership2' ),
+					__( 'Do it!', 'membership2' ),
+					$cancel_url,
+					__( 'Cancel', 'membership2' )
 				)
 			);
 		}
@@ -197,20 +204,56 @@ class MS_View_Settings_Edit extends MS_View {
 
             $desc[] = sprintf(
                 '<div class="error" style="width:600px;margin:20px auto;text-align:center"><p><b>%1$s</b></p><hr />%2$s</div>',
-                'Careful: This might change the subscription status of some members!',
+                __( 'Careful: This might change the subscription status of some members!', 'membership2' ),
                 sprintf(
                     '<form method="POST" action="%s" style="padding:20px 0">' .
                     '<label style="line-height:28px">' .
-                    '<input type="checkbox" name="confirm" value="yes" /> Yes, fix subscriptions!' .
+                    '<input type="checkbox" name="confirm" value="yes" /> %s' .
                     '</label><p>' .
-                    '<button class="button-primary">Do it!</button> ' .
-                    '<a href="%s" class="button">Cancel</a>' .
-                    '</p></form>',
-                    $fix_url,
-                    $cancel_url
+                    '<button class="button-primary">%s</button> ' .
+                    '<a href="%s" class="button">%s</a>' .
+					'</p></form>',
+					$fix_url,
+					__( 'Yes, fix subscriptions!', 'membership2' ),
+					__( 'Do it!', 'membership2' ),
+					$cancel_url,
+					__( 'Cancel', 'membership2' )
                 )
             );
-        }
+		}
+		
+		if ( ! empty( $_GET['migrate'] ) ) {
+			$migrate_url = MS_Controller_Plugin::get_admin_url(
+                'settings',
+                array( 'migrate' => 1 )
+            );
+            $migrate_url = esc_url_raw(
+                add_query_arg(
+                    MS_Model_Upgrade::get_token( 'migrate' ),
+                    $migrate_url
+                )
+			);
+			
+			$cancel_url = esc_url_raw( remove_query_arg( 'migrate' ) );
+			$desc[] = sprintf(
+                '<div class="error" style="width:600px;margin:20px auto;text-align:center"><p><b>%1$s</b></p><hr />%2$s</div>',
+                __( 'Careful: This might take long depending on the data you have', 'membership2' ),
+                sprintf(
+                    '<form method="POST" action="%s" style="padding:20px 0">' .
+                    '<label style="line-height:28px">' .
+                    '<input type="checkbox" name="confirm" value="yes" /> %s' .
+                    '</label><p>' .
+                    '<button class="button-primary">%s</button> ' .
+                    '<a href="%s" class="button">%s</a>' .
+					'</p></form>',
+					$migrate_url,
+					__( 'Yes, migrate data!', 'membership2' ),
+					__( 'Do it!', 'membership2' ),
+					$cancel_url,
+					__( 'Cancel', 'membership2' )
+                )
+            );
+		}
 
 		return $desc;
 	}

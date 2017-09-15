@@ -1015,8 +1015,11 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 		 * @since 1.0.4
 		 */
 		$settings = MS_Factory::load( 'MS_Model_settings' );
-		if ( $settings->enable_cron_use ) {
-			$this->process_message_direct( $subscription->id );
+		if ( !$settings->enable_cron_use ) {
+			$subscription = MS_Factory::load( 'MS_Model_Relationship', $subscription_id );
+			if ( $subscription ) {
+				$this->process_message_direct( $subscription );
+			}
 		} else {
 			/**
 			* Documented in process_queue()

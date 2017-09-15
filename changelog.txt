@@ -5,11 +5,14 @@ Build Stamp: BUILDTIME
 Change Log:
 ----------------------------------------------------------------------
 1.1.2
+- Improved: Custom database tables for communication logs, event logs and transaction logs
+- Added: Data migration notification and action in settings page
 - Fixed: MailChimp Addon list function
 - Fixed: Styling for Membership Attributes Pop
 - Fixed: Dripped Membership Url protection and menu protection
 - Fixed: Buddypress media protection conflict
-- Fixed: Update Member status
+- Fixed: Update Member status for manually created members
+- Fixed: Mail sending cron setting
 
 1.1.1
 - Fixed: Menu Protection items not showing to all users except admin

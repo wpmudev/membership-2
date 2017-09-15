@@ -54,9 +54,9 @@ class MS_Model_Upgrade extends MS_Model {
 			);
 			$error_msg = sprintf( __( 'We have made some changes to the data structure in Membership 2. Please %sclick here%s to perform a data update', 'membership2' ) , '<a href="'.$url.'">', '</a>');
 			lib3()->ui->admin_message( $error_msg, '', '', 'error' );
-		}
 
-		add_action( 'ms_upgrade_migrate_data', array( __CLASS__, 'migrate_log_tables' ) );
+			add_action( 'init', array( __CLASS__, 'migrate_log_tables' ) );
+		}
 
 		do_action( 'ms_model_upgrade_init' );
 	}
@@ -418,151 +418,168 @@ class MS_Model_Upgrade extends MS_Model {
 
 	/**
 	 * Migrate custom log post type data to custom tables
-	 * This cchecks if the custom post type exists before starting the upgrade
+	 * This checks if the custom post type exists before starting the upgrade
+	 * TODO : Modify this to work in chunks incase the date is huge
 	 *
 	 * @since 1.1.2
 	 *
 	 */
 	static function migrate_log_tables() {
-		global $wpdb;
-		$communication_log 	= 'ms_communication_log';
-		$transaction_log 	= 'ms_transaction_log';
-		$event 				= 'ms_event';
-		$post_ids 			= array();
-		$insert_data 		= array();
-		$sql 				= "SELECT * FROM $wpdb->posts WHERE post_type = %s";
-		$meta_sql 			= "SELECT * FROM $wpdb->postmeta WHERE post_id = %d";
-
-		if ( MS_Helper_Database::post_type_exists( $communication_log, $wpdb ) ) {
-			$table_name = MS_Helper_Database::get_table_name( MS_Helper_Database::COMMUNICATION_LOG );
-			$query 		= $wpdb->prepare( $sql, $communication_log );
-			$results 	= $wpdb->get_results( $query );
-			
-			foreach ( $results as $post ){
-				$post_ids[] 			= $post->ID;
-				$metadata 				= $wpdb->get_results( $wpdb->prepare( $meta_sql, $post->ID ) );
-				$data 					= array();
-				$data['date_created'] 	= $post->post_date;
-				$data['title'] 			= $post->title;
-				foreach ( $metadata as $mdata ){
-					if ( $mdata->meta_key  === 'sent') {
-						$data['sent'] = $mdata->meta_value;
-					}
-					if ( $mdata->meta_key  === 'recipient') {
-						$data['recipient'] = $mdata->meta_value;
-					}
-					if ( $mdata->meta_key  === 'subscription_id') {
-						$data['subscription_id'] = $mdata->meta_value;
-					}
-					if ( $mdata->meta_key  === 'trace') {
-						$data['trace'] = $mdata->meta_value;
-					}
-					if ( $mdata->meta_key  === 'user_id') {
-						$data['author'] = $mdata->meta_value;
-					}
-				}
-				$insert_data[] = $data;
-			}
-			if ( !empty( $insert_data ) ) {
-				foreach ( $insert_data as $data ){
-					$wpdb->insert( $table_name, $data );
-				}
-				$insert_data = null;
-				$insert_data = array();
-			}
-		}
-		if ( MS_Helper_Database::post_type_exists( $transaction_log, $wpdb ) ) {
-			$table_name 			= MS_Helper_Database::get_table_name( MS_Helper_Database::TRANSACTION_LOG );
-			$meta_table_name    	= MS_Helper_Database::get_table_name( MS_Helper_Database::META );
-			$meta_name          	= MS_Helper_Database_TableMeta::TRANSACTION_TYPE;
-			$query 					= $wpdb->prepare( $sql, $transaction_log );
-			$results 				= $wpdb->get_results( $query );
-			$insert_defaults		= array( 'gateway_id', 'method', 'success', 'subscription_id', 'invoice_id', 'member_id', 'amount', 'custom_data', 'user_id');
-			$insert_meta_data 		= array();
+		static $migrate_done = false;
 		
-			foreach ( $results as $post ){
-				$post_ids[] 				= $post->ID;
-				$metadata 					= $wpdb->get_results( $wpdb->prepare( $meta_sql, $post->ID ) );
-				$inner_meta 				= array();
-				$data 						= array();
-				$data['date_created'] 		= $post->post_date;
-				$data['last_updated'] 		= $post->post_modified;
-				$inner_meta['object_type'] 	= $meta_name;
-				foreach ( $metadata as $mdata ){
-					if ( in_array( $mdata->meta_key, $insert_defaults ) ) {
-						$data[$mdata->meta_key] 	= $mdata->meta_value;
-					} else {
-						$inner_meta['meta_key'] 	= $mdata->meta_key;
-						$inner_meta['meta_value'] 	= $mdata->meta_value;
-						$inner_meta['date_created'] = $post->post_date;
-					}
-				}
-				$insert_data[] 		= $data;
-				$insert_meta_data[] = $inner_meta;
+		if ( ! $migrate_done ) {
+			$migrate_done = true;
+			if ( ! self::verify_token( 'migrate' ) ) {
+				$migrate_done = false;
+				return false; 
 			}
-			if ( !empty( $insert_data ) ) {
-				foreach ( $insert_data as $data ){
-					$result = $wpdb->insert( $table_name, $data );
-					if ( false !== $result ) {
-						$id = $wpdb->insert_id;
-						foreach ( $insert_meta_data as $meta ){
-							$meta['object_id'] = $id;
-							$wpdb->insert( $meta_table_name, $meta );
+
+			global $wpdb;
+			$communication_log 	= 'ms_communication_log';
+			$transaction_log 	= 'ms_transaction_log';
+			$event 				= 'ms_event';
+			$post_ids 			= array();
+			$insert_data 		= array();
+			$sql 				= "SELECT * FROM $wpdb->posts WHERE post_type = %s";
+			$meta_sql 			= "SELECT * FROM $wpdb->postmeta WHERE post_id = %d";
+
+			if ( MS_Helper_Database::post_type_exists( $communication_log, $wpdb ) ) {
+				$table_name = MS_Helper_Database::get_table_name( MS_Helper_Database::COMMUNICATION_LOG );
+				$query 		= $wpdb->prepare( $sql, $communication_log );
+				$results 	= $wpdb->get_results( $query );
+				
+				foreach ( $results as $post ){
+					$post_ids[] 			= $post->ID;
+					$metadata 				= $wpdb->get_results( $wpdb->prepare( $meta_sql, $post->ID ) );
+					$data 					= array();
+					$data['date_created'] 	= $post->post_date;
+					$data['title'] 			= $post->title;
+					foreach ( $metadata as $mdata ){
+						if ( $mdata->meta_key  === 'sent') {
+							$data['sent'] = $mdata->meta_value;
+						}
+						if ( $mdata->meta_key  === 'recipient') {
+							$data['recipient'] = $mdata->meta_value;
+						}
+						if ( $mdata->meta_key  === 'subscription_id') {
+							$data['subscription_id'] = $mdata->meta_value;
+						}
+						if ( $mdata->meta_key  === 'trace') {
+							$data['trace'] = $mdata->meta_value;
+						}
+						if ( $mdata->meta_key  === 'user_id') {
+							$data['author'] = $mdata->meta_value;
 						}
 					}
+					$insert_data[] = $data;
 				}
-				$insert_data = null;
-				$insert_data = array();
-			}
-		}
-		if ( MS_Helper_Database::post_type_exists( $event, $wpdb ) ) {
-			$table_name = MS_Helper_Database::get_table_name( MS_Helper_Database::EVENT_LOG );
-			$query 		= $wpdb->prepare( $sql, $event );
-			$results 	= $wpdb->get_results( $query );
-			foreach ( $results as $post ){
-				$post_ids[] 			= $post->ID;
-				$metadata 				= $wpdb->get_results( $wpdb->prepare( $meta_sql, $post->ID ) );
-				$data 					= array();
-				$data['date_created'] 	= $post->post_date;
-				foreach ( $metadata as $mdata ){
-					if ( $mdata->meta_key  === 'name') {
-						$data['name'] 	= $mdata->meta_value;
+				if ( !empty( $insert_data ) ) {
+					foreach ( $insert_data as $data ){
+						$wpdb->insert( $table_name, $data );
 					}
-					if ( $mdata->meta_key  === 'membership_id') {
-						$data['membership_id'] = $mdata->meta_value;
-					}
-					if ( $mdata->meta_key  === 'ms_relationship_id') {
-						$data['ms_relationship_id'] = $mdata->meta_value;
-					}
-					if ( $mdata->meta_key  === 'event_topic') {
-						$data['event_topic'] = $mdata->meta_value;
-					}
-					if ( $mdata->meta_key  === 'user_id') {
-						$data['user_id'] = $data->mdata;
-					}
-					if ( $mdata->meta_key  === 'event_type') {
-						$data['event_type'] = $mdata->meta_value;
-					}
-					if ( $mdata->meta_key  === 'description') {
-						$data['description'] = $mdata->meta_value;
-					}
+					$insert_data = null;
+					$insert_data = array();
 				}
-				$insert_data[] = $data;
 			}
-			if ( !empty( $insert_data ) ) {
-				foreach ( $insert_data as $data ){
-					$wpdb->insert( $table_name, $data );
+			if ( MS_Helper_Database::post_type_exists( $transaction_log, $wpdb ) ) {
+				$table_name 			= MS_Helper_Database::get_table_name( MS_Helper_Database::TRANSACTION_LOG );
+				$meta_table_name    	= MS_Helper_Database::get_table_name( MS_Helper_Database::META );
+				$meta_name          	= MS_Helper_Database_TableMeta::TRANSACTION_TYPE;
+				$query 					= $wpdb->prepare( $sql, $transaction_log );
+				$results 				= $wpdb->get_results( $query );
+				$insert_defaults		= array( 'gateway_id', 'method', 'success', 'subscription_id', 'invoice_id', 'member_id', 'amount', 'custom_data', 'user_id');
+				$insert_meta_data 		= array();
+			
+				foreach ( $results as $post ){
+					$post_ids[] 				= $post->ID;
+					$metadata 					= $wpdb->get_results( $wpdb->prepare( $meta_sql, $post->ID ) );
+					$inner_meta 				= array();
+					$data 						= array();
+					$data['date_created'] 		= $post->post_date;
+					$data['last_updated'] 		= $post->post_modified;
+					$inner_meta['object_type'] 	= $meta_name;
+					foreach ( $metadata as $mdata ){
+						if ( in_array( $mdata->meta_key, $insert_defaults ) ) {
+							$data[$mdata->meta_key] 	= $mdata->meta_value;
+						} else {
+							$inner_meta['meta_key'] 	= $mdata->meta_key;
+							$inner_meta['meta_value'] 	= $mdata->meta_value;
+							$inner_meta['date_created'] = $post->post_date;
+						}
+					}
+					$insert_data[] 		= $data;
+					$insert_meta_data[] = $inner_meta;
 				}
-				$insert_data = null;
-				$insert_data = array();
+				if ( !empty( $insert_data ) ) {
+					foreach ( $insert_data as $data ){
+						$result = $wpdb->insert( $table_name, $data );
+						if ( false !== $result ) {
+							$id = $wpdb->insert_id;
+							foreach ( $insert_meta_data as $meta ){
+								$meta['object_id'] = $id;
+								$wpdb->insert( $meta_table_name, $meta );
+							}
+						}
+					}
+					$insert_data = null;
+					$insert_data = array();
+				}
 			}
-		}
+			if ( MS_Helper_Database::post_type_exists( $event, $wpdb ) ) {
+				$table_name = MS_Helper_Database::get_table_name( MS_Helper_Database::EVENT_LOG );
+				$query 		= $wpdb->prepare( $sql, $event );
+				$results 	= $wpdb->get_results( $query );
+				foreach ( $results as $post ){
+					$post_ids[] 			= $post->ID;
+					$metadata 				= $wpdb->get_results( $wpdb->prepare( $meta_sql, $post->ID ) );
+					$data 					= array();
+					$data['date_created'] 	= $post->post_date;
+					foreach ( $metadata as $mdata ){
+						if ( $mdata->meta_key  === 'name') {
+							$data['name'] 	= $mdata->meta_value;
+						}
+						if ( $mdata->meta_key  === 'membership_id') {
+							$data['membership_id'] = $mdata->meta_value;
+						}
+						if ( $mdata->meta_key  === 'ms_relationship_id') {
+							$data['ms_relationship_id'] = $mdata->meta_value;
+						}
+						if ( $mdata->meta_key  === 'event_topic') {
+							$data['event_topic'] = $mdata->meta_value;
+						}
+						if ( $mdata->meta_key  === 'user_id') {
+							$data['user_id'] = $data->mdata;
+						}
+						if ( $mdata->meta_key  === 'event_type') {
+							$data['event_type'] = $mdata->meta_value;
+						}
+						if ( $mdata->meta_key  === 'description') {
+							$data['description'] = $mdata->meta_value;
+						}
+					}
+					$insert_data[] = $data;
+				}
+				if ( !empty( $insert_data ) ) {
+					foreach ( $insert_data as $data ){
+						$wpdb->insert( $table_name, $data );
+					}
+					$insert_data = null;
+					$insert_data = array();
+				}
+			}
 
-		if ( !empty( $post_ids ) ) {
-			foreach ( $post_ids as $post_id ){
-				wp_delete_post( $post_id, true );
+			if ( !empty( $post_ids ) ) {
+				$sql = "DELETE FROM $wpdb->postmeta WHERE post_id = %d";
+				foreach ( $post_ids as $post_id ){
+					$wpdb->query( $wpdb->prepare( $sql, $post_id ) );
+					$wpdb->delete( $wpdb->posts, array( 'ID' => $post_id ) );
+				}
+				lib3()->ui->admin_message( __( 'Membership data has been migrated successfully', 'membership2' ), '', '', 'success' );
+			} else {
+				lib3()->ui->admin_message( __( 'No data was found to migrate', 'membership2' ), '', '', 'success' );
 			}
-			lib3()->ui->admin_message( __( 'Membership data has been migrated successfully', 'membership2' ), '', '', 'success' );
+			wp_safe_redirect( MS_Controller_Plugin::get_admin_url( 'MENU_SLUG' ) );
+            exit;
 		}
 	}
 
