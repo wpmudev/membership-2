@@ -114,6 +114,24 @@ class MS_Helper_Database extends MS_Helper {
 	}
 	
 	/**
+	 * Return total instances of the post type
+	 *
+	 * @param String $post_type - the post type
+	 * @param bool|object $db - WP_DB object
+	 *
+	 * @return integer
+	 */
+	public static function post_type_total( $post_type , $db = false ) {
+		if ( !$db ) {
+			global $wpdb;
+			$db = $wpdb;
+		}
+		$sql 	= "SELECT count(ID) FROM $db->posts WHERE post_type = %s";
+		$total 	= $db->get_var( $db->prepare( $sql, $post_type ) );
+		return $total;
+	}
+
+	/**
 	 * Check if post type exists
 	 *
 	 * @param String $post_type - the post type
@@ -122,12 +140,7 @@ class MS_Helper_Database extends MS_Helper {
 	 * @return bool
 	 */
 	public static function post_type_exists( $post_type , $db = false ) {
-		if ( !$db ) {
-			global $wpdb;
-			$db = $wpdb;
-		}
-		$sql 	= "SELECT count(ID) FROM $db->posts WHERE post_type = %s";
-		$total 	= $db->get_var( $db->prepare( $sql, $post_type ) );
+		$total = self::post_type_total( $post_type , $db );
 		return ( $total > 0 );
 	}
 }
