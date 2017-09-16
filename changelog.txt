@@ -11,6 +11,7 @@ Change Log:
 - Fixed: Buddypress media protection conflict
 - Fixed: Update Member status for manually created members
 - Fixed: Mail sending cron setting
+- Fixed: Category Protection
 
 1.1.1
 - Fixed: Menu Protection items not showing to all users except admin

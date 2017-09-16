@@ -198,8 +198,8 @@ class MS_Model_Import_Export extends MS_Model {
 				$data->coupons[] = $this->export_coupon( $coupon->id );
 			}
 		}
-
-		lib3()->net->file_download( json_encode( $data ), 'membership2-export.json' );
+		$milliseconds = round( microtime( true ) * 1000 );
+		lib3()->net->file_download( json_encode( $data ), $milliseconds . '_membership2-export.json' );
 	}
 
 	/**
