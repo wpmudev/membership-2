@@ -38,6 +38,7 @@ class MS_Controller_Settings extends MS_Controller {
 	const TAB_EMAILS 	= 'emails';
 	const TAB_MEDIA 	= 'media';
 	const TAB_IMPORT 	= 'import';
+	const TAB_REPORT 	= 'reports';
 
 	/**
 	 * The current active tab in the vertical navigation.
@@ -332,6 +333,9 @@ class MS_Controller_Settings extends MS_Controller {
 			self::TAB_IMPORT => array(
 				'title' => __( 'Import Tool', 'membership2' ),
 			),
+			self::TAB_REPORT => array(
+				'title' => __( 'Reports', 'membership2' ),
+			),
 		);
 		$settings = $this->get_model();
 		if ( ! MS_Model_Addon::is_enabled( MS_Addon_Mediafiles::ID ) || !$settings->is_advanced_media_protection ) {
@@ -451,6 +455,12 @@ class MS_Controller_Settings extends MS_Controller {
 
 					case self::TAB_IMPORT:
 						$tool = MS_Factory::create( 'MS_Controller_Import' );
+
+						// Output is passed to the view via self::_message()
+						$tool->process();
+						break;
+					case self::TAB_REPORT:
+						$tool = MS_Factory::create( 'MS_Controller_Report' );
 
 						// Output is passed to the view via self::_message()
 						$tool->process();
@@ -576,13 +586,13 @@ class MS_Controller_Settings extends MS_Controller {
 		$active_tab = $this->get_active_tab();
 		do_action( 'ms_controller_settings_enqueue_scripts_' . $active_tab );
 
-		$plugin_url = MS_Plugin::instance()->url;
-		$version = MS_Plugin::instance()->version;
-		$initial_url = MS_Controller_Plugin::get_admin_url();
+		$plugin_url 	= MS_Plugin::instance()->url;
+		$version 		= MS_Plugin::instance()->version;
+		$initial_url 	= MS_Controller_Plugin::get_admin_url();
 
 		$data = array(
-			'ms_init' => array(),
-			'initial_url' => $initial_url,
+			'ms_init' 		=> array(),
+			'initial_url' 	=> $initial_url,
 		);
 
 		$data['ms_init'][] = 'view_settings';

@@ -145,7 +145,6 @@ class MS_Controller_Import extends MS_Controller {
 		}
 
 		wp_send_json_error( array( 'desc' => '', 'status' => '' ) );
-		exit;
 	}
 
 	/**

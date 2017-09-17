@@ -18,9 +18,9 @@ class MS_View_Settings_Page_Import extends MS_View_Settings_Edit {
 	 * @return string
 	 */
 	public function to_html() {
-		$export_action = MS_Controller_Import::ACTION_EXPORT;
-		$import_action = MS_Controller_Import::ACTION_PREVIEW;
-		$messages = $this->data['message'];
+		$export_action 	= MS_Controller_Import::ACTION_EXPORT;
+		$import_action 	= MS_Controller_Import::ACTION_PREVIEW;
+		$messages 		= $this->data['message'];
 
 		$preview = false;
 		if ( isset( $messages['preview'] ) ) {
@@ -28,40 +28,40 @@ class MS_View_Settings_Page_Import extends MS_View_Settings_Edit {
 		}
 
 		$export_fields = array(
-			'export' => array(
-				'id' => 'btn_export',
-				'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
+			'export' 	=> array(
+				'id' 	=> 'btn_export',
+				'type' 	=> MS_Helper_Html::INPUT_TYPE_SUBMIT,
 				'value' => __( 'Generate Export', 'membership2' ),
-				'desc' => __(
+				'desc' 	=> __(
 					'Generate an export file with the current membership settings. <em>Note that this is not a full backup of the plugin settings.</em>',
 					'membership2'
 				),
 			),
-			'action' => array(
-				'id' => 'action',
-				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-				'value' => $export_action,
+			'action' 	=> array(
+				'id' 		=> 'action',
+				'type' 		=> MS_Helper_Html::INPUT_TYPE_HIDDEN,
+				'value' 	=> $export_action,
 			),
-			'nonce' => array(
-				'id' => '_wpnonce',
-				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-				'value' => wp_create_nonce( $export_action ),
+			'nonce' 	=> array(
+				'id' 		=> '_wpnonce',
+				'type' 		=> MS_Helper_Html::INPUT_TYPE_HIDDEN,
+				'value' 	=> wp_create_nonce( $export_action ),
 			),
 		);
 
 		$file_field = array(
-			'id' => 'upload',
-			'type' => MS_Helper_Html::INPUT_TYPE_FILE,
-			'title' => __( 'From export file', 'membership2' ),
+			'id' 		=> 'upload',
+			'type'		=> MS_Helper_Html::INPUT_TYPE_FILE,
+			'title' 	=> __( 'From export file', 'membership2' ),
 		);
 		$import_options = array(
-			'file' => array(
-				'text' => MS_Helper_Html::html_element( $file_field, true ),
-				'disabled' => ! MS_Model_Import_File::present(),
+			'file' 		=> array(
+				'text' 		=> MS_Helper_Html::html_element( $file_field, true ),
+				'disabled' 	=> ! MS_Model_Import_File::present(),
 			),
 			'membership' => array(
-				'text' => __( 'Membership (WPMU DEV)', 'membership2' ),
-				'disabled' => ! MS_Model_Import_Membership::present(),
+				'text' 		=> __( 'Membership (WPMU DEV)', 'membership2' ),
+				'disabled' 	=> ! MS_Model_Import_Membership::present(),
 			),
 		);
 
