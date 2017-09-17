@@ -7,7 +7,6 @@
  * Description: The most powerful, easy to use and flexible membership plugin for WordPress sites available.
  * Author:      WPMU DEV
  * Author URI:  http://premium.wpmudev.org/
- * WDP ID:      1003656
  * License:     GPL2
  * License URI: http://opensource.org/licenses/GPL-2.0
  * Text Domain: membership2

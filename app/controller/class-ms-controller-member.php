@@ -395,8 +395,21 @@ class MS_Controller_Member extends MS_Controller {
 					foreach ( $memberships as $membership_id ) {
 						if ( empty( $_POST['mem_' . $membership_id] ) ) { continue; }
 
-						$subscription = $user->get_subscription( $membership_id );
+						$subscription 	= $user->get_subscription( $membership_id );
 						$data = $_POST['mem_' . $membership_id];
+
+						$invoice 		= $subscription->get_current_invoice( false );
+						if ( $invoice ) {
+							if ( $data['status'] === MS_Model_Relationship::STATUS_ACTIVE ) {
+								$invoice->status = MS_Model_Invoice::STATUS_PAID;
+								$invoice->save();
+							} else if ( $data['status'] === MS_Model_Relationship::STATUS_CANCELED ) {
+								if ( $invoice->status !== MS_Model_Invoice::STATUS_PAID ) {
+									$invoice->status = MS_Model_Invoice::STATUS_PENDING;
+									$invoice->save();
+								}
+							}
+						}
 
 						$subscription->start_date 	= $data['start'];
 						$subscription->expire_date 	= $data['expire'];
