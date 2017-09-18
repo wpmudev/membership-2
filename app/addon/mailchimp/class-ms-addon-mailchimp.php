@@ -437,9 +437,6 @@ class MS_Addon_Mailchimp extends MS_Addon {
 
 			if ( !is_wp_error( $results ) ) {
 				$subscribed = true;
-			} else {
-				$this->log( $results->get_error_message() );
-				
 			}
 		}
 
