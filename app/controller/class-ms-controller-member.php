@@ -524,12 +524,12 @@ class MS_Controller_Member extends MS_Controller {
 		if ( empty( $status ) ) { 
 			$status = MS_Model_Relationship::STATUS_ACTIVE; 
 		}
-		$url = wp_nonce_url( admin_url( 'admin.php?action=membership_export_csv&status='.$status ), 'csv_export' );
+		$url 		= wp_nonce_url( admin_url( 'admin.php?action=membership_export_csv&status='.$status ), 'csv_export' );
 		$csv_button = array(
 			'id' 	=> 'csv_ms_button',
 			'type' 	=> MS_Helper_Html::TYPE_HTML_LINK,
 			'url' 	=> $url,
-			'value' => __( 'Export to CSV', 'membership2' ),
+			'value' => __( 'Export List as CSV', 'membership2' ),
 			'class' => 'button button-primary action-button export_csv_memberships_button',
 		);
 		MS_Helper_Html::html_element( $csv_button );

@@ -491,7 +491,7 @@ class MS_Controller_Settings extends MS_Controller {
 		$data['tabs'] 		= $this->get_tabs();
 		$data['settings'] 	= $this->get_model();
 
-		$data['message'] = self::_message();
+		$data['message'] 	= self::_message();
 
 		if ( isset( $data['message']['error'] ) ) {
 			lib3()->ui->admin_message( $data['message']['error'], 'err' );
@@ -510,11 +510,16 @@ class MS_Controller_Settings extends MS_Controller {
 
 				$data['comm'] = $comm;
 				break;
+
+			case self::TAB_IMPORT:
+				$data['types'] 		= MS_Model_Import_Export::export_types();
+				$data['formats'] 	= MS_Model_Import_Export::export_formats();
+				break;
 		}
 
-		$data = array_merge( $data, $view->data );
-		$view->data = apply_filters( $hook . '_data', $data );
-		$view->model = $this->get_model();
+		$data 			= array_merge( $data, $view->data );
+		$view->data 	= apply_filters( $hook . '_data', $data );
+		$view->model 	= $this->get_model();
 		$view->render();
 	}
 

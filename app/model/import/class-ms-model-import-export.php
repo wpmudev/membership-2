@@ -427,4 +427,35 @@ class MS_Model_Import_Export extends MS_Model {
 		return $Ids[$type][$internal_id];
 	}
 
+	/**
+	 * Export types
+	 *
+	 * @since 1.1.3
+	 *
+	 * @return Array
+	 */
+	public static function export_types() {
+		return array(
+			'plugin' 		=> __( 'Plugin Settings (Note that this is not a full backup of the plugin settings)', 'membership2' ),
+			'full' 			=> __( 'Full Membership Data (Members and Memberships)', 'membership2' ),
+			'membership' 	=> __( 'Memberships Only', 'membership2' ),
+			'members' 		=> __( 'Members Only', 'membership2' )
+		);
+	}
+
+	/**
+	 * Supported Export types
+	 *
+	 * @since 1.1.3
+	 *
+	 * @return Array
+	 */
+	public static function export_formats() {
+		return array(
+			'json' 	=> __( 'JSON', 'membership2' ),
+			'xml' 	=> __( 'XML', 'membership2' ),
+			'csv' 	=> __( 'CSV', 'membership2' ),
+		);
+	}
+
 }

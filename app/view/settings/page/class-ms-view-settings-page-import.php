@@ -28,14 +28,25 @@ class MS_View_Settings_Page_Import extends MS_View_Settings_Edit {
 		}
 
 		$export_fields = array(
+			'type' => array(
+				'id' 			=> 'type',
+				'type' 			=> MS_Helper_Html::INPUT_TYPE_SELECT,
+				'title' 		=> __( 'Select export type', 'membership2' ),
+				'field_options' => $this->data['types'],
+				'class' 		=> 'ms-select'
+			),
+			'format' => array(
+				'id' 			=> 'format',
+				'type' 			=> MS_Helper_Html::INPUT_TYPE_SELECT,
+				'title' 		=> __( 'Select export format', 'membership2' ),
+				'field_options' => $this->data['formats'],
+				'class' 		=> 'ms-select'
+			),
 			'export' 	=> array(
 				'id' 	=> 'btn_export',
 				'type' 	=> MS_Helper_Html::INPUT_TYPE_SUBMIT,
 				'value' => __( 'Generate Export', 'membership2' ),
-				'desc' 	=> __(
-					'Generate an export file with the current membership settings. <em>Note that this is not a full backup of the plugin settings.</em>',
-					'membership2'
-				),
+				'desc' 	=> __( 'Generate an export file using one of the options above', 'membership2' ),
 			),
 			'action' 	=> array(
 				'id' 		=> 'action',
