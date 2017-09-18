@@ -111,6 +111,18 @@ class MS_Controller_Member extends MS_Controller {
 			'remove_membership_from_user'
 		);
 
+
+		$this->add_action(
+			'ms_bulk_actions_table_nav_members',
+			'members_export_button'
+		);
+		
+
+		$this->add_action(
+			'admin_action_membership_export_csv',
+			'membership_export_csv'
+		);
+
 		$this->add_filter( 'set-screen-option', array($this, 'members_admin_page_set_screen_option' ) , 10, 3 );
 
 		$this->add_filter( 'manage_users_columns', array($this, 'manage_users_columns' ) , 10, 1 );
@@ -136,6 +148,17 @@ class MS_Controller_Member extends MS_Controller {
 			$this->run_action( 'admin_print_scripts-' . $hook, 'enqueue_scripts_' . $key );
 			$this->run_action( 'admin_print_styles-' . $hook, 'enqueue_styles' );
 		}
+	}
+
+
+	public function membership_export_csv() {
+		if ( empty( $_REQUEST['_wpnonce'] ) ) { return; }
+		
+		
+		if ( ! wp_verify_nonce( $_REQUEST['_wpnonce'], 'csv_export' ) ) { return; }
+
+		$handler = MS_Factory::create( 'MS_Model_Report_Members' );
+		$handler->process();
 	}
 
 	/**
@@ -483,11 +506,33 @@ class MS_Controller_Member extends MS_Controller {
 	 * @since  1.0.0
 	 */
 	public function admin_page() {
-		$data = array();
-
-		$view = MS_Factory::create( 'MS_View_Member_List' );
-		$view->data = apply_filters( 'ms_view_member_list_data', $data );
+		$data 		= array();
+		$view 		= MS_Factory::create( 'MS_View_Member_List' );
+		$view->data = apply_filters( 'ms_view_member_list_data', $data, $this );
 		$view->render();
+	}
+
+	/**
+	 * Generate the Export button on the Members list view
+	 *
+	 * @since 1.1.3
+	 *
+	 * @return String
+	 */
+	public function members_export_button() {
+		$status = $_REQUEST['status'];
+		if ( empty( $status ) ) { 
+			$status = MS_Model_Relationship::STATUS_ACTIVE; 
+		}
+		$url = wp_nonce_url( admin_url( 'admin.php?action=membership_export_csv&status='.$status ), 'csv_export' );
+		$csv_button = array(
+			'id' 	=> 'csv_ms_button',
+			'type' 	=> MS_Helper_Html::TYPE_HTML_LINK,
+			'url' 	=> $url,
+			'value' => __( 'Export to CSV', 'membership2' ),
+			'class' => 'button button-primary action-button export_csv_memberships_button',
+		);
+		MS_Helper_Html::html_element( $csv_button );
 	}
 
 	/**

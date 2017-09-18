@@ -104,5 +104,88 @@ class MS_Helper_Media extends MS_Helper {
 		return $active_server;
 	}
 
+	/**
+	 * Get the membership directory in the uploads directory
+	 *
+	 * @since 1.1.3
+	 *
+	 * @return String
+	 */
+	public static function get_membership_dir() {
+		$upload_dir     = wp_upload_dir();
+		$uploads_dir    = $upload_dir['basedir'];
+		$ms_dir    		= $uploads_dir . DIRECTORY_SEPARATOR . 'membership2';
+		if ( ! is_dir( $ms_dir ) ) {
+			wp_mkdir_p( $ms_dir );
+		}
+		if ( ! is_file( $ms_dir . DIRECTORY_SEPARATOR . 'index.php' ) ) {
+			//create a blank index file
+			file_put_contents( $ms_dir . DIRECTORY_SEPARATOR . 'index.php', '' );
+		}
+		return $ms_dir;
+	}
+
+	/**
+	 * Create CSV file
+	 *
+	 * @param String $filepath - the file path
+	 * @param Array $data - the data
+	 * @param Array $header - header data
+	 *
+	 * @return bool - success true
+	 */
+	public static function create_csv( $filepath, $data, $header = array() ) {
+		$handle 	= fopen( $filepath, 'w' );
+		$has_header = true; 
+		if ( $handle ) {
+			if ( empty( $header ) ) { 
+				$has_header = false; 
+				reset( $data ); 
+				$line = current( $data ); 
+				if ( !empty( $line ) ) { 
+					reset( $line ); 
+					$first = current( $line ); 
+					if ( substr( $first, 0, 2 ) == 'ID' && !preg_match( '/["\\s,]/', $first ) ) {
+						array_shift( $data ); 
+						array_shift( $line ); 
+						if ( empty( $line ) ) { 
+							fwrite( $handle, "\"{$first}\"\r\n" ); 
+						} else { 
+							fwrite( $handle, "\"{$first}\"," ); 
+							fputcsv( $handle, $line ); 
+							fseek( $handle, -1, SEEK_CUR ); 
+							fwrite( $handle, "\r\n" ); 
+						} 
+					} 
+				} 
+			} else {
+				reset( $header ); 
+				$first = current( $header ); 
+				if ( substr( $first, 0, 2 ) == 'ID' && !preg_match( '/["\\s,]/', $first ) ) {
+					array_shift( $header ); 
+					if ( empty( $header ) ) { 
+						$show_header = false; 
+						fwrite( $handle, "\"{$first}\"\r\n" ); 
+					} else { 
+						fwrite( $handle, "\"{$first}\"," ); 
+					} 
+				}
+			}
+			if ( $has_header ) { 
+				fputcsv( $handle, $header ); 
+				fseek( $handle, -1, SEEK_CUR ); 
+				fwrite( $handle, "\r\n" ); 
+			} 
+			foreach ( $data as $line ) { 
+				fputcsv( $handle, $line ); 
+				fseek( $handle, -1, SEEK_CUR ); 
+				fwrite( $handle, "\r\n" ); 
+			} 
+			fclose($handle);
+			return true;
+		}
+		return false;
+	}
+
 }
 ?>

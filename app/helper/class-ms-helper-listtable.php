@@ -1239,6 +1239,7 @@ class MS_Helper_ListTable {
 
 			<div class="alignleft actions bulkactions">
 				<?php echo '' . $bulk_actions; ?>
+				<?php do_action( 'ms_bulk_actions_table_nav_' . $this->_args['plural'] ); ?>
 			</div>
 			<?php
 			echo '' . $extra . $pagination;

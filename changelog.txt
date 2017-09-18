@@ -4,6 +4,9 @@ Build Stamp: BUILDTIME
 
 Change Log:
 ----------------------------------------------------------------------
+1.1.3
+- Added: Membership List Export to CSV
+
 1.1.2
 - Fixed: MailChimp Addon list function
 - Fixed: Styling for Membership Attributes PopUp

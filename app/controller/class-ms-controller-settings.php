@@ -38,7 +38,6 @@ class MS_Controller_Settings extends MS_Controller {
 	const TAB_EMAILS 	= 'emails';
 	const TAB_MEDIA 	= 'media';
 	const TAB_IMPORT 	= 'import';
-	const TAB_REPORT 	= 'reports';
 
 	/**
 	 * The current active tab in the vertical navigation.
@@ -332,10 +331,7 @@ class MS_Controller_Settings extends MS_Controller {
 			),
 			self::TAB_IMPORT => array(
 				'title' => __( 'Import Tool', 'membership2' ),
-			),
-			self::TAB_REPORT => array(
-				'title' => __( 'Reports', 'membership2' ),
-			),
+			)
 		);
 		$settings = $this->get_model();
 		if ( ! MS_Model_Addon::is_enabled( MS_Addon_Mediafiles::ID ) || !$settings->is_advanced_media_protection ) {
@@ -455,12 +451,6 @@ class MS_Controller_Settings extends MS_Controller {
 
 					case self::TAB_IMPORT:
 						$tool = MS_Factory::create( 'MS_Controller_Import' );
-
-						// Output is passed to the view via self::_message()
-						$tool->process();
-						break;
-					case self::TAB_REPORT:
-						$tool = MS_Factory::create( 'MS_Controller_Report' );
 
 						// Output is passed to the view via self::_message()
 						$tool->process();
