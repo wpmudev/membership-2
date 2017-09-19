@@ -520,7 +520,7 @@ class MS_Controller_Member extends MS_Controller {
 	 * @return String
 	 */
 	public function members_export_button() {
-		$status = $_REQUEST['status'];
+		$status 	= $_REQUEST['status'];
 		if ( empty( $status ) ) { 
 			$status = MS_Model_Relationship::STATUS_ACTIVE; 
 		}

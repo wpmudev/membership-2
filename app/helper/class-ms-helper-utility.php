@@ -329,6 +329,17 @@ class MS_Helper_Utility extends MS_Helper {
 				( isset($parts['query'] ) ? "?{$parts['query']}" : '' ) . 
 				( isset($parts['fragment'] ) ? "#{$parts['fragment']}" : '' );
 	}
+
+	/**
+	 * Object to array
+	 *
+	 * @param $object Object - the object
+	 *
+	 * @return Array
+	 */
+	static function object_to_array( $object ) {
+		return json_decode( json_encode( $object ), true );
+	}
 }
 
 if ( ! function_exists( 'array_unshift_assoc' ) ) {

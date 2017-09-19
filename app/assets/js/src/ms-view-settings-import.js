@@ -229,4 +229,18 @@ window.ms_init.view_settings_import = function init() {
 
 	btn_import.click( start_import );
 
+	/**
+	 * Hide format on settings select
+	 */
+	jQuery(document).on('change', 'select.ms-select-type', function(){
+		if (!jQuery('.ms-select-format-wrapper').is(":visible")) {
+			jQuery('.ms-select-format-wrapper').show();
+		}
+		if(jQuery(this).val() === 'plugin'){
+			jQuery('.ms-select-format-wrapper').hide();
+		}
+	});
+
+	//hide by default
+	jQuery('.ms-select-format-wrapper').hide();
 };

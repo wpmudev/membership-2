@@ -33,14 +33,14 @@ class MS_View_Settings_Page_Import extends MS_View_Settings_Edit {
 				'type' 			=> MS_Helper_Html::INPUT_TYPE_SELECT,
 				'title' 		=> __( 'Select export type', 'membership2' ),
 				'field_options' => $this->data['types'],
-				'class' 		=> 'ms-select'
+				'class' 		=> 'ms-select ms-select-type'
 			),
 			'format' => array(
 				'id' 			=> 'format',
 				'type' 			=> MS_Helper_Html::INPUT_TYPE_SELECT,
 				'title' 		=> __( 'Select export format', 'membership2' ),
 				'field_options' => $this->data['formats'],
-				'class' 		=> 'ms-select'
+				'class' 		=> 'ms-select ms-select-format'
 			),
 			'export' 	=> array(
 				'id' 	=> 'btn_export',
