@@ -120,7 +120,7 @@
  * @package Membership2
  * @subpackage Model
  */
-class MS_Model_Import_Type_Settings extends MS_Model {
+class MS_Model_Export_Settings extends MS_Model {
 
 	/**
 	 * Identifier for this Import source

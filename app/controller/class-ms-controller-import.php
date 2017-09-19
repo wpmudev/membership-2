@@ -269,7 +269,7 @@ class MS_Controller_Import extends MS_Controller {
 
 		switch ( $action ) {
 			case self::ACTION_EXPORT:
-				$handler = MS_Factory::create( 'MS_Model_Import_Export' );
+				$handler = MS_Factory::create( 'MS_Model_Export' );
 				$handler->process();
 				break;
 

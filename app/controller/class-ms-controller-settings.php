@@ -512,8 +512,8 @@ class MS_Controller_Settings extends MS_Controller {
 				break;
 
 			case self::TAB_IMPORT:
-				$data['types'] 		= MS_Model_Import_Export::export_types();
-				$data['formats'] 	= MS_Model_Import_Export::export_formats();
+				$data['types'] 		= MS_Model_Export::export_types();
+				$data['formats'] 	= MS_Model_Export::export_formats();
 				break;
 		}
 
