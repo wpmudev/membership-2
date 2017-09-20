@@ -170,12 +170,12 @@ class MS_Model_Export_Settings extends MS_Model {
 
 		// Export the base membership (i.e. the Membership2 settings)
 		$membership 			= MS_Model_Membership::get_base();
-		$data->memberships[] 	= $this->export_membership( $membership->id );
+		$data->memberships[] 	= $this->export_membership( $membership );
 
 		// Export all memberships.
 		$memberships 			= MS_Model_Membership::get_memberships( array( 'post_parent' => 0 ) );
 		foreach ( $memberships as $membership ) {
-			$data->memberships[] = $this->export_membership( $membership->id );
+			$data->memberships[] = $this->export_membership( $membership );
 		}
 
 		// Export the members.
@@ -183,7 +183,7 @@ class MS_Model_Export_Settings extends MS_Model {
 		$data->members = array();
 		foreach ( $members as $member ) {
 			if ( ! $member->is_member ) { continue; }
-			$data->members[] 	= $this->export_member( $member->id );
+			$data->members[] 	= $this->export_member( $member );
 		}
 
 		// Export plugin settings.
@@ -196,7 +196,7 @@ class MS_Model_Export_Settings extends MS_Model {
 			$data->coupons 		= array();
 			foreach ( $coupons as $coupon ) {
 				if ( intval( $coupon->max_uses ) <= intval( $coupon->used ) ) { continue; }
-				$data->coupons[] = $this->export_coupon( $coupon->id );
+				$data->coupons[] = $this->export_coupon( $coupon );
 			}
 		}
 		$milliseconds = round( microtime( true ) * 1000 );
@@ -208,12 +208,10 @@ class MS_Model_Export_Settings extends MS_Model {
 	 * Export specific data.
 	 *
 	 * @since  1.0.0
-	 * @param  int $membership_id
+	 * @param  MS_Model_Membership $src
 	 * @return object Export data
 	 */
-	protected function export_membership( $membership_id ) {
-		$src 				= MS_Factory::load( 'MS_Model_Membership', $membership_id );
-
+	protected function export_membership( $src ) {
 		$obj 				= (object) array();
 		$obj->id 			= $this->exp_id( 'membership', $src->id );
 		$obj->name			= $src->name;
@@ -259,19 +257,17 @@ class MS_Model_Export_Settings extends MS_Model {
 			}
 		}
 
-		return apply_filters( 'ms_export/export_membership', $obj, $src, $membership_id, $this );
+		return apply_filters( 'ms_export/export_membership', $obj, $src, $this );
 	}
 
 	/**
 	 * Export specific data.
 	 *
 	 * @since  1.0.0
-	 * @param  int $member_id
+	 * @param  MS_Model_Member $src
 	 * @return object Export data
 	 */
-	protected function export_member( $member_id ) {
-		$src 			= MS_Factory::load( 'MS_Model_Member', $member_id );
-
+	protected function export_member( $src ) {
 		$obj 			= (object) array();
 		$obj->id 		= $this->exp_id( 'user', $src->username );
 		$obj->email 	= $src->email;
@@ -297,7 +293,7 @@ class MS_Model_Export_Settings extends MS_Model {
 			$obj->subscriptions[] = $this->export_relationship( $registration );
 		}
 
-		return apply_filters( 'ms_export/export_member', $obj, $src, $member_id, $this );
+		return apply_filters( 'ms_export/export_member', $obj, $src, $this );
 	}
 
 	/**
@@ -363,12 +359,10 @@ class MS_Model_Export_Settings extends MS_Model {
 	 * Export specific data.
 	 *
 	 * @since  1.0.0
-	 * @param  int $coupon_id
+	 * @param  object $src
 	 * @return object Export data
 	 */
-	protected function export_coupon( $coupon_id ) {
-		$src 			= MS_Factory::load( 'MS_Addon_Coupon_Model', $coupon_id );
-
+	protected function export_coupon( $src ) {
 		$obj 			= (object) array();
 		$obj->id 		= $this->exp_id( 'coupon', $src->code );
 		$obj->code 		= $src->code;
@@ -383,7 +377,7 @@ class MS_Model_Export_Settings extends MS_Model {
 
 		$obj->max_uses = intval( $src->max_uses ) - intval( $src->used );
 
-		return apply_filters( 'ms_export/export_coupon', $obj, $src, $coupon_id, $this );
+		return apply_filters( 'ms_export/export_coupon', $obj, $src, $this );
 	}
 
 	/**

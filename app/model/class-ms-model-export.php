@@ -24,7 +24,6 @@ class MS_Model_Export extends MS_Model {
 	  * Export formats
 	  */
 	 const JSON_EXPORT 			= 'json';
-	 const CSV_EXPORT 			= 'csv';
 	 const XML_EXPORT 			= 'xml';
  
  
@@ -101,8 +100,7 @@ class MS_Model_Export extends MS_Model {
 	 public static function export_formats() {
 		 return array(
 			 self::JSON_EXPORT 	=> __( 'JSON', 'membership2' ),
-			 self::XML_EXPORT 	=> __( 'XML', 'membership2' ),
-			 self::CSV_EXPORT 	=> __( 'CSV', 'membership2' ),
+			 self::XML_EXPORT 	=> __( 'XML', 'membership2' )
 		 );
 	 }
 	
