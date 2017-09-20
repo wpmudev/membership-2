@@ -6,7 +6,7 @@
  * @package Membership2
  * @subpackage Model
  */
-class MS_Model_Export_Full extends MS_Model {
+class MS_Model_Export_Full extends MS_Model_Export_Base {
 
 
 	/**
@@ -45,9 +45,12 @@ class MS_Model_Export_Full extends MS_Model {
 
 			case MS_Model_Export::XML_EXPORT :
 				$xml = new SimpleXMLElement("<?xml version=\"1.0\"?><membership2></membership2>");
-				foreach ( $data as $member ) {
-					$node = $xml->addChild( 'fullexport' );
-					MS_Helper_Media::generate_xml( $node, $member );
+				foreach ( $data as $key => $datas ) {
+					$node = $xml->addChild( $key );
+					foreach ( $datas as $d ) {
+						$subnode = $node->addChild( substr( $key, 0, -1 ) );
+						MS_Helper_Media::generate_xml( $subnode, $d );
+					}
 				}
 				lib3()->net->file_download( $xml->asXML(), $file_name . '.xml' );
 			break;

@@ -6,7 +6,7 @@
  * @package Membership2
  * @subpackage Model
  */
-class MS_Model_Export_Membership extends MS_Model {
+class MS_Model_Export_Membership extends MS_Model_Export_Base {
 
 
 	/**

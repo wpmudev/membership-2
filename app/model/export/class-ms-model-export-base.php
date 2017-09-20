@@ -100,6 +100,8 @@ class MS_Model_Export_Base extends MS_Model {
 		foreach ( $member->subscriptions as $registration ) {
 			$output['subscriptions'][] = $this->export_relationship( $registration );
 		}
+
+		return apply_filters( 'ms_export/export_member', $output, $member, $this );
 	}
 
 
