@@ -20,10 +20,9 @@ class MS_Model_Export_Full extends MS_Model_Export_Base {
 	 * @since  1.1.3
 	 */
 	public function process( $format ) {
-		$data 			= array(
-			'memberships' 	=> array(),
-			'members'		=> array()
-		);
+		$data 					= $this->export_base(); 
+		$data['memberships'] 	= array();
+		$data['members'] 		= array();
 		$membership 			= MS_Model_Membership::get_base();
 		$data['memberships'][] 	= $this->export_membership( $membership );
 		$memberships 			= MS_Model_Membership::get_memberships( array( 'post_parent' => 0 ) );

@@ -19,7 +19,7 @@ class MS_Model_Export_Members extends MS_Model_Export_Base {
 	 * @since  1.1.3
 	 */
 	public function process( $format ) {
-		$data 		= array();
+		$data 		= $this->export_base( 'members' ); 
 		$members 	= MS_Model_Member::get_members();
 		foreach ( $members as $member ) {
 			if ( ! $member->is_member ) { continue; }

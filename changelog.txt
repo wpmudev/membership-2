@@ -15,6 +15,7 @@ Change Log:
 - Fixed: Update Member status for manually created members
 - Fixed: Mail sending cron setting
 - Fixed: Category Protection
+- Fixed: Rest API addon
 
 1.1.1
 - Fixed: Menu Protection items not showing to all users except admin

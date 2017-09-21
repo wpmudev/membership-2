@@ -9,6 +9,51 @@
 class MS_Model_Export_Base extends MS_Model {
 
 	/**
+	 * Identifier for this Import source
+	 *
+	 * @since  1.1.3
+	 */
+	const KEY = 'membership2';
+
+	/**
+	 * Set Export base messages
+	 *
+	 * @param String $type - the export type
+	 *
+	 * @return Array
+	 */
+	protected function export_base( $type = 'full' ) {
+		$data 					= array();
+		$data['source_key'] 	= self::KEY;
+		$data['source'] 		= 'Membership2';
+		$data['plugin_version'] = MS_PLUGIN_VERSION;
+		$data['export_time']  	= date( 'Y-m-d H:i' );
+		if ( $type === 'full' ) {
+			$data['notes']  		= array(
+				__( 'Exported data:', 'membership2' ),
+				__( '- Memberships (without protection rules)', 'membership2' ),
+				__( '- Members (including Stripe/Authorize payment settings)', 'membership2' ),
+				__( '- Subscriptions (link between Members and Memberships)', 'membership2' ),
+				__( '- Invoices', 'membership2' )
+			);
+		} else if ( $type === 'members' ) {
+			$data['notes']  		= array(
+				__( 'Exported data:', 'membership2' ),
+				__( '- Members (including Stripe/Authorize payment settings)', 'membership2' ),
+				__( '- Subscriptions (link between Members and Memberships)', 'membership2' ),
+				__( '- Invoices', 'membership2' )
+			);
+		} else if ( $type === 'memberships' ) {
+			$data['notes']  		= array(
+				__( 'Exported data:', 'membership2' ),
+				__( '- Memberships (without protection rules)', 'membership2' )
+			);
+		}
+		
+		return $data;
+	}
+
+	/**
 	 * Export Membership data.
 	 *
 	 * @since  1.1.3

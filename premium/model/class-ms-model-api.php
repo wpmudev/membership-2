@@ -75,7 +75,7 @@ class MS_Model_Api extends MS_Model_Option {
             self::$_reload_files = false;
 			$model->api_files = array();
 
-			$mask = $content_dir . $api_dir . '*/class-ms-api-*.php';
+			$mask = $content_dir . $api_dir . '*class-ms-api-*.php';
 			$apis = glob( $mask );
 
 			foreach ( $apis as $file ) {
