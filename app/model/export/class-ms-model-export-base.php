@@ -31,7 +31,7 @@ class MS_Model_Export_Base extends MS_Model {
 		$data['export_time']  	= date( 'Y-m-d H:i' );
 		if ( $type === 'full' ) {
 			$data['notes']  	= array(
-				__( 'Exported data:', 'membership2' ),
+				'title' => __( 'Exported data:', 'membership2' ),
 				__( '- Memberships (without protection rules)', 'membership2' ),
 				__( '- Members (including Stripe/Authorize payment settings)', 'membership2' ),
 				__( '- Subscriptions (link between Members and Memberships)', 'membership2' ),

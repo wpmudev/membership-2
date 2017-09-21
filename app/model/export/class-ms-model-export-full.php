@@ -48,8 +48,12 @@ class MS_Model_Export_Full extends MS_Model_Export_Base {
 					if ( is_array( $datas ) ) {
 						$node = $xml->addChild( $key );
 						foreach ( $datas as $d ) {
-							$subnode = $node->addChild( substr( $key, 0, -1 ) );
-							MS_Helper_Media::generate_xml( $subnode, $d );
+							if ( is_array( $d ) ) {
+								$subnode = $node->addChild( substr( $key, 0, -1 ) );
+								MS_Helper_Media::generate_xml( $subnode, $d );
+							} else {
+								$node->addChild( substr( $key, 0, -1 ), $d );
+							}
 						}
 					} else {
 						$xml->addChild( $key, $datas );

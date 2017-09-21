@@ -39,8 +39,12 @@ class MS_Model_Export_Members extends MS_Model_Export_Base {
 					if ( is_array( $members ) ) {
 						$node = $xml->addChild( $key );
 						foreach ( $members as $member ) {
-							$subnode = $node->addChild( substr( $key, 0, -1 ) );
-							MS_Helper_Media::generate_xml( $subnode, $member );
+							if ( is_array( $member ) ) {
+								$subnode = $node->addChild( substr( $key, 0, -1 ) );
+								MS_Helper_Media::generate_xml( $subnode, $member );
+							} else {
+								$node->addChild( substr( $key, 0, -1 ), $member );
+							}
 						}
 					} else {
 						$xml->addChild( $key, $members );

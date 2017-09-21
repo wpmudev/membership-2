@@ -208,7 +208,7 @@ class MS_Helper_Media extends MS_Helper {
 				}
 			}
 		} else {
-			$xml->addChild( $data );
+			$xml->addChild( "$data" );
 		}
 	}
 

@@ -42,11 +42,15 @@ class MS_Model_Export_Membership extends MS_Model_Export_Base {
 					if ( is_array( $memberships ) ) {
 						$node = $xml->addChild( $key );
 						foreach ( $memberships as $membership ) {
-							$subnode = $node->addChild( substr( $key, 0, -1 ) );
-							MS_Helper_Media::generate_xml( $subnode, $membership );
+							if ( is_array( $membership ) ) {
+								$subnode = $node->addChild( substr( $key, 0, -1 ) );
+								MS_Helper_Media::generate_xml( $subnode, $membership );
+							} else {
+								$node->addChild( substr( $key, 0, -1 ), $membership );
+							}
 						}
 					} else {
-						$xml->addChild( $key, $memberships );
+						$xml->addChild( $key, esc_html( $memberships ) );
 					}
 				}
 				lib3()->net->file_download( $xml->asXML(), $file_name . '.xml' );
