@@ -1813,4 +1813,20 @@ class MS_View_Help extends MS_View {
 
 		return $html;
 	}
+
+	/**
+	 * Render the rest api documentation
+	 *
+	 * @since  1.1.3
+	 * @return string
+	 */
+	public function render_tab_restapi() {
+		ob_start();
+		?>
+		<h2><?php _ex( 'Rest API Documentation', 'help', 'membership2' ); ?></h2>
+		<?php
+		$html = ob_get_clean();
+				
+		return $html;
+	}
 }
