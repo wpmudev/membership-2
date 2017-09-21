@@ -70,26 +70,27 @@ class MS_Model_Import extends MS_Model {
 		return false;
 	}
 
-	protected function validate_data( $data, $format ) {
+	/**
+	 * Validate uploaded data
+	 *
+	 * @param Object $data
+	 *
+	 * @since 1.1.3
+	 *
+	 * @return bool
+	 */
+	protected function validate_data( $data ) {
 		$valid = false;
-		switch ( $format ) {
-			case MS_Model_Export::JSON_EXPORT :
-				if ( !empty( $data ) && is_object( $data ) ) {
-					if ( $data->type === 'settings' ) {
-						$valid = $this->validate_object( $data );
-					} else if ( $data->type === 'memberships' ) {
-						$valid = $this->validate_memberships_object( $data );
-					} else if ( $data->type === 'members' ) {
-						$valid = $this->validate_members_object( $data );
-					} else if ( $data->type === 'full' ) {
-						$valid = $this->validate_full_object( $data );
-					}
-				}
-			break;
-
-			case MS_Model_Export::XML_EXPORT :
-
-			break;
+		if ( !empty( $data ) && is_object( $data ) ) {
+			if ( $data->type == 'settings' ) {
+				$valid = $this->validate_object( $data );
+			} else if ( $data->type == 'memberships' ) {
+				$valid = $this->validate_memberships_object( $data );
+			} else if ( $data->type == 'members' ) {
+				$valid = $this->validate_members_object( $data );
+			} else if ( $data->type == 'full' ) {
+				$valid = $this->validate_full_object( $data );
+			}
 		}
 		return $valid;
 	}

@@ -340,6 +340,42 @@ class MS_Helper_Utility extends MS_Helper {
 	static function object_to_array( $object ) {
 		return json_decode( json_encode( $object ), true );
 	}
+
+	/**
+	 * Convert XML to array
+	 *
+	 * @param Object $xml - the xml object
+	 * @param  Array $out - the output
+	 *
+	 * @return Array
+	 */
+	static function xml2array ( $xml ) {
+		$out = array();
+		foreach ( $xml->children() as $r ) {
+			$t 	= array();
+			if ( count( $r->children() ) == 0) {
+				$out[ $r->getName() ] = strval( $r );
+			} else{
+				$out[ $r->getName() ][] = self::xml2array( $r );
+			}
+		}
+	
+		return $out;
+	}
+
+	/**
+	 * Convert Array to object
+	 *
+	 * @param Array $array
+	 *
+	 * @return object
+	 */
+	static function array_to_object( $array ) {
+		if ( is_array( $array ) ) {
+			return ( object ) $array;
+		}
+		return $array;
+	}
 }
 
 if ( ! function_exists( 'array_unshift_assoc' ) ) {

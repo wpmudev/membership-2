@@ -36,8 +36,12 @@ class MS_View_Settings_Import extends MS_View {
 		}
 
 		// Converts object to array.
-		$data->memberships = (array) $data->memberships;
-		$data->members = (array) $data->members;
+		if ( is_a( $data, 'SimpleXMLElement' ) ) {
+			$data 	= MS_Helper_Utility::xml2array( $data );
+			$data 	= ( object ) $data;
+		}
+		$data->memberships 	= isset( $data->memberships ) ? (array) $data->memberships : array();
+		$data->members 		= isset( $data->members ) ? (array) $data->members : array();
 
 		$fields = $this->prepare_fields( $data );
 
@@ -69,26 +73,32 @@ class MS_View_Settings_Import extends MS_View {
 		);
 
 		if ( ! $compact ) {
-			MS_Helper_Html::settings_box(
-				array( $fields['memberships'] ),
-				__( 'List of all Memberships', 'membership2' ),
-				'',
-				'open'
-			);
+			if ( !empty( $data->memberships ) ) {
+				MS_Helper_Html::settings_box(
+					array( $fields['memberships'] ),
+					__( 'List of all Memberships', 'membership2' ),
+					'',
+					'open'
+				);
+			}
+			
+			if ( !empty( $data->members ) ) {
+				MS_Helper_Html::settings_box(
+					array( $fields['members'] ),
+					__( 'List of all Members', 'membership2' ),
+					'',
+					'open'
+				);
+			}
 
-			MS_Helper_Html::settings_box(
-				array( $fields['members'] ),
-				__( 'List of all Members', 'membership2' ),
-				'',
-				'open'
-			);
-
-			MS_Helper_Html::settings_box(
-				array( $fields['settings'] ),
-				__( 'Imported Settings', 'membership2' ),
-				'',
-				'open'
-			);
+			if ( isset( $data->settings ) ) {
+				MS_Helper_Html::settings_box(
+					array( $fields['settings'] ),
+					__( 'Imported Settings', 'membership2' ),
+					'',
+					'open'
+				);
+			}
 		}
 
 		echo '<script>window._ms_import_obj = ' . json_encode( $data ) . '</script>';
@@ -112,114 +122,118 @@ class MS_View_Settings_Import extends MS_View {
 	 */
 	protected function prepare_fields( $data ) {
 		// List of known Membership types; used to display the nice-name.
-		$ms_types = MS_Model_Membership::get_types();
-		$ms_paytypes = MS_Model_Membership::get_payment_types();
+		$ms_types 		= MS_Model_Membership::get_types();
+		$ms_paytypes 	= MS_Model_Membership::get_payment_types();
 
 		// Prepare the "Memberships" table.
-		$memberships = array(
-			array(
-				__( 'Membership name', 'membership2' ),
-				__( 'Membership Type', 'membership2' ),
-				__( 'Payment Type', 'membership2' ),
-				__( 'Description', 'membership2' ),
-			),
-		);
-
-		foreach ( $data->memberships as $item ) {
-			if ( ! isset( $ms_types[ $item->type ] ) ) {
-				$item->type = MS_Model_Membership::TYPE_STANDARD;
-			}
-
-			if ( empty( $item->payment_type ) ) {
-				if ( ! empty( $item->pay_type ) ) {
-					// Compatibility with bug in old M1 export files.
-					$item->payment_type = $item->pay_type;
-				} else {
-					$item->payment_type = 'permanent';
-				}
-			}
-
-			switch ( $item->payment_type ) {
-				case 'recurring':
-					$payment_type = MS_Model_Membership::PAYMENT_TYPE_RECURRING;
-					break;
-
-				case 'finite':
-					$payment_type = MS_Model_Membership::PAYMENT_TYPE_FINITE;
-					break;
-
-				case 'date':
-					$payment_type = MS_Model_Membership::PAYMENT_TYPE_DATE_RANGE;
-					break;
-
-				default:
-					$payment_type = MS_Model_Membership::PAYMENT_TYPE_PERMANENT;
-					break;
-			}
-
-			$memberships[] = array(
-				$item->name,
-				$ms_types[ $item->type ],
-				$ms_paytypes[ $payment_type ],
-				$item->description,
+		$memberships = array();
+		if ( isset ( $data->memberships ) && !empty( $data->memberships ) ) {
+			$memberships = array(
+				array(
+					__( 'Membership name', 'membership2' ),
+					__( 'Membership Type', 'membership2' ),
+					__( 'Payment Type', 'membership2' ),
+					__( 'Description', 'membership2' ),
+				),
 			);
+
+			foreach ( $data->memberships as $item ) {
+				$item = MS_Helper_Utility::array_to_object( $item );
+				if ( ! isset( $ms_types[ $item->type ] ) ) {
+					$item->type = MS_Model_Membership::TYPE_STANDARD;
+				}
+
+				if ( empty( $item->payment_type ) ) {
+					if ( ! empty( $item->pay_type ) ) {
+						// Compatibility with bug in old M1 export files.
+						$item->payment_type = $item->pay_type;
+					} else {
+						$item->payment_type = 'permanent';
+					}
+				}
+
+				switch ( $item->payment_type ) {
+					case 'recurring':
+						$payment_type = MS_Model_Membership::PAYMENT_TYPE_RECURRING;
+						break;
+
+					case 'finite':
+						$payment_type = MS_Model_Membership::PAYMENT_TYPE_FINITE;
+						break;
+
+					case 'date':
+						$payment_type = MS_Model_Membership::PAYMENT_TYPE_DATE_RANGE;
+						break;
+
+					default:
+						$payment_type = MS_Model_Membership::PAYMENT_TYPE_PERMANENT;
+						break;
+				}
+
+				$memberships[] = array(
+					$item->name,
+					$ms_types[ $item->type ],
+					$ms_paytypes[ $payment_type ],
+					$item->description,
+				);
+			}
 		}
 
-		// Prepare the "Members" table.
-		$members = array(
-			array(
-				__( 'Username', 'membership2' ),
-				__( 'Email', 'membership2' ),
-				__( 'Subscriptions', 'membership2' ),
-				__( 'Invoices', 'membership2' ),
-			),
-		);
-
-		foreach ( $data->members as $item ) {
-			$inv_count = 0;
-			if ( isset( $item->subscriptions )
-				&& is_array( $item->subscriptions )
-			) {
-				foreach ( $item->subscriptions as $registration ) {
-					$inv_count += count( $registration->invoices );
-				}
-			}
-
-			$members[] = array(
-				$item->username,
-				$item->email,
-				count( $item->subscriptions ),
-				$inv_count,
+		$members = array();
+		if ( isset ( $data->members ) && !empty( $data->members )  ) {
+			// Prepare the "Members" table.
+			$members = array(
+				array(
+					__( 'Username', 'membership2' ),
+					__( 'Email', 'membership2' ),
+					__( 'Subscriptions', 'membership2' ),
+					__( 'Invoices', 'membership2' ),
+				),
 			);
+
+			foreach ( $data->members as $item ) {
+				$item = MS_Helper_Utility::array_to_object( $item );
+				$inv_count = 0;
+				if ( isset( $item->subscriptions )
+					&& is_array( $item->subscriptions )
+				) {
+					foreach ( $item->subscriptions as $registration ) {
+						$inv_count += count( $registration->invoices );
+					}
+				}
+
+				$members[] = array(
+					$item->username,
+					$item->email,
+					count( $item->subscriptions ),
+					$inv_count,
+				);
+			}
 		}
 
 		$settings = array();
-		foreach ( $data->settings as $setting => $value ) {
-			switch ( $setting ) {
-				case 'addons':
-					$model = MS_Factory::load( 'MS_Model_Addon' );
-					$list = $model->get_addon_list();
-					$code = '';
-					foreach ( $value as $addon => $state ) {
-						if ( $state ) {
-							$code .= __( 'Activate: ', 'membership2' );
-						} else {
-							$code .= __( 'Dectivate: ', 'membership2' );
+		if ( isset ( $data->settings ) ) {
+			foreach ( $data->settings as $setting => $value ) {
+				switch ( $setting ) {
+					case 'addons':
+						$model = MS_Factory::load( 'MS_Model_Addon' );
+						$list = $model->get_addon_list();
+						$code = '';
+						foreach ( $value as $addon => $state ) {
+							if ( $state ) {
+								$code .= __( 'Activate: ', 'membership2' );
+							} else {
+								$code .= __( 'Dectivate: ', 'membership2' );
+							}
+							$code .= $list[ $addon ]->name . '<br/>';
 						}
-						$code .= $list[ $addon ]->name . '<br/>';
-					}
-					$settings[] = array(
-						__( 'Add-Ons', 'membership2' ),
-						$code,
-					);
-					break;
+						$settings[] = array(
+							__( 'Add-Ons', 'membership2' ),
+							$code,
+						);
+						break;
+				}
 			}
-		}
-		if ( empty( $settings ) ) {
-			$settings[] = array(
-				'',
-				__( '(No settings are changed)', 'membership2' ),
-			);
 		}
 
 		// Prepare the return value.
@@ -252,47 +266,118 @@ class MS_View_Settings_Import extends MS_View {
 			$notes .= '</ul>';
 		}
 
-		$fields['details'] = array(
-			'type' => MS_Helper_Html::TYPE_HTML_TABLE,
-			'class' => 'ms-import-preview',
-			'value' => array(
-				array(
-					__( 'Data source', 'membership2' ),
-					$data->source .
-					' &emsp; <small>' .
-					sprintf(
-						__( 'exported on %1$s', 'membership2' ),
-						$data->export_time
-					) .
-					'</small>',
-				),
-				array(
-					__( 'Content', 'membership2' ),
-					sprintf(
-						_n(
-							'%1$s Membership',
-							'%1$s Memberships',
-							count( $data->memberships ),
-							'membership2'
+		if ( ( isset( $data->memberships ) && !empty( $data->memberships ) ) && ( isset( $data->members ) && !empty( $data->members ) ) ) {
+
+			$fields['details'] = array(
+				'type' 	=> MS_Helper_Html::TYPE_HTML_TABLE,
+				'class' => 'ms-import-preview',
+				'value' => array(
+					array(
+						__( 'Data source', 'membership2' ),
+						$data->source .
+						' &emsp; <small>' .
+						sprintf(
+							__( 'exported on %1$s', 'membership2' ),
+							$data->export_time
+						) .
+						'</small>',
+					),
+					array(
+						__( 'Content', 'membership2' ),
+						sprintf(
+							_n(
+								'%1$s Membership',
+								'%1$s Memberships',
+								count( $data->memberships ),
+								'membership2'
+							),
+							'<b>' . count( $data->memberships ) . '</b>'
+						) . ' / ' . sprintf(
+							_n(
+								'%1$s Member',
+								'%1$s Members',
+								count( $data->members ),
+								'membership2'
+							),
+							'<b>' . count( $data->members ) . '</b>'
 						),
-						'<b>' . count( $data->memberships ) . '</b>'
-					) . ' / ' . sprintf(
-						_n(
-							'%1$s Member',
-							'%1$s Members',
-							count( $data->members ),
-							'membership2'
-						),
-						'<b>' . count( $data->members ) . '</b>'
 					),
 				),
-			),
-			'field_options' => array(
-				'head_col' => true,
-				'head_row' => false,
-				'col_class' => array( 'preview-label', 'preview-data' ),
-			),
-		);
+				'field_options' => array(
+					'head_col' 		=> true,
+					'head_row' 		=> false,
+					'col_class' 	=> array( 'preview-label', 'preview-data' ),
+				),
+			);
+		} else if ( isset( $data->memberships ) && !empty( $data->memberships ) ) {
+			$fields['details'] = array(
+				'type' 	=> MS_Helper_Html::TYPE_HTML_TABLE,
+				'class' => 'ms-import-preview',
+				'value' => array(
+					array(
+						__( 'Data source', 'membership2' ),
+						$data->source .
+						' &emsp; <small>' .
+						sprintf(
+							__( 'exported on %1$s', 'membership2' ),
+							$data->export_time
+						) .
+						'</small>',
+					),
+					array(
+						__( 'Content', 'membership2' ),
+						sprintf(
+							_n(
+								'%1$s Membership',
+								'%1$s Memberships',
+								count( $data->memberships ),
+								'membership2'
+							),
+							'<b>' . count( $data->memberships ) . '</b>'
+						)
+					),
+				),
+				'field_options' => array(
+					'head_col' 		=> true,
+					'head_row' 		=> false,
+					'col_class' 	=> array( 'preview-label', 'preview-data' ),
+				),
+			);
+		} else if ( isset( $data->members ) && !empty( $data->members ) ) {
+			$fields['details'] = array(
+				'type' 	=> MS_Helper_Html::TYPE_HTML_TABLE,
+				'class' => 'ms-import-preview',
+				'value' => array(
+					array(
+						__( 'Data source', 'membership2' ),
+						$data->source .
+						' &emsp; <small>' .
+						sprintf(
+							__( 'exported on %1$s', 'membership2' ),
+							$data->export_time
+						) .
+						'</small>',
+					),
+					array(
+						__( 'Content', 'membership2' ),
+						sprintf(
+							_n(
+								'%1$s Member',
+								'%1$s Members',
+								count( $data->members ),
+								'membership2'
+							),
+							'<b>' . count( $data->members ) . '</b>'
+						),
+					),
+				),
+				'field_options' => array(
+					'head_col' 	=> true,
+					'head_row' 	=> false,
+					'col_class' => array( 'preview-label', 'preview-data' ),
+				),
+			);
+		}
 
 		if ( ! empty( $notes ) ) {
 			$fields['details']['value'][] = array(
@@ -302,93 +387,98 @@ class MS_View_Settings_Import extends MS_View {
 		}
 
 		$batchsizes = array(
-			1 => __( 'Each item on its own' ),
-			10 => __( 'Small (10 items)' ),
-			30 => __( 'Normal (30 items)' ),
+			1 	=> __( 'Each item on its own' ),
+			10 	=> __( 'Small (10 items)' ),
+			30 	=> __( 'Normal (30 items)' ),
 			100 => __( 'Big (100 items)' ),
 		);
 
 		$fields['batchsize'] = array(
-			'id' => 'batchsize',
-			'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
-			'title' => __( 'Batch size for import', 'membership2' ),
-			'desc' => __( 'Big batches will be processed faster but may result in PHP Memory errors.', 'membership2' ),
-			'value' => 10,
+			'id' 			=> 'batchsize',
+			'type' 			=> MS_Helper_Html::INPUT_TYPE_SELECT,
+			'title' 		=> __( 'Batch size for import', 'membership2' ),
+			'desc' 			=> __( 'Big batches will be processed faster but may result in PHP Memory errors.', 'membership2' ),
+			'value' 		=> 10,
 			'field_options' => $batchsizes,
-			'class' => 'sel-batchsize',
+			'class' 		=> 'sel-batchsize',
 		);
 
 		$fields['clear_all'] = array(
-			'id' => 'clear_all',
-			'type' => MS_Helper_Html::INPUT_TYPE_CHECKBOX,
+			'id' 	=> 'clear_all',
+			'type' 	=> MS_Helper_Html::INPUT_TYPE_CHECKBOX,
 			'title' => __( 'Replace current content with import data (removes existing Memberships/Members before importing data)', 'membership2' ),
 			'class' => 'widefat',
 		);
 
-		$fields['memberships'] = array(
-			'type' => MS_Helper_Html::TYPE_HTML_TABLE,
-			'class' => 'ms-import-preview',
-			'value' => $memberships,
-			'field_options' => array(
-				'head_col' => false,
-				'head_row' => true,
-				'col_class' => array( 'preview-name', 'preview-type', 'preview-pay-type', 'preview-desc' ),
-			),
-		);
+		if ( !empty ( $memberships ) ) {
+			$fields['memberships'] = array(
+				'type' 	=> MS_Helper_Html::TYPE_HTML_TABLE,
+				'class' => 'ms-import-preview',
+				'value' => $memberships,
+				'field_options' => array(
+					'head_col' 		=> false,
+					'head_row' 		=> true,
+					'col_class' 	=> array( 'preview-name', 'preview-type', 'preview-pay-type', 'preview-desc' ),
+				),
+			);
+		}
 
-		$fields['members'] = array(
-			'type' => MS_Helper_Html::TYPE_HTML_TABLE,
-			'class' => 'ms-import-preview',
-			'value' => $members,
-			'field_options' => array(
-				'head_col' => false,
-				'head_row' => true,
-				'col_class' => array( 'preview-name', 'preview-email', 'preview-count', 'preview-count' ),
-			),
-		);
-
-		$fields['settings'] = array(
-			'type' => MS_Helper_Html::TYPE_HTML_TABLE,
-			'class' => 'ms-import-preview',
-			'value' => $settings,
-			'field_options' => array(
-				'head_col' => true,
-				'head_row' => false,
-			),
-		);
+		if ( !empty ( $members ) ) {
+			$fields['members'] = array(
+				'type' 	=> MS_Helper_Html::TYPE_HTML_TABLE,
+				'class' => 'ms-import-preview',
+				'value' => $members,
+				'field_options' => array(
+					'head_col' 		=> false,
+					'head_row' 		=> true,
+					'col_class' 	=> array( 'preview-name', 'preview-email', 'preview-count', 'preview-count' ),
+				),
+			);
+		}
+		if ( !empty( $settings ) ) {
+			$fields['settings'] = array(
+				'type' 	=> MS_Helper_Html::TYPE_HTML_TABLE,
+				'class' => 'ms-import-preview',
+				'value' => $settings,
+				'field_options' => array(
+					'head_col' 	=> true,
+					'head_row' 	=> false,
+				),
+			);
+		}
 
 		$fields['sep'] = array(
 			'type' => MS_Helper_Html::TYPE_HTML_SEPARATOR,
 		);
 
 		$fields['back'] = array(
-			'type' => MS_Helper_Html::TYPE_HTML_LINK,
+			'type' 	=> MS_Helper_Html::TYPE_HTML_LINK,
 			'class' => 'wpmui-field-button button',
 			'value' => __( 'Cancel', 'membership2' ),
-			'url' => $_SERVER['REQUEST_URI'],
+			'url' 	=> $_SERVER['REQUEST_URI'],
 		);
 
 		$fields['skip'] = array(
-			'type' => MS_Helper_Html::TYPE_HTML_LINK,
+			'type' 	=> MS_Helper_Html::TYPE_HTML_LINK,
 			'class' => 'wpmui-field-button button',
 			'value' => __( 'Skip', 'membership2' ),
-			'url' => MS_Controller_Plugin::get_admin_url(
+			'url' 	=> MS_Controller_Plugin::get_admin_url(
 				false,
 				array( 'skip_import' => 1 )
 			),
 		);
 
 		$fields['import'] = array(
-			'id' => 'btn-import',
-			'type' => MS_Helper_Html::INPUT_TYPE_BUTTON,
-			'value' => __( 'Import', 'membership2' ),
-			'button_value' => MS_Controller_Import::AJAX_ACTION_IMPORT,
-			'button_type' => 'submit',
+			'id' 			=> 'btn-import',
+			'type' 			=> MS_Helper_Html::INPUT_TYPE_BUTTON,
+			'value' 		=> __( 'Import', 'membership2' ),
+			'button_value' 	=> MS_Controller_Import::AJAX_ACTION_IMPORT,
+			'button_type' 	=> 'submit',
 		);
 
 		$fields['download'] = array(
-			'id' => 'btn-download',
-			'type' => MS_Helper_Html::INPUT_TYPE_BUTTON,
+			'id' 	=> 'btn-download',
+			'type' 	=> MS_Helper_Html::INPUT_TYPE_BUTTON,
 			'value' => __( 'Download as Export File', 'membership2' ),
 			'class' => 'button-link',
 		);

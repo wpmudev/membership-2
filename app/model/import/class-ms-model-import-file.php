@@ -45,15 +45,24 @@ class MS_Model_Import_File extends MS_Model_Import {
 		try {
 			$data 	= json_decode( $content );
 		} catch( Exception $ex ) {
+			$data 		= ( object ) array();
+			$data_type 	= false;
+		}
+		$json_error = json_last_error();
+		if ( $json_error != JSON_ERROR_NONE ) {
 			$data	= simplexml_load_string( $content );
 			if ( $data === false ) {
-				$data_type 	= 'invalid';
+				$data 		= ( object ) array();
+				$data_type 	= false;
 			} else {
 				$data_type 	= MS_Model_Export::XML_EXPORT;
 			}
 		}
 
-		$data = $this->validate_data( $data, $data_type );
+		if ( $data_type !== false ) {
+			$data = $this->validate_data( $data );
+		}
+		
 
 		if ( empty( $data ) ) {
 			self::_message( 'error', __( 'No valid export file uploaded, please try again.', 'membership2' ) );
