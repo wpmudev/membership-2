@@ -20,12 +20,13 @@ class MS_Model_Export_Membership extends MS_Model_Export_Base {
 	 * @since  1.1.3
 	 */
 	public function process( $format ) {
-		$data 			= $this->export_base( 'memberships' ); 
-		$membership 	= MS_Model_Membership::get_base();
-		$data[] 		= $this->export_membership( $membership );
-		$memberships 	= MS_Model_Membership::get_memberships( array( 'post_parent' => 0 ) );
+		$data 					= $this->export_base( 'memberships' ); 
+		$data['memberships'] 	= array();
+		$membership 			= MS_Model_Membership::get_base();
+		$data['memberships'][] 	= $this->export_membership( $membership );
+		$memberships 			= MS_Model_Membership::get_memberships( array( 'post_parent' => 0 ) );
 		foreach ( $memberships as $membership ) {
-			$data[] = $this->export_membership( $membership );
+			$data['memberships'][] = $this->export_membership( $membership );
 		}
 
 		$milliseconds 	= round( microtime( true ) * 1000 );
@@ -36,10 +37,17 @@ class MS_Model_Export_Membership extends MS_Model_Export_Base {
 			break;
 
 			case MS_Model_Export::XML_EXPORT :
-				$xml = new SimpleXMLElement("<?xml version=\"1.0\"?><memberships></memberships>");
-				foreach ( $data as $membership ) {
-					$node = $xml->addChild( 'membership' );
-					MS_Helper_Media::generate_xml( $node, $membership );
+				$xml = new SimpleXMLElement("<?xml version=\"1.0\"?><membership2></membership2>");
+				foreach ( $data as $key => $memberships ) {
+					if ( is_array( $memberships ) ) {
+						$node = $xml->addChild( $key );
+						foreach ( $memberships as $membership ) {
+							$subnode = $node->addChild( substr( $key, 0, -1 ) );
+							MS_Helper_Media::generate_xml( $subnode, $membership );
+						}
+					} else {
+						$xml->addChild( $key, $memberships );
+					}
 				}
 				lib3()->net->file_download( $xml->asXML(), $file_name . '.xml' );
 			break;

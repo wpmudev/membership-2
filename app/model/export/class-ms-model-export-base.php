@@ -26,10 +26,11 @@ class MS_Model_Export_Base extends MS_Model {
 		$data 					= array();
 		$data['source_key'] 	= self::KEY;
 		$data['source'] 		= 'Membership2';
+		$data['type'] 			= $type;
 		$data['plugin_version'] = MS_PLUGIN_VERSION;
 		$data['export_time']  	= date( 'Y-m-d H:i' );
 		if ( $type === 'full' ) {
-			$data['notes']  		= array(
+			$data['notes']  	= array(
 				__( 'Exported data:', 'membership2' ),
 				__( '- Memberships (without protection rules)', 'membership2' ),
 				__( '- Members (including Stripe/Authorize payment settings)', 'membership2' ),
@@ -37,14 +38,14 @@ class MS_Model_Export_Base extends MS_Model {
 				__( '- Invoices', 'membership2' )
 			);
 		} else if ( $type === 'members' ) {
-			$data['notes']  		= array(
+			$data['notes']  	= array(
 				__( 'Exported data:', 'membership2' ),
 				__( '- Members (including Stripe/Authorize payment settings)', 'membership2' ),
 				__( '- Subscriptions (link between Members and Memberships)', 'membership2' ),
 				__( '- Invoices', 'membership2' )
 			);
 		} else if ( $type === 'memberships' ) {
-			$data['notes']  		= array(
+			$data['notes']  	= array(
 				__( 'Exported data:', 'membership2' ),
 				__( '- Memberships (without protection rules)', 'membership2' )
 			);

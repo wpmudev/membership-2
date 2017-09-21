@@ -194,17 +194,21 @@ class MS_Helper_Media extends MS_Helper {
 	 * @param Array $data - the data
 	 */
 	public static function generate_xml( &$xml, $data ) {
-		foreach ( $data as $key => $value ) {
-			if ( is_array( $value ) ) {
-				if ( !is_numeric( $key ) ) {
-					$subnode = $xml->addChild( "$key" );
-					self::generate_xml( $subnode, $value );
+		if ( is_array( $data ) ) {
+			foreach ( $data as $key => $value ) {
+				if ( is_array( $value ) ) {
+					if ( !is_numeric( $key ) ) {
+						$subnode = $xml->addChild( "$key" );
+						self::generate_xml( $subnode, $value );
+					} else {
+						self::generate_xml( $xml, $value );
+					}
 				} else {
-					self::generate_xml( $xml, $value );
+					$xml->addChild( $key, $value );
 				}
-			} else {
-				$xml->addChild( $key, $value );
 			}
+		} else {
+			$xml->addChild( $data );
 		}
 	}
 

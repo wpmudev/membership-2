@@ -155,6 +155,7 @@ class MS_Model_Export_Settings extends MS_Model {
 
 		$data 					= (object) array();
 		$data->source_key 		= self::KEY;
+		$data->type 			= 'settings';
 		$data->source 			= 'Membership2';
 		$data->plugin_version 	= MS_PLUGIN_VERSION;
 		$data->export_time 		= date( 'Y-m-d H:i' );
