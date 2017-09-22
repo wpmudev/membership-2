@@ -149,6 +149,14 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	protected $discount = 0;
 
 	/**
+	 * Duration coupon value.
+	 *
+	 * @since  1.2.3
+	 * @var string
+	 */
+	protected $duration = '';
+
+	/**
 	 * Pro rate value.
 	 *
 	 * @since  1.0.0

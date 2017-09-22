@@ -81,6 +81,13 @@ class MS_Addon_Coupon_View_Edit extends MS_View {
 					'min' => 0,
 				),
 			),
+			'duration' => array(
+				'id' => 'duration',
+				'title' => __( 'For reccuring payments coupon is only applied to', 'membership2' ),
+				'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
+				'field_options' => $coupon->get_discount_duration(),
+				'value' => $coupon->duration,
+			),
 			'discount_type' => array(
 				'id' => 'discount_type',
 				'title' => __( 'Discount Type', 'membership2' ),

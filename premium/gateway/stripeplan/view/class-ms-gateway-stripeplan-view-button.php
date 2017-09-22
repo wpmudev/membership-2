@@ -47,6 +47,12 @@ class MS_Gateway_Stripeplan_View_Button extends MS_View {
 		$stripe_data['locale'] = 'auto';
 		$stripe_data['zip-code'] = 'true';
 
+		if ( $invoice->discount && MS_Addon_Coupon_Model::DURATION_ONCE === $invoice->duration ) {
+			$stripe_data['amount'] = ceil(abs( $invoice->amount * 100 ));
+			$stripe_data['duration'] = MS_Addon_Coupon_Model::DURATION_ONCE;
+			$stripe_data['amount_off'] = ceil(abs( $invoice->discount * 100 ));
+		}
+
 		ob_start();
 		?>
 		<form action="<?php echo esc_url( $action_url ); ?>" method="post">

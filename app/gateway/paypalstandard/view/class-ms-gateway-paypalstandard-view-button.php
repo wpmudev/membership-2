@@ -233,21 +233,6 @@ class MS_Gateway_Paypalstandard_View_Button extends MS_View {
 			);
 		}
 
-		// Membership price
-		$membership_price 	= $invoice->total;
-		$membership_price 	= MS_Helper_Billing::format_price( $membership_price );
-
-		$fields['a3'] 		= array(
-			'id' 	=> 'a3',
-			'type' 	=> MS_Helper_Html::INPUT_TYPE_HIDDEN,
-			'value' => $membership_price,
-		);
-		$fields['amount'] 	= array(
-			'id' 	=> 'amount',
-			'type' 	=> MS_Helper_Html::INPUT_TYPE_HIDDEN,
-			'value' => $membership_price,
-		);
-
 		$recurring = 0;
 		switch ( $membership->payment_type ) {
 			// == RECURRING PAYMENTS
@@ -276,7 +261,30 @@ class MS_Gateway_Paypalstandard_View_Button extends MS_View {
 					'type' 	=> MS_Helper_Html::INPUT_TYPE_HIDDEN,
 					'value' => $period_type,
 				);
-                                
+
+				$once_duration = !empty( $invoice->discount ) && !empty( $invoice->duration ) && MS_Addon_Coupon_Model::DURATION_ONCE === $invoice->duration;
+				if ( $once_duration ) {
+					$n = empty( $fields['p1'] ) ? 1 : 2;
+
+					$fields['a'.$n] 		= array(
+						'id' 	=> 'a'.$n,
+						'type' 	=> MS_Helper_Html::INPUT_TYPE_HIDDEN,
+						'value' => MS_Helper_Billing::format_price( $invoice->total ),
+					);
+
+					$fields['p'.$n] 	= array(
+						'id' 	=> 'p'.$n,
+						'type' 	=> MS_Helper_Html::INPUT_TYPE_HIDDEN,
+						'value' => $period_value,
+					);
+
+					$fields['t'.$n] 	= array(
+						'id' 	=> 't'.$n,
+						'type' 	=> MS_Helper_Html::INPUT_TYPE_HIDDEN,
+						'value' => $period_type,
+					);
+				}
+
 				$custom_period_type 	= isset( $period_type ) ? $period_type : '';
 				$custom_period_value 	= isset( $period_value ) ? $period_value : '';
 
@@ -368,6 +376,21 @@ class MS_Gateway_Paypalstandard_View_Button extends MS_View {
 				$custom_period_value 	= isset( $period_value ) ? $period_value : '';
 				break;
 		}
+
+		// Membership price
+		$membership_price 	= $once_duration ? $invoice->amount : $invoice->total;
+		$membership_price 	= MS_Helper_Billing::format_price( $membership_price );
+
+		$fields['a3'] 		= array(
+			'id' 	=> 'a3',
+			'type' 	=> MS_Helper_Html::INPUT_TYPE_HIDDEN,
+			'value' => $membership_price,
+		);
+		$fields['amount'] 	= array(
+			'id' 	=> 'amount',
+			'type' 	=> MS_Helper_Html::INPUT_TYPE_HIDDEN,
+			'value' => $membership_price,
+		);
 
 		if ( 1 == $recurring ) {
 			if ( 1 == $membership->pay_cycle_repetitions ) {
