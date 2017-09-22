@@ -224,7 +224,7 @@ class MS_Gateway_Authorize extends MS_Gateway {
 			$response = $this->get_cim()->createCustomerProfileTransaction(
 				'AuthCapture',
 				$cim_transaction,
-				'x_duplicate_window='.$duplicate_window
+				'x_duplicate_window='.$duplicate_window.'&'
 			);
 
 			if ( ! empty( $response->xml )
