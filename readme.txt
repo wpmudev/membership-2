@@ -117,7 +117,7 @@ We provide comprehensive and guaranteed support on the <a href='http://premium.w
 * Fixed: Dripped Membership Url protection and menu protection
 * Fixed: Buddypress media protection conflict
 * Fixed: Update Member status for manually created members
-* Fixed: Mail sending cron setting
+* Fixed: Mail sending cron fix
 * Fixed: Category Protection
 * Fixed: Auth Net Payment Gateway
 
