@@ -111,12 +111,15 @@ We provide comprehensive and guaranteed support on the <a href='http://premium.w
 == Changelog ==
 
 = 4.1.2 =
+* Added: Membership List Export to CSV
+* Added: Membership and Member XML import and export format
 * Fixed: MailChimp Addon list function
 * Fixed: Dripped Membership Url protection and menu protection
 * Fixed: Buddypress media protection conflict
 * Fixed: Update Member status for manually created members
 * Fixed: Mail sending cron setting
 * Fixed: Category Protection
+* Fixed: Auth Net Payment Gateway
 
 = 4.1.1 =
 * Fixed: Menu Protection items not showing to all users except admin

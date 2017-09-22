@@ -4,12 +4,10 @@ Build Stamp: BUILDTIME
 
 Change Log:
 ----------------------------------------------------------------------
-1.1.3
-- Added: Membership List Export to CSV
-- Fixed: Rest API addon
-- Added: Rest API Help docs
-
 1.1.2
+- Added: Membership List Export to CSV
+- Added: Membership and Member XML import and export format
+- Added: Rest API Help docs
 - Fixed: MailChimp Addon list function
 - Fixed: Styling for Membership Attributes PopUp
 - Fixed: Dripped Membership Url protection and menu protection
@@ -17,6 +15,8 @@ Change Log:
 - Fixed: Update Member status for manually created members
 - Fixed: Mail sending cron setting
 - Fixed: Category Protection
+- Fixed: Rest API addon
+- Fixed: Auth Net Payment Gateway
 
 
 1.1.1
