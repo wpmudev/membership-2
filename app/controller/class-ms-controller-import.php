@@ -199,6 +199,11 @@ class MS_Controller_Import extends MS_Controller {
 		$model 	= MS_Factory::create( 'MS_Model_Import' );
 		$model->source_key = $source;
 
+		if ( is_a( $data, 'SimpleXMLElement' ) ) {
+			$data 	= MS_Helper_Utility::xml2array( $data );
+			$data 	= ( object ) $data;
+		}
+
 		// Set MS_STOP_EMAILS modifier to suppress any outgoing emails.
 		MS_Plugin::set_modifier( 'MS_STOP_EMAILS', true );
 
@@ -213,15 +218,29 @@ class MS_Controller_Import extends MS_Controller {
 
 			case 'import-membership':
 				// Function expects an object, not an array!
-				$data = (object) $data;
-				$model->import_membership( $data );
+				if ( is_array( $data ) && isset( $data['membership'] ) && count( $data['membership'] ) > 0 ) {
+					foreach ( $data['membership'] as $membership ) {
+						$membership = ( object ) $membership;
+						$model->import_membership( $membership );
+					}
+				} else {
+					$data = (object) $data;
+					$model->import_membership( $data );
+				}
 				$res = true;
 				break;
 
 			case 'import-member':
 				// Function expects an object, not an array!
-				$data = (object) $data;
-				$model->import_member( $data );
+				if ( is_array( $data ) && isset( $data['member'] ) && count( $data['member'] ) > 0 ) {
+					foreach ( $data['member'] as $member ) {
+						$member = ( object ) $member;
+						$model->import_member( $member );
+					}
+				} else {
+					$data = (object) $data;
+					$model->import_member( $data );
+				}
 				$res = true;
 				break;
 

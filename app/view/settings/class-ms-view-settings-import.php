@@ -125,6 +125,9 @@ class MS_View_Settings_Import extends MS_View {
 		$ms_types 		= MS_Model_Membership::get_types();
 		$ms_paytypes 	= MS_Model_Membership::get_payment_types();
 
+		$total_memberships = 0;
+		$total_members = 0;
+
 		// Prepare the "Memberships" table.
 		$memberships = array();
 		if ( isset ( $data->memberships ) && !empty( $data->memberships ) ) {
@@ -138,44 +141,19 @@ class MS_View_Settings_Import extends MS_View {
 			);
 
 			foreach ( $data->memberships as $item ) {
-				$item = MS_Helper_Utility::array_to_object( $item );
-				if ( ! isset( $ms_types[ $item->type ] ) ) {
-					$item->type = MS_Model_Membership::TYPE_STANDARD;
-				}
-
-				if ( empty( $item->payment_type ) ) {
-					if ( ! empty( $item->pay_type ) ) {
-						// Compatibility with bug in old M1 export files.
-						$item->payment_type = $item->pay_type;
-					} else {
-						$item->payment_type = 'permanent';
+				if ( is_array( $item ) && isset( $item['membership'] ) && is_array( $item['membership'] ) ) {
+					foreach ( $item['membership'] as $membership ) {
+						$membership 	= ( object ) $membership;
+						$output 		= MS_Helper_Import::membership_to_view( $membership, $ms_types, $ms_paytypes );
+						$memberships[] 	= $output;
+						$total_memberships++;
 					}
+				} else {
+					$output 		= MS_Helper_Import::membership_to_view( $item, $ms_types, $ms_paytypes );
+					$memberships[] 	= $output;
+					$total_memberships++;
 				}
-
-				switch ( $item->payment_type ) {
-					case 'recurring':
-						$payment_type = MS_Model_Membership::PAYMENT_TYPE_RECURRING;
-						break;
-
-					case 'finite':
-						$payment_type = MS_Model_Membership::PAYMENT_TYPE_FINITE;
-						break;
-
-					case 'date':
-						$payment_type = MS_Model_Membership::PAYMENT_TYPE_DATE_RANGE;
-						break;
-
-					default:
-						$payment_type = MS_Model_Membership::PAYMENT_TYPE_PERMANENT;
-						break;
-				}
-
-				$memberships[] = array(
-					$item->name,
-					$ms_types[ $item->type ],
-					$ms_paytypes[ $payment_type ],
-					$item->description,
-				);
+				
 			}
 		}
 
@@ -192,22 +170,18 @@ class MS_View_Settings_Import extends MS_View {
 			);
 
 			foreach ( $data->members as $item ) {
-				$item = MS_Helper_Utility::array_to_object( $item );
-				$inv_count = 0;
-				if ( isset( $item->subscriptions )
-					&& is_array( $item->subscriptions )
-				) {
-					foreach ( $item->subscriptions as $registration ) {
-						$inv_count += count( $registration->invoices );
+				if ( is_array( $item ) && isset( $item['member'] ) && is_array( $item['member'] ) ) {
+					foreach ( $item['member'] as $member ) {
+						$member 	= ( object ) $member;
+						$output 	= MS_Helper_Import::member_to_view( $member );
+						$members[] 	= $output;
+						$total_members++;
 					}
+				} else {
+					$output = MS_Helper_Import::member_to_view( $item );
+					$members[] = $output;
+					$total_members++;
 				}
-
-				$members[] = array(
-					$item->username,
-					$item->email,
-					count( $item->subscriptions ),
-					$inv_count,
-				);
 			}
 		}
 
@@ -249,6 +223,9 @@ class MS_View_Settings_Import extends MS_View {
 			$in_sub = false;
 			$notes = '<ul class="ms-import-notes">';
 			foreach ( $data->notes as $line => $text ) {
+				if ( is_array( $text ) && isset( $text['note'] ) ) {
+					$text = $text['note'];
+				}
 				$is_sub = ( strpos( $text, '- ' ) === 0 );
 				if ( $in_sub != $is_sub ) {
 					$in_sub = $is_sub;
@@ -267,7 +244,7 @@ class MS_View_Settings_Import extends MS_View {
 		}
 
 		if ( ( isset( $data->memberships ) && !empty( $data->memberships ) ) && ( isset( $data->members ) && !empty( $data->members ) ) ) {
-
+			
 			$fields['details'] = array(
 				'type' 	=> MS_Helper_Html::TYPE_HTML_TABLE,
 				'class' => 'ms-import-preview',
@@ -288,18 +265,18 @@ class MS_View_Settings_Import extends MS_View {
 							_n(
 								'%1$s Membership',
 								'%1$s Memberships',
-								count( $data->memberships ),
+								$total_memberships,
 								'membership2'
 							),
-							'<b>' . count( $data->memberships ) . '</b>'
+							'<b>' . $total_memberships . '</b>'
 						) . ' / ' . sprintf(
 							_n(
 								'%1$s Member',
 								'%1$s Members',
-								count( $data->members ),
+								$total_members,
 								'membership2'
 							),
-							'<b>' . count( $data->members ) . '</b>'
+							'<b>' . $total_members . '</b>'
 						),
 					),
 				),
@@ -330,10 +307,10 @@ class MS_View_Settings_Import extends MS_View {
 							_n(
 								'%1$s Membership',
 								'%1$s Memberships',
-								count( $data->memberships ),
+								$total_memberships,
 								'membership2'
 							),
-							'<b>' . count( $data->memberships ) . '</b>'
+							'<b>' . $total_memberships . '</b>'
 						)
 					),
 				),
@@ -364,10 +341,10 @@ class MS_View_Settings_Import extends MS_View {
 							_n(
 								'%1$s Member',
 								'%1$s Members',
-								count( $data->members ),
+								$total_members,
 								'membership2'
 							),
-							'<b>' . count( $data->members ) . '</b>'
+							'<b>' . $total_members . '</b>'
 						),
 					),
 				),

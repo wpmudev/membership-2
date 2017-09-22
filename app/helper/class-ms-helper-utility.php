@@ -370,7 +370,7 @@ class MS_Helper_Utility extends MS_Helper {
 	 *
 	 * @return object
 	 */
-	static function array_to_object( $array ) {
+	static function array_to_object( $array, $type ) {
 		if ( is_array( $array ) ) {
 			return ( object ) $array;
 		}
