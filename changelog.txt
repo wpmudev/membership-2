@@ -17,6 +17,7 @@ Change Log:
 - Fixed: Category Protection
 - Fixed: Rest API addon
 - Fixed: Auth Net Payment Gateway
+- Fixed: Profile Fields add-on readonly option was not working
 
 
 1.1.1
