@@ -97,11 +97,16 @@ class MS_Addon_WPRest extends MS_Addon {
 	 */
 	public function register( $list ) {
 		$settings = MS_Factory::load( 'MS_Model_Settings' );
+
+		$help_url = MS_Controller_Plugin::get_admin_url(
+			'help',
+			array( 'tab' => 'restapi' )
+		);
 	
 		$list[ self::ID ] = (object) array(
 			'name' 			=> __( 'Rest API', 'membership2' ),
 			'description' 	=> __( 'Enable Membership WordPress REST API', 'membership2' ),
-			'footer' 		=> sprintf( '<i class="dashicons dashicons dashicons-admin-settings"></i> %s', __( 'Options available', 'membership2' ) ),
+			'footer' 		=> sprintf( '<i class="dashicons dashicons dashicons-admin-settings"></i> %s <i class="dashicons dashicons dashicons-info"></i> %s', __( 'Options available', 'membership2' ), sprintf( __( '%sDocumentation%s', 'membership2' ), '<a href="'.$help_url.'" target="_blank">', '</a>' ) ),
 			'icon' 			=> 'wpmui-fa wpmui-fa-angle-double-up',
 			'class' 		=> 'ms-options',
 			'details' 		=> array(
@@ -127,7 +132,7 @@ class MS_Addon_WPRest extends MS_Addon {
 						'action' 	=> MS_Controller_Settings::AJAX_ACTION_UPDATE_SETTING,
 						'_wpnonce' 	=> true, // Nonce will be generated from 'action'
 					),
-				),
+				)
 			)
 		);
 

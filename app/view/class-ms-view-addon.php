@@ -30,15 +30,15 @@ class MS_View_Addon extends MS_View {
 
 		$items = $this->data['addon']->get_addon_list();
 		$lang = (object) array(
-			'active_badge' => __( 'ACTIVE', 'membership2' ),
-			'show_details' => __( 'Details...', 'membership2' ),
+			'active_badge' 	=> __( 'ACTIVE', 'membership2' ),
+			'show_details' 	=> __( 'Details...', 'membership2' ),
 			'close_details' => __( 'Close', 'membership2' ),
 		);
 		$filters = array(
-			'all' => __( 'All', 'membership2' ),
-			'active' => __( 'Active', 'membership2' ),
-			'inactive' => __( 'Inactive', 'membership2' ),
-			'options' => __( 'With options', 'membership2' ),
+			'all' 		=> __( 'All', 'membership2' ),
+			'active' 	=> __( 'Active', 'membership2' ),
+			'inactive' 	=> __( 'Inactive', 'membership2' ),
+			'options' 	=> __( 'With options', 'membership2' ),
 		);
 
 		ob_start();

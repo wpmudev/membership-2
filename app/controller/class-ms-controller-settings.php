@@ -331,7 +331,7 @@ class MS_Controller_Settings extends MS_Controller {
 			),
 			self::TAB_IMPORT => array(
 				'title' => __( 'Import Tool', 'membership2' ),
-			),
+			)
 		);
 		$settings = $this->get_model();
 		if ( ! MS_Model_Addon::is_enabled( MS_Addon_Mediafiles::ID ) || !$settings->is_advanced_media_protection ) {
@@ -491,7 +491,7 @@ class MS_Controller_Settings extends MS_Controller {
 		$data['tabs'] 		= $this->get_tabs();
 		$data['settings'] 	= $this->get_model();
 
-		$data['message'] = self::_message();
+		$data['message'] 	= self::_message();
 
 		if ( isset( $data['message']['error'] ) ) {
 			lib3()->ui->admin_message( $data['message']['error'], 'err' );
@@ -510,11 +510,16 @@ class MS_Controller_Settings extends MS_Controller {
 
 				$data['comm'] = $comm;
 				break;
+
+			case self::TAB_IMPORT:
+				$data['types'] 		= MS_Model_Export::export_types();
+				$data['formats'] 	= MS_Model_Export::export_formats();
+				break;
 		}
 
-		$data = array_merge( $data, $view->data );
-		$view->data = apply_filters( $hook . '_data', $data );
-		$view->model = $this->get_model();
+		$data 			= array_merge( $data, $view->data );
+		$view->data 	= apply_filters( $hook . '_data', $data );
+		$view->model 	= $this->get_model();
 		$view->render();
 	}
 
@@ -576,13 +581,13 @@ class MS_Controller_Settings extends MS_Controller {
 		$active_tab = $this->get_active_tab();
 		do_action( 'ms_controller_settings_enqueue_scripts_' . $active_tab );
 
-		$plugin_url = MS_Plugin::instance()->url;
-		$version = MS_Plugin::instance()->version;
-		$initial_url = MS_Controller_Plugin::get_admin_url();
+		$plugin_url 	= MS_Plugin::instance()->url;
+		$version 		= MS_Plugin::instance()->version;
+		$initial_url 	= MS_Controller_Plugin::get_admin_url();
 
 		$data = array(
-			'ms_init' => array(),
-			'initial_url' => $initial_url,
+			'ms_init' 		=> array(),
+			'initial_url' 	=> $initial_url,
 		);
 
 		$data['ms_init'][] = 'view_settings';

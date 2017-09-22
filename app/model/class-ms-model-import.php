@@ -71,6 +71,31 @@ class MS_Model_Import extends MS_Model {
 	}
 
 	/**
+	 * Validate uploaded data
+	 *
+	 * @param Object $data
+	 *
+	 * @since 1.1.3
+	 *
+	 * @return bool
+	 */
+	protected function validate_data( $data ) {
+		$valid = false;
+		if ( !empty( $data ) && is_object( $data ) ) {
+			if ( $data->type == 'settings' ) {
+				$valid = $this->validate_object( $data );
+			} else if ( $data->type == 'memberships' ) {
+				$valid = $this->validate_memberships_object( $data );
+			} else if ( $data->type == 'members' ) {
+				$valid = $this->validate_members_object( $data );
+			} else if ( $data->type == 'full' ) {
+				$valid = $this->validate_full_object( $data );
+			}
+		}
+		return $valid;
+	}
+
+	/**
 	 * Checks if the provided data is a recognized import object.
 	 * If not an import object then FALSE will be returned, otherwise the
 	 * object itself.
@@ -96,6 +121,88 @@ class MS_Model_Import extends MS_Model {
 			return false;
 		} else {
 			return apply_filters( 'ms_import_validate_object', $data );
+		}
+	}
+
+	/**
+	 * Checks if the provided data is a recognized import object.
+	 * If not an import object then FALSE will be returned, otherwise the
+	 * object itself.
+	 *
+	 * @since  1.1.3
+	 * @param  object $data Import object to test.
+	 * @return object|false
+	 */
+	protected function validate_full_object( $data ) {
+		$data = apply_filters( 'ms_import_validate_full_object_before', $data );
+		
+		if ( empty( $data )
+			|| ! is_object( $data )
+			|| ! isset( $data->source_key )
+			|| ! isset( $data->source )
+			|| ! isset( $data->plugin_version )
+			|| ! isset( $data->export_time )
+			|| ! isset( $data->notes )
+			|| ! isset( $data->memberships )
+			|| ! isset( $data->members )
+		) {
+			return false;
+		} else {
+			return apply_filters( 'ms_import_validate_full_object', $data );
+		}
+	}
+
+	/**
+	 * Checks if the provided data is a recognized import object.
+	 * If not an import object then FALSE will be returned, otherwise the
+	 * object itself.
+	 *
+	 * @since  1.1.3
+	 * @param  object $data Import object to test.
+	 * @return object|false
+	 */
+	protected function validate_memberships_object( $data ) {
+		$data = apply_filters( 'ms_import_validate_memberships_object_before', $data );
+		
+		if ( empty( $data )
+			|| ! is_object( $data )
+			|| ! isset( $data->source_key )
+			|| ! isset( $data->source )
+			|| ! isset( $data->plugin_version )
+			|| ! isset( $data->export_time )
+			|| ! isset( $data->notes )
+			|| ! isset( $data->memberships )
+		) {
+			return false;
+		} else {
+			return apply_filters( 'ms_import_validate_memberships_object', $data );
+		}
+	}
+
+	/**
+	 * Checks if the provided data is a recognized import object.
+	 * If not an import object then FALSE will be returned, otherwise the
+	 * object itself.
+	 *
+	 * @since  1.1.3
+	 * @param  object $data Import object to test.
+	 * @return object|false
+	 */
+	protected function validate_members_object( $data ) {
+		$data = apply_filters( 'ms_import_validate_members_object_before', $data );
+		
+		if ( empty( $data )
+			|| ! is_object( $data )
+			|| ! isset( $data->source_key )
+			|| ! isset( $data->source )
+			|| ! isset( $data->plugin_version )
+			|| ! isset( $data->export_time )
+			|| ! isset( $data->notes )
+			|| ! isset( $data->members )
+		) {
+			return false;
+		} else {
+			return apply_filters( 'ms_import_validate_members_object', $data );
 		}
 	}
 

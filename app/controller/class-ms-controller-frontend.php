@@ -919,7 +919,7 @@ class MS_Controller_Frontend extends MS_Controller {
 			$user = get_user_by( 'login', $login );
 		}
 
-		if ( is_a( $user, 'WP_User' ) && ! is_ssl() ) {
+		if ( is_a( $user, 'WP_User' ) ) {
 			wp_set_auth_cookie( $user->ID, true, true );
 		}
 
