@@ -1841,59 +1841,67 @@ class MS_View_Help extends MS_View {
 				}
 			</code>
 		</p>
-		<h3><?php _ex( sprintf( __( 'Member route %s' ), '<strong><i>/wp-json/membership2/v1/member</i></strong>' ), 'help', 'membership2' ); ?></h3>
-		<p>
-			<strong><u><?php _ex( sprintf( __( '1. List Members %s %s' ), '<strong><i>/wp-json/membership2/v1/member/list</i></strong>', '[GET]' ), 'help', 'membership2' ); ?></u></strong><br/>
-			<u><?php _ex( 'Parameters', 'help', 'membership2' ); ?></u>
-			<ul>
-				<li><?php _ex( sprintf( __( '- %s : Results per page. Defaults to 10 (optional)', 'membership2' ), 'per_page' ), 'help', 'membership2' ); ?></li>
-				<li><?php _ex( sprintf( __( '- %s : Current page. Starts with 1 (required)', 'membership2' ), 'page' ), 'help', 'membership2' ); ?></li>
-				<li><?php _ex( sprintf( __( '- %s : Membership status. Eg pending, waiting, active, trial, canceled, trial_expired, expired, deactivated (optional)', 'membership2' ), 'member_status' ), 'help', 'membership2' ); ?></li>
-			</ul>
-			<?php _ex( 'Response is a list of Member objects', 'help', 'membership2' ); ?><br/><br/>
+		<div id="member-route" class="ms-help-box">
+			<h3 class="ms-help-toggle"><?php _ex( sprintf( __( 'Member route %s' ), '<strong><i>/wp-json/membership2/v1/member</i></strong>' ), 'help', 'membership2' ); ?></h3>
+			<div class="ms-help-details" style="display:none">
+				<p>
+					<strong><u><?php _ex( sprintf( __( '1. List Members %s %s' ), '<strong><i>/wp-json/membership2/v1/member/list</i></strong>', '[GET]' ), 'help', 'membership2' ); ?></u></strong><br/>
+					<u><?php _ex( 'Parameters', 'help', 'membership2' ); ?></u>
+					<ul>
+						<li><?php _ex( sprintf( __( '- %s : Results per page. Defaults to 10 (optional)', 'membership2' ), 'per_page' ), 'help', 'membership2' ); ?></li>
+						<li><?php _ex( sprintf( __( '- %s : Current page. Starts with 1 (required)', 'membership2' ), 'page' ), 'help', 'membership2' ); ?></li>
+						<li><?php _ex( sprintf( __( '- %s : Membership status. Eg pending, waiting, active, trial, canceled, trial_expired, expired, deactivated (optional)', 'membership2' ), 'member_status' ), 'help', 'membership2' ); ?></li>
+					</ul>
+					<?php _ex( 'Response is a list of Member objects', 'help', 'membership2' ); ?><br/><br/>
 
-			<strong><u><?php _ex( sprintf( __( '2. Count Members %s %s' ), '<strong><i>/wp-json/membership2/v1/member/count</i></strong>', '[GET]' ), 'help', 'membership2' ); ?></u></strong><br/>
-			<u><?php _ex( 'Parameters', 'help', 'membership2' ); ?></u>
-			<ul>
-				<li><?php _ex( sprintf( __( '- %s : Membership status. Eg pending, waiting, active, trial, canceled, trial_expired, expired, deactivated (optional)', 'membership2' ), 'member_status' ), 'help', 'membership2' ); ?></li>
-			</ul>
-			<?php _ex( 'Response is the total members per status', 'help', 'membership2' ); ?><br/><br/>
+					<strong><u><?php _ex( sprintf( __( '2. Count Members %s %s' ), '<strong><i>/wp-json/membership2/v1/member/count</i></strong>', '[GET]' ), 'help', 'membership2' ); ?></u></strong><br/>
+					<u><?php _ex( 'Parameters', 'help', 'membership2' ); ?></u>
+					<ul>
+						<li><?php _ex( sprintf( __( '- %s : Membership status. Eg pending, waiting, active, trial, canceled, trial_expired, expired, deactivated (optional)', 'membership2' ), 'member_status' ), 'help', 'membership2' ); ?></li>
+					</ul>
+					<?php _ex( 'Response is the total members per status', 'help', 'membership2' ); ?><br/><br/>
 
-			<strong><u><?php _ex( sprintf( __( '3. Get Member %s %s' ), '<strong><i>/wp-json/membership2/v1/member/get</i></strong>', '[GET]' ), 'help', 'membership2' ); ?></u></strong><br/>
-			<u><?php _ex( 'Parameters', 'help', 'membership2' ); ?></u>
-			<ul>
-				<li><?php _ex( sprintf( __( '- %s : The user id (required)', 'membership2' ), 'user_id' ), 'help', 'membership2' ); ?></li>
-			</ul>
-			<?php _ex( 'Response is a Member object', 'help', 'membership2' ); ?><br/><br/>
+					<strong><u><?php _ex( sprintf( __( '3. Get Member %s %s' ), '<strong><i>/wp-json/membership2/v1/member/get</i></strong>', '[GET]' ), 'help', 'membership2' ); ?></u></strong><br/>
+					<u><?php _ex( 'Parameters', 'help', 'membership2' ); ?></u>
+					<ul>
+						<li><?php _ex( sprintf( __( '- %s : The user id (required)', 'membership2' ), 'user_id' ), 'help', 'membership2' ); ?></li>
+					</ul>
+					<?php _ex( 'Response is a Member object', 'help', 'membership2' ); ?><br/><br/>
 
-			<strong><u><?php _ex( sprintf( __( '4. Subscribe Member %s %s' ), '<strong><i>/wp-json/membership2/v1/member/subscription</i></strong>', '[POST]' ), 'help', 'membership2' ); ?></u></strong><br/>
-			<u><?php _ex( 'Parameters', 'help', 'membership2' ); ?></u>
-			<ul>
-				<li><?php _ex( sprintf( __( '- %s : The membership id (required)', 'membership2' ), 'membership_id' ), 'help', 'membership2' ); ?></li>
-				<li><?php _ex( sprintf( __( '- %s : The user id (required)', 'membership2' ), 'user_id' ), 'help', 'membership2' ); ?></li>
-			</ul>
-			<?php _ex( 'Response is a Subscription object', 'help', 'membership2' ); ?><br/><br/>
+					<strong><u><?php _ex( sprintf( __( '4. Subscribe Member %s %s' ), '<strong><i>/wp-json/membership2/v1/member/subscription</i></strong>', '[POST]' ), 'help', 'membership2' ); ?></u></strong><br/>
+					<u><?php _ex( 'Parameters', 'help', 'membership2' ); ?></u>
+					<ul>
+						<li><?php _ex( sprintf( __( '- %s : The membership id (required)', 'membership2' ), 'membership_id' ), 'help', 'membership2' ); ?></li>
+						<li><?php _ex( sprintf( __( '- %s : The user id (required)', 'membership2' ), 'user_id' ), 'help', 'membership2' ); ?></li>
+					</ul>
+					<?php _ex( 'Response is a Subscription object', 'help', 'membership2' ); ?><br/><br/>
 
-			<strong><u><?php _ex( sprintf( __( '5. Check is member is subscribed to membership %s %s' ), '<strong><i>/wp-json/membership2/v1/member/subscription</i></strong>', '[GET]' ), 'help', 'membership2' ); ?></u></strong><br/>
-			<u><?php _ex( 'Parameters', 'help', 'membership2' ); ?></u>
-			<ul>
-				<li><?php _ex( sprintf( __( '- %s : The membership id (required)', 'membership2' ), 'membership_id' ), 'help', 'membership2' ); ?></li>
-				<li><?php _ex( sprintf( __( '- %s : The user id (required)', 'membership2' ), 'user_id' ), 'help', 'membership2' ); ?></li>
-			</ul>
-			<?php _ex( 'Response is a Subscription object', 'help', 'membership2' ); ?>
-			
-		</p>
-		<h3><?php _ex( sprintf( __( 'Membership route %s' ), '<strong><i>/wp-json/membership2/v1/membership</i></strong>' ), 'help', 'membership2' ); ?></h3>
-		<p>
-			<strong><u><?php _ex( sprintf( __( '1. List Memberships %s %s' ), '<strong><i>/wp-json/membership2/v1/membership/list</i></strong>', '[GET]' ), 'help', 'membership2' ); ?></u></strong><br/>
-			<?php _ex( 'Response is a list of Membership objects', 'help', 'membership2' ); ?><br/><br/>
+					<strong><u><?php _ex( sprintf( __( '5. Check is member is subscribed to membership %s %s' ), '<strong><i>/wp-json/membership2/v1/member/subscription</i></strong>', '[GET]' ), 'help', 'membership2' ); ?></u></strong><br/>
+					<u><?php _ex( 'Parameters', 'help', 'membership2' ); ?></u>
+					<ul>
+						<li><?php _ex( sprintf( __( '- %s : The membership id (required)', 'membership2' ), 'membership_id' ), 'help', 'membership2' ); ?></li>
+						<li><?php _ex( sprintf( __( '- %s : The user id (required)', 'membership2' ), 'user_id' ), 'help', 'membership2' ); ?></li>
+					</ul>
+					<?php _ex( 'Response is a Subscription object', 'help', 'membership2' ); ?>
+					
+				</p>
+			</div>
+		</div>
+		<div id="membership-route" class="ms-help-box">
+			<h3 class="ms-help-toggle"><?php _ex( sprintf( __( 'Membership route %s' ), '<strong><i>/wp-json/membership2/v1/membership</i></strong>' ), 'help', 'membership2' ); ?></h3>
+			<div class="ms-help-details" style="display:none">
+				<p>
+					<strong><u><?php _ex( sprintf( __( '1. List Memberships %s %s' ), '<strong><i>/wp-json/membership2/v1/membership/list</i></strong>', '[GET]' ), 'help', 'membership2' ); ?></u></strong><br/>
+					<?php _ex( 'Response is a list of Membership objects', 'help', 'membership2' ); ?><br/><br/>
 
-			<strong><u><?php _ex( sprintf( __( '2. Get Membership %s %s' ), '<strong><i>/wp-json/membership2/v1/membership/get</i></strong>', '[GET]' ), 'help', 'membership2' ); ?></u></strong><br/>
-			<ul>
-				<li><?php _ex( sprintf( __( '- %s : The Membership ID or name or slug (required)', 'membership2' ), 'param' ), 'help', 'membership2' ); ?></li>
-			</ul>
-			<?php _ex( 'Response is a Membership object', 'help', 'membership2' ); ?><br/><br/>
-		</p>
+					<strong><u><?php _ex( sprintf( __( '2. Get Membership %s %s' ), '<strong><i>/wp-json/membership2/v1/membership/get</i></strong>', '[GET]' ), 'help', 'membership2' ); ?></u></strong><br/>
+					<ul>
+						<li><?php _ex( sprintf( __( '- %s : The Membership ID or name or slug (required)', 'membership2' ), 'param' ), 'help', 'membership2' ); ?></li>
+					</ul>
+					<?php _ex( 'Response is a Membership object', 'help', 'membership2' ); ?><br/><br/>
+				</p>
+			</div>
+		</div>
 		<?php
 		$html = ob_get_clean();
 				

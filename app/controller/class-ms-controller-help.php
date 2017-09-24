@@ -124,7 +124,6 @@ class MS_Controller_Help extends MS_Controller {
 		$data = array(
 			'ms_init' => array( 'view_help' ),
 		);
-
 		lib3()->ui->data( 'ms_data', $data );
 		wp_enqueue_script( 'ms-admin' );
 	}
