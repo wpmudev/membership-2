@@ -16,6 +16,7 @@ Change Log:
 - Fixed: Mail sending cron fix
 - Fixed: Category Protection
 - Fixed: Rest API addon
+- Fixed: Rest API integer validation (https://github.com/WP-API/WP-API/issues/1520) and change param of /member status to member_status
 - Fixed: Auth Net Payment Gateway
 - Fixed: Profile Fields add-on readonly option was not working
 
