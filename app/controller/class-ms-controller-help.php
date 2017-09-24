@@ -75,9 +75,11 @@ class MS_Controller_Help extends MS_Controller {
 			'emails' 	=> array(
 				'title' 	=> __( 'Email history', 'membership2' ),
 			),
+			/* start:pro */
 			'restapi' 	=> array(
 				'title' 	=> __( 'Rest API', 'membership2' ),
 			),
+			/* end:pro */
 			'api' 		=> array(
 				'title' 	=> __( 'API Docs', 'membership2' ),
 				'url' 		=> MS_Plugin::instance()->url . 'docs/namespaces/default.html',

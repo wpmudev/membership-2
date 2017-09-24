@@ -121,7 +121,6 @@ class MS_Model_Export_Base extends MS_Model {
 		$output 				= array();
 		$output['id'] 			= $this->exp_id( 'user', $member->id );
 		$output['email'] 		= $member->email;
-		$output['email'] 		= $member->email;
 		$output['username'] 	= $member->username;
 		$output['firstname'] 	= $member->first_name;
 		$output['lastname'] 	= $member->last_name;
