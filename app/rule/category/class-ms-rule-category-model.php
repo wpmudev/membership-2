@@ -160,6 +160,8 @@ class MS_Rule_Category_Model extends MS_Rule {
 			// Category page.
 			$category = get_queried_object_id();
 			$has_access = parent::has_access( $category, $admin_has_access );
+		} else if ( is_search() && is_category( $id ) ) {
+			$has_access = parent::has_access( $id, $admin_has_access );
 		}
 
 		return apply_filters(
