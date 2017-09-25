@@ -565,6 +565,49 @@ class MS_Model_Import extends MS_Model {
 	}
 
 	/**
+	 * Import specific data: A single user to a membership
+	 *
+	 * @since  1.1.2
+	 * @param  object $obj The import object.
+	 */
+	public function import_user( $obj, $membership ) {
+		$wpuser = get_user_by( 'email', $obj->email );
+		lib3()->array->equip( $obj, 'username', 'email', 'ms_membership' );
+		if ( $wpuser ) {
+			$member = MS_Factory::load( 'MS_Model_Member', $wpuser->ID );
+		} else {
+			$wpuser = wp_create_user( $obj->username, '', $obj->email );
+			if ( is_numeric( $wpuser ) ) {
+				$member = MS_Factory::load( 'MS_Model_Member', $wpuser );
+			} else {
+				$this->errors[] = sprintf(
+					__( 'Could not import Member <strong>%1$s</strong> (%2$s)', 'membership2' ),
+					esc_attr( $obj->username ),
+					esc_attr( $obj->email )
+				);
+
+				// We could not find/create the user, so don't import this item.
+				return;
+			}
+		}
+
+		$member->is_member = true;
+
+		$member->save();
+
+		if ( !$membership ) {
+			$membership = $obj->membershipid;
+		}
+
+		if ( $membership ) {
+			MS_Model_Relationship::create_ms_relationship(
+				$membership,
+				$member->id
+			);
+		}
+	}
+
+	/**
 	 * Import specific data: A single subscription (= relationship)
 	 *
 	 * @since  1.0.0

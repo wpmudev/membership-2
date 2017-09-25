@@ -151,6 +151,12 @@ class MS_Controller_Member extends MS_Controller {
 	}
 
 
+	/**
+	 * Export members as CSV
+	 * Exports data of the current page on the members list
+	 *
+	 * @return csv file
+	 */
 	public function membership_export_csv() {
 		if ( empty( $_REQUEST['_wpnonce'] ) ) { return; }
 		

@@ -10,7 +10,7 @@ window.ms_init.view_settings_import = function init() {
 	var form_import = jQuery( '.ms-settings-import' ),
 		btn_download = form_import.find( '#btn-download' ),
 		btn_import = form_import.find( '#btn-import' ),
-		btn_user_import = form_import.find( '#btn_user_import' ),
+		btn_user_import = form_import.find( '#btn-user-import' ),
 		chk_clear = form_import.find( '#clear_all' ),
 		sel_batchsize = form_import.find( '#batchsize' ),
 		the_popup = null,
@@ -107,6 +107,9 @@ window.ms_init.view_settings_import = function init() {
 		batch.item_count = 0;
 		batch.label = '';
 		batch.source = window._ms_import_obj.source_key;
+		if(typeof window._ms_import_obj.membership !== 'undefined'){
+			batch.membership = window._ms_import_obj.membership;
+		}
 
 		for ( count = 0; count < max_items; count += 1 ) {
 			item = queue.shift();
@@ -147,6 +150,34 @@ window.ms_init.view_settings_import = function init() {
 
 		// Prepare the ajax payload.
 		batch.action = btn_import.val();
+		delete batch.label;
+
+		// Send the ajax request and call this function again when done.
+		jQuery.post(
+			window.ajaxurl,
+			batch,
+			process_queue
+		);
+	}
+
+	function process_user_queue() {
+		var icon ='<i class="wpmui-loading-icon"></i> ',
+		batchsize = sel_batchsize.val(),
+		batch = get_next_batch( batchsize );
+
+		if ( ! batch.item_count ) {
+			// All items were sent - hide the progress bar and show close button.
+			allow_hide_popup();
+			return;
+		}
+
+		// Update the progress bar.
+		the_progress
+			.value( queue_count - queue.length )
+			.label( icon + '<span>' + batch.label + '</span>' );
+
+		// Prepare the ajax payload.
+		batch.action = btn_user_import.val();
 		delete batch.label;
 
 		// Send the ajax request and call this function again when done.
@@ -222,6 +253,48 @@ window.ms_init.view_settings_import = function init() {
 		process_queue();
 	}
 
+	function start_user_import() {
+		var k, data, count, membership,
+			lang = ms_data.lang;
+
+		queue = [];
+
+		// This will prepare the import process
+		queue.push({
+			'task': 'start',
+			'clear': chk_clear.is(':checked'),
+			'label': lang.task_start
+		});
+
+	
+		count = 0;
+		for ( k in window._ms_import_obj.users ) {
+			data = window._ms_import_obj.users[k];
+			membership = window._ms_import_obj.membership;
+			count += 1;
+			queue.push({
+				'task': 'import-member',
+				'data': data,
+				'membership': membership,
+				'label': lang.task_import_member +  ': ' + count + '...'
+			});
+		}
+
+		// Finally clean up after the import
+		queue.push({
+			'task': 'done',
+			'label': lang.task_done
+		});
+
+		// Display the import progress bar
+		show_popup();
+		queue_count = queue.length;
+		the_progress.max( queue_count );
+
+		// Start to process the import queue
+		process_user_queue();
+	}
+
 	if ( support_download() ) {
 		btn_download.click( download_import_data );
 	} else {
@@ -229,6 +302,7 @@ window.ms_init.view_settings_import = function init() {
 	}
 
 	btn_import.click( start_import );
+	btn_user_import.click( start_user_import );
 
 	/**
 	 * Hide format on settings select

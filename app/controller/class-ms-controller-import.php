@@ -20,7 +20,8 @@ class MS_Controller_Import extends MS_Controller {
 	const ACTION_IMPORT_USER 	= 'import_users';
 
 	// Ajax action: Import data.
-	const AJAX_ACTION_IMPORT 	= 'ms_import';
+	const AJAX_ACTION_IMPORT 		= 'ms_import';
+	const AJAX_ACTION_IMPORT_USERS 	= 'ms_import_users';
 
 	// Ajax action: Save an automatic transaction matching (Billings page).
 	const AJAX_ACTION_MATCH 	= 'ms_save_matching';
@@ -39,6 +40,11 @@ class MS_Controller_Import extends MS_Controller {
 		$this->add_ajax_action(
 			self::AJAX_ACTION_IMPORT,
 			'ajax_action_import'
+		);
+
+		$this->add_ajax_action(
+			self::AJAX_ACTION_IMPORT_USERS,
+			'ajax_action_import_users'
 		);
 
 		$this->add_ajax_action(
@@ -184,6 +190,40 @@ class MS_Controller_Import extends MS_Controller {
 	}
 
 	/**
+	 * Handles an import batch of users that is sent via ajax.
+	 *
+	 * One batch includes multiple import commands that are to be processed in
+	 * the specified order.
+	 *
+	 * Expected output:
+	 *   OK:<number of successful commands>
+	 *   ERR
+	 *
+	 * @since  1.1.2
+	 */
+	public function ajax_action_import_users() {
+		$res 		= 'ERR';
+		$success 	= 0;
+
+		if ( ! isset( $_POST['items'] ) ) {
+			echo 'ERR';
+			exit;
+		}
+
+		$batch 	= $_POST['items'];
+
+		$res 	= 'OK';
+		foreach ( $batch as $item ) {
+			if ( $this->process_user( $item  ) ) {
+				$success += 1;
+			}
+		}
+
+		echo esc_html( $res . ':' . $success );
+		exit;
+	}
+
+	/**
 	 * Processes a single import command.
 	 *
 	 * @since  1.0.0
@@ -251,6 +291,58 @@ class MS_Controller_Import extends MS_Controller {
 				$value 	= $item['value'];
 				$model->import_setting( $setting, $value );
 				$res 	= true;
+				break;
+
+			case 'done':
+				$model->done();
+				$res = true;
+				break;
+		}
+
+		/**
+		 * After the import action was complated notify other objects and
+		 * add-ons.
+		 *
+		 * @since  1.0.0
+		 */
+		do_action( 'ms_import_action_' . $task, $item );
+
+		return $res;
+	}
+
+	/**
+	 * Processes a single import command.
+	 *
+	 * @since  1.1.2
+	 * @param  array  $item The import command.
+	 * @return bool
+	 */
+	protected function process_user( $item ) {
+		$res = false;
+		
+		lib3()->array->equip( $item, 'task', 'data', 'membership' );
+		$task 		= $item['task'];
+		$data 		= $item['data'];
+		$membership = $item['membership'];
+		$model 	= MS_Factory::create( 'MS_Model_Import' );
+		$model->source_key = 'membership2';
+
+		// Set MS_STOP_EMAILS modifier to suppress any outgoing emails.
+		MS_Plugin::set_modifier( 'MS_STOP_EMAILS', true );
+
+		// Possible tasks are defined in ms-view-settings-import.js.
+		switch ( $task ) {
+			case 'start':
+				lib3()->array->equip( $item, 'clear' );
+				$clear = lib3()->is_true( $item['clear'] );
+				$model->start( $clear );
+				$res = true;
+				break;
+
+			case 'import-member':
+				$data = (object) $data;
+				$model->import_user( $data, $membership );
+				$res = true;
 				break;
 
 			case 'done':

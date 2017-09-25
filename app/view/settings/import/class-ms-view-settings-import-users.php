@@ -51,8 +51,8 @@ class MS_View_Settings_Import_Users extends MS_View {
 			'',
 			'open'
 		);
-
-		echo '<script>window._ms_import_user_obj = ' . json_encode( $data ) . '</script>';
+		$data->source_key = 'membership2';
+		echo '<script>window._ms_import_obj = ' . json_encode( $data ) . '</script>';
 		
 		$html = ob_get_clean();
 
@@ -77,31 +77,29 @@ class MS_View_Settings_Import_Users extends MS_View {
 			array(
 				__( 'Username', 'membership2' ),
 				__( 'Email', 'membership2' ),
-				__( 'Membership', 'membership2' ),
-				__( 'Status', 'membership2' ),
+				__( 'Membership', 'membership2' )
 			),
 		);
 
 		$membership 		= $data->membership;
 		$membership_name 	= false;
 		if ( $membership ) {
+			$membership = MS_Factory::load(
+				'MS_Model_Membership',
+				$membership
+			);
 			$membership_name = $membership->name;
 		}
 
 		foreach ( $data->users as $item ) {
 			$item = (object) $item;
 			if ( !$membership_name ) {
-				$membership = MS_Model_Membership::get_membership_id( $item->ms_membership );
-				if ( $membership ) {
-					$membership = MS_Factory::load(
-						'MS_Model_Membership',
-						$membership
-					);
-					if ( $membership->id ) {
-						$membership_name = $membership->name;
-					} else {
-						$membership_name = __( 'N/A', 'membership2' );
-					}
+				$membership = MS_Factory::load(
+					'MS_Model_Membership',
+					$item->membershipid
+				);
+				if ( $membership->id ) {
+					$membership_name = $membership->name;
 				} else {
 					$membership_name = __( 'N/A', 'membership2' );
 				}
@@ -109,8 +107,7 @@ class MS_View_Settings_Import_Users extends MS_View {
 			$users[] = array(
 				$item->username,
 				$item->email,
-				$membership_name,
-				$item->status,
+				$membership_name
 			);
 		}
 
@@ -147,13 +144,6 @@ class MS_View_Settings_Import_Users extends MS_View {
 			'class' 		=> 'sel-batchsize',
 		);
 
-		$fields['clear_all'] = array(
-			'id' 	=> 'clear_all',
-			'type' 	=> MS_Helper_Html::INPUT_TYPE_CHECKBOX,
-			'title' => __( 'Replace current content with import data (removes existing Members before importing data)', 'membership2' ),
-			'class' => 'widefat',
-		);
-
 		$fields['users'] = array(
 			'type' 	=> MS_Helper_Html::TYPE_HTML_TABLE,
 			'class' => 'ms-import-preview',
@@ -187,10 +177,10 @@ class MS_View_Settings_Import_Users extends MS_View {
 		);
 
 		$fields['import'] = array(
-			'id' 			=> 'btn-import',
+			'id' 			=> 'btn-user-import',
 			'type' 			=> MS_Helper_Html::INPUT_TYPE_BUTTON,
 			'value' 		=> __( 'Import', 'membership2' ),
-			'button_value' 	=> MS_Controller_Import::AJAX_ACTION_IMPORT,
+			'button_value' 	=> MS_Controller_Import::AJAX_ACTION_IMPORT_USERS,
 			'button_type' 	=> 'submit',
 		);
 

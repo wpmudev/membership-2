@@ -9,6 +9,7 @@ Change Log:
 - Added: Membership and Member XML import and export format
 - Added: Rest API Help docs
 - Added: Duration for coupons - coupon can be applied onetime or recurring
+- Added: Bulk import of users in CSV as members to a membership
 - Fixed: MailChimp Addon list function
 - Fixed: Styling for Membership Attributes PopUp
 - Fixed: Dripped Membership Url protection and menu protection

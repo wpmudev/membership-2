@@ -42,11 +42,6 @@ class MS_Model_Import_User extends MS_Model_Import {
 		$membership = false;
 		if ( isset( $_POST['users-membership'] )  && !empty( $_POST['users-membership'] ) ) {
 			$membership = $_POST['users-membership'];
-			$membership = MS_Factory::load(
-				'MS_Model_Membership',
-				$membership
-			);
-
 		}
 
 		$csv = array_map( 'str_getcsv', file( $file['tmp_name'] ) );
