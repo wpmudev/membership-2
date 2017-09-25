@@ -15,16 +15,16 @@ class MS_Model_Export extends MS_Model {
 	/**
 	 * Export Settings
 	 */
-	 const PLUGIN_SETTINGS 		= 'plugin';
-	 const FULL_MEMBERSHIP_DATA = 'full';
-	 const MEMBERSHIP_ONLY 		= 'membership';
-	 const MEMBERS_ONLY 		= 'members';
+	const PLUGIN_SETTINGS 		= 'plugin';
+	const FULL_MEMBERSHIP_DATA 	= 'full';
+	const MEMBERSHIP_ONLY 		= 'membership';
+	const MEMBERS_ONLY 			= 'members';
  
-	 /**
-	  * Export formats
-	  */
-	 const JSON_EXPORT 			= 'json';
-	 const XML_EXPORT 			= 'xml';
+	/**
+	 * Export formats
+	 */
+	const JSON_EXPORT 			= 'json';
+	const XML_EXPORT 			= 'xml';
  
  
 	 /**
@@ -35,15 +35,15 @@ class MS_Model_Export extends MS_Model {
 	  *
 	  * @since  1.1.3
 	  */
-	 public function process() {
+	public function process() {
 		 $type 				= $_POST['type'];
 		 $format 			= $_POST['format'];
 		 $supported_types 	= self::export_types();
 		 $supported_formats = self::export_formats();
 		 $supported_types 	= array_keys( $supported_types );
 		 $supported_formats = array_keys( $supported_formats );
-		 if ( in_array( $type, $supported_types ) && in_array( $format, $supported_formats ) ) {
-			 switch ( $type ) {
+		if ( in_array( $type, $supported_types ) && in_array( $format, $supported_formats ) ) {
+			switch ( $type ) {
 				case self::PLUGIN_SETTINGS :
 					 $handler = MS_Factory::create( 'MS_Model_Export_Settings' );
 					 $handler->process();
@@ -67,10 +67,10 @@ class MS_Model_Export extends MS_Model {
 				default :
 					 lib3()->net->file_download( __( 'Export type not yet supported', 'membership2' ), 'error.json' );
 					 break;
-			 }
-		 } else {
+			}
+		} else {
 			 lib3()->net->file_download( __( 'Invalid export type or format', 'membership2' ), 'error.json' );
-		 }
+		}
 		 
 	 }
  
@@ -81,14 +81,14 @@ class MS_Model_Export extends MS_Model {
 	  *
 	  * @return Array
 	  */
-	 public static function export_types() {
-		 return array(
+	public static function export_types() {
+		return array(
 			 self::PLUGIN_SETTINGS 			=> __( 'Plugin Settings (Note that this is not a full backup of the plugin settings)', 'membership2' ),
 			 self::FULL_MEMBERSHIP_DATA 	=> __( 'Full Membership Data (Members and Memberships)', 'membership2' ),
 			 self::MEMBERSHIP_ONLY 			=> __( 'Memberships Only', 'membership2' ),
 			 self::MEMBERS_ONLY 			=> __( 'Members Only', 'membership2' )
-		 );
-	 }
+		);
+	}
  
 	 /**
 	  * Supported Export types
@@ -97,11 +97,26 @@ class MS_Model_Export extends MS_Model {
 	  *
 	  * @return Array
 	  */
-	 public static function export_formats() {
-		 return array(
+	public static function export_formats() {
+		return array(
 			 self::JSON_EXPORT 	=> __( 'JSON', 'membership2' ),
 			 self::XML_EXPORT 	=> __( 'XML', 'membership2' )
-		 );
-	 }
+		);
+	}
+
+	/**
+	 * Get Membership list
+	 *
+	 * @return Array
+	 */
+	public static function get_memberships() {
+		$membership_select = array();
+		$memberships = MS_Model_Membership::get_public_memberships();
+		$membership_select[] = __( 'None', 'membership2' );
+		foreach ( $memberships as $key => $item ) {
+			$membership_select[ $item->id ] = $item->name;
+		}
+		return $membership_select;
+	}
 	
 }

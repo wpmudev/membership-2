@@ -18,8 +18,9 @@ class MS_View_Settings_Page_Import extends MS_View_Settings_Edit {
 	 * @return string
 	 */
 	public function to_html() {
-		$export_action 	= MS_Controller_Import::ACTION_EXPORT;
-		$import_action 	= MS_Controller_Import::ACTION_PREVIEW;
+		$export_action 		= MS_Controller_Import::ACTION_EXPORT;
+		$import_action 		= MS_Controller_Import::ACTION_PREVIEW;
+		$import_user_action = MS_Controller_Import::ACTION_IMPORT_USER;
 		$messages 		= $this->data['message'];
 
 		$preview = false;
@@ -112,6 +113,40 @@ class MS_View_Settings_Page_Import extends MS_View_Settings_Edit {
 			),
 		);
 
+		$import_users_fields = array(
+			'file' 		=> array(
+				'id' 		=> 'upload',
+				'type'		=> MS_Helper_Html::INPUT_TYPE_FILE,
+				'title' 	=> sprintf( __( 'User List CSV File %sDownload sample file%s', 'membership2' ), '<a href="'.$this->data['sample'].'">', '</a>' ),
+			),
+			'membership' => array(
+				'id' 			=> 'users-membership',
+				'type'			=> MS_Helper_Html::INPUT_TYPE_SELECT,
+				'field_options' => MS_Model_Export::get_memberships(),
+				'class' 		=> 'ms-select',
+				'title' 		=> __( 'Optionally assign users to selected membership', 'membership2' ),
+			),
+			'import' => array(
+				'id' => 'btn_user_import',
+				'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
+				'value' => __( 'Upload Users', 'membership2' ),
+				'desc' => __(
+					'Upload and create users as members',
+					'membership2'
+				),
+			),
+			'action' => array(
+				'id' => 'action',
+				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+				'value' => $import_user_action,
+			),
+			'nonce' => array(
+				'id' => '_wpnonce',
+				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+				'value' => wp_create_nonce( $import_user_action ),
+			),
+		);
+
 		ob_start();
 
 		MS_Helper_Html::settings_tab_header(
@@ -135,6 +170,12 @@ class MS_View_Settings_Page_Import extends MS_View_Settings_Edit {
 					<?php MS_Helper_Html::settings_box(
 						$export_fields,
 						__( 'Export data', 'membership2' )
+					); ?>
+				</form>
+				<form action="" method="post" enctype="multipart/form-data">
+					<?php MS_Helper_Html::settings_box(
+						$import_users_fields,
+						__( 'Bulk Import users', 'membership2' )
 					); ?>
 				</form>
 			<?php endif; ?>

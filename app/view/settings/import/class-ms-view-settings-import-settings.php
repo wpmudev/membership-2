@@ -10,7 +10,7 @@
  *
  * @since  1.0.0
  */
-class MS_View_Settings_Import extends MS_View {
+class MS_View_Settings_Import_Settings extends MS_View {
 
 	/**
 	 * Displays the import preview form.

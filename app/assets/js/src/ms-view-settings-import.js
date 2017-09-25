@@ -10,6 +10,7 @@ window.ms_init.view_settings_import = function init() {
 	var form_import = jQuery( '.ms-settings-import' ),
 		btn_download = form_import.find( '#btn-download' ),
 		btn_import = form_import.find( '#btn-import' ),
+		btn_user_import = form_import.find( '#btn_user_import' ),
 		chk_clear = form_import.find( '#clear_all' ),
 		sel_batchsize = form_import.find( '#batchsize' ),
 		the_popup = null,

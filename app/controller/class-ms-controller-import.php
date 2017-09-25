@@ -17,6 +17,7 @@ class MS_Controller_Import extends MS_Controller {
 	// Action definitions.
 	const ACTION_EXPORT 		= 'export';
 	const ACTION_PREVIEW 		= 'preview';
+	const ACTION_IMPORT_USER 	= 'import_users';
 
 	// Ajax action: Import data.
 	const AJAX_ACTION_IMPORT 	= 'ms_import';
@@ -293,7 +294,7 @@ class MS_Controller_Import extends MS_Controller {
 				break;
 
 			case self::ACTION_PREVIEW:
-				$view 		= MS_Factory::create( 'MS_View_Settings_Import' );
+				$view 		= MS_Factory::create( 'MS_View_Settings_Import_Settings' );
 				$model_name = 'MS_Model_Import_' . $_POST['import_source'];
 				$model 		= null;
 
@@ -325,6 +326,29 @@ class MS_Controller_Import extends MS_Controller {
 							)
 						);
 					}
+				}
+				break;
+
+			case self::ACTION_IMPORT_USER :
+				$view 	= MS_Factory::create( 'MS_View_Settings_Import_Users' );
+				$model 	= MS_Factory::create( 'MS_Model_Import_User' );
+				if ( $model->prepare() ) {
+					$data = array(
+						'model' => $model,
+					);
+
+					$view->data = apply_filters(
+						'ms_view_import_users_data',
+						$data
+					);
+
+					self::_message(
+						'preview',
+						apply_filters(
+							'ms_view_import_users_preview',
+							$view->to_html()
+						)
+					);
 				}
 				break;
 		}

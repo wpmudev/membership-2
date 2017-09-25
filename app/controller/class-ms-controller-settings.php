@@ -75,6 +75,11 @@ class MS_Controller_Settings extends MS_Controller {
 			'auto_setup_settings'
 		);
 
+		$this->add_action(
+			'admin_action_membership_user_sample_csv',
+			'membership_user_sample_csv'
+		);
+
 		$this->add_ajax_action( self::AJAX_ACTION_TOGGLE_SETTINGS, 'ajax_action_toggle_settings' );
 		$this->add_ajax_action( self::AJAX_ACTION_UPDATE_SETTING, 'ajax_action_update_setting' );
 		$this->add_ajax_action( self::AJAX_ACTION_UPDATE_CUSTOM_SETTING, 'ajax_action_update_custom_setting' );
@@ -512,8 +517,10 @@ class MS_Controller_Settings extends MS_Controller {
 				break;
 
 			case self::TAB_IMPORT:
+				$url 				= wp_nonce_url( admin_url( 'admin.php?action=membership_user_sample_csv' ), 'sample_users_csv' );
 				$data['types'] 		= MS_Model_Export::export_types();
 				$data['formats'] 	= MS_Model_Export::export_formats();
+				$data['sample'] 	= $url;
 				break;
 		}
 
@@ -521,6 +528,22 @@ class MS_Controller_Settings extends MS_Controller {
 		$view->data 	= apply_filters( $hook . '_data', $data );
 		$view->model 	= $this->get_model();
 		$view->render();
+	}
+
+	/**
+	 * Sample CSV file for user import
+	 *
+	 * @return csv file
+	 */
+	public function membership_user_sample_csv() {
+		if ( empty( $_REQUEST['_wpnonce'] ) ) { return; }
+		
+		if ( ! wp_verify_nonce( $_REQUEST['_wpnonce'], 'sample_users_csv' ) ) { return; }
+		
+		$contents = "username,email,ms_membership,status" . "\r\n";
+		$contents .= "user1,user1@email.com,membership-slug,pending" . "\r\n";
+		$contents .= "user2,user2@email.com,membership-slug,active";
+		lib3()->net->file_download( $contents, 'ms_sample_user_export.csv' );
 	}
 
 	/**

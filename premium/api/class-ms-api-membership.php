@@ -79,15 +79,7 @@ class MS_Api_Membership extends MS_Api {
 	 * @return MS_Model_Membership[] List of all available Memberships.
 	 */
     function list( $request ) {
-		$list = MS_Model_Membership::get_memberships( array(
-			'include_base' 	=> false,
-			'include_guest' => true,
-		) );
-		foreach ( $list as $key => $item ) {
-			if ( ! $item->active ) { unset( $list[$key] ); }
-			elseif ( $item->private ) { unset( $list[$key] ); }
-		}
-        return $list;
+        return MS_Model_Membership::get_public_memberships();
     }
 
 	/**

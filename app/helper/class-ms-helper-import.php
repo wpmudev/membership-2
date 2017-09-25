@@ -8,6 +8,12 @@
  */
  class MS_Helper_Import extends MS_Helper {
 
+	/**
+	 * Membership to import view
+	 * Converts the membrship objet to viewable data
+	 *
+	 * @return array
+	 */
 	public static function membership_to_view( $item, $ms_types, $ms_paytypes ) {
 		if ( ! isset( $ms_types[ $item->type ] ) ) {
 			$item->type = MS_Model_Membership::TYPE_STANDARD;
@@ -48,6 +54,12 @@
 		);
 	}
 
+	/**
+	 * Member to view
+	 * Converts the member data to viewable data
+	 *
+	 * @return array
+	 */
 	public static function member_to_view( $item ) {
 		$inv_count = 0;
 		if ( isset( $item->subscriptions )
