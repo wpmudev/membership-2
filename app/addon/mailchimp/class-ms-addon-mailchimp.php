@@ -325,8 +325,7 @@ class MS_Addon_Mailchimp extends MS_Addon {
 		$status = false;
 
 		try {
-			self::load_mailchimp_api();
-			$status = true;
+			$status = self::load_mailchimp_api();
 		} catch ( Exception $e ) {
 			// MS_Helper_Debug::debug_log( $e );
 		}
@@ -343,27 +342,20 @@ class MS_Addon_Mailchimp extends MS_Addon {
 	 */
 	public static function load_mailchimp_api() {
 		if ( empty( self::$mailchimp_api ) ) {
-			$options = apply_filters(
-				'ms_addon_mailchimp_load_mailchimp_api_options',
-				array(
-					'timeout' 			=> false,
-					'ssl_verifypeer' 	=> false,
-					'ssl_verifyhost' 	=> false,
-					'ssl_cainfo' 		=> false,
-					'debug' 			=> false,
-				)
-			);
-
 			if ( ! class_exists( 'M2_Mailchimp' ) ) {
 				require_once MS_Plugin::instance()->dir . '/lib/mailchimp-api/Mailchimp.php';
 			}
 			$api_key 		= self::$settings->get_custom_setting( 'mailchimp', 'api_key' );
-			$exploded 		= explode( '-', $api_key );
-			$data_center 	= end( $exploded );
-
-			$api = new M2_Mailchimp( $api_key, $data_center );
-
-			self::$mailchimp_api = $api;
+			if ( !empty ( $api_key ) ) {
+				$exploded 		= explode( '-', $api_key );
+				$data_center 	= end( $exploded );
+	
+				$api = new M2_Mailchimp( $api_key, $data_center );
+	
+				self::$mailchimp_api = $api;
+			} else {
+				return false;
+			}
 		}
 
 		return self::$mailchimp_api;

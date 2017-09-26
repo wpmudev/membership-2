@@ -21,7 +21,7 @@ class MS_View_Settings_Page_Import extends MS_View_Settings_Edit {
 		$export_action 		= MS_Controller_Import::ACTION_EXPORT;
 		$import_action 		= MS_Controller_Import::ACTION_PREVIEW;
 		$import_user_action = MS_Controller_Import::ACTION_IMPORT_USER;
-		$messages 		= $this->data['message'];
+		$messages 			= $this->data['message'];
 
 		$preview = false;
 		if ( isset( $messages['preview'] ) ) {
@@ -86,29 +86,29 @@ class MS_View_Settings_Page_Import extends MS_View_Settings_Edit {
 
 		$import_fields = array(
 			'source' => array(
-				'id' => 'import_source',
-				'type' => MS_Helper_Html::INPUT_TYPE_RADIO,
-				'title' => __( 'Choose an import source', 'membership2' ),
+				'id' 			=> 'import_source',
+				'type' 			=> MS_Helper_Html::INPUT_TYPE_RADIO,
+				'title' 		=> __( 'Choose an import source', 'membership2' ),
 				'field_options' => $import_options,
-				'value' => $sel_source,
+				'value' 		=> $sel_source,
 			),
 			'import' => array(
-				'id' => 'btn_import',
-				'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
+				'id' 	=> 'btn_import',
+				'type' 	=> MS_Helper_Html::INPUT_TYPE_SUBMIT,
 				'value' => __( 'Preview Import', 'membership2' ),
-				'desc' => __(
+				'desc' 	=> __(
 					'Import data into this installation.',
 					'membership2'
 				),
 			),
 			'action' => array(
-				'id' => 'action',
-				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+				'id' 	=> 'action',
+				'type' 	=> MS_Helper_Html::INPUT_TYPE_HIDDEN,
 				'value' => $import_action,
 			),
 			'nonce' => array(
-				'id' => '_wpnonce',
-				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+				'id' 	=> '_wpnonce',
+				'type' 	=> MS_Helper_Html::INPUT_TYPE_HIDDEN,
 				'value' => wp_create_nonce( $import_action ),
 			),
 		);
@@ -127,22 +127,22 @@ class MS_View_Settings_Page_Import extends MS_View_Settings_Edit {
 				'title' 		=> __( 'Optionally assign users to selected membership', 'membership2' ),
 			),
 			'import' => array(
-				'id' => 'btn_user_import',
-				'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
+				'id' 	=> 'btn_user_import',
+				'type' 	=> MS_Helper_Html::INPUT_TYPE_SUBMIT,
 				'value' => __( 'Upload Users', 'membership2' ),
-				'desc' => __(
-					'Upload and create users as members',
+				'desc' 	=> __(
+					'Upload and create users as members. All uploaded members will have active subscriptions',
 					'membership2'
 				),
 			),
 			'action' => array(
-				'id' => 'action',
-				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+				'id' 	=> 'action',
+				'type' 	=> MS_Helper_Html::INPUT_TYPE_HIDDEN,
 				'value' => $import_user_action,
 			),
 			'nonce' => array(
-				'id' => '_wpnonce',
-				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+				'id' 	=> '_wpnonce',
+				'type' 	=> MS_Helper_Html::INPUT_TYPE_HIDDEN,
 				'value' => wp_create_nonce( $import_user_action ),
 			),
 		);

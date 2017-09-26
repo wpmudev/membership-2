@@ -47,7 +47,7 @@ class MS_Addon_Mailchimp_View extends MS_View {
 				'id' 	=> 'mailchimp_api_test',
 				'type' 	=> MS_Helper_Html::TYPE_HTML_TEXT,
 				'title' => __( 'MailChimp API test status: ', 'membership2' ),
-				'value' => ( $api_status ) ? __( 'Verified', 'membership2' ) : __( 'Failed', 'membership2' ),
+				'value' => ( $api_status ) ? __( 'Verified', 'membership2' ) : __( 'Not connected', 'membership2' ),
 				'class' => ( $api_status ) ? 'ms-ok' : 'ms-nok',
 			),
 
