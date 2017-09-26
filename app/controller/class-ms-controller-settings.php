@@ -99,6 +99,7 @@ class MS_Controller_Settings extends MS_Controller {
 
 		$this->run_action( 'load-' . $hook, 'admin_settings_manager' );
 		$this->run_action( 'admin_print_scripts-' . $hook, 'enqueue_scripts' );
+		$this->run_action( 'admin_print_styles-' . $hook, 'enqueue_styles' );
 	}
 
 	/**
@@ -633,9 +634,18 @@ class MS_Controller_Settings extends MS_Controller {
 				$data['ms_init'][] = 'view_settings_setup';
 				break;
 		}
-
+		wp_enqueue_script( 'jquery-ui-datepicker' );
 		lib3()->ui->data( 'ms_data', $data );
 		wp_enqueue_script( 'ms-admin' );
+	}
+
+	/**
+	 * Load Member manager specific styles.
+	 *
+	 * @since  1.1.2
+	 */
+	public function enqueue_styles() {
+		lib3()->ui->add( 'jquery-ui' );
 	}
 	
 	/**

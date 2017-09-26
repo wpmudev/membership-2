@@ -2571,6 +2571,15 @@ window.ms_init.view_settings_import = function init() {
 		if(typeof window._ms_import_obj.membership !== 'undefined'){
 			batch.membership = window._ms_import_obj.membership;
 		}
+		if(typeof window._ms_import_obj.status !== 'undefined'){
+			batch.status = window._ms_import_obj.status;
+		}
+		if(typeof window._ms_import_obj.start !== 'undefined'){
+			batch.start = window._ms_import_obj.start;
+		}
+		if(typeof window._ms_import_obj.expire !== 'undefined'){
+			batch.expire = window._ms_import_obj.expire;
+		}
 
 		for ( count = 0; count < max_items; count += 1 ) {
 			item = queue.shift();
@@ -2715,7 +2724,7 @@ window.ms_init.view_settings_import = function init() {
 	}
 
 	function start_user_import() {
-		var k, data, count, membership,
+		var k, data, count, membership, status, start, expire,
 			lang = ms_data.lang;
 
 		queue = [];
@@ -2732,11 +2741,17 @@ window.ms_init.view_settings_import = function init() {
 		for ( k in window._ms_import_obj.users ) {
 			data = window._ms_import_obj.users[k];
 			membership = window._ms_import_obj.membership;
+			status = window._ms_import_obj.status;
+			start = window._ms_import_obj.start;
+			expire = window._ms_import_obj.expire;
 			count += 1;
 			queue.push({
 				'task': 'import-member',
 				'data': data,
 				'membership': membership,
+				'status': status,
+				'start': start,
+				'expire': expire,
 				'label': lang.task_import_member +  ': ' + count + '...'
 			});
 		}

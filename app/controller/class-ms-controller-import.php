@@ -320,11 +320,14 @@ class MS_Controller_Import extends MS_Controller {
 	protected function process_user( $item ) {
 		$res = false;
 		
-		lib3()->array->equip( $item, 'task', 'data', 'membership' );
+		lib3()->array->equip( $item, 'task', 'data', 'membership', 'status', 'start', 'expire' );
 		$task 		= $item['task'];
 		$data 		= $item['data'];
 		$membership = $item['membership'];
-		$model 	= MS_Factory::create( 'MS_Model_Import' );
+		$status 	= $item['status'];
+		$start 		= $item['start'];
+		$expire 	= $item['expire'];
+		$model 		= MS_Factory::create( 'MS_Model_Import' );
 		$model->source_key = 'membership2';
 
 		// Set MS_STOP_EMAILS modifier to suppress any outgoing emails.
@@ -341,7 +344,7 @@ class MS_Controller_Import extends MS_Controller {
 
 			case 'import-member':
 				$data = (object) $data;
-				$model->import_user( $data, $membership );
+				$model->import_user( $data, $membership, $status, $start, $expire );
 				$res = true;
 				break;
 

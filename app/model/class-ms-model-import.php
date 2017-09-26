@@ -568,9 +568,14 @@ class MS_Model_Import extends MS_Model {
 	 * Import specific data: A single user to a membership
 	 *
 	 * @since  1.1.2
-	 * @param  object $obj The import object.
+	 * @param object $obj The import object.
+	 * @param bool|int $membership - the selected membership (optional)
+	 * @param string $status - the subscription status
+	 * @param string $start - the start date
+	 * @param string $expire - the expire date
+	 *
 	 */
-	public function import_user( $obj, $membership ) {
+	public function import_user( $obj, $membership, $status, $start, $expire ) {
 		$wpuser = get_user_by( 'email', $obj->email );
 		lib3()->array->equip( $obj, 'username', 'email', 'ms_membership' );
 		if ( $wpuser ) {
@@ -612,10 +617,28 @@ class MS_Model_Import extends MS_Model {
 		}
 
 		if ( $membership ) {
-			MS_Model_Relationship::create_ms_relationship(
+			$subscription = MS_Model_Relationship::create_ms_relationship(
 				$membership,
 				$member->id
 			);
+			if ( $subscription ) {
+				$invoice 	= $subscription->get_current_invoice( false );
+				if ( $invoice ) {
+					if ( $status === MS_Model_Relationship::STATUS_ACTIVE ) {
+						$invoice->status = MS_Model_Invoice::STATUS_PAID;
+						$invoice->save();
+					} else if ( $status === MS_Model_Relationship::STATUS_CANCELED ) {
+						if ( $invoice->status !== MS_Model_Invoice::STATUS_PAID ) {
+							$invoice->status = MS_Model_Invoice::STATUS_PENDING;
+							$invoice->save();
+						}
+					}
+				}
+				$subscription->start_date 	= $start;
+				$subscription->expire_date 	= $expire;
+				$subscription->status 		= $status;
+				$subscription->save();
+			}
 		}
 	}
 

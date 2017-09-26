@@ -44,6 +44,10 @@ class MS_Model_Import_User extends MS_Model_Import {
 			$membership = $_POST['users-membership'];
 		}
 
+		$status = $_POST['users-status'];
+		$start 	= $_POST['users-start'];
+		$expire = $_POST['users-expire'];
+
 		$csv = array_map( 'str_getcsv', file( $file['tmp_name'] ) );
 		array_walk( $csv, function( &$a ) use ( $csv ) {
 			$a = array_combine( $csv[0], $a );
@@ -57,6 +61,9 @@ class MS_Model_Import_User extends MS_Model_Import {
 
 		$this->source 	= array(
 			'membership' 	=> $membership,
+			'status' 		=> $status,
+			'start' 		=> $start,
+			'expire' 		=> $expire,
 			'users'			=> $csv
 		);
 		return true;

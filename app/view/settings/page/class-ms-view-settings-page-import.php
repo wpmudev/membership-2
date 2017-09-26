@@ -113,6 +113,16 @@ class MS_View_Settings_Page_Import extends MS_View_Settings_Edit {
 			),
 		);
 
+
+		$status_options = array(
+			MS_Model_Relationship::STATUS_PENDING 		=> __( 'Pending (activate on next payment)', 'membership2' ),
+			MS_Model_Relationship::STATUS_WAITING 		=> __( 'Waiting (activate on start date)', 'membership2' ),
+			MS_Model_Relationship::STATUS_ACTIVE 		=> __( 'Active', 'membership2' ),
+			MS_Model_Relationship::STATUS_CANCELED 		=> __( 'Cancelled (deactivate on expire date)', 'membership2' ),
+			MS_Model_Relationship::STATUS_EXPIRED 		=> __( 'Expired (no access) ', 'membership2' ),
+			MS_Model_Relationship::STATUS_DEACTIVATED 	=> __( 'Deactivated (no access)', 'membership2' ),
+		);
+
 		$import_users_fields = array(
 			'file' 		=> array(
 				'id' 		=> 'upload',
@@ -125,6 +135,23 @@ class MS_View_Settings_Page_Import extends MS_View_Settings_Edit {
 				'field_options' => MS_Model_Export::get_memberships(),
 				'class' 		=> 'ms-select',
 				'title' 		=> __( 'Optionally assign users to selected membership', 'membership2' ),
+			),
+			'status' => array(
+				'id' 			=> 'users-status',
+				'type'			=> MS_Helper_Html::INPUT_TYPE_SELECT,
+				'field_options' => $status_options,
+				'class' 		=> 'ms-select',
+				'title' 		=> __( 'Optionally assign users to selected membership', 'membership2' ),
+			),
+			'start' => array(
+				'name' 			=> 'users-start',
+				'type'			=> MS_Helper_Html::INPUT_TYPE_DATEPICKER,
+				'desc' 			=> __( 'Start Date', 'membership2' ) . ' <sup>*)</sup>'
+			),
+			'expire' => array(
+				'name' 			=> 'users-expire',
+				'type'			=> MS_Helper_Html::INPUT_TYPE_DATEPICKER,
+				'desc' 			=> __( 'Expire Date', 'membership2' ) . ' <sup>*)</sup>'
 			),
 			'import' => array(
 				'id' 	=> 'btn_user_import',

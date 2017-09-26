@@ -77,7 +77,10 @@ class MS_View_Settings_Import_Users extends MS_View {
 			array(
 				__( 'Username', 'membership2' ),
 				__( 'Email', 'membership2' ),
-				__( 'Membership', 'membership2' )
+				__( 'Membership', 'membership2' ),
+				__( 'Status', 'membership2' ),
+				__( 'Start Date', 'membership2' ),
+				__( 'Expire Date', 'membership2' )
 			),
 		);
 
@@ -107,7 +110,10 @@ class MS_View_Settings_Import_Users extends MS_View {
 			$users[] = array(
 				$item->username,
 				$item->email,
-				$membership_name
+				$membership_name,
+				$data->status,
+				$data->start,
+				$data->expire
 			);
 		}
 

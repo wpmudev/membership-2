@@ -440,19 +440,6 @@ class MS_Controller_Member extends MS_Controller {
 							}
 						}
 
-						$invoice 		= $subscription->get_current_invoice( false );
-						if ( $invoice ) {
-							if ( $data['status'] === MS_Model_Relationship::STATUS_ACTIVE ) {
-								$invoice->status = MS_Model_Invoice::STATUS_PAID;
-								$invoice->save();
-							} else if ( $data['status'] === MS_Model_Relationship::STATUS_CANCELED ) {
-								if ( $invoice->status !== MS_Model_Invoice::STATUS_PAID ) {
-									$invoice->status = MS_Model_Invoice::STATUS_PENDING;
-									$invoice->save();
-								}
-							}
-						}
-
 						$subscription->start_date 	= $data['start'];
 						$subscription->expire_date 	= $data['expire'];
 						$subscription->status 		= $data['status'];
