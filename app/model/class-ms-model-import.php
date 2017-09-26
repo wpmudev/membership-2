@@ -594,6 +594,18 @@ class MS_Model_Import extends MS_Model {
 		$member->is_member = true;
 
 		$member->save();
+		
+		if ( $membership ) {
+			$membership_obj = MS_Factory::load(
+				'MS_Model_Membership',
+				$membership
+			);
+			if ( $membership_obj && $membership_obj->id > 0 ) {
+				$membership = $membership_obj->id;
+			} else {
+				$membership = false;
+			}
+		}
 
 		if ( !$membership ) {
 			$membership = $obj->membershipid;

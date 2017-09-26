@@ -40,7 +40,7 @@ class MS_Model_Import_User extends MS_Model_Import {
 		}
 
 		$membership = false;
-		if ( isset( $_POST['users-membership'] )  && !empty( $_POST['users-membership'] ) ) {
+		if ( isset( $_POST['users-membership'] )  && !empty( $_POST['users-membership'] ) && intval( $_POST['users-membership'] ) > 0 ) {
 			$membership = $_POST['users-membership'];
 		}
 
