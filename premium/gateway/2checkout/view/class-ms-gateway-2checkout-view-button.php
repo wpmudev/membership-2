@@ -3,10 +3,10 @@
 class MS_Gateway_2checkout_View_Button extends MS_View {
 
 	public function to_html() {
-		$fields = $this->prepare_fields();
-		$subscription = $this->data['ms_relationship'];
-		$invoice = $subscription->get_current_invoice();
-		$gateway = $this->data['gateway'];
+		$fields 		= $this->prepare_fields();
+		$subscription 	= $this->data['ms_relationship'];
+		$invoice 		= $subscription->get_current_invoice();
+		$gateway 		= $this->data['gateway'];
 
 		$action_url = apply_filters(
 			'ms_gateway_2checkout_view_button_form_action_url',
@@ -63,73 +63,73 @@ class MS_Gateway_2checkout_View_Button extends MS_View {
 	}
 
 	private function prepare_fields() {
-		$gateway = $this->data['gateway'];
-		$subscription = $this->data['ms_relationship'];
-		$membership = $subscription->get_membership();
-		$invoice = $subscription->get_current_invoice();
-		$member = $subscription->get_member();
+		$gateway 		= $this->data['gateway'];
+		$subscription 	= $this->data['ms_relationship'];
+		$membership 	= $subscription->get_membership();
+		$invoice 		= $subscription->get_current_invoice();
+		$member 		= $subscription->get_member();
 
 		$fields = array(
 			'sid' => array(
-				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-				'id' => 'sid',
+				'type' 	=> MS_Helper_Html::INPUT_TYPE_HIDDEN,
+				'id' 	=> 'sid',
 				'value' => $gateway->seller_id,
 			),
 			'mode' => array(
-				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-				'id' => 'mode',
+				'type' 	=> MS_Helper_Html::INPUT_TYPE_HIDDEN,
+				'id' 	=> 'mode',
 				'value' => '2CO',
 			),
 			'type' => array(
-				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-				'id' => 'li_0_type',
+				'type' 	=> MS_Helper_Html::INPUT_TYPE_HIDDEN,
+				'id' 	=> 'li_0_type',
 				'value' => 'product',
 			),
 			'name' => array(
-				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-				'id' => 'li_0_name',
+				'type' 	=> MS_Helper_Html::INPUT_TYPE_HIDDEN,
+				'id' 	=> 'li_0_name',
 				'value' => $membership->name,
 			),
 			'price' => array(
-				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-				'id' => 'li_0_price',
+				'type' 	=> MS_Helper_Html::INPUT_TYPE_HIDDEN,
+				'id' 	=> 'li_0_price',
 				'value' => $invoice->total,
 			),
 			'tangible' => array(
-				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-				'id' => 'li_0_tangible',
+				'type' 	=> MS_Helper_Html::INPUT_TYPE_HIDDEN,
+				'id' 	=> 'li_0_tangible',
 				'value' => 'N',
 			),
 			'skip_landing' => array(
-				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-				'id' => 'skip_landing',
+				'type' 	=> MS_Helper_Html::INPUT_TYPE_HIDDEN,
+				'id' 	=> 'skip_landing',
 				'value' => '1',
 			),
 			'user_id' => array(
-				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-				'id' => 'user_id',
+				'type' 	=> MS_Helper_Html::INPUT_TYPE_HIDDEN,
+				'id' 	=> 'user_id',
 				'value' => $member->id,
 			),
 			'email' => array(
-				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-				'id' => 'email',
+				'type' 	=> MS_Helper_Html::INPUT_TYPE_HIDDEN,
+				'id' 	=> 'email',
 				'value' => $member->email,
 			),
 			// @todo: https://app.asana.com/0/10167801056814/57017131724658
 			//        It seems the currency is not correctly transferred to 2Checkout
 			'currency_code' => array(
-				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-				'id' => 'currency_code',
+				'type' 	=> MS_Helper_Html::INPUT_TYPE_HIDDEN,
+				'id' 	=> 'currency_code',
 				'value' => $invoice->currency,
 			),
 			'merchant_order_id' => array(
-				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-				'id' => 'merchant_order_id',
+				'type' 	=> MS_Helper_Html::INPUT_TYPE_HIDDEN,
+				'id' 	=> 'merchant_order_id',
 				'value' => $invoice->id,
 			),
 			'return_url' => array(
-				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-				'id' => 'x_receipt_link_url',
+				'type' 	=> MS_Helper_Html::INPUT_TYPE_HIDDEN,
+				'id' 	=> 'x_receipt_link_url',
 				'value' => esc_url_raw(
 					add_query_arg(
 						array( 'ms_relationship_id' => $subscription->id ),
@@ -142,17 +142,17 @@ class MS_Gateway_2checkout_View_Button extends MS_View {
 		//Set up payment parameters for the different payment types
 		switch ( $membership->payment_type ) {
 			case MS_Model_Membership::PAYMENT_TYPE_RECURRING:
-				$period_type = MS_Helper_Period::get_period_value(
+				$period_type 			= MS_Helper_Period::get_period_value(
 					$membership->pay_cycle_period,
 					'period_type'
 				);
-				$original_period_type = ucfirst($period_type[0]);
-				$period_type = strtoupper( $period_type[0] );
-				$period_value = MS_Helper_Period::get_period_value(
+				$original_period_type 	= ucfirst($period_type[0]);
+				$period_type 			= strtoupper( $period_type[0] );
+				$period_value 			= MS_Helper_Period::get_period_value(
 					$membership->pay_cycle_period,
 					'period_unit'
 				);
-				$period_value = MS_Helper_Period::validate_range(
+				$period_value 			= MS_Helper_Period::validate_range(
 					$period_value,
 					$period_type
 				);
@@ -177,14 +177,14 @@ class MS_Gateway_2checkout_View_Button extends MS_View {
 
 		if ( false !== strpos( $gateway->pay_button_url, '://' ) ) {
 			$fields['submit'] = array(
-				'id' => 'submit',
-				'type' => MS_Helper_Html::INPUT_TYPE_IMAGE,
+				'id' 	=> 'submit',
+				'type' 	=> MS_Helper_Html::INPUT_TYPE_IMAGE,
 				'value' => $gateway->pay_button_url,
 			);
 		} else {
 			$fields['submit'] = array(
-				'id' => 'submit',
-				'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
+				'id' 	=> 'submit',
+				'type' 	=> MS_Helper_Html::INPUT_TYPE_SUBMIT,
 				'value' => __( 'Signup', 'membership2' ),
 			);
 
@@ -205,10 +205,10 @@ class MS_Gateway_2checkout_View_Button extends MS_View {
 		}
 
 		//return $fields;
-                return apply_filters(
+        return apply_filters(
 			'ms_gateway_2checkout_view_prepare_fields',
 			$fields,
-                        $invoice
+			$invoice
 		);
 	}
 }
