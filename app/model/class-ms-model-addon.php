@@ -141,7 +141,13 @@ class MS_Model_Addon extends MS_Model_Option {
 				$addons[ $key ]->title 		= $data->name;
 
 				if ( isset( $addons[ $key ]->icon ) ) {
-					$addons[ $key ]->icon = '<i class="' . $addons[ $key ]->icon . '"></i>';
+					$icon = $addons[ $key ]->icon;
+					if ( filter_var( $icon, FILTER_VALIDATE_URL ) ) {
+						$addons[ $key ]->icon = '<img src="' . $icon . '" style="height: 110px;"/>';
+					} else {
+						$addons[ $key ]->icon = '<i class="' . $icon . '"></i>';
+					}
+					
 				} else {
 					$addons[ $key ]->icon = '<i class="wpmui-fa wpmui-fa-puzzle-piece"></i>';
 				}
