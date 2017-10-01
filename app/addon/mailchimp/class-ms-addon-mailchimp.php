@@ -487,7 +487,7 @@ class MS_Addon_Mailchimp extends MS_Addon {
 			$res = self::$mailchimp_api->subscribe( $list_id, $subscribe_data );
 
 			if ( is_wp_error( $res ) ) {
-				echo $res->errorMessage();
+				//echo $res->get_error_message();
 			}
 		}
 	}

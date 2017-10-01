@@ -28,9 +28,22 @@ class MS_Addon_Hustle_View extends MS_View {
 			foreach ( $fields as $field ) {
 				MS_Helper_Html::html_element( $field );
 			}
-
-			$this->render_provider_details( $settings, $provider );
 			?>
+			<div class="ms-hustle-provider-details">
+				<div class="ms-hustle-response notice notice-error is-dismissible" style="display:none">
+					<p></p>
+				</div>
+			<?php
+				$this->render_provider_details( $settings, $provider );
+			?>
+			</div>
+			<?php 
+			if ( $provider && !empty( $provider ) ) {
+			?>
+				<div id="optin-provider-account-options" class="wpmudev-provider-block ms-hustle-provider-list-details">
+
+				</div>
+			<?php } ?>
 		</div>
 		<?php
 		$html = ob_get_clean();
@@ -75,6 +88,8 @@ class MS_Addon_Hustle_View extends MS_View {
 	 *
 	 * @param object $settings
 	 * @param string $current_provider - the hustle provider
+	 *
+	 * @return string
 	 */
 	protected function render_provider_details( $settings, $current_provider ) {
 		global $hustle;
@@ -101,30 +116,17 @@ class MS_Addon_Hustle_View extends MS_View {
 								if ( preg_match( "/<[^<]+>/",$element['value'], $m ) != 0 ) {
 									$element['value'] = __( "Fetch Lists", "membership2" );
 								}
-								$element['type'] 				= "button";
-								$element['class'] 				= "button-primary " . $element['class'];
-								$element['attributes']['style'] = "margin-top:6px;";
+								$element['type'] 						= "button";
+								$element['class'] 						= "button-primary ms_optin_refresh_provider_details button";
+								$element['attributes']['style'] 		= "margin-top:6px;";
+								$element['attributes']['data-nonce'] 	= wp_create_nonce('refresh_provider_details');
+								$element['attributes']['data-provider'] = $current_provider;
 							}
 						}
 					}
 					$option = apply_filters( "wpoi_optin_filter_optin_options", $option, $optin );
 					$hustle->render( "general/option", array_merge( $option, array( "key" => $key ) ));
 				}
-				?>
-				<div id="optin-provider-account-options" class="wpmudev-provider-block">
-                                                    
-					<div id="optin-provider-account-selected-list" class="wpmudev-provider-block" data-nonce="<?php echo wp_create_nonce('optin_provider_current_settings') ?>" >
-
-						<label class="wpmudev-label--notice">
-							
-							<span><?php echo __('Selected list (campaign), Press the Fetch Lists button to update value.', "membership2" ); ?></span>
-							
-						</label>
-						
-					</div>
-				
-				</div>
-				<?php
 			}
 		}
 	}

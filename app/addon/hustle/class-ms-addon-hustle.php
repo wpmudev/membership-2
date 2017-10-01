@@ -16,6 +16,13 @@ class MS_Addon_Hustle extends MS_Addon {
 	 */
 	const ID = 'hustle';
 
+	/**
+	 * Ajax action to get lists
+	 *
+	 * @since 1.1.2
+	 */
+	const AJAX_ACTION_GET_ISTS = 'ms_hustle_get_lists';
+
 
 	/**
 	 * Checks if the current Add-on is enabled
@@ -57,6 +64,8 @@ class MS_Addon_Hustle extends MS_Addon {
 				'manage_render_callback',
 				10, 3
 			);
+
+			$this->add_ajax_action( self::AJAX_ACTION_GET_ISTS, 'get_provider_lists' );
 		}
 	}
 
@@ -100,7 +109,7 @@ class MS_Addon_Hustle extends MS_Addon {
 		$plugin_url 		= MS_Plugin::instance()->url;
 		$list[ self::ID ] 	= (object) array(
 			'name' 				=> __( 'Hustle Integration', 'membership2' ),
-			'description' 		=> __( 'Enable Hustle integration.', 'membership2' ),
+			'description' 		=> __( 'Add additional Hustle email providers', 'membership2' ),
 			'icon' 				=> $plugin_url . 'app/assets/images/hustle.png',
 		);
 
@@ -191,13 +200,88 @@ class MS_Addon_Hustle extends MS_Addon {
 			$providers = $hustle->get_providers();
 			$hustle_providers[] = __( 'Select a provider', 'membership2' );
 			foreach ( $providers as $provider ) {
-				if ( $provider['id'] === 'mailchimp') {
+				if ( $provider['id'] === 'mailchimp' || $provider['id'] === 'hubspot' || $provider['id'] === 'constantcontact' ) {
 					continue;
 				}
 				$hustle_providers[ $provider['id'] ] = $provider['name'];
 			}
 		}
 		return $hustle_providers;
+	}
+
+	/**
+	 * Refreshes provider account details after the account creds are added and submitted
+	 *
+	 * @since 1.1.2
+	 *
+	 * @return application/json
+	 */
+	public function get_provider_lists() {
+		global $hustle;
+		Opt_In_Utils::validate_ajax_call( "refresh_provider_details" );
+
+		$provider_id =  filter_input( INPUT_POST, "optin_provider_name" );
+
+        if ( empty( $provider_id ) ) {
+			wp_send_json_error( __("Invalid provider", "membership2" ) );
+		} 
+
+		$api_key =  filter_input( INPUT_POST, "optin_api_key" );
+        /**
+         * @var $provider Opt_In_Provider_Interface
+         */
+		$provider = Opt_In::get_provider_by_id( $provider_id );
+		
+		/**
+         * @var $provider Opt_In_Provider_Abstract
+         */
+		$provider = Opt_In::provider_instance( $provider );
+		 
+		$provider->set_arg( "api_key", $api_key );
+
+		if( filter_input( INPUT_POST, "optin_secret_key" ) )
+			$provider->set_arg( "secret", filter_input( INPUT_POST, "optin_secret_key" ) );
+		if( filter_input( INPUT_POST, "optin_username" ) )
+			$provider->set_arg( "username", filter_input( INPUT_POST, "optin_username" ) );
+		if ( filter_input( INPUT_POST, "optin_password" ) )
+			$provider->set_arg( "password", filter_input( INPUT_POST, "optin_password" ) );
+
+		if( filter_input( INPUT_POST, "optin_account_name" ) )
+			$provider->set_arg( "account_name", filter_input( INPUT_POST, "optin_account_name" ) );
+
+		if( filter_input( INPUT_POST, "optin_url" ) )
+			$provider->set_arg( "url", filter_input( INPUT_POST, "optin_url" ) );
+
+		$options = $provider->get_options( false );
+
+		if ( !is_wp_error( $options ) ) {
+            $html = "";
+
+            foreach ( $options as $key =>  $option ) {
+                $html .= $hustle->render( "general/option", array_merge( $option, array( "key" => $key ) ), true );
+			}
+			
+			$update_btn = array(
+				'id' 			=> 'btn-ms-hustle-save',
+				'type' 			=> MS_Helper_Html::INPUT_TYPE_BUTTON,
+				'value' 		=> __( 'Save', 'membership2' ),
+				'button_value' 	=> '',
+				'button_type' 	=> 'submit',
+			);
+
+			$separator = array(
+				'type' => MS_Helper_Html::TYPE_HTML_SEPARATOR,
+			);
+			$html .= MS_Helper_Html::html_element( $separator, true );
+			$html .= MS_Helper_Html::html_element( $update_btn, true );
+
+            wp_send_json_success( $html );
+        } else {
+            /**
+             * @var WP_Error $options
+             */
+            wp_send_json_error( implode( "<br/>", $options->get_error_messages() ) );
+        }
 	}
 }
 ?>
