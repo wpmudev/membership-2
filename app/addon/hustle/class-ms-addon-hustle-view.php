@@ -83,9 +83,9 @@ class MS_Addon_Hustle_View extends MS_View {
 
 			if ( $provider ) { 
 				$provider_instance 	= Opt_In::provider_instance( $provider );
-				$options 			= $provider_instance->get_account_options( $optin->id );
+				$options 			= $provider_instance->get_account_options( false );
 				foreach ( $options as $key =>  $option ) {
-					if ( $option['type'] === 'wrapper'  ){ $option['apikey'] = $optin->api_key; }
+					if ( $option['type'] === 'wrapper'  ){ $option['apikey'] = ''; }
 					
 					if ( $option['type'] === 'text') {
 						$option['class'] 				= "wpmui-field-input wpmui-text";
@@ -102,7 +102,7 @@ class MS_Addon_Hustle_View extends MS_View {
 									$element['value'] = __( "Fetch Lists", "membership2" );
 								}
 								$element['type'] 				= "button";
-								$element['class'] 				= "button " . $element['class'];
+								$element['class'] 				= "button-primary " . $element['class'];
 								$element['attributes']['style'] = "margin-top:6px;";
 							}
 						}
