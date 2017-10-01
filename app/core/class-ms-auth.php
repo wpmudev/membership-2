@@ -89,7 +89,7 @@ class MS_Auth {
                         }
 					}
 					
-					$resp = apply_filters( 'ms_auth_login_success', $resp );
+					$resp = apply_filters( 'ms_auth_ajax_login_success', $resp );
 
                     echo json_encode( $resp );
                     exit();
