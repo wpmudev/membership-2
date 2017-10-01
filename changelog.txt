@@ -10,6 +10,7 @@ Change Log:
 - Added: Rest API Help docs
 - Added: Duration for coupons - coupon can be applied onetime or recurring
 - Added: Bulk import of users in CSV as members to a membership
+- Added: Hustle Addon that comes with more email providers
 - Fixed: MailChimp Addon list function
 - Fixed: Styling for Membership Attributes PopUp
 - Fixed: Dripped Membership Url protection and menu protection

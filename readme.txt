@@ -114,6 +114,7 @@ We provide comprehensive and guaranteed support on the <a href='http://premium.w
 * Added: Membership List Export to CSV
 * Added: Membership and Member XML import and export format
 * Added: Bulk import of users in CSV as members to a membership
+* Added: Hustle addon that comes with more email providers
 * Fixed: MailChimp Addon list function
 * Fixed: Dripped Membership Url protection and menu protection
 * Fixed: Buddypress media protection conflict
