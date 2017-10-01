@@ -645,6 +645,8 @@ class MS_Controller_Settings extends MS_Controller {
 	 * @since  1.1.2
 	 */
 	public function enqueue_styles() {
+		$active_tab = $this->get_active_tab();
+		do_action( 'ms_controller_settings_enqueue_styles_' . $active_tab );
 		lib3()->ui->add( 'jquery-ui' );
 	}
 	
