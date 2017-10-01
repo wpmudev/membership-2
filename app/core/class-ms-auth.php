@@ -87,7 +87,9 @@ class MS_Auth {
                                 $resp['redirect'] = add_query_arg( array('auth' => wp_generate_auth_cookie( $user_signon->ID, time() + MINUTE_IN_SECONDS ) ), $resp['redirect'] );
                             }
                         }
-                    }
+					}
+					
+					$resp = apply_filters( 'ms_auth_login_success', $resp );
 
                     echo json_encode( $resp );
                     exit();

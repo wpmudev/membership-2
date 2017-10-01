@@ -82,6 +82,7 @@ class MS_Addon_Hustle extends MS_Addon {
 
 		if ( is_plugin_active( 'hustle/opt-in.php' ) || 
 			is_plugin_active( 'wordpress-popup/popover.php' ) ) {
+			
 			return true;
 		}
 		return false;
@@ -174,6 +175,29 @@ class MS_Addon_Hustle extends MS_Addon {
 		}
 
 		return $callback;
+	}
+
+	/**
+	 * Get the hustle providers
+	 *
+	 * @since  1.1.2
+	 *
+	 * @return array
+	 */
+	public static function hustle_providers() {
+		$hustle_providers = array();
+		if ( self::is_active() ) {
+			global $hustle;
+			$providers = $hustle->get_providers();
+			$hustle_providers[] = __( 'Select a provider', 'membership2' );
+			foreach ( $providers as $provider ) {
+				if ( $provider['id'] === 'mailchimp') {
+					continue;
+				}
+				$hustle_providers[ $provider['id'] ] = $provider['name'];
+			}
+		}
+		return $hustle_providers;
 	}
 }
 ?>
