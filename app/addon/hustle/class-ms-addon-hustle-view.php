@@ -33,17 +33,39 @@ class MS_Addon_Hustle_View extends MS_View {
 				<div class="ms-hustle-response notice notice-error is-dismissible" style="display:none">
 					<p></p>
 				</div>
-			<?php
-				$this->render_provider_details( $settings, $provider );
-			?>
+				<?php
+					if ( $provider && !empty( $provider ) ) {
+						$provider_details = $settings->get_custom_setting( 'hustle', $provider );
+						$this->render_provider_details( $settings, $provider, $provider_details );
+						?>
+							<div id="optin-provider-account-options" class="wpmudev-provider-block ms-hustle-provider-list-details">
+								<div class="ms-bold"><?php echo __( 'Press the Fetch Lists button to update value.', Opt_In::TEXT_DOMAIN ); ?></div>
+								<?php
+								$separator = MS_Helper_Html::html_element( array(
+												'type' => MS_Helper_Html::TYPE_HTML_SEPARATOR,
+											), true );
+								if ( $provider_details && is_array( $provider_details ) && is_array( $provider_details['lists'] ) ) {
+									$subscription_options 		= MS_Addon_Hustle::subscription_list_types();
+									$provider_details_list 		= $provider_details['lists'];
+									$output = "";
+									foreach ( $subscription_options as $key => $subscription_option ) {
+										if ( isset( $provider_details_list[$key] ) ) {
+											foreach ( $provider_details_list[$key] as $provider_detail ) {
+												$output .= $subscription_option . " : " . $provider_detail['text'] ;
+												$output .= $separator;
+											}
+										}
+									}
+									echo $output;
+									
+								} 
+								?>
+							</div>
+						<?php
+					} 
+					?>
 			</div>
-			<?php 
-			if ( $provider && !empty( $provider ) ) {
-			?>
-				<div id="optin-provider-account-options" class="wpmudev-provider-block ms-hustle-provider-list-details">
-
-				</div>
-			<?php } ?>
+			
 		</div>
 		<?php
 		$html = ob_get_clean();
@@ -91,7 +113,7 @@ class MS_Addon_Hustle_View extends MS_View {
 	 *
 	 * @return string
 	 */
-	protected function render_provider_details( $settings, $current_provider ) {
+	protected function render_provider_details( $settings, $current_provider, $provider_details ) {
 		global $hustle;
 		if ( $current_provider && !empty( $current_provider ) ) {
 			$provider = Opt_In::get_provider_by_id( $current_provider );
@@ -100,17 +122,28 @@ class MS_Addon_Hustle_View extends MS_View {
 				$provider_instance 	= Opt_In::provider_instance( $provider );
 				$options 			= $provider_instance->get_account_options( false );
 				foreach ( $options as $key =>  $option ) {
-					if ( $option['type'] === 'wrapper'  ){ $option['apikey'] = ''; }
 					
 					if ( $option['type'] === 'text') {
 						$option['class'] 				= "wpmui-field-input wpmui-text";
 						$option['attributes']['style'] 	= "width:80%";
+						$name = $option['name'];
+						if ( $provider_details && is_array( $provider_details ) ) {
+							if ( isset( $provider_details[ $name ] ) ) {
+								$option['value'] = $provider_details[ $name ];
+							}
+						}
 					}
 					if ( isset ( $option['elements'] ) && is_array( $option['elements'] ) ) {
 						foreach ( $option['elements'] as  &$element ) {
 							if ( $element['type'] === 'text') {
 								$element['class'] 				= "wpmui-field-input wpmui-text";
 								$element['attributes']['style'] = "width:80%";
+								$name = $element['name'];
+								if ( $provider_details && is_array( $provider_details ) ) {
+									if ( isset( $provider_details[ $name ] ) ) {
+										$element['value'] = $provider_details[ $name ];
+									}
+								}
 								
 							} else if ( $element['type'] === 'ajax_button') {
 								if ( preg_match( "/<[^<]+>/",$element['value'], $m ) != 0 ) {
