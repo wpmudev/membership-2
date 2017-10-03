@@ -29,6 +29,14 @@ class MS_Addon_Hustle_Provider_Mautic extends MS_Addon_Hustle_Provider {
 	**/
 	private $auth;
 
+
+	/**
+	 * API object
+	 *
+	 * @var Object
+	 */
+	static protected $_api = null;
+
 	/**
 	 * Api class
 	 *
@@ -39,37 +47,41 @@ class MS_Addon_Hustle_Provider_Mautic extends MS_Addon_Hustle_Provider {
 			$base_url = $this->get_provider_detail( 'optin_url' );
 			$username = $this->get_provider_detail( 'optin_username' );
 			$password = $this->get_provider_detail( 'optin_password' );
-			
-			$this->base_url = $base_url;
-			$this->username = $username;
-			$this->password = $password;
 
 			if ( ! empty( $base_url ) && ! empty( $username ) && ! empty( $password ) ) {
+				$this->base_url = $base_url;
+				$this->username = $username;
+				$this->password = $password;
+
 				$params = array(
-					'baseUrl' => $this->base_url,
-					'userName' => $this->username,
-					'password' => $this->password,
+					'baseUrl' 	=> $this->base_url,
+					'userName' 	=> $this->username,
+					'password' 	=> $this->password,
 				);
 
-				$initAuth = new Mautic\Auth\ApiAuth();
+				$initAuth 	= new Mautic\Auth\ApiAuth();
 				$this->auth = $initAuth->newAuth( $params, 'BasicAuth' );
-				$this->api = new Mautic\MauticApi( $this->auth, $this->base_url );
+				$this->api 	= new Mautic\MauticApi( $this->auth, $this->base_url );
 
 				return $this->api;
 			} else {
-				return new WP_Error( 'broke', __( "Could not initiate Mautic API. Please check your details", "membership2" ) );
+				return new WP_Error( 'broke', __( "Could not initiate API. Please check your details", "membership2" ) );
 			}
 		} catch ( Exception $e ) {
-			return new WP_Error( 'broke', __( "Could not initiate Mautic API. Please check your details", "membership2" ) );
+			return new WP_Error( 'broke', __( "Could not initiate API. Please check your details", "membership2" ) );
 		}
 	}
 
 	protected function get_api(){
-		$api = $this->api();
-		if ( ! is_wp_error( $api ) ) {
-			return $api;
+		if ( empty( self::$_api ) ) {
+			$api = $this->api();
+			if ( ! is_wp_error( $api ) ) {
+				self::$_api = $api;
+			} else {
+				return false;
+			}
 		}
-		return false;
+		return self::$_api;
 	}
 
 	public function subscribe_user( $member, $list_id ) { 

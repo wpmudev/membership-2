@@ -31,6 +31,18 @@ class MS_Addon_Hustle extends MS_Addon {
 	const AJAX_ACTION_SAVE_PROVIDER = 'ms_hustle_save_provider';
 
 
+
+	/**
+     * @var $_skip_providers array
+     * these providers will be skipped on PHP version lower than 5.3
+     */
+	protected static $_excluded_providers = array(
+        'mailchimp',
+		'hubspot',
+		'constantcontact',
+		'sendy'
+    );
+
 	/**
 	 * Checks if the current Add-on is enabled
 	 *
@@ -231,9 +243,9 @@ class MS_Addon_Hustle extends MS_Addon {
 			$providers = $hustle->get_providers();
 			$hustle_providers[] = __( 'Select a provider', 'membership2' );
 			foreach ( $providers as $provider ) {
-				if ( $provider['id'] === 'mailchimp' || $provider['id'] === 'hubspot' || $provider['id'] === 'constantcontact' ) {
+				if ( in_array( $provider['id'], self::$_excluded_providers ) ) {
 					continue;
-				}
+				} 
 				$hustle_providers[ $provider['id'] ] = $provider['name'];
 			}
 		}
