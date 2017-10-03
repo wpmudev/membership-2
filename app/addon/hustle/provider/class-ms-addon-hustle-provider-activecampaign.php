@@ -33,6 +33,7 @@ class MS_Addon_Hustle_Provider_Activecampaign extends MS_Addon_Hustle_Provider {
      * @return object|WP_Error
      */
 	private function _request( $verb = "GET", $action, $args = array() ){
+		$this->api();
         $url = $this->_url;
 
         $apidata = array(

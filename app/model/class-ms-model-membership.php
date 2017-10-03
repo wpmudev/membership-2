@@ -2400,7 +2400,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 * @param int $post_id ID of specific post
 	 * @return boolean True if has access to current page. Default is false.
 	 */
-	public function has_access_to_post( $post_id ) {
+	public function has_access_to_post( $post_id, $subscription ) {
 		$has_access = null;
 
 		if ( MS_Model_Member::is_normal_admin() ) {

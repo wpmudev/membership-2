@@ -612,7 +612,7 @@ class MS_Rule_Media_Model extends MS_Rule {
 				} else {
 					foreach ( $member->subscriptions as $subscription ) {
 						$membership = $subscription->get_membership();
-						$access 	= $membership->has_access_to_post( $parent_id );
+						$access 	= $membership->has_access_to_post( $parent_id, $subscription );
 						if ( $access ) { 
 							wp_cache_set( $cache_key, true , 'ms_media_protection_member' );
 							break; 

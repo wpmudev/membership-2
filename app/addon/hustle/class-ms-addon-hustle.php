@@ -40,7 +40,8 @@ class MS_Addon_Hustle extends MS_Addon {
         'mailchimp',
 		'hubspot',
 		'constantcontact',
-		'sendy'
+		'sendy',
+		'aweber'
     );
 
 	/**
