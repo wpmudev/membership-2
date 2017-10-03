@@ -72,6 +72,27 @@ class MS_Addon_Hustle extends MS_Addon {
 				10, 3
 			);
 
+			// Watch for REGISTER event: Subscribe user to list.
+			$this->add_action(
+				'ms_model_event_'. MS_Model_Event::TYPE_MS_REGISTERED,
+				'subscribe_registered',
+				10, 2
+			);
+
+			// Watch for SIGN UP event: Subscribe user to list.
+			$this->add_action(
+				'ms_model_event_'. MS_Model_Event::TYPE_MS_SIGNED_UP,
+				'subscribe_members',
+				10, 2
+			);
+
+			// Watch for DEACTIVATE event: Subscribe user to list.
+			$this->add_action(
+				'ms_model_event_'. MS_Model_Event::TYPE_MS_DEACTIVATED,
+				'subscribe_deactivated',
+				10, 2
+			);
+
 			$this->add_ajax_action( self::AJAX_ACTION_GET_ISTS, 'get_provider_lists' );
 			$this->add_ajax_action( self::AJAX_ACTION_SAVE_PROVIDER, 'save_provider_details' );
 		}
@@ -217,6 +238,38 @@ class MS_Addon_Hustle extends MS_Addon {
 			}
 		}
 		return $hustle_providers;
+	}
+
+	/**
+	 * List of all configured provider classes
+	 *
+	 * @return array
+	 */
+	private static function hustle_provider_classes() {
+		return array(
+			'mautic' => 'MS_Addon_Hustle_Provider_Mautic'
+		);
+	}
+
+	/**
+	 * Get provider api class by provider id
+	 *
+	 * @return object|bool
+	 */
+	public static function get_hustle_provider( $provider ) {
+		$providers = self::hustle_provider_classes();
+		if ( isset ( $providers[$provider] ) ) {
+			$provider_class =  $providers[$provider];
+			try {
+				$provider_instance = new $provider_class;
+				if ( is_a( $provider_instance, 'MS_Addon_Hustle_Provider' ) ) {
+					return $provider_instance;
+				}
+			} catch( Exception $e ) {
+				$this->log( $e->getMessage() );
+			}
+		}
+		return false;
 	}
 
 	/**
@@ -367,6 +420,140 @@ class MS_Addon_Hustle extends MS_Addon {
 		$settings->save();
 
 		wp_send_json_success( __( 'Email provider settings saved', 'membership2' ) );
+	}
+
+	/**
+	 * Get provider with details
+	 *
+	 * @return bool|array
+	 */
+	protected function get_provider_with_details() {
+		$settings 	= MS_Factory::load( 'MS_Model_Settings' );
+		$provider 	= $settings->get_custom_setting( 'hustle', 'hustle_provider' );
+		if ( $provider ) {
+			$provider_details 	= $settings->get_custom_setting( 'hustle', $provider );
+			$provider_class 	= self::get_hustle_provider( $provider );
+			if ( $provider_class ) {
+				if ( $provider_details && is_array( $provider_details ) && is_array( $provider_details['lists'] ) ) {
+					return array( $provider_class, $provider_details['lists'] );
+				}
+			}
+		}
+		return false;
+	}
+
+
+	/**
+	 * A new user registered (not a Member yet).
+	 *
+	 * @since  1.1.2
+	 * @param  mixed $event
+	 * @param  mixed $member
+	 */
+	public function subscribe_registered( $event, $member ) {
+		$provider_details = $this->get_provider_with_details();
+		if ( is_array( $provider_details ) ) {
+			list( $provider_class, $lists ) = $provider_details;
+			if ( isset( $lists['registered'] ) ) {
+				$list_id = $lists['registered']['value'];
+				if ( $list_id ) {
+					if ( ! $provider_class->is_user_subscribed( $member->email, $list_id ) ) {
+						$provider_class->subscribe_user( $member, $list_id );
+					}
+				} 
+			}
+		}
+	}
+
+	/**
+	 * A user subscribed to a membership.
+	 *
+	 * @since  1.1.2
+	 * @param  mixed $event
+	 * @param  mixed $subscription
+	 */
+	public function subscribe_members( $event, $subscription ) {
+		try {
+			$provider_details = $this->get_provider_with_details();
+			if ( is_array( $provider_details ) ) {
+				list( $provider_class, $lists ) = $provider_details;
+				$mail_list_registered 	= $lists['registered']['value'];
+				$mail_list_deactivated 	= $lists['deactivated']['value'];
+				$mail_list_members 		= $lists['members']['value'];
+				$member 				= $subscription->get_member();
+
+				if ( $mail_list_members != $mail_list_registered ) {
+					/** Verify if is subscribed to registered mail list and remove it. */
+					if ( $provider_class->is_user_subscribed( $member->email, $mail_list_registered ) ) {
+						$provider_class->unsubscribe_user( $member->email, $mail_list_registered );
+					}
+				}
+
+				if ( $mail_list_members != $mail_list_deactivated ) {
+					/** Verify if is subscribed to deactivated mail list and remove it. */
+					if ( $provider_class->is_user_subscribed( $member->email, $mail_list_deactivated ) ) {
+						$provider_class->unsubscribe_user( $member->email, $mail_list_deactivated );
+					}
+				}
+
+				if ( $mail_list_members ) {
+					if ( ! $provider_class->is_user_subscribed( $member->email, $mail_list_members ) ) {
+						$provider_class->subscribe_user( $member, $mail_list_members );
+					}
+				}
+			}
+		} catch ( Exception $e ) {
+			$this->log( $e->getMessage() );
+		}
+	}
+
+	/**
+	 * A membership was deactivated (e.g. expired or manually cancelled)
+	 *
+	 * @since  1.1.2
+	 * @param  mixed $event
+	 * @param  mixed $subscription
+	 */
+	public function subscribe_deactivated( $event, $subscription ) {
+		try {
+			$provider_details = $this->get_provider_with_details();
+			if ( is_array( $provider_details ) ) {
+				list( $provider_class, $lists ) = $provider_details;
+
+				$mail_list_registered 	= $lists['registered']['value'];
+				$mail_list_deactivated 	= $lists['deactivated']['value'];
+				$mail_list_members 		= $lists['members']['value'];
+				$member 				= $subscription->get_member();
+
+				//Check if member has a new subscription
+				$membership 			= $subscription->get_membership();
+				$new_membership 		= MS_Factory::load(
+					'MS_Model_Membership',
+					$membership->on_end_membership_id
+				);
+				if ( !$new_membership->is_valid() ) {
+					if ( $mail_list_deactivated == $mail_list_registered ) {
+						/** Verify if is subscribed to registered mail list and remove it. */
+						if ( $provider_class->is_user_subscribed( $member->email, $mail_list_registered ) ) {
+							$provider_class->unsubscribe_user( $member->email, $mail_list_registered );
+						}
+					}
+	
+					if ( $mail_list_deactivated == $mail_list_members ) {
+						/** Verify if is subscribed to deactivated mail list and remove it. */
+						if ( $provider_class->is_user_subscribed( $member->email, $mail_list_members ) ) {
+							$provider_class->unsubscribe_user( $member->email, $mail_list_members );
+						}
+					}
+	
+					if ( ! $provider_class->is_user_subscribed( $member->email, $mail_list_deactivated ) ) {
+						$provider_class->unsubscribe_user( $member, $mail_list_deactivated );
+					}
+				}
+			}
+		} catch ( Exception $e ) {
+			$this->log( $e->getMessage() );
+		}
 	}
 }
 ?>

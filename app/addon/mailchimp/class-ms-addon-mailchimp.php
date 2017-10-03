@@ -167,19 +167,15 @@ class MS_Addon_Mailchimp extends MS_Addon {
 
 			if ( $mail_list_members != $mail_list_registered ) {
 				/** Verify if is subscribed to registered mail list and remove it. */
-				if ( $list_id = self::$settings->get_custom_setting( 'mailchimp', 'mail_list_registered' ) ) {
-					if ( self::is_user_subscribed( $member->email, $list_id ) ) {
-						self::unsubscribe_user( $member->email, $list_id );
-					}
+				if ( self::is_user_subscribed( $member->email, $mail_list_registered ) ) {
+					self::unsubscribe_user( $member->email, $mail_list_registered );
 				}
 			}
 
 			if ( $mail_list_members != $mail_list_deactivated ) {
 				/** Verify if is subscribed to deactivated mail list and remove it. */
-				if ( $list_id = self::$settings->get_custom_setting( 'mailchimp', 'mail_list_deactivated' ) ) {
-					if ( self::is_user_subscribed( $member->email, $list_id ) ) {
-						self::unsubscribe_user( $member->email, $list_id );
-					}
+				if ( self::is_user_subscribed( $member->email, $mail_list_deactivated ) ) {
+					self::unsubscribe_user( $member->email, $mail_list_deactivated );
 				}
 			}
 
@@ -189,7 +185,7 @@ class MS_Addon_Mailchimp extends MS_Addon {
 			if ( isset( $custom_list_id ) && 0 != $custom_list_id ) {
 				$list_id = $custom_list_id;
 			} else {
-				$list_id = self::$settings->get_custom_setting( 'mailchimp', 'mail_list_members' );
+				$list_id = $mail_list_members;
 			}
 
 			if ( $list_id ) {
@@ -227,27 +223,21 @@ class MS_Addon_Mailchimp extends MS_Addon {
 
 				if ( $mail_list_deactivated == $mail_list_registered ) {
 					// Verify if is subscribed to registered mail list and remove it.
-					if ( $list_id = self::$settings->get_custom_setting( 'mailchimp', 'mail_list_registered' ) ) {
-						if ( self::is_user_subscribed( $member->email, $list_id ) ) {
-							self::unsubscribe_user( $member->email, $list_id );
-						}
+					if ( self::is_user_subscribed( $member->email, $mail_list_registered ) ) {
+						self::unsubscribe_user( $member->email, $mail_list_registered );
 					}
 				}
 
 				if ( $mail_list_deactivated == $mail_list_members ) {
 					// Verify if is subscribed to members mail list and remove it.
-					if ( $list_id = self::$settings->get_custom_setting( 'mailchimp', 'mail_list_members' ) ) {
-						if ( self::is_user_subscribed( $member->email, $list_id ) ) {
-							self::unsubscribe_user( $member->email, $list_id );
-						}
+					if ( self::is_user_subscribed( $member->email, $mail_list_members ) ) {
+						self::unsubscribe_user( $member->email, $mail_list_members );
 					}
 				}
 
 				// Subscribe to deactiveted members mail list.
-				if ( $list_id = self::$settings->get_custom_setting( 'mailchimp', 'mail_list_deactivated' ) ) {
-					if ( ! self::is_user_subscribed( $member->email, $list_id ) ) {
-						self::subscribe_user( $member, $list_id );
-					}
+				if ( ! self::is_user_subscribed( $member->email, $mail_list_deactivated ) ) {
+					self::subscribe_user( $member, $mail_list_deactivated );
 				}
 			}
 		} catch ( Exception $e ) {
