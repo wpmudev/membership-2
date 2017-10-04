@@ -248,7 +248,7 @@ class MS_Addon_Hustle extends MS_Addon {
 			$supported_providers 	= self::hustle_provider_classes();
 			$supported_providers 	= array_keys( $supported_providers );
 			foreach ( $providers as $provider ) {
-				if ( in_array( $provider['id'], $supported_providers ) ) {
+				if ( !in_array( $provider['id'], $supported_providers ) ) {
 					continue;
 				} 
 				$hustle_providers[ $provider['id'] ] = $provider['name'];

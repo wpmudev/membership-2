@@ -121,7 +121,7 @@ class MS_Addon_Hustle_Provider_Mautic extends MS_Addon_Hustle_Provider {
 								}
 							}
 						}
-						$member->set_gateway_profile( self::$PROVIDER_ID, 'contact_id', $contact_id );
+						$member->set_gateway_profile( self::$PROVIDER_ID, $member->email, $contact_id );
 						return $contact_id;
 					} else {
 						$err->add( 'susbscribe_error', __( 'Something went wrong. Please try again', 'membership2' ) );
@@ -141,8 +141,8 @@ class MS_Addon_Hustle_Provider_Mautic extends MS_Addon_Hustle_Provider {
 	public function unsubscribe_user( $member, $list_id ) {
 		$api = $this->get_api();
 		if ( $api ) {
-			$contact_id = $member->get_gateway_profile( self::$PROVIDER_ID, 'contact_id' );
-			if ( $contact_id && $api ) {
+			$contact_id = $member->get_gateway_profile( self::$PROVIDER_ID, $member->email );
+			if ( $contact_id ) {
 				$contactApi = $api->newApi( 'contacts', $this->auth, $this->base_url );
 				try {
 					$contactApi->delete( $contact_id );

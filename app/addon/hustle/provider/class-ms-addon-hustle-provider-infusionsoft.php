@@ -140,13 +140,44 @@ class MS_Addon_Hustle_Provider_Infusionsoft extends MS_Addon_Hustle_Provider {
 			return $res;
 		} else {
 			$contact_id = $res->get_value( 'i4' );
+			$member->set_gateway_profile( self::$PROVIDER_ID, $member->email, $contact_id );
 			$this->add_tag_to_contact( $contact_id, $list_id );
 			return true;
 		}
 	}
 
 	public function unsubscribe_user( $member, $list_id ) {
-		
+		$contact_id = $member->get_gateway_profile( self::$PROVIDER_ID, $member->email );
+		if ( $contact_id ) {
+			$xml = "<?xml version='1.0' encoding='UTF-8'?>
+					<methodCall>
+					<methodName>ContactService.unlinkContacts</methodName>
+					<params>
+						<param>
+						<value>
+							<string>{$this->_api_key}</string>
+						</value>
+						</param>
+						<param>
+						<value>
+							<int>$contact_id</int>
+						</value>
+						</param>
+						<param>
+						<value>
+							<int>$list_id</int>
+						</value>
+						</param>
+					</params>
+					</methodCall>";
+
+			$res = $this->_request( $xml );
+
+			if( is_wp_error( $res ) )
+				return $res;
+
+			return $res->get_value();
+		}
 	}
 
 	public function is_user_subscribed( $user_email, $list_id ) {

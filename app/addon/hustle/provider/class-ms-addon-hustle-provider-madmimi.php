@@ -117,7 +117,9 @@ class MS_Addon_Hustle_Provider_Madmimi extends MS_Addon_Hustle_Provider {
 
 
 	public function unsubscribe_user( $member, $list_id ) {
-		
+		$action = "audience_lists/" . $list_id ."/remove?email=" . $member->email;
+		$res 	=  $this->_post( $action );
+		return empty( $res ) ? true : $res;
 	}
 
 

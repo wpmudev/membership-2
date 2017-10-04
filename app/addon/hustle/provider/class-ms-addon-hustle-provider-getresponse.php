@@ -85,6 +85,18 @@ class MS_Addon_Hustle_Provider_GetResponse extends MS_Addon_Hustle_Provider {
     private function _post( $action, $args = array() ) {
         return $this->_request( "POST", $action, $args );
 	}
+
+
+	/**
+     * Sends rest POST request
+     *
+     * @param $action
+     * @param array $args
+     * @return array|mixed|object|WP_Error
+     */
+	 private function _delete( $action, $args = array() ) {
+        return $this->_request( "DELETE", $action, $args );
+	}
 	
 	public function subscribe_user( $member, $list_id  ) {
 		$geo 	= new Opt_In_Geo();
@@ -100,14 +112,71 @@ class MS_Addon_Hustle_Provider_GetResponse extends MS_Addon_Hustle_Provider {
 		);
         $res =  $this->_post( "contacts", array(
             "body" =>  $data
-        ));
+		));
 
         return empty( $res ) ? true : $res;
 	}
 	
 
 	public function unsubscribe_user( $member, $list_id ) {
+		$geo 		= new Opt_In_Geo();
+		$contact_id = $this->get_email_contact_id( $member->email );
+		if ( $contact_id ) {
+			$res =  $this->_delete( "contacts/" .$contact_id, array(
+				"body" =>  array(
+					'messageId' => $list_id,
+					'ipAddress' => $geo->get_user_ip()
+				)
+			));
+		}
+	}
 
+
+	public function is_user_subscribed( $user_email, $list_id ) {
+		$data = array(
+			'query' => $user_email,
+			'fields' => 'campaign'
+		);
+		$res =  $this->_get( "contacts", array(
+            "body" =>  $data
+		));
+		if ( !is_wp_error( $res ) ) {
+			$response = (array) $res;
+			if ( count( $response ) > 0 ) {
+				if ( isset( $response[0]['contactId'] ) && isset( $response[0]['campaign'] ) ) {
+					$campaign = $response[0]['campaign'];
+					if ( $campaign->campaignId == $list_id ) {
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Check if email exists.
+	 * Subscription takes long, so we have to get the contact id after
+	 *
+	 * @return bool|int
+	 */
+	private function get_email_contact_id( $user_email ) {
+		$data = array(
+			'query' => $user_email,
+			'fields' => 'campaign'
+		);
+		$res =  $this->_get( "contacts", array(
+            "body" =>  $data
+		));
+		if ( !is_wp_error( $res ) ) {
+			$response = (array) $res;
+			if ( count( $response ) > 0 ) {
+				if ( isset( $response[0]['contactId'] ) ) {
+					return $response[0]['contactId'];
+				}
+			}
+		}
+		return false;
 	}
 }
 ?>
