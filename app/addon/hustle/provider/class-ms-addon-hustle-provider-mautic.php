@@ -1,5 +1,14 @@
 <?php
 
+/**
+ * Mautic Hustle addon provider.
+ *
+ * @since  1.1.2
+ *
+ * @uses MS_Addon_Hustle_Provider
+ *
+ * @package Membership2
+ */
 class MS_Addon_Hustle_Provider_Mautic extends MS_Addon_Hustle_Provider {
 
 	protected static $PROVIDER_ID = 'mautic';

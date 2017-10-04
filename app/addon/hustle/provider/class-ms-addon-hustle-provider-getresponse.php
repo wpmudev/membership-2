@@ -1,5 +1,13 @@
 <?php
-
+/**
+ * Get Response Hustle addon provider.
+ *
+ * @since  1.1.2
+ *
+ * @uses MS_Addon_Hustle_Provider
+ *
+ * @package Membership2
+ */
 class MS_Addon_Hustle_Provider_GetResponse extends MS_Addon_Hustle_Provider {
 
 	protected static $PROVIDER_ID = 'getresponse';

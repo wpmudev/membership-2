@@ -29,20 +29,6 @@ class MS_Addon_Hustle extends MS_Addon {
 	 * @since 1.1.2
 	 */
 	const AJAX_ACTION_SAVE_PROVIDER = 'ms_hustle_save_provider';
-
-
-
-	/**
-     * @var $_skip_providers array
-     * these providers will be skipped on PHP version lower than 5.3
-     */
-	protected static $_excluded_providers = array(
-        'mailchimp',
-		'hubspot',
-		'constantcontact',
-		'sendy',
-		'aweber'
-	);
 	
 	/**
 	 * Current provider
@@ -120,8 +106,6 @@ class MS_Addon_Hustle extends MS_Addon {
 				'subscribe_deactivated',
 				10, 2
 			);
-
-
 
 			$this->add_ajax_action( self::AJAX_ACTION_GET_ISTS, 'get_provider_lists' );
 			$this->add_ajax_action( self::AJAX_ACTION_SAVE_PROVIDER, 'save_provider_details' );
@@ -259,10 +243,12 @@ class MS_Addon_Hustle extends MS_Addon {
 		$hustle_providers = array();
 		if ( self::is_active() ) {
 			global $hustle;
-			$providers = $hustle->get_providers();
-			$hustle_providers[] = __( 'Select a provider', 'membership2' );
+			$providers 				= $hustle->get_providers();
+			$hustle_providers[] 	= __( 'Select a provider', 'membership2' );
+			$supported_providers 	= self::hustle_provider_classes();
+			$supported_providers 	= array_keys( $supported_providers );
 			foreach ( $providers as $provider ) {
-				if ( in_array( $provider['id'], self::$_excluded_providers ) ) {
+				if ( in_array( $provider['id'], $supported_providers ) ) {
 					continue;
 				} 
 				$hustle_providers[ $provider['id'] ] = $provider['name'];
@@ -277,9 +263,16 @@ class MS_Addon_Hustle extends MS_Addon {
 	 * @return array
 	 */
 	private static function hustle_provider_classes() {
-		return array(
-			'mautic' => 'MS_Addon_Hustle_Provider_Mautic'
-		);
+		return apply_filters( 'ms_hustle_provider_classes',  array(
+			'activecampaign' 	=> 'MS_Addon_Hustle_Provider_Activecampaign',
+			'campaignmonitor' 	=> 'MS_Addon_Hustle_Provider_Campaignmonitor',
+			'convertkit' 		=> 'MS_Addon_Hustle_Provider_Convertkit',
+			'getresponse' 		=> 'MS_Addon_Hustle_Provider_GetResponse',
+			'infusionsoft' 		=> 'MS_Addon_Hustle_Provider_Infusionsoft',
+			'mad_mimi' 			=> 'MS_Addon_Hustle_Provider_Madmimi',
+			'mautic' 			=> 'MS_Addon_Hustle_Provider_Mautic',
+			'sendinblue' 		=> 'MS_Addon_Hustle_Provider_Sendinblue'
+		) );
 	}
 
 	/**
@@ -360,6 +353,7 @@ class MS_Addon_Hustle extends MS_Addon {
 		if( filter_input( INPUT_POST, "optin_url" ) )
 			$provider->set_arg( "url", filter_input( INPUT_POST, "optin_url" ) );
 
+		do_action( 'ms_hustle_get_provider_lists', $provider, $provider_id );
 		$options = $provider->get_options( false );
 
 		if ( !is_wp_error( $options ) ) {
@@ -381,7 +375,8 @@ class MS_Addon_Hustle extends MS_Addon {
 						$name 			= $option['name'];
 						$option['name'] = "mc_hustle[$k][$name]";
 					}
-					$html .= $hustle->render( "general/option", array_merge( $option, array( "key" => $key ) ), true );
+					$option = apply_filters( "ms_hustle_optin_filter_optin_options", $option, $provider_id );
+					$html 	.= $hustle->render( "general/option", array_merge( $option, array( "key" => $key ) ), true );
 				}
 				$html .= MS_Helper_Html::html_element( $separator, true );
 			} 
@@ -391,7 +386,7 @@ class MS_Addon_Hustle extends MS_Addon {
 				'id' 			=> 'btn-ms-hustle-save',
 				'type' 			=> MS_Helper_Html::INPUT_TYPE_BUTTON,
 				'value' 		=> __( 'Save', 'membership2' ),
-				'button_value' 	=> wp_create_nonce('save_provider_details'),
+				'button_value' 	=> wp_create_nonce( 'save_provider_details' ),
 				'button_type' 	=> 'submit',
 				'class'			=> 'ms_optin_save_provider_details',
 			);
@@ -422,7 +417,7 @@ class MS_Addon_Hustle extends MS_Addon {
 		$provider_id =  filter_input( INPUT_POST, "optin_provider_name" );
 		
 		if ( empty( $provider_id ) ) {
-			wp_send_json_error( __("Invalid provider", "membership2" ) );
+			wp_send_json_error( __( "Invalid provider", "membership2" ) );
 		} 
 
 		$settings 	= MS_Factory::load( 'MS_Model_Settings' );
@@ -448,6 +443,8 @@ class MS_Addon_Hustle extends MS_Addon {
 		
 		$details["lists"] 					= $_POST['mc_hustle'];
 
+		$details = apply_filters( 'ms_hustle_provider_details', $details, $provider_id );
+
 		$settings->set_custom_setting( 'hustle', $provider_id , $details );
 		$settings->save();
 
@@ -460,8 +457,8 @@ class MS_Addon_Hustle extends MS_Addon {
 	 * @return bool|array
 	 */
 	protected function get_provider_with_details() {
-		$settings 	= MS_Factory::load( 'MS_Model_Settings' );
 		if ( $this->provider ) {
+			$settings 			= MS_Factory::load( 'MS_Model_Settings' );
 			$provider_details 	= $settings->get_custom_setting( 'hustle', $this->provider );
 			$provider_class 	= self::get_hustle_provider( $this->provider );
 			if ( $provider_class ) {
@@ -514,10 +511,10 @@ class MS_Addon_Hustle extends MS_Addon {
 			$provider_details = $this->get_provider_with_details();
 			if ( is_array( $provider_details ) ) {
 				list( $provider_class, $lists ) = $provider_details;
-				$mail_list_registered 	= $lists['registered']['value'];
-				$mail_list_deactivated 	= $lists['deactivated']['value'];
-				$mail_list_members 		= $lists['members']['value'];
-				$member 				= $subscription->get_member();
+				$mail_list_registered 			= $lists['registered']['value'];
+				$mail_list_deactivated 			= $lists['deactivated']['value'];
+				$mail_list_members 				= $lists['members']['value'];
+				$member 						= $subscription->get_member();
 
 				if ( $mail_list_members != $mail_list_registered ) {
 					/** Verify if is subscribed to registered mail list and remove it. */
@@ -564,14 +561,14 @@ class MS_Addon_Hustle extends MS_Addon {
 			if ( is_array( $provider_details ) ) {
 				list( $provider_class, $lists ) = $provider_details;
 
-				$mail_list_registered 	= $lists['registered']['value'];
-				$mail_list_deactivated 	= $lists['deactivated']['value'];
-				$mail_list_members 		= $lists['members']['value'];
-				$member 				= $subscription->get_member();
+				$mail_list_registered 			= $lists['registered']['value'];
+				$mail_list_deactivated 			= $lists['deactivated']['value'];
+				$mail_list_members 				= $lists['members']['value'];
+				$member 						= $subscription->get_member();
 
 				//Check if member has a new subscription
-				$membership 			= $subscription->get_membership();
-				$new_membership 		= MS_Factory::load(
+				$membership 					= $subscription->get_membership();
+				$new_membership 				= MS_Factory::load(
 					'MS_Model_Membership',
 					$membership->on_end_membership_id
 				);

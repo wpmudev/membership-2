@@ -30,7 +30,7 @@ class MS_Addon_Hustle_View extends MS_View {
 			}
 			?>
 			<div class="ms-hustle-provider-details">
-				<div class="ms-hustle-response notice notice-error is-dismissible" style="display:none">
+				<div class="ms-hustle-response notice notice-error" style="display:none">
 					<p></p>
 				</div>
 				<?php
@@ -38,8 +38,8 @@ class MS_Addon_Hustle_View extends MS_View {
 						$provider_details = $settings->get_custom_setting( 'hustle', $provider );
 						$this->render_provider_details( $settings, $provider, $provider_details );
 						?>
-							<div id="optin-provider-account-options" class="wpmudev-provider-block ms-hustle-provider-list-details">
-								<div class="ms-bold"><?php echo __( 'Press the Fetch Lists button to update value.', Opt_In::TEXT_DOMAIN ); ?></div>
+							<div class="ms-hustle-provider-list-details">
+								<div class="ms-bold"><?php echo __( 'Press the Fetch Lists button to update values', 'membership2' ); ?></div>
 								<?php
 								$separator = MS_Helper_Html::html_element( array(
 												'type' => MS_Helper_Html::TYPE_HTML_SEPARATOR,
@@ -157,7 +157,7 @@ class MS_Addon_Hustle_View extends MS_View {
 							}
 						}
 					}
-					$option = apply_filters( "wpoi_optin_filter_optin_options", $option, $optin );
+					$option = apply_filters( "ms_hustle_optin_filter_optin_options", $option, $current_provider );
 					$hustle->render( "general/option", array_merge( $option, array( "key" => $key ) ));
 				}
 			}

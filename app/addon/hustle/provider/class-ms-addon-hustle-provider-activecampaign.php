@@ -1,5 +1,13 @@
 <?php
-
+/**
+ * ActiveCampaign Hustle addon provider.
+ *
+ * @since  1.1.2
+ *
+ * @uses MS_Addon_Hustle_Provider
+ *
+ * @package Membership2
+ */
 class MS_Addon_Hustle_Provider_Activecampaign extends MS_Addon_Hustle_Provider {
 
 	protected static $PROVIDER_ID = 'activecampaign';
@@ -28,7 +36,7 @@ class MS_Addon_Hustle_Provider_Activecampaign extends MS_Addon_Hustle_Provider {
      */
 	private function _request( $verb = "GET", $action, $args = array() ){
         $url = $this->_url;
-
+		
         $apidata = array(
             'api_action' 	=> $action,
             'api_key' 		=> $this->_key,
@@ -55,7 +63,7 @@ class MS_Addon_Hustle_Provider_Activecampaign extends MS_Addon_Hustle_Provider {
             }
         }
 
-        $response = ( string )curl_exec( $request ); //execute curl fetch and store results in $response
+        $response = ( string ) curl_exec( $request ); //execute curl fetch and store results in $response
 
         curl_close( $request );
 
@@ -149,7 +157,7 @@ class MS_Addon_Hustle_Provider_Activecampaign extends MS_Addon_Hustle_Provider {
 	function is_user_subscribed( $user_email, $list_id ) {
 		$res = $this->_post( 'contact_view_email', array( 'email' => $user_email ) );
 
-		return ! empty( $res ) && ! empty( $res['id'] ) ? true : false;
+		return ( ! empty( $res ) && ! empty( $res['id'] ) ) ? true : false;
 	}
 }
 ?>

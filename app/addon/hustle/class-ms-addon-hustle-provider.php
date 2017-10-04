@@ -42,7 +42,12 @@ class MS_Addon_Hustle_Provider extends MS_Hooker {
 		$this->init();
 	}
 
-
+	/**
+	 * Provider initialization function
+	 * Called inside the __construct method
+	 *
+	 * @since 1.1.2
+	 */
 	protected function init() {
 
 	}

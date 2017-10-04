@@ -1,5 +1,14 @@
 <?php
 
+/**
+ * Sendinblue Hustle addon provider.
+ *
+ * @since  1.1.2
+ *
+ * @uses MS_Addon_Hustle_Provider
+ *
+ * @package Membership2
+ */
 class MS_Addon_Hustle_Provider_Sendinblue extends MS_Addon_Hustle_Provider {
 
 	protected static $PROVIDER_ID = 'sendinblue';
@@ -61,7 +70,7 @@ class MS_Addon_Hustle_Provider_Sendinblue extends MS_Addon_Hustle_Provider {
 		return $this->do_request( $resource,"POST", json_encode( $input ) );
 	}
 
-	public function delete( $resource, $input = " ") {
+	public function delete( $resource, $input = "" ) {
 		return $this->do_request( $resource, "DELETE", $input );
 	}
 
