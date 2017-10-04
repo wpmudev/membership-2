@@ -142,8 +142,13 @@ class MS_Model_Addon extends MS_Model_Option {
 
 				if ( isset( $addons[ $key ]->icon ) ) {
 					$icon = $addons[ $key ]->icon;
+					/**
+					 * Added capability of addon icon to be an image url
+					 *
+					 * @since 1.1.2
+					 */
 					if ( filter_var( $icon, FILTER_VALIDATE_URL ) ) {
-						$addons[ $key ]->icon = '<img src="' . $icon . '" style="height: 110px;"/>';
+						$addons[ $key ]->icon = '<img src="' . $icon . '" style="height: 110px;" title="' . $data->name . '"/>';
 					} else {
 						$addons[ $key ]->icon = '<i class="' . $icon . '"></i>';
 					}
@@ -153,8 +158,8 @@ class MS_Model_Addon extends MS_Model_Option {
 				}
 
 				if ( empty( $addons[ $key ]->action ) ) {
-					$addons[ $key ]->action = array();
-					$addons[ $key ]->action[] = array(
+					$addons[ $key ]->action 	= array();
+					$addons[ $key ]->action[] 	= array(
 						'id' 		=> 'ms-toggle-' . $key,
 						'type' 		=> MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
 						'value' 	=> self::is_enabled( $key ),

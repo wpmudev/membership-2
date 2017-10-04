@@ -368,10 +368,7 @@ class MS_Addon_Hustle extends MS_Addon {
 			foreach ( $subscription_options as $k => $subscription_option ) {
 				$html .= $subscription_option;
 				foreach ( $options as $key => $option ) {
-					if ( $option['type'] === 'select' ) {
-						$name 			= $option['name'];
-						$option['name'] = "mc_hustle[$k][$name]";
-					} else if ( $option['type'] === 'text' ) {
+					if ( $option['type'] === 'select' || $option['type'] === 'text' ) {
 						$name 			= $option['name'];
 						$option['name'] = "mc_hustle[$k][$name]";
 					}

@@ -132,6 +132,17 @@ class MS_Addon_Mailchimp extends MS_Addon {
 	}
 
 	/**
+	 * Mailchimp Error logging
+	 *
+	 * @since 1.1.2
+	 */
+	private static function mailchimp_log( $message ) {
+		if( defined( 'WP_DEBUG' ) && WP_DEBUG === true ) { 
+			lib3()->debug->log( '[M2] Mailchimp Error : ' . $message );
+		}
+	}
+
+	/**
 	 * A new user registered (not a Member yet).
 	 *
 	 * @since  1.0.0
@@ -146,7 +157,7 @@ class MS_Addon_Mailchimp extends MS_Addon {
 				}
 			}
 		} catch ( Exception $e ) {
-			// MS_Helper_Debug::debug_log( $e->getMessage() );
+			self::mailchimp_log( $e->getMessage() );
 		}
 	}
 
@@ -194,7 +205,7 @@ class MS_Addon_Mailchimp extends MS_Addon {
 				}
 			}
 		} catch ( Exception $e ) {
-			// MS_Helper_Debug::debug_log( $e->getMessage() );
+			self::mailchimp_log( $e->getMessage() );
 		}
 	}
 
@@ -241,7 +252,7 @@ class MS_Addon_Mailchimp extends MS_Addon {
 				}
 			}
 		} catch ( Exception $e ) {
-			// MS_Helper_Debug::debug_log( $e->getMessage() );
+			self::mailchimp_log( $e->getMessage() );
 		}
 	}
 
@@ -317,7 +328,7 @@ class MS_Addon_Mailchimp extends MS_Addon {
 		try {
 			$status = self::load_mailchimp_api();
 		} catch ( Exception $e ) {
-			// MS_Helper_Debug::debug_log( $e );
+			self::mailchimp_log( $e->getMessage() );
 		}
 
 		return $status;
@@ -331,11 +342,11 @@ class MS_Addon_Mailchimp extends MS_Addon {
 	 * @return M2_Mailchimp Object
 	 */
 	public static function load_mailchimp_api() {
-		if ( empty( self::$mailchimp_api ) ) {
+		if ( empty( self::$mailchimp_api ) || !is_a( self::$mailchimp_api, 'M2_Mailchimp' ) ) {
 			if ( ! class_exists( 'M2_Mailchimp' ) ) {
 				require_once MS_Plugin::instance()->dir . '/lib/mailchimp-api/Mailchimp.php';
 			}
-			$api_key 		= self::$settings->get_custom_setting( 'mailchimp', 'api_key' );
+			$api_key = self::$settings->get_custom_setting( 'mailchimp', 'api_key' );
 			if ( !empty ( $api_key ) ) {
 				$exploded 		= explode( '-', $api_key );
 				$data_center 	= end( $exploded );
@@ -477,7 +488,7 @@ class MS_Addon_Mailchimp extends MS_Addon {
 			$res = self::$mailchimp_api->subscribe( $list_id, $subscribe_data );
 
 			if ( is_wp_error( $res ) ) {
-				//echo $res->get_error_message();
+				self::mailchimp_log( $res->get_error_message() );
 			}
 		}
 	}
@@ -497,11 +508,14 @@ class MS_Addon_Mailchimp extends MS_Addon {
 	public static function update_user( $user_email, $list_id, $merge_vars ) {
 		if ( self::get_api_status() ) {
 
-			return self::$mailchimp_api->update_subscription(
+			$res =  self::$mailchimp_api->update_subscription(
 				$list_id,
 				$user_email,
 				$merge_vars
 			);
+			if ( is_wp_error( $res ) ) {
+				self::mailchimp_log( $res->get_error_message() );
+			}
 		}
 	}
 
@@ -514,10 +528,13 @@ class MS_Addon_Mailchimp extends MS_Addon {
 	 */
 	public static function unsubscribe_user( $user_email, $list_id ) {
 		if ( self::get_api_status() ) {
-			return self::$mailchimp_api->unsubscribe(
+			$res =  self::$mailchimp_api->unsubscribe(
 				$list_id,
 				$user_email
 			);
+			if ( is_wp_error( $res ) ) {
+				self::mailchimp_log( $res->get_error_message() );
+			}
 		}
 	}
 

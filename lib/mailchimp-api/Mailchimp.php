@@ -21,7 +21,7 @@ class M2_Mailchimp {
 	/**
      * Constructs class with required data
      *
-     * Opt_In_Mailchimp_Api constructor.
+     * M2_Mailchimp constructor.
      * @param $api_key
      */
 	function __construct( $api_key, $data_center ) {
