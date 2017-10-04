@@ -8,19 +8,13 @@ class MS_Addon_Hustle_Provider_Activecampaign extends MS_Addon_Hustle_Provider {
 
     private $_key;
 
-	/**
-	 * Api class
-	 *
-	 * @return Object|Exception
-	 */
-	protected function api() {
+	
+	protected function init() {
 		$base_url 	= $this->get_provider_detail( 'optin_url' );
 		$api_key 	= $this->get_provider_detail( 'optin_api_key' );
 		if ( ! empty( $base_url ) && ! empty( $api_key ) && function_exists( 'curl_init' ) ) {
 			$this->_url = trailingslashit( $base_url ) . 'admin/api.php';
 			$this->_key = $api_key;
-		} else {
-			return new WP_Error( 'broke', __( "Could not initiate API. Please check your details", "membership2" ) );
 		}
 	}
 
@@ -33,7 +27,6 @@ class MS_Addon_Hustle_Provider_Activecampaign extends MS_Addon_Hustle_Provider {
      * @return object|WP_Error
      */
 	private function _request( $verb = "GET", $action, $args = array() ){
-		$this->api();
         $url = $this->_url;
 
         $apidata = array(

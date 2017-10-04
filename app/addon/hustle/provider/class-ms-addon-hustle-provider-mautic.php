@@ -37,12 +37,8 @@ class MS_Addon_Hustle_Provider_Mautic extends MS_Addon_Hustle_Provider {
 	 */
 	static protected $_api = null;
 
-	/**
-	 * Api class
-	 *
-	 * @return Object|Exception
-	 */
-	protected function api() {
+
+	protected function init() {
 		try {
 			$base_url = $this->get_provider_detail( 'optin_url' );
 			$username = $this->get_provider_detail( 'optin_username' );
@@ -62,13 +58,11 @@ class MS_Addon_Hustle_Provider_Mautic extends MS_Addon_Hustle_Provider {
 				$initAuth 	= new Mautic\Auth\ApiAuth();
 				$this->auth = $initAuth->newAuth( $params, 'BasicAuth' );
 				$this->api 	= new Mautic\MauticApi( $this->auth, $this->base_url );
-
-				return $this->api;
 			} else {
-				return new WP_Error( 'broke', __( "Could not initiate API. Please check your details", "membership2" ) );
+				$this->api = new WP_Error( 'broke', __( "Could not initiate API. Please check your details", "membership2" ) );
 			}
 		} catch ( Exception $e ) {
-			return new WP_Error( 'broke', __( "Could not initiate API. Please check your details", "membership2" ) );
+			$this->api = new WP_Error( 'broke', __( "Could not initiate API. Please check your details", "membership2" ) );
 		}
 	}
 
@@ -86,60 +80,65 @@ class MS_Addon_Hustle_Provider_Mautic extends MS_Addon_Hustle_Provider {
 
 	public function subscribe_user( $member, $list_id ) { 
 		$api = $this->get_api();
-		$err = new WP_Error();
-		if ( is_email( $member->email ) && $api ) {
-			$contactApi = $api->newApi( 'contacts', $this->auth, $this->base_url );
-			try {
-				$geo 	= new Opt_In_Geo();
-				$data 	= array(
-					'firstname' => $member->first_name,
-					'lastname'  => $member->last_name,
-					'email'		=> $member->email,
-					'ipAddress' => $geo->get_user_ip()
-				);
-				
-				$res = $contactApi->create( $data );
+		if ( $api ) {
+			$err = new WP_Error();
+			if ( is_email( $member->email ) && $api ) {
+				$contactApi = $api->newApi( 'contacts', $this->auth, $this->base_url );
+				try {
+					$geo 	= new Opt_In_Geo();
+					$data 	= array(
+						'firstname' => $member->first_name,
+						'lastname'  => $member->last_name,
+						'email'		=> $member->email,
+						'ipAddress' => $geo->get_user_ip()
+					);
+					
+					$res = $contactApi->create( $data );
 
-				if ( $res && ! empty( $res['contact'] ) ) {
-					$contact_id = $res['contact']['id'];
+					if ( $res && ! empty( $res['contact'] ) ) {
+						$contact_id = $res['contact']['id'];
 
-					// Double check custom fields
-					if ( ! empty( $res['contact']['fields'] ) && ! empty( $res['contact']['fields']['core'] ) ) {
-						$found_missing = 0;
+						// Double check custom fields
+						if ( ! empty( $res['contact']['fields'] ) && ! empty( $res['contact']['fields']['core'] ) ) {
+							$found_missing = 0;
 
-						$contact_fields = array_keys( $res['contact']['fields']['core'] );
-						$common_fields 	= array( 'firstname', 'lastname', 'email', 'ipAddress' );
+							$contact_fields = array_keys( $res['contact']['fields']['core'] );
+							$common_fields 	= array( 'firstname', 'lastname', 'email', 'ipAddress' );
 
-						foreach ( $data as $key => $value ) {
-							// Check only uncommon fields
-							if ( ! in_array( $key, $common_fields ) && ! in_array( $key, $contact_fields ) ) {
-								$found_missing++;
+							foreach ( $data as $key => $value ) {
+								// Check only uncommon fields
+								if ( ! in_array( $key, $common_fields ) && ! in_array( $key, $contact_fields ) ) {
+									$found_missing++;
+								}
 							}
 						}
+						$member->set_gateway_profile( self::$PROVIDER_ID, 'contact_id', $contact_id );
+						return $contact_id;
+					} else {
+						$err->add( 'susbscribe_error', __( 'Something went wrong. Please try again', 'membership2' ) );
 					}
-					$member->set_gateway_profile( self::$PROVIDER_ID, 'contact_id', $contact_id );
-					return $contact_id;
-				} else {
-					$err->add( 'susbscribe_error', __( 'Something went wrong. Please try again', 'membership2' ) );
+				} catch( Exception $e ) {
+					$error = $e->getMessage();
+					$err->add( 'subscribe_error', $error );
 				}
-			} catch( Exception $e ) {
-				$error = $e->getMessage();
-				$err->add( 'subscribe_error', $error );
+			} else {
+				$err->add( 'subscribe_error',  __( 'Something went wrong. Please try again', 'membership2' ) );
 			}
-		} else {
-			$err->add( 'subscribe_error',  __( 'Something went wrong. Please try again', 'membership2' ) );
+			return $err;
 		}
-		return $err;
+		return $api;
 	}
 
 	public function unsubscribe_user( $member, $list_id ) {
 		$api = $this->get_api();
-		$contact_id = $member->get_gateway_profile( self::$PROVIDER_ID, 'contact_id' );
-		if ( $contact_id && $api ) {
-			$contactApi = $api->newApi( 'contacts', $this->auth, $this->base_url );
-			try {
-				$contactApi->delete( $contact_id );
-			} catch( Exception $e ) {
+		if ( $api ) {
+			$contact_id = $member->get_gateway_profile( self::$PROVIDER_ID, 'contact_id' );
+			if ( $contact_id && $api ) {
+				$contactApi = $api->newApi( 'contacts', $this->auth, $this->base_url );
+				try {
+					$contactApi->delete( $contact_id );
+				} catch( Exception $e ) {
+				}
 			}
 		}
 	}

@@ -8,14 +8,12 @@ class MS_Addon_Hustle_Provider_Convertkit extends MS_Addon_Hustle_Provider {
 	private $_api_secret;
 	private $_endpoint = 'https://api.convertkit.com/v3/';
 
-	protected function api(){
-		$api_key 	= $this->get_provider_detail( 'api_key' );
-		$api_secret = $this->get_provider_detail( 'api_secret' );
+	protected function init(){
+		$api_key 	= $this->get_provider_detail( 'optin_api_key' );
+		$api_secret = $this->get_provider_detail( 'optin_api_secret' );
 		if ( ! empty( $api_key ) && ! empty( $api_secret ) ) {
 			$this->_api_key 	= $api_key;
 			$this->_api_secret 	= $api_secret;
-		} else {
-			return new WP_Error( 'broke', __( "Could not initiate API. Please check your details", "membership2" ) );
 		}
 	}
 
@@ -28,7 +26,6 @@ class MS_Addon_Hustle_Provider_Convertkit extends MS_Addon_Hustle_Provider {
      * @return object|WP_Error
      */
 	private function _request( $verb = "GET", $action, $args = array() ){
-		$this->api();
 		$url = trailingslashit( $this->_endpoint )  . $action;
 		
         $_args = array(
@@ -96,7 +93,6 @@ class MS_Addon_Hustle_Provider_Convertkit extends MS_Addon_Hustle_Provider {
 	
 
 	public function subscribe_user( $member, $list_id ) { 
-		$this->api();
 		$geo = new Opt_In_Geo();
 		$subscribe_data = array(
 			"api_key" 	=> $this->_api_key,
@@ -112,7 +108,6 @@ class MS_Addon_Hustle_Provider_Convertkit extends MS_Addon_Hustle_Provider {
 	}
 
 	public function unsubscribe_user( $member, $list_id ) {
-		$this->api();
 		$geo = new Opt_In_Geo();
 		$subscribe_data = array(
 			"api_key" 	=> $this->_api_key,
@@ -124,7 +119,6 @@ class MS_Addon_Hustle_Provider_Convertkit extends MS_Addon_Hustle_Provider {
 	}
 
 	public function is_user_subscribed( $user_email, $list_id ) {
-		$this->api();
 		$url = 'subscribers';
 		$args = array(
 			'api_key' 		=> $this->_api_key,

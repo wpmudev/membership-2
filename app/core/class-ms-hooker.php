@@ -427,11 +427,16 @@ class MS_Hooker {
 	/**
 	 * Log current action
 	 *
-	 * @param String $message - Message to be logged
+	 * @param string|object $message - Message to be logged
 	 */
 	public function log( $message ) {
 		if( defined( 'WP_DEBUG' ) && WP_DEBUG === true ) { 
-			lib3()->debug->log( '[M2]' . $message );
+			if ( is_array( $message ) || is_object( $message ) ) {
+				$msg 	= print_r( $message, true );
+			} else {
+				$msg 	= $message;
+			}
+			lib3()->debug->log( '[M2]' . $msg );
 		}
 	}
 }

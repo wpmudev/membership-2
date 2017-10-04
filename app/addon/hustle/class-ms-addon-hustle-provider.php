@@ -26,6 +26,29 @@ class MS_Addon_Hustle_Provider extends MS_Hooker {
 
 
 	/**
+	 * Parent constuctor of all helpers.
+	 *
+	 * @since  1.1.2
+	 */
+	public function __construct() {
+		
+		/**
+		 * Actions to execute when constructing the parent helper.
+		 *
+		 * @since  1.1.2
+		 * @param object $this The MS_Addon_Hustle_Provider object.
+		 */
+		do_action( 'ms_addon_hustle_provider_construct', $this );
+		$this->init();
+	}
+
+
+	protected function init() {
+
+	}
+
+
+	/**
 	 * Get provider settings
 	 *
 	 * @return array|bool

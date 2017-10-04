@@ -42,7 +42,14 @@ class MS_Addon_Hustle extends MS_Addon {
 		'constantcontact',
 		'sendy',
 		'aweber'
-    );
+	);
+	
+	/**
+	 * Current provider
+	 *
+	 * @var string
+	 */
+	private $provider;
 
 	/**
 	 * Checks if the current Add-on is enabled
@@ -68,6 +75,14 @@ class MS_Addon_Hustle extends MS_Addon {
 	 */
 	public function init() {
 		if ( self::is_active() ) {
+			$settings 			= MS_Factory::load( 'MS_Model_Settings' );
+			$hustle_provider 	= $settings->get_custom_setting( 'hustle', 'hustle_provider' );
+			if ( $hustle_provider && !empty( $hustle_provider ) ) {
+				$this->provider = $hustle_provider;
+			} else {
+				$this->provider = false;
+			}
+
 			$this->add_filter(
 				'ms_controller_settings_get_tabs',
 				'settings_tabs',
@@ -106,8 +121,11 @@ class MS_Addon_Hustle extends MS_Addon {
 				10, 2
 			);
 
+
+
 			$this->add_ajax_action( self::AJAX_ACTION_GET_ISTS, 'get_provider_lists' );
 			$this->add_ajax_action( self::AJAX_ACTION_SAVE_PROVIDER, 'save_provider_details' );
+
 		}
 	}
 
@@ -427,6 +445,7 @@ class MS_Addon_Hustle extends MS_Addon {
 		if ( filter_input( INPUT_POST, "optin_url" ) ) {
 			$details["optin_url"] 			= filter_input( INPUT_POST, "optin_url" );
 		}
+		
 		$details["lists"] 					= $_POST['mc_hustle'];
 
 		$settings->set_custom_setting( 'hustle', $provider_id , $details );
@@ -442,10 +461,9 @@ class MS_Addon_Hustle extends MS_Addon {
 	 */
 	protected function get_provider_with_details() {
 		$settings 	= MS_Factory::load( 'MS_Model_Settings' );
-		$provider 	= $settings->get_custom_setting( 'hustle', 'hustle_provider' );
-		if ( $provider ) {
-			$provider_details 	= $settings->get_custom_setting( 'hustle', $provider );
-			$provider_class 	= self::get_hustle_provider( $provider );
+		if ( $this->provider ) {
+			$provider_details 	= $settings->get_custom_setting( 'hustle', $this->provider );
+			$provider_class 	= self::get_hustle_provider( $this->provider );
 			if ( $provider_class ) {
 				if ( $provider_details && is_array( $provider_details ) && is_array( $provider_details['lists'] ) ) {
 					return array( $provider_class, $provider_details['lists'] );
@@ -464,6 +482,7 @@ class MS_Addon_Hustle extends MS_Addon {
 	 * @param  mixed $member
 	 */
 	public function subscribe_registered( $event, $member ) {
+		
 		$provider_details = $this->get_provider_with_details();
 		if ( is_array( $provider_details ) ) {
 			list( $provider_class, $lists ) = $provider_details;
@@ -473,6 +492,11 @@ class MS_Addon_Hustle extends MS_Addon {
 					if ( ! $provider_class->is_user_subscribed( $member->email, $list_id ) ) {
 						$provider_class->subscribe_user( $member, $list_id );
 					}
+					do_action( 
+						'mc_hustle_after_' .$this->provider . '_subscribe_registered', 
+						$member, 
+						$list_id 
+					);
 				} 
 			}
 		}
@@ -514,6 +538,13 @@ class MS_Addon_Hustle extends MS_Addon {
 						$provider_class->subscribe_user( $member, $mail_list_members );
 					}
 				}
+				do_action( 
+					'mc_hustle_after_' .$this->provider . '_subscribe_members', 
+					$member, 
+					$mail_list_registered, 
+					$mail_list_deactivated, 
+					$mail_list_members 
+				);
 			}
 		} catch ( Exception $e ) {
 			$this->log( $e->getMessage() );
@@ -562,6 +593,14 @@ class MS_Addon_Hustle extends MS_Addon {
 					if ( ! $provider_class->is_user_subscribed( $member->email, $mail_list_deactivated ) ) {
 						$provider_class->unsubscribe_user( $member, $mail_list_deactivated );
 					}
+
+					do_action( 
+						'mc_hustle_after_' .$this->provider . '_subscribe_deactivated', 
+						$member, 
+						$mail_list_registered, 
+						$mail_list_deactivated, 
+						$mail_list_members 
+					);
 				}
 			}
 		} catch ( Exception $e ) {
