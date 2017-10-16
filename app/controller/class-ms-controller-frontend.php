@@ -892,6 +892,8 @@ class MS_Controller_Frontend extends MS_Controller {
 	 */
 	public function signup_location( $url ) {
 
+		//Set to false to use default signup url
+		//Set to true to use membership url
 		$change_signup = apply_filters( 'ms_frontend_controller_change_signup_url', true );
 		if ( $change_signup )
 			$url = MS_Model_Pages::get_page_url( MS_Model_Pages::MS_PAGE_REGISTER );
