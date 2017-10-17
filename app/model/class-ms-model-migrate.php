@@ -21,13 +21,13 @@
 		self::tables_exist();
 
 		if ( self::needs_migration() ) {
-			$url = MS_Controller_Plugin::get_admin_url(
-				'settings',
-				array( 'migrate' => true )
-			);
-			$error_msg = sprintf( __( 'We have made some changes to the data structure in Membership 2. Please %sclick here%s to perform a data update', 'membership2' ) , '<a href="'.$url.'">', '</a>');
-			lib3()->ui->admin_message( $error_msg, '', '', 'error' );
+			$settings 	= MS_Factory::load( 'MS_Model_Settings' );
+			$settings->set_special_view( 'MS_View_MigrationDb' );
 
+			add_action(
+				'ms_migrate_action_done',
+				array( 'MS_Model_Settings', 'reset_special_view' )
+			);
 			add_action( 'wp_ajax_ms_do_migration', array( __CLASS__, 'init_migration_data' ) );
 		}
 	}
@@ -71,9 +71,9 @@
 	 */
 	static function init_migration_data() {
 		global $wpdb;
-		$comm_log 	= post_type_total::post_type_exists( 'ms_communication_log', $wpdb );
-		$trans_log 	= post_type_total::post_type_exists( 'ms_transaction_log', $wpdb );
-		$event_log 	= post_type_total::post_type_exists( 'ms_event', $wpdb );
+		$comm_log 	= MS_Helper_Database::post_type_total( 'ms_communication_log', $wpdb );
+		$trans_log 	= MS_Helper_Database::post_type_total( 'ms_transaction_log', $wpdb );
+		$event_log 	= MS_Helper_Database::post_type_total( 'ms_event', $wpdb );
 		$data = array(
 			'total' 	=> ( $comm_log + $trans_log + $event_log ),
 			'processes' => array()
@@ -104,6 +104,26 @@
 	}
 
 	/**
+	 * Check migration progress
+	 * Mainly for the progress bar
+	 * 
+	 * @return application/json
+	 */
+	static function check_migration() {
+		$migration_data = get_transient( 'ms_migrate_process_percentage' );
+		if ( !$migration_data ) {
+			$migration_data = array(
+				'percent' 	=> 0,
+				'message'	=> __( 'Initializing migration', 'membership' )
+			);
+		}
+		if ( $migration_data['percent'] == 100 ) {
+			delete_transient( 'ms_migrate_process_percentage' );
+		}
+		wp_send_json_success( $migration_data );
+	}
+
+	/**
 	 * Process Migration in batches of 10
 	 * Ajax action to process the migration
 	 *
@@ -126,30 +146,32 @@
 			$migration_data = self::init_migration_data();
 			set_transient( 'ms_migrate_process_data', $migration_data );
 		}
-		$total_processes = count( $migration_data['processes'] );
+		$total 				= $migration_data['total'];
+		$total_processes 	= count( $migration_data['processes'] );
 		if ( !empty( $migration_data ) 
-			&& $migration_data['total'] > 0  && $total_processes > 0 ) {
+			&& $total > 0  && $total_processes > 0 ) {
 
-			$process 			= $migration_data['processes'][0];
-			$step 				= $process['step'];
-			$total_processed 	= get_transient( 'ms_migrate_process_total_'.$step );
-			if ( $total_processed && ( intval( $total_processed ) == $process['total'] ) ) {
-				unset( $migration_data['processes'][0] );
-				if ( $total_processes > 1 ) {
-					$process = $migration_data['processes'][1];
-				} else {
-					$process 			= false; 
-					$resp['complete'] 	= true;
-					$resp['message'] 	= __( 'Data migration complete', 'membership2' );
-					$resp['url'] 		= MS_Controller_Plugin::get_admin_url( 'MENU_SLUG' );
+			$i = 1;
+			foreach ( $migration_data['processes'] as $process ) {
+
+				$step 		= $process['step'];
+				$percent 	= intval( $i /$total * 100);
+				$page 		= ceil( $process['total'] / 10 );
+				set_transient( 'ms_migrate_process_percentage', array(
+					'percent' 	=> $percent,
+					'message'	=> sprintf( __( '%d of %d records processed for %s ', 'membership' ), $i, $total, $process['name'] )
+				) );
+				while ( $page > 0 ) {
+					self::migrate_log_tables( $process['total'], $step );
+					$page--;
 				}
+				$i = $i + $process['total'];
 			}
-
-			if ( is_array( $process ) ) {
-				$resp['complete'] 	= false;
-				$stage 				= self::migrate_log_tables( $process['total'], $step );
-				$resp['message'] 	= sprintf( __('%s processing %s ', 'membership2'), $stage, $process['name'] );
-			}
+		} else {
+			set_transient( 'ms_migrate_process_percentage', array(
+				'percent' 	=> 100,
+				'message'	=> __( 'Nothing to migrate', 'membership' )
+			) );
 		}
 
 		wp_send_json_success( $resp );

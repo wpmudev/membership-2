@@ -53,6 +53,7 @@ module.exports = function( grunt ) {
 				'{js}/src/ms-view-settings-automated-msg.js',
 				'{js}/src/ms-view-settings-import.js',
 				'{js}/src/ms-view-settings-mailchimp.js',
+				'{js}/src/ms-view-settings-migrate.js',
 				'{js}/src/ms-view-settings-payment.js',
 				'{js}/src/ms-view-settings-protection.js',
 				'{js}/src/ms-view-settings-setup.js'

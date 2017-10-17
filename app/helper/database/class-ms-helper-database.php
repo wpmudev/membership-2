@@ -12,10 +12,10 @@ class MS_Helper_Database extends MS_Helper {
      */
     static $tables = array();
 
-    const EVENT_LOG = 'event_log';
+    const EVENT_LOG 		= 'event_log';
     const COMMUNICATION_LOG = 'communication_log';
-    const TRANSACTION_LOG = 'transaction_log';
-    const META = 'meta';
+    const TRANSACTION_LOG 	= 'transaction_log';
+    const META 				= 'meta';
 
     /**
      * Get all the used table names

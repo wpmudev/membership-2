@@ -5,7 +5,6 @@ Build Stamp: BUILDTIME
 Change Log:
 ----------------------------------------------------------------------
 1.1.2
-- Improved: Custom database tables for communication logs, event logs and transaction logs
 - Added: Data migration notification and action in settings page
 - Added: Members List Export to CSV
 - Added: Membership and Member XML import and export format

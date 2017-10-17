@@ -221,39 +221,6 @@ class MS_View_Settings_Edit extends MS_View {
                 )
             );
 		}
-		
-		if ( ! empty( $_GET['migrate'] ) ) {
-			$migrate_url = MS_Controller_Plugin::get_admin_url(
-                'settings',
-                array( 'migrate' => 1 )
-            );
-            $migrate_url = esc_url_raw(
-                add_query_arg(
-                    MS_Model_Upgrade::get_token( 'migrate' ),
-                    $migrate_url
-                )
-			);
-			
-			$cancel_url = esc_url_raw( remove_query_arg( 'migrate' ) );
-			$desc[] = sprintf(
-                '<div class="error" style="width:600px;margin:20px auto;text-align:center"><p><b>%1$s</b></p><hr />%2$s</div>',
-                __( 'Careful: This might take long depending on the data you have', 'membership2' ),
-                sprintf(
-                    '<form method="POST" action="%s" style="padding:20px 0">' .
-                    '<label style="line-height:28px">' .
-                    '<input type="checkbox" name="confirm" value="yes" /> %s' .
-                    '</label><p>' .
-                    '<button class="button-primary">%s</button> ' .
-                    '<a href="%s" class="button">%s</a>' .
-					'</p></form>',
-					$migrate_url,
-					__( 'Yes, migrate data!', 'membership2' ),
-					__( 'Do it!', 'membership2' ),
-					$cancel_url,
-					__( 'Cancel', 'membership2' )
-                )
-            );
-		}
 
 		return $desc;
 	}
