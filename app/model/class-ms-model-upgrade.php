@@ -24,6 +24,8 @@ class MS_Model_Upgrade extends MS_Model {
 
 		MS_Factory::load( 'MS_Model_Upgrade' );
 
+		MS_Model_Migrate::init();
+
 		// This function is intended for development/testing only!
 		self::maybe_restore();
 

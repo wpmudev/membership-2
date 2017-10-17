@@ -15,7 +15,23 @@ class MS_View_MigrationDb extends MS_View {
 	 * @return string
 	 */
 	public function to_html() {
-		
+		$fields = array(
+			array(
+				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+				'name' => 'migration_nonce',
+				'value' => wp_create_nonce( 'ms_do_migration' ),
+			),
+			array(
+				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+				'name' => 'check_migration_nonce',
+				'value' => wp_create_nonce( 'ms_check_migration' ),
+			),
+			array(
+				'type' => MS_Helper_Html::INPUT_TYPE_BUTTON,
+				'class' => 'ms-migration-start',
+				'value' => __( 'Start migration', 'membership2' ),
+			)
+		);
 		ob_start();
 		
 		?>
@@ -23,7 +39,13 @@ class MS_View_MigrationDb extends MS_View {
 			<h2>
 				<?php _e( 'Migrate your Membership data', 'membership2' ); ?>
 			</h2>
-			
+			<div class="ms_migrate_progress"></div>
+			<div class="ms_migrate_message"></div>
+			<?php
+			foreach ( $fields as $field ) {
+				MS_Helper_Html::html_element( $field );
+			}
+			?>
 		</div>
 		<?php
 		return ob_get_clean();

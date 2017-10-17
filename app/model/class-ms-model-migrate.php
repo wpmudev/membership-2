@@ -21,14 +21,14 @@
 		self::tables_exist();
 
 		if ( self::needs_migration() ) {
-			$settings 	= MS_Factory::load( 'MS_Model_Settings' );
-			$settings->set_special_view( 'MS_View_MigrationDb' );
+			MS_Model_Settings::set_special_view( 'MS_View_MigrationDb' );
 
 			add_action(
 				'ms_migrate_action_done',
 				array( 'MS_Model_Settings', 'reset_special_view' )
 			);
-			add_action( 'wp_ajax_ms_do_migration', array( __CLASS__, 'init_migration_data' ) );
+			add_action( 'wp_ajax_ms_do_migration', array( __CLASS__, 'process_migration' ) );
+			add_action( 'wp_ajax_ms_check_migration', array( __CLASS__, 'check_migration' ) );
 		}
 	}
 
@@ -110,6 +110,14 @@
 	 * @return application/json
 	 */
 	static function check_migration() {
+		$valid 	= is_admin() && check_ajax_referer( 'ms_check_migration', 'security', false );
+		
+		if ( ! $valid ) {
+			wp_send_json_error( array(
+				'message' => __( 'Invalid access', 'membership2' )
+			) );
+		}
+
 		$migration_data = get_transient( 'ms_migrate_process_percentage' );
 		if ( !$migration_data ) {
 			$migration_data = array(
@@ -119,6 +127,7 @@
 		}
 		if ( $migration_data['percent'] == 100 ) {
 			delete_transient( 'ms_migrate_process_percentage' );
+			do_action( 'ms_migrate_action_done' );
 		}
 		wp_send_json_success( $migration_data );
 	}
@@ -134,7 +143,7 @@
 	static function process_migration() {
 
 		$resp 	= array();
-		$valid 	= MS_Model_Upgrade::valid_user() && check_ajax_referer( 'ms-migration', 'security', false );
+		$valid 	= is_admin() && check_ajax_referer( 'ms_do_migration', 'security', false );
 		
 		if ( ! $valid ) {
 			$resp['message'] = __( 'Invalid access', 'membership2' );
@@ -173,6 +182,7 @@
 				'message'	=> __( 'Nothing to migrate', 'membership' )
 			) );
 		}
+		do_action( 'ms_migrate_action_done' );
 
 		wp_send_json_success( $resp );
 	}
