@@ -2,6 +2,7 @@
 /*global window:false */
 /*global document:false */
 /*global ms_data:false */
+/*global ms_functions:false */
 
 window.ms_init.view_settings_migrate = function init() {
 
@@ -26,11 +27,13 @@ window.ms_init.view_settings_migrate = function init() {
 				} else {
 					window.clearInterval( migrationTimer );
 					jQuery(".ms_migrate_message").html( ms_data.task_error );
+					ms_functions.reload();
 				}
 			}
 		).fail(function() {
 			window.clearInterval( migrationTimer );
 			jQuery(".ms_migrate_message").html( ms_data.task_error );
+			ms_functions.reload();
 		});
 	}
 

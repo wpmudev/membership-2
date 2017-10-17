@@ -22,13 +22,13 @@
 
 		if ( self::needs_migration() ) {
 			MS_Model_Settings::set_special_view( 'MS_View_MigrationDb' );
-
-			add_action(
-				'ms_migrate_action_done',
-				array( 'MS_Model_Settings', 'reset_special_view' )
-			);
+			
 			add_action( 'wp_ajax_ms_do_migration', array( __CLASS__, 'process_migration' ) );
 			add_action( 'wp_ajax_ms_check_migration', array( __CLASS__, 'check_migration' ) );
+		} else {
+			//falback
+			add_action( 'wp_ajax_ms_do_migration', array( __CLASS__, 'revert_view' ) );
+			add_action( 'wp_ajax_ms_check_migration', array( __CLASS__, 'revert_view' ) );
 		}
 	}
 
@@ -127,9 +127,18 @@
 		}
 		if ( $migration_data['percent'] == 100 ) {
 			delete_transient( 'ms_migrate_process_percentage' );
-			do_action( 'ms_migrate_action_done' );
+			MS_Model_Settings::reset_special_view();
 		}
 		wp_send_json_success( $migration_data );
+	}
+
+	/**
+	 * Revert view incase accessed wrongly
+	 * 
+	 */
+	static function revert_view() {
+		MS_Model_Settings::reset_special_view();
+		wp_send_json_error();
 	}
 
 	/**
@@ -164,7 +173,8 @@
 			foreach ( $migration_data['processes'] as $process ) {
 
 				$step 		= $process['step'];
-				$percent 	= intval( $i /$total * 100);
+				$i 			= $i + $process['total'];
+				$percent 	= intval( $i / $total * 100);
 				$page 		= ceil( $process['total'] / 10 );
 				set_transient( 'ms_migrate_process_percentage', array(
 					'percent' 	=> $percent,
@@ -174,7 +184,7 @@
 					self::migrate_log_tables( $process['total'], $step );
 					$page--;
 				}
-				$i = $i + $process['total'];
+				
 			}
 		} else {
 			set_transient( 'ms_migrate_process_percentage', array(
@@ -182,7 +192,6 @@
 				'message'	=> __( 'Nothing to migrate', 'membership' )
 			) );
 		}
-		do_action( 'ms_migrate_action_done' );
 
 		wp_send_json_success( $resp );
 	}
