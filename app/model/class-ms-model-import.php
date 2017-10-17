@@ -71,6 +71,31 @@ class MS_Model_Import extends MS_Model {
 	}
 
 	/**
+	 * Validate uploaded data
+	 *
+	 * @param Object $data
+	 *
+	 * @since 1.1.3
+	 *
+	 * @return bool
+	 */
+	protected function validate_data( $data ) {
+		$valid = false;
+		if ( !empty( $data ) && is_object( $data ) ) {
+			if ( $data->type == 'settings' ) {
+				$valid = $this->validate_object( $data );
+			} else if ( $data->type == 'memberships' ) {
+				$valid = $this->validate_memberships_object( $data );
+			} else if ( $data->type == 'members' ) {
+				$valid = $this->validate_members_object( $data );
+			} else if ( $data->type == 'full' ) {
+				$valid = $this->validate_full_object( $data );
+			}
+		}
+		return $valid;
+	}
+
+	/**
 	 * Checks if the provided data is a recognized import object.
 	 * If not an import object then FALSE will be returned, otherwise the
 	 * object itself.
@@ -96,6 +121,88 @@ class MS_Model_Import extends MS_Model {
 			return false;
 		} else {
 			return apply_filters( 'ms_import_validate_object', $data );
+		}
+	}
+
+	/**
+	 * Checks if the provided data is a recognized import object.
+	 * If not an import object then FALSE will be returned, otherwise the
+	 * object itself.
+	 *
+	 * @since  1.1.3
+	 * @param  object $data Import object to test.
+	 * @return object|false
+	 */
+	protected function validate_full_object( $data ) {
+		$data = apply_filters( 'ms_import_validate_full_object_before', $data );
+		
+		if ( empty( $data )
+			|| ! is_object( $data )
+			|| ! isset( $data->source_key )
+			|| ! isset( $data->source )
+			|| ! isset( $data->plugin_version )
+			|| ! isset( $data->export_time )
+			|| ! isset( $data->notes )
+			|| ! isset( $data->memberships )
+			|| ! isset( $data->members )
+		) {
+			return false;
+		} else {
+			return apply_filters( 'ms_import_validate_full_object', $data );
+		}
+	}
+
+	/**
+	 * Checks if the provided data is a recognized import object.
+	 * If not an import object then FALSE will be returned, otherwise the
+	 * object itself.
+	 *
+	 * @since  1.1.3
+	 * @param  object $data Import object to test.
+	 * @return object|false
+	 */
+	protected function validate_memberships_object( $data ) {
+		$data = apply_filters( 'ms_import_validate_memberships_object_before', $data );
+		
+		if ( empty( $data )
+			|| ! is_object( $data )
+			|| ! isset( $data->source_key )
+			|| ! isset( $data->source )
+			|| ! isset( $data->plugin_version )
+			|| ! isset( $data->export_time )
+			|| ! isset( $data->notes )
+			|| ! isset( $data->memberships )
+		) {
+			return false;
+		} else {
+			return apply_filters( 'ms_import_validate_memberships_object', $data );
+		}
+	}
+
+	/**
+	 * Checks if the provided data is a recognized import object.
+	 * If not an import object then FALSE will be returned, otherwise the
+	 * object itself.
+	 *
+	 * @since  1.1.3
+	 * @param  object $data Import object to test.
+	 * @return object|false
+	 */
+	protected function validate_members_object( $data ) {
+		$data = apply_filters( 'ms_import_validate_members_object_before', $data );
+		
+		if ( empty( $data )
+			|| ! is_object( $data )
+			|| ! isset( $data->source_key )
+			|| ! isset( $data->source )
+			|| ! isset( $data->plugin_version )
+			|| ! isset( $data->export_time )
+			|| ! isset( $data->notes )
+			|| ! isset( $data->members )
+		) {
+			return false;
+		} else {
+			return apply_filters( 'ms_import_validate_members_object', $data );
 		}
 	}
 
@@ -454,6 +561,84 @@ class MS_Model_Import extends MS_Model {
 		foreach ( $obj->subscriptions as $subscription ) {
 			$subscription = (object) $subscription;
 			$this->import_subscription( $member, $subscription );
+		}
+	}
+
+	/**
+	 * Import specific data: A single user to a membership
+	 *
+	 * @since  1.1.2
+	 * @param object $obj The import object.
+	 * @param bool|int $membership - the selected membership (optional)
+	 * @param string $status - the subscription status
+	 * @param string $start - the start date
+	 * @param string $expire - the expire date
+	 *
+	 */
+	public function import_user( $obj, $membership, $status, $start, $expire ) {
+		$wpuser = get_user_by( 'email', $obj->email );
+		lib3()->array->equip( $obj, 'username', 'email', 'ms_membership' );
+		if ( $wpuser ) {
+			$member = MS_Factory::load( 'MS_Model_Member', $wpuser->ID );
+		} else {
+			$wpuser = wp_create_user( $obj->username, '', $obj->email );
+			if ( is_numeric( $wpuser ) ) {
+				$member = MS_Factory::load( 'MS_Model_Member', $wpuser );
+			} else {
+				$this->errors[] = sprintf(
+					__( 'Could not import Member <strong>%1$s</strong> (%2$s)', 'membership2' ),
+					esc_attr( $obj->username ),
+					esc_attr( $obj->email )
+				);
+
+				// We could not find/create the user, so don't import this item.
+				return;
+			}
+		}
+
+		$member->is_member = true;
+
+		$member->save();
+		
+		if ( $membership ) {
+			$membership_obj = MS_Factory::load(
+				'MS_Model_Membership',
+				$membership
+			);
+			if ( $membership_obj && $membership_obj->id > 0 ) {
+				$membership = $membership_obj->id;
+			} else {
+				$membership = false;
+			}
+		}
+
+		if ( !$membership ) {
+			$membership = $obj->membershipid;
+		}
+
+		if ( $membership ) {
+			$subscription = MS_Model_Relationship::create_ms_relationship(
+				$membership,
+				$member->id
+			);
+			if ( $subscription ) {
+				$invoice 	= $subscription->get_current_invoice( false );
+				if ( $invoice ) {
+					if ( $status === MS_Model_Relationship::STATUS_ACTIVE ) {
+						$invoice->status = MS_Model_Invoice::STATUS_PAID;
+						$invoice->save();
+					} else if ( $status === MS_Model_Relationship::STATUS_CANCELED ) {
+						if ( $invoice->status !== MS_Model_Invoice::STATUS_PAID ) {
+							$invoice->status = MS_Model_Invoice::STATUS_PENDING;
+							$invoice->save();
+						}
+					}
+				}
+				$subscription->start_date 	= $start;
+				$subscription->expire_date 	= $expire;
+				$subscription->status 		= $status;
+				$subscription->save();
+			}
 		}
 	}
 

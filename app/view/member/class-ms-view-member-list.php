@@ -11,6 +11,7 @@ class MS_View_Member_List extends MS_View {
 		$listview = MS_Factory::create( 'MS_Helper_ListTable_Member' );
 		$listview->prepare_items();
 
+
 		ob_start();
 		?>
 
@@ -31,7 +32,9 @@ class MS_View_Member_List extends MS_View {
 			$listview->search_box();
 			?>
 			<form method="post">
-				<?php $listview->display(); ?>
+				<?php 
+					$listview->display(); 
+				?>
 			</form>
 		</div>
 
@@ -57,7 +60,7 @@ class MS_View_Member_List extends MS_View {
 
 		$links['all'] = array(
 			'label' => __( 'All', 'membership2' ),
-			'url' => $url,
+			'url' 	=> $url,
 		);
 
 		foreach ( $memberships as $id => $name ) {
@@ -70,7 +73,7 @@ class MS_View_Member_List extends MS_View {
 			);
 			$links['ms-' . $id] = array(
 				'label' => esc_html( $name ),
-				'url' => $filter_url,
+				'url' 	=> $filter_url,
 			);
 		}
 
@@ -79,7 +82,7 @@ class MS_View_Member_List extends MS_View {
 			<ul class="filter-links">
 				<?php foreach ( $links as $key => $item ) :
 					$is_current = MS_Helper_Utility::is_current_url( $item['url'] );
-					$class = ( $is_current ? 'current' : '' );
+					$class 		= ( $is_current ? 'current' : '' );
 					?>
 					<li>
 						<a href="<?php echo esc_url( $item['url'] ); ?>" class="<?php echo esc_attr( $class ); ?>">

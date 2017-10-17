@@ -1241,10 +1241,9 @@ class MS_Controller_Shortcode extends MS_Controller {
 		return do_shortcode( $content );
 	}
         
-        public function enqueue_scripts()
-        {
-            $data['ms_init'][] = 'frontend_register';
+    public function enqueue_scripts() {
+        $data['ms_init'][] = 'frontend_register';
 	    lib3()->ui->data( 'ms_data', $data );
-        }
+    }
 
 }

@@ -132,6 +132,17 @@ class MS_Addon_Mailchimp extends MS_Addon {
 	}
 
 	/**
+	 * Mailchimp Error logging
+	 *
+	 * @since 1.1.2
+	 */
+	private static function mailchimp_log( $message ) {
+		if( defined( 'WP_DEBUG' ) && WP_DEBUG === true ) { 
+			lib3()->debug->log( '[M2] Mailchimp Error : ' . $message );
+		}
+	}
+
+	/**
 	 * A new user registered (not a Member yet).
 	 *
 	 * @since  1.0.0
@@ -146,7 +157,7 @@ class MS_Addon_Mailchimp extends MS_Addon {
 				}
 			}
 		} catch ( Exception $e ) {
-			// MS_Helper_Debug::debug_log( $e->getMessage() );
+			self::mailchimp_log( $e->getMessage() );
 		}
 	}
 
@@ -167,19 +178,15 @@ class MS_Addon_Mailchimp extends MS_Addon {
 
 			if ( $mail_list_members != $mail_list_registered ) {
 				/** Verify if is subscribed to registered mail list and remove it. */
-				if ( $list_id = self::$settings->get_custom_setting( 'mailchimp', 'mail_list_registered' ) ) {
-					if ( self::is_user_subscribed( $member->email, $list_id ) ) {
-						self::unsubscribe_user( $member->email, $list_id );
-					}
+				if ( self::is_user_subscribed( $member->email, $mail_list_registered ) ) {
+					self::unsubscribe_user( $member->email, $mail_list_registered );
 				}
 			}
 
 			if ( $mail_list_members != $mail_list_deactivated ) {
 				/** Verify if is subscribed to deactivated mail list and remove it. */
-				if ( $list_id = self::$settings->get_custom_setting( 'mailchimp', 'mail_list_deactivated' ) ) {
-					if ( self::is_user_subscribed( $member->email, $list_id ) ) {
-						self::unsubscribe_user( $member->email, $list_id );
-					}
+				if ( self::is_user_subscribed( $member->email, $mail_list_deactivated ) ) {
+					self::unsubscribe_user( $member->email, $mail_list_deactivated );
 				}
 			}
 
@@ -189,7 +196,7 @@ class MS_Addon_Mailchimp extends MS_Addon {
 			if ( isset( $custom_list_id ) && 0 != $custom_list_id ) {
 				$list_id = $custom_list_id;
 			} else {
-				$list_id = self::$settings->get_custom_setting( 'mailchimp', 'mail_list_members' );
+				$list_id = $mail_list_members;
 			}
 
 			if ( $list_id ) {
@@ -198,7 +205,7 @@ class MS_Addon_Mailchimp extends MS_Addon {
 				}
 			}
 		} catch ( Exception $e ) {
-			// MS_Helper_Debug::debug_log( $e->getMessage() );
+			self::mailchimp_log( $e->getMessage() );
 		}
 	}
 
@@ -227,31 +234,25 @@ class MS_Addon_Mailchimp extends MS_Addon {
 
 				if ( $mail_list_deactivated == $mail_list_registered ) {
 					// Verify if is subscribed to registered mail list and remove it.
-					if ( $list_id = self::$settings->get_custom_setting( 'mailchimp', 'mail_list_registered' ) ) {
-						if ( self::is_user_subscribed( $member->email, $list_id ) ) {
-							self::unsubscribe_user( $member->email, $list_id );
-						}
+					if ( self::is_user_subscribed( $member->email, $mail_list_registered ) ) {
+						self::unsubscribe_user( $member->email, $mail_list_registered );
 					}
 				}
 
 				if ( $mail_list_deactivated == $mail_list_members ) {
 					// Verify if is subscribed to members mail list and remove it.
-					if ( $list_id = self::$settings->get_custom_setting( 'mailchimp', 'mail_list_members' ) ) {
-						if ( self::is_user_subscribed( $member->email, $list_id ) ) {
-							self::unsubscribe_user( $member->email, $list_id );
-						}
+					if ( self::is_user_subscribed( $member->email, $mail_list_members ) ) {
+						self::unsubscribe_user( $member->email, $mail_list_members );
 					}
 				}
 
 				// Subscribe to deactiveted members mail list.
-				if ( $list_id = self::$settings->get_custom_setting( 'mailchimp', 'mail_list_deactivated' ) ) {
-					if ( ! self::is_user_subscribed( $member->email, $list_id ) ) {
-						self::subscribe_user( $member, $list_id );
-					}
+				if ( ! self::is_user_subscribed( $member->email, $mail_list_deactivated ) ) {
+					self::subscribe_user( $member, $mail_list_deactivated );
 				}
 			}
 		} catch ( Exception $e ) {
-			// MS_Helper_Debug::debug_log( $e->getMessage() );
+			self::mailchimp_log( $e->getMessage() );
 		}
 	}
 
@@ -325,10 +326,9 @@ class MS_Addon_Mailchimp extends MS_Addon {
 		$status = false;
 
 		try {
-			self::load_mailchimp_api();
-			$status = true;
+			$status = self::load_mailchimp_api();
 		} catch ( Exception $e ) {
-			// MS_Helper_Debug::debug_log( $e );
+			self::mailchimp_log( $e->getMessage() );
 		}
 
 		return $status;
@@ -342,28 +342,21 @@ class MS_Addon_Mailchimp extends MS_Addon {
 	 * @return M2_Mailchimp Object
 	 */
 	public static function load_mailchimp_api() {
-		if ( empty( self::$mailchimp_api ) ) {
-			$options = apply_filters(
-				'ms_addon_mailchimp_load_mailchimp_api_options',
-				array(
-					'timeout' 			=> false,
-					'ssl_verifypeer' 	=> false,
-					'ssl_verifyhost' 	=> false,
-					'ssl_cainfo' 		=> false,
-					'debug' 			=> false,
-				)
-			);
-
+		if ( empty( self::$mailchimp_api ) || !is_a( self::$mailchimp_api, 'M2_Mailchimp' ) ) {
 			if ( ! class_exists( 'M2_Mailchimp' ) ) {
 				require_once MS_Plugin::instance()->dir . '/lib/mailchimp-api/Mailchimp.php';
 			}
-			$api_key 		= self::$settings->get_custom_setting( 'mailchimp', 'api_key' );
-			$exploded 		= explode( '-', $api_key );
-			$data_center 	= end( $exploded );
-
-			$api = new M2_Mailchimp( $api_key, $data_center );
-
-			self::$mailchimp_api = $api;
+			$api_key = self::$settings->get_custom_setting( 'mailchimp', 'api_key' );
+			if ( !empty ( $api_key ) ) {
+				$exploded 		= explode( '-', $api_key );
+				$data_center 	= end( $exploded );
+	
+				$api = new M2_Mailchimp( $api_key, $data_center );
+	
+				self::$mailchimp_api = $api;
+			} else {
+				return false;
+			}
 		}
 
 		return self::$mailchimp_api;
@@ -400,7 +393,7 @@ class MS_Addon_Mailchimp extends MS_Addon {
 
 					if ( is_wp_error( $response ) ) {
 						$has_more = false;
-						// MS_Helper_Debug::debug_log( $lists );
+						self::mailchimp_log( $response->get_error_message() );
 					} else {
 						$lists   = $response->lists;
 						$has_more = count( $lists ) >= $items_per_page;
@@ -437,9 +430,6 @@ class MS_Addon_Mailchimp extends MS_Addon {
 
 			if ( !is_wp_error( $results ) ) {
 				$subscribed = true;
-			} else {
-				$this->log( $results->get_error_message() );
-				
 			}
 		}
 
@@ -498,7 +488,7 @@ class MS_Addon_Mailchimp extends MS_Addon {
 			$res = self::$mailchimp_api->subscribe( $list_id, $subscribe_data );
 
 			if ( is_wp_error( $res ) ) {
-				echo $res->errorMessage();
+				self::mailchimp_log( $res->get_error_message() );
 			}
 		}
 	}
@@ -518,11 +508,14 @@ class MS_Addon_Mailchimp extends MS_Addon {
 	public static function update_user( $user_email, $list_id, $merge_vars ) {
 		if ( self::get_api_status() ) {
 
-			return self::$mailchimp_api->update_subscription(
+			$res =  self::$mailchimp_api->update_subscription(
 				$list_id,
 				$user_email,
 				$merge_vars
 			);
+			if ( is_wp_error( $res ) ) {
+				self::mailchimp_log( $res->get_error_message() );
+			}
 		}
 	}
 
@@ -535,10 +528,13 @@ class MS_Addon_Mailchimp extends MS_Addon {
 	 */
 	public static function unsubscribe_user( $user_email, $list_id ) {
 		if ( self::get_api_status() ) {
-			return self::$mailchimp_api->unsubscribe(
+			$res =  self::$mailchimp_api->unsubscribe(
 				$list_id,
 				$user_email
 			);
+			if ( is_wp_error( $res ) ) {
+				self::mailchimp_log( $res->get_error_message() );
+			}
 		}
 	}
 

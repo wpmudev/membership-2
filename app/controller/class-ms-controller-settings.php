@@ -75,6 +75,11 @@ class MS_Controller_Settings extends MS_Controller {
 			'auto_setup_settings'
 		);
 
+		$this->add_action(
+			'admin_action_membership_user_sample_csv',
+			'membership_user_sample_csv'
+		);
+
 		$this->add_ajax_action( self::AJAX_ACTION_TOGGLE_SETTINGS, 'ajax_action_toggle_settings' );
 		$this->add_ajax_action( self::AJAX_ACTION_UPDATE_SETTING, 'ajax_action_update_setting' );
 		$this->add_ajax_action( self::AJAX_ACTION_UPDATE_CUSTOM_SETTING, 'ajax_action_update_custom_setting' );
@@ -94,6 +99,7 @@ class MS_Controller_Settings extends MS_Controller {
 
 		$this->run_action( 'load-' . $hook, 'admin_settings_manager' );
 		$this->run_action( 'admin_print_scripts-' . $hook, 'enqueue_scripts' );
+		$this->run_action( 'admin_print_styles-' . $hook, 'enqueue_styles' );
 	}
 
 	/**
@@ -331,7 +337,7 @@ class MS_Controller_Settings extends MS_Controller {
 			),
 			self::TAB_IMPORT => array(
 				'title' => __( 'Import Tool', 'membership2' ),
-			),
+			)
 		);
 		$settings = $this->get_model();
 		if ( ! MS_Model_Addon::is_enabled( MS_Addon_Mediafiles::ID ) || !$settings->is_advanced_media_protection ) {
@@ -510,12 +516,35 @@ class MS_Controller_Settings extends MS_Controller {
 
 				$data['comm'] = $comm;
 				break;
+
+			case self::TAB_IMPORT:
+				$url 				= wp_nonce_url( admin_url( 'admin.php?action=membership_user_sample_csv' ), 'sample_users_csv' );
+				$data['types'] 		= MS_Model_Export::export_types();
+				$data['formats'] 	= MS_Model_Export::export_formats();
+				$data['sample'] 	= $url;
+				break;
 		}
 
-		$data = array_merge( $data, $view->data );
-		$view->data = apply_filters( $hook . '_data', $data );
-		$view->model = $this->get_model();
+		$data 			= array_merge( $data, $view->data );
+		$view->data 	= apply_filters( $hook . '_data', $data );
+		$view->model 	= $this->get_model();
 		$view->render();
+	}
+
+	/**
+	 * Sample CSV file for user import
+	 *
+	 * @return csv file
+	 */
+	public function membership_user_sample_csv() {
+		if ( empty( $_REQUEST['_wpnonce'] ) ) { return; }
+		
+		if ( ! wp_verify_nonce( $_REQUEST['_wpnonce'], 'sample_users_csv' ) ) { return; }
+		
+		$contents = "username,email,membershipid" . "\r\n";
+		$contents .= "user1,user1@email.com,1" . "\r\n";
+		$contents .= "user2,user2@email.com,2";
+		lib3()->net->file_download( $contents, 'ms_sample_user_export.csv' );
 	}
 
 	/**
@@ -576,13 +605,13 @@ class MS_Controller_Settings extends MS_Controller {
 		$active_tab = $this->get_active_tab();
 		do_action( 'ms_controller_settings_enqueue_scripts_' . $active_tab );
 
-		$plugin_url = MS_Plugin::instance()->url;
-		$version = MS_Plugin::instance()->version;
-		$initial_url = MS_Controller_Plugin::get_admin_url();
+		$plugin_url 	= MS_Plugin::instance()->url;
+		$version 		= MS_Plugin::instance()->version;
+		$initial_url 	= MS_Controller_Plugin::get_admin_url();
 
 		$data = array(
-			'ms_init' => array(),
-			'initial_url' => $initial_url,
+			'ms_init' 		=> array(),
+			'initial_url' 	=> $initial_url,
 		);
 
 		$data['ms_init'][] = 'view_settings';
@@ -605,9 +634,18 @@ class MS_Controller_Settings extends MS_Controller {
 				$data['ms_init'][] = 'view_settings_setup';
 				break;
 		}
-
+		wp_enqueue_script( 'jquery-ui-datepicker' );
 		lib3()->ui->data( 'ms_data', $data );
 		wp_enqueue_script( 'ms-admin' );
+	}
+
+	/**
+	 * Load Member manager specific styles.
+	 *
+	 * @since  1.1.2
+	 */
+	public function enqueue_styles() {
+		lib3()->ui->add( 'jquery-ui' );
 	}
 	
 	/**

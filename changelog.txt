@@ -7,12 +7,24 @@ Change Log:
 1.1.2
 - Improved: Custom database tables for communication logs, event logs and transaction logs
 - Added: Data migration notification and action in settings page
+- Added: Members List Export to CSV
+- Added: Membership and Member XML import and export format
+- Added: Rest API Help docs
+- Added: Duration for coupons - coupon can be applied onetime or recurring
+- Added: Bulk import of users in CSV as members to a membership
 - Fixed: MailChimp Addon list function
-- Fixed: Styling for Membership Attributes Pop
+- Fixed: Styling for Membership Attributes PopUp
 - Fixed: Dripped Membership Url protection and menu protection
 - Fixed: Buddypress media protection conflict
 - Fixed: Update Member status for manually created members
 - Fixed: Mail sending cron setting
+- Fixed: Mail sending cron fix
+- Fixed: Posts displaying when protected in categoryy protection
+- Fixed: Rest API addon
+- Fixed: Rest API input integer validation (https://github.com/WP-API/WP-API/issues/1520) and change param of /member status to member_status
+- Fixed: Auth Net Payment Gateway (Fix the 'Extra Options is invalid.' authorize error)
+- Fixed: Profile Fields add-on readonly option was not working
+
 
 1.1.1
 - Fixed: Menu Protection items not showing to all users except admin

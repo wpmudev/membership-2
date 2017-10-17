@@ -17,9 +17,11 @@ class MS_Controller_Import extends MS_Controller {
 	// Action definitions.
 	const ACTION_EXPORT 		= 'export';
 	const ACTION_PREVIEW 		= 'preview';
+	const ACTION_IMPORT_USER 	= 'import_users';
 
 	// Ajax action: Import data.
-	const AJAX_ACTION_IMPORT 	= 'ms_import';
+	const AJAX_ACTION_IMPORT 		= 'ms_import';
+	const AJAX_ACTION_IMPORT_USERS 	= 'ms_import_users';
 
 	// Ajax action: Save an automatic transaction matching (Billings page).
 	const AJAX_ACTION_MATCH 	= 'ms_save_matching';
@@ -38,6 +40,11 @@ class MS_Controller_Import extends MS_Controller {
 		$this->add_ajax_action(
 			self::AJAX_ACTION_IMPORT,
 			'ajax_action_import'
+		);
+
+		$this->add_ajax_action(
+			self::AJAX_ACTION_IMPORT_USERS,
+			'ajax_action_import_users'
 		);
 
 		$this->add_ajax_action(
@@ -145,7 +152,6 @@ class MS_Controller_Import extends MS_Controller {
 		}
 
 		wp_send_json_error( array( 'desc' => '', 'status' => '' ) );
-		exit;
 	}
 
 	/**
@@ -184,6 +190,40 @@ class MS_Controller_Import extends MS_Controller {
 	}
 
 	/**
+	 * Handles an import batch of users that is sent via ajax.
+	 *
+	 * One batch includes multiple import commands that are to be processed in
+	 * the specified order.
+	 *
+	 * Expected output:
+	 *   OK:<number of successful commands>
+	 *   ERR
+	 *
+	 * @since  1.1.2
+	 */
+	public function ajax_action_import_users() {
+		$res 		= 'ERR';
+		$success 	= 0;
+
+		if ( ! isset( $_POST['items'] ) ) {
+			echo 'ERR';
+			exit;
+		}
+
+		$batch 	= $_POST['items'];
+
+		$res 	= 'OK';
+		foreach ( $batch as $item ) {
+			if ( $this->process_user( $item  ) ) {
+				$success += 1;
+			}
+		}
+
+		echo esc_html( $res . ':' . $success );
+		exit;
+	}
+
+	/**
 	 * Processes a single import command.
 	 *
 	 * @since  1.0.0
@@ -200,6 +240,11 @@ class MS_Controller_Import extends MS_Controller {
 		$model 	= MS_Factory::create( 'MS_Model_Import' );
 		$model->source_key = $source;
 
+		if ( is_a( $data, 'SimpleXMLElement' ) ) {
+			$data 	= MS_Helper_Utility::xml2array( $data );
+			$data 	= ( object ) $data;
+		}
+
 		// Set MS_STOP_EMAILS modifier to suppress any outgoing emails.
 		MS_Plugin::set_modifier( 'MS_STOP_EMAILS', true );
 
@@ -214,15 +259,29 @@ class MS_Controller_Import extends MS_Controller {
 
 			case 'import-membership':
 				// Function expects an object, not an array!
-				$data = (object) $data;
-				$model->import_membership( $data );
+				if ( is_array( $data ) && isset( $data['membership'] ) && count( $data['membership'] ) > 0 ) {
+					foreach ( $data['membership'] as $membership ) {
+						$membership = ( object ) $membership;
+						$model->import_membership( $membership );
+					}
+				} else {
+					$data = (object) $data;
+					$model->import_membership( $data );
+				}
 				$res = true;
 				break;
 
 			case 'import-member':
 				// Function expects an object, not an array!
-				$data = (object) $data;
-				$model->import_member( $data );
+				if ( is_array( $data ) && isset( $data['member'] ) && count( $data['member'] ) > 0 ) {
+					foreach ( $data['member'] as $member ) {
+						$member = ( object ) $member;
+						$model->import_member( $member );
+					}
+				} else {
+					$data = (object) $data;
+					$model->import_member( $data );
+				}
 				$res = true;
 				break;
 
@@ -232,6 +291,61 @@ class MS_Controller_Import extends MS_Controller {
 				$value 	= $item['value'];
 				$model->import_setting( $setting, $value );
 				$res 	= true;
+				break;
+
+			case 'done':
+				$model->done();
+				$res = true;
+				break;
+		}
+
+		/**
+		 * After the import action was complated notify other objects and
+		 * add-ons.
+		 *
+		 * @since  1.0.0
+		 */
+		do_action( 'ms_import_action_' . $task, $item );
+
+		return $res;
+	}
+
+	/**
+	 * Processes a single import command.
+	 *
+	 * @since  1.1.2
+	 * @param  array  $item The import command.
+	 * @return bool
+	 */
+	protected function process_user( $item ) {
+		$res = false;
+		
+		lib3()->array->equip( $item, 'task', 'data', 'membership', 'status', 'start', 'expire' );
+		$task 		= $item['task'];
+		$data 		= $item['data'];
+		$membership = $item['membership'];
+		$status 	= $item['status'];
+		$start 		= $item['start'];
+		$expire 	= $item['expire'];
+		$model 		= MS_Factory::create( 'MS_Model_Import' );
+		$model->source_key = 'membership2';
+
+		// Set MS_STOP_EMAILS modifier to suppress any outgoing emails.
+		MS_Plugin::set_modifier( 'MS_STOP_EMAILS', true );
+
+		// Possible tasks are defined in ms-view-settings-import.js.
+		switch ( $task ) {
+			case 'start':
+				lib3()->array->equip( $item, 'clear' );
+				$clear = lib3()->is_true( $item['clear'] );
+				$model->start( $clear );
+				$res = true;
+				break;
+
+			case 'import-member':
+				$data = (object) $data;
+				$model->import_user( $data, $membership, $status, $start, $expire );
+				$res = true;
 				break;
 
 			case 'done':
@@ -270,12 +384,12 @@ class MS_Controller_Import extends MS_Controller {
 
 		switch ( $action ) {
 			case self::ACTION_EXPORT:
-				$handler = MS_Factory::create( 'MS_Model_Import_Export' );
+				$handler = MS_Factory::create( 'MS_Model_Export' );
 				$handler->process();
 				break;
 
 			case self::ACTION_PREVIEW:
-				$view 		= MS_Factory::create( 'MS_View_Settings_Import' );
+				$view 		= MS_Factory::create( 'MS_View_Settings_Import_Settings' );
 				$model_name = 'MS_Model_Import_' . $_POST['import_source'];
 				$model 		= null;
 
@@ -307,6 +421,29 @@ class MS_Controller_Import extends MS_Controller {
 							)
 						);
 					}
+				}
+				break;
+
+			case self::ACTION_IMPORT_USER :
+				$view 	= MS_Factory::create( 'MS_View_Settings_Import_Users' );
+				$model 	= MS_Factory::create( 'MS_Model_Import_User' );
+				if ( $model->prepare() ) {
+					$data = array(
+						'model' => $model,
+					);
+
+					$view->data = apply_filters(
+						'ms_view_import_users_data',
+						$data
+					);
+
+					self::_message(
+						'preview',
+						apply_filters(
+							'ms_view_import_users_preview',
+							$view->to_html()
+						)
+					);
 				}
 				break;
 		}

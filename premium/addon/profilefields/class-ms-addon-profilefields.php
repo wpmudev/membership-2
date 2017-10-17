@@ -298,14 +298,14 @@ class MS_Addon_Profilefields extends MS_Addon {
 				$member = MS_Model_Member::get_current_member();
 				$user = $member->get_user();
 
-				$Profile_Fields['username']['value'] = $member->username;
-				$Profile_Fields['first_name']['value'] = $member->first_name;
-				$Profile_Fields['last_name']['value'] = $member->last_name;
-				$Profile_Fields['email']['value'] = $member->email;
-				$Profile_Fields['nickname']['value'] = $member->get_meta( 'nickname' );
-				$Profile_Fields['display_name']['value'] = $user->display_name;
-				$Profile_Fields['website']['value'] = $user->user_url;
-				$Profile_Fields['description']['value'] = $member->get_meta( 'description' );
+				$Profile_Fields['username']['value'] 		= $member->username;
+				$Profile_Fields['first_name']['value'] 		= $member->first_name;
+				$Profile_Fields['last_name']['value'] 		= $member->last_name;
+				$Profile_Fields['email']['value'] 			= $member->email;
+				$Profile_Fields['nickname']['value'] 		= $member->get_meta( 'nickname' );
+				$Profile_Fields['display_name']['value'] 	= $user->display_name;
+				$Profile_Fields['website']['value'] 		= $user->user_url;
+				$Profile_Fields['description']['value'] 	= $member->get_meta( 'description' );
 			}
 
 			if ( function_exists( 'bp_is_active' ) && bp_is_active( 'xprofile' ) ) {
@@ -474,7 +474,7 @@ class MS_Addon_Profilefields extends MS_Addon {
 
 			if ( 0 === strpos( $id, 'xprofile_' ) ) {
 				$field_id = substr( $id, 9 );
-				$fields[] = $this->render_xprofile_field( $field_id );
+				$fields[] = $this->render_xprofile_field( $field_id, $setting );
 				$xprofile_fields[] = $field_id;
 			} else {
 				$hint = '';
@@ -499,16 +499,20 @@ class MS_Addon_Profilefields extends MS_Addon {
 					$type = $defaults['type'];
 				}
 
+				$readonly = false;
+				if ( 'readonly' == $setting ) {
+					$readonly = true;
+				}
+
 				$fields[] = array(
-					'id' => $id,
-					'title' => $label,
-					'placeholder' => $hint,
-					'type' => $type,
-					'value' => $value,
-                                        'field_options' => isset( $defaults['field_options'] ) ? $defaults['field_options'] : array()
-				);
-                                
-                                
+					'id' 			=> $id,
+					'title' 		=> $label,
+					'placeholder' 	=> $hint,
+					'type' 			=> $type,
+					'value' 		=> $value,
+					'read_only' 	=> $readonly,
+                    'field_options' => isset( $defaults['field_options'] ) ? $defaults['field_options'] : array()
+				);               
 			}
 		}
 
@@ -654,7 +658,7 @@ class MS_Addon_Profilefields extends MS_Addon {
 			);
 		}
                 
-                if ( isset( $_POST['nickname'] ) ) {
+        if ( isset( $_POST['nickname'] ) ) {
 			wp_update_user(
 				array(
 					'ID' => $member->id,
@@ -694,33 +698,30 @@ class MS_Addon_Profilefields extends MS_Addon {
 		if ( $fields && $user  && is_array( $fields ) ) {
 			foreach ( $fields as $field_id ) {
 				if ( ! isset( $_REQUEST['field_' . $field_id] ) ) {
+                    // Saving date fields manually
+					if ( isset( $_REQUEST['field_' . $field_id . '_day'] ) ) {
+						// 1987-02-23 00:00:00
+						$date = $_REQUEST['field_' . $field_id . '_day'] .
+							'-' .
+							$_REQUEST['field_' . $field_id . '_month'] .
+							'-' .
+							$_REQUEST['field_' . $field_id . '_year'];
+							
+						$value = date( 'Y-m-d', strtotime( $date ) ) . ' 00:00:00';
+						
+					} else {
+						continue;
+                    }
                                     
-                                    // Saving date fields manually
-                                    if ( isset( $_REQUEST['field_' . $field_id . '_day'] ) ) {
-                                        // 1987-02-23 00:00:00
-                                        $date = $_REQUEST['field_' . $field_id . '_day'] .
-                                            '-' .
-                                            $_REQUEST['field_' . $field_id . '_month'] .
-                                            '-' .
-                                            $_REQUEST['field_' . $field_id . '_year'];
-                                            
-                                        $value = date( 'Y-m-d', strtotime( $date ) ) . ' 00:00:00';
-                                        
-                                    }else{
-					continue;
-                                    }
-                                    
-				}else{
-                                    $value = $_REQUEST['field_' . $field_id];
-                                }
+				} else {
+                    $value = $_REQUEST['field_' . $field_id];
+                }
 
-                                xprofile_set_field_data(
-                                    $field_id,
-                                    $user->ID,
-                                    $value
-                                );
-                                
-
+				xprofile_set_field_data(
+					$field_id,
+					$user->ID,
+					$value
+				);
 			}
 		}
 	}
@@ -736,9 +737,14 @@ class MS_Addon_Profilefields extends MS_Addon {
 	 * @param  mixed $field_value Value of the field.
 	 * @return string The HTML code to display the field.
 	 */
-	public function render_xprofile_field( $field_id, $field_value = null, $visibility = false ) {
+	public function render_xprofile_field( $field_id, $setting, $field_value = null, $visibility = false ) {
 		global $field;
 		$field = xprofile_get_field( $field_id );
+
+		$readonly = '';
+		if ( 'readonly' == $setting ) {
+			$readonly = 'readonly="readonly"';
+		}
 
 		ob_start();
 		?>
@@ -748,13 +754,13 @@ class MS_Addon_Profilefields extends MS_Addon {
 
 				<label for="<?php bp_the_profile_field_input_name(); ?>"><?php bp_the_profile_field_name(); ?> <?php if ( bp_get_the_profile_field_is_required() ) : ?><?php _e( '(required)', 'buddypress' ); ?><?php endif; ?></label>
 				<?php do_action( bp_get_the_profile_field_errors_action() ); ?>
-				<textarea rows="5" cols="40" name="<?php bp_the_profile_field_input_name(); ?>" id="<?php bp_the_profile_field_input_name(); ?>"><?php echo xprofile_get_field_data( bp_get_the_profile_field_id(), get_current_user_id() ); ?></textarea>
+				<textarea rows="5" cols="40" <?php echo $readonly ?> name="<?php bp_the_profile_field_input_name(); ?>" id="<?php bp_the_profile_field_input_name(); ?>"><?php echo xprofile_get_field_data( bp_get_the_profile_field_id(), get_current_user_id() ); ?></textarea>
 
 			<?php } elseif ( 'selectbox' == bp_get_the_profile_field_type() ) { ?>
 
 				<label for="<?php bp_the_profile_field_input_name(); ?>"><?php bp_the_profile_field_name(); ?> <?php if ( bp_get_the_profile_field_is_required() ) : ?><?php _e( '(required)', 'buddypress' ); ?><?php endif; ?></label>
 				<?php do_action( bp_get_the_profile_field_errors_action() ); ?>
-				<select name="<?php bp_the_profile_field_input_name(); ?>" id="<?php bp_the_profile_field_input_name(); ?>">
+				<select <?php echo $readonly ?> name="<?php bp_the_profile_field_input_name(); ?>" id="<?php bp_the_profile_field_input_name(); ?>">
 					<?php bp_the_profile_field_options( array( 'user_id' => get_current_user_id() ) ); ?>
 				</select>
 
@@ -762,7 +768,7 @@ class MS_Addon_Profilefields extends MS_Addon {
 
 				<label for="<?php bp_the_profile_field_input_name(); ?>"><?php bp_the_profile_field_name(); ?> <?php if ( bp_get_the_profile_field_is_required() ) : ?><?php _e( '(required)', 'buddypress' ); ?><?php endif; ?></label>
 				<?php do_action( bp_get_the_profile_field_errors_action() ); ?>
-				<select name="<?php bp_the_profile_field_input_name(); ?>" id="<?php bp_the_profile_field_input_name(); ?>" multiple="multiple">
+				<select <?php echo $readonly ?> name="<?php bp_the_profile_field_input_name(); ?>" id="<?php bp_the_profile_field_input_name(); ?>" multiple="multiple">
 					<?php bp_the_profile_field_options( array( 'user_id' => get_current_user_id() ) ); ?>
 				</select>
 
@@ -794,15 +800,15 @@ class MS_Addon_Profilefields extends MS_Addon {
 					<label for="<?php bp_the_profile_field_input_name(); ?>_day"><?php bp_the_profile_field_name(); ?> <?php if ( bp_get_the_profile_field_is_required() ) : ?><?php _e( '(required)', 'buddypress' ); ?><?php endif; ?></label>
 					<?php do_action( bp_get_the_profile_field_errors_action() ); ?>
 
-					<select name="<?php bp_the_profile_field_input_name(); ?>_day" id="<?php bp_the_profile_field_input_name(); ?>_day">
+					<select <?php echo $readonly ?> name="<?php bp_the_profile_field_input_name(); ?>_day" id="<?php bp_the_profile_field_input_name(); ?>_day">
 						<?php bp_the_profile_field_options( array( 'type' => 'day', 'user_id' => get_current_user_id() ) ); ?>
 					</select>
 
-					<select name="<?php bp_the_profile_field_input_name(); ?>_month" id="<?php bp_the_profile_field_input_name(); ?>_month">
+					<select <?php echo $readonly ?> name="<?php bp_the_profile_field_input_name(); ?>_month" id="<?php bp_the_profile_field_input_name(); ?>_month">
 						<?php bp_the_profile_field_options( array( 'type' => 'month', 'user_id' => get_current_user_id() ) ); ?>
 					</select>
 
-					<select name="<?php bp_the_profile_field_input_name(); ?>_year" id="<?php bp_the_profile_field_input_name(); ?>_year">
+					<select <?php echo $readonly ?> name="<?php bp_the_profile_field_input_name(); ?>_year" id="<?php bp_the_profile_field_input_name(); ?>_year">
 						<?php bp_the_profile_field_options( array( 'type' => 'year', 'user_id' => get_current_user_id() ) ); ?>
 					</select>
 				</div>
@@ -811,7 +817,7 @@ class MS_Addon_Profilefields extends MS_Addon {
 
 				<label for="<?php bp_the_profile_field_input_name(); ?>"><?php bp_the_profile_field_name(); ?> <?php if ( bp_get_the_profile_field_is_required() ) : ?><?php _e( '(required)', 'buddypress' ); ?><?php endif; ?></label>
 				<?php do_action( bp_get_the_profile_field_errors_action() ); ?>
-				<input type="<?php bp_the_profile_field_type() ?>" name="<?php bp_the_profile_field_input_name(); ?>" id="<?php bp_the_profile_field_input_name(); ?>" value="<?php echo strip_tags( xprofile_get_field_data( bp_get_the_profile_field_id(), get_current_user_id() ) ); ?>" />
+				<input type="<?php bp_the_profile_field_type() ?>" <?php echo $readonly ?> name="<?php bp_the_profile_field_input_name(); ?>" id="<?php bp_the_profile_field_input_name(); ?>" value="<?php echo strip_tags( xprofile_get_field_data( bp_get_the_profile_field_id(), get_current_user_id() ) ); ?>" />
 
 			<?php } ?>
 

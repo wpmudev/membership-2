@@ -55,15 +55,15 @@ class MS_Gateway_2checkout extends MS_Gateway {
 	 *         that will be updated instead of creating a new log entry.
 	 */
 	public function handle_return( $log = false ) {
-		$success = false;
-		$exit = false;
-		$redirect = false;
-		$notes = '';
-		$status = null;
-		$external_id = null;
-		$invoice_id = 0;
-		$subscription_id = 0;
-		$amount = 0;
+		$success 			= false;
+		$exit 				= false;
+		$redirect 			= false;
+		$notes 				= '';
+		$status 			= null;
+		$external_id 		= null;
+		$invoice_id 		= 0;
+		$subscription_id 	= 0;
+		$amount 			= 0;
 
 		if ( ! empty( $_POST['vendor_order_id'] ) && ! empty( $_POST['md5_hash'] ) ) {
 			$invoice_id = intval( $_POST['vendor_order_id'] );
@@ -76,12 +76,12 @@ class MS_Gateway_2checkout extends MS_Gateway {
 				&& ! empty( $_POST['message_type'] )
 				&& $invoice->id = $invoice_id
 			) {
-				$subscription = $invoice->get_subscription();
-				$membership = $subscription->get_membership();
-				$member = $subscription->get_member();
-				$subscription_id = $subscription->id;
-				$external_id = $_POST['invoice_id'];
-				$amount = (float) $_POST['invoice_list_amount'];
+				$subscription 		= $invoice->get_subscription();
+				$membership 		= $subscription->get_membership();
+				$member 			= $subscription->get_member();
+				$subscription_id 	= $subscription->id;
+				$external_id 		= $_POST['invoice_id'];
+				$amount 			= (float) $_POST['invoice_list_amount'];
 
 				switch ( $_POST['message_type'] ) {
 					case 'RECURRING_INSTALLMENT_SUCCESS':
@@ -122,29 +122,29 @@ class MS_Gateway_2checkout extends MS_Gateway {
 						break;
 
 					case 'FRAUD_STATUS_CHANGED':
-						$notes = 'Ignored: Users Fraud-status was checked';
-						$success = null;
+						$notes 		= 'Ignored: Users Fraud-status was checked';
+						$success 	= null;
 						break;
 
 					case 'ORDER_CREATED':
-						$notes = 'Ignored: 2Checkout created a new order';
-						$success = null;
+						$notes 		= 'Ignored: 2Checkout created a new order';
+						$success 	= null;
 						break;
 
 					case 'RECURRING_RESTARTED':
-						$notes = 'Ignored: Recurring payments restarted';
-						$success = null;
+						$notes 		= 'Ignored: Recurring payments restarted';
+						$success 	= null;
 						break;
 
 					case 'RECURRING_COMPLETE':
-						$notes = 'Ignored: Recurring complete';
-						$success = null;
+						$notes 		= 'Ignored: Recurring complete';
+						$success 	= null;
 						break;
 
 					case 'RECURRING_INSTALLMENT_FAILED':
-						$notes = 'Ignored: Recurring payment failed';
-						$success = null;
-						$status = MS_Model_Invoice::STATUS_PENDING;
+						$notes 		= 'Ignored: Recurring payment failed';
+						$success 	= null;
+						$status 	= MS_Model_Invoice::STATUS_PENDING;
 						break;
 
 					default:
@@ -227,11 +227,11 @@ class MS_Gateway_2checkout extends MS_Gateway {
 				exit;
 			}
 		} else {
-			$log->invoice_id = $invoice_id;
-			$log->subscription_id = $subscription_id;
-			$log->amount = $amount;
-			$log->description = $notes;
-			$log->external_id = $external_id;
+			$log->invoice_id 		= $invoice_id;
+			$log->subscription_id 	= $subscription_id;
+			$log->amount 			= $amount;
+			$log->description 		= $notes;
+			$log->external_id 		= $external_id;
 			if ( $success ) {
 				$log->manual_state( 'ok' );
 			}
@@ -256,8 +256,8 @@ class MS_Gateway_2checkout extends MS_Gateway {
 	 * @return boolean
 	 */
 	public function is_configured() {
-		$is_configured = true;
-		$required = array( 'seller_id', 'secret_word' );
+		$is_configured 	= true;
+		$required 		= array( 'seller_id', 'secret_word' );
 
 		foreach ( $required as $field ) {
 			$value = $this->$field;

@@ -2598,6 +2598,11 @@ body #wpwrap .ms-wrap .wpmui-radio-slider-wrapper.inline-label .wpmui-field-labe
 #wpwrap .ms-wrap.ms-member-list .column-membership {
   width: 45%;
 }
+#wpwrap .ms-wrap.ms-member-list .action-button {
+  float: right;
+  margin-top: 0px;
+  min-width: auto;
+}
 
 .ms-edit-member .the-membership {
   display: inline-block;
@@ -2963,6 +2968,10 @@ body #wpwrap .ms-wrap .wpmui-radio-slider-wrapper.inline-label .wpmui-field-labe
 .wpmui-popup .ms-settings-box .ms-import-preview .preview-name,
 #wpwrap .ms-wrap .ms-settings-box .ms-import-preview .preview-name {
   font-weight: bold;
+}
+.wpmui-popup .ms-settings-box .ms-import-preview tbody td,
+#wpwrap .ms-wrap .ms-settings-box .ms-import-preview tbody td {
+  text-align: center;
 }
 .wpmui-popup .ms-settings-box .ms-import-preview .preview-count,
 #wpwrap .ms-wrap .ms-settings-box .ms-import-preview .preview-count {

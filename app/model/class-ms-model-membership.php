@@ -718,7 +718,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 * @param  string $name_or_slug The Membership name or slug to search.
 	 * @return int|false The membership ID or false.
 	 */
-	public function get_membership_id( $name_or_slug ) {
+	public static function get_membership_id( $name_or_slug ) {
 		global $wpdb;
 		$res = false;
 
@@ -750,6 +750,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 
 		return $res;
 	}
+
 
 	/**
 	 * Get Memberships models.
@@ -786,6 +787,23 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 			$memberships,
 			$args
 		);
+	}
+
+	/**
+	 * Get public memberships
+	 *
+	 * @return MS_Model_Membership[] The selected memberships.
+	 */
+	static function get_public_memberships() {
+		$memberships = MS_Model_Membership::get_memberships( array(
+			'include_base' 	=> false,
+			'include_guest' => true,
+		) );
+		foreach ( $memberships as $key => $item ) {
+			if ( ! $item->active ) { unset( $memberships[$key] ); }
+			elseif ( $item->is_system() ) { unset( $memberships[$key] ); }
+		}
+        return $memberships;
 	}
 
 	/**

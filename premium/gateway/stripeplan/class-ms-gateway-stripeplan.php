@@ -308,7 +308,7 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 		$this->_api->set_gateway( $this );
 
 		$settings = MS_Plugin::instance()->settings;
-		$duration = 'forever';
+		$duration = MS_Addon_Coupon_Model::DURATION_ONCE === $coupon->duration ? 'once' : 'forever';
 		$percent_off = null;
 		$amount_off = null;
 
@@ -389,17 +389,36 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 								
 								foreach ( $member->subscriptions as $subscription ){
 									if ( $subscription ) {
+										if ( $subscription->is_system() ) { continue; }
 										$membership = $subscription->get_membership();
 										switch ( $event->type ){
 											case 'invoice.created' :
-												$subscription->check_membership_status();
-												if ( $subscription->trial_period_completed ) {
-													$subscription->status = MS_Model_Relationship::STATUS_PENDING;
-													$subscription->save();
+												if ( $membership->has_trial() ) {
+													//$subscription->check_membership_status();                                                    
+													//if ( $subscription->trial_period_completed ) {
+													if( $subscription->status == MS_Model_Relationship::STATUS_TRIAL_EXPIRED &&
+														MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_TRIAL )){
+														
+														$subscription->status = MS_Model_Relationship::STATUS_PENDING;
+														$subscription->save();
+													}
 												}
 											break;
 											case 'invoice.payment_succeeded' :
-												$invoice_id = $subscription->first_unpaid_invoice();
+												$invoice_id = false;
+												$prev_invoice = $subscription->get_previous_invoice();
+
+												if ( $prev_invoice && ( date( 'Y-m-d', $stripe_invoice->date ) == $prev_invoice->invoice_date ) ) {
+
+													if( $prev_invoice->status == MS_Model_Invoice::STATUS_PAID ) {
+														break;
+													}
+													$invoice_id = $prev_invoice->id;
+													
+												}
+
+												$invoice_id = ! $invoice_id ? $subscription->first_unpaid_invoice() : $invoice_id;
+
 												if ( $invoice_id ) {
 													$invoice = MS_Factory::load( 'MS_Model_Invoice', $invoice_id );
 													$invoice->ms_relationship_id 	= $subscription->id;
