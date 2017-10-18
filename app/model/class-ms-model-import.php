@@ -576,13 +576,14 @@ class MS_Model_Import extends MS_Model {
 	 *
 	 */
 	public function import_user( $obj, $membership, $status, $start, $expire ) {
-		$wpuser = get_user_by( 'email', $obj->email );
 		lib3()->array->equip( $obj, 'username', 'email', 'ms_membership' );
+		$wpuser = get_user_by( 'email', $obj->email );
 		if ( $wpuser ) {
 			$member = MS_Factory::load( 'MS_Model_Member', $wpuser->ID );
 		} else {
 			$wpuser = wp_create_user( $obj->username, '', $obj->email );
 			if ( is_numeric( $wpuser ) ) {
+				wp_update_user( array( 'ID' => $wpuser, 'first_name' => $obj->firstname, 'last_name' => $obj->lastname ) );
 				$member = MS_Factory::load( 'MS_Model_Member', $wpuser );
 			} else {
 				$this->errors[] = sprintf(
