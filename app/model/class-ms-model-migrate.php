@@ -159,17 +159,13 @@
 			wp_send_json_error( $resp );
 		}
 
-		$migration_data = get_transient( 'ms_migrate_process_data' );
-		if ( !$migration_data ) {
-			$migration_data = self::init_migration_data();
-			set_transient( 'ms_migrate_process_data', $migration_data );
-		}
+		$migration_data 	= self::init_migration_data();
 		$total 				= $migration_data['total'];
 		$total_processes 	= count( $migration_data['processes'] );
 		if ( !empty( $migration_data ) 
 			&& $total > 0  && $total_processes > 0 ) {
 
-			$i = 1;
+			$i = 0;
 			foreach ( $migration_data['processes'] as $process ) {
 
 				$step 		= $process['step'];
