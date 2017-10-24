@@ -4,8 +4,12 @@ Build Stamp: BUILDTIME
 
 Change Log:
 ----------------------------------------------------------------------
-1.1.2
+1.2.0
+- Added: New custom database tables for logs
 - Added: Data migration notification and action in settings page
+
+
+1.1.2
 - Added: Members List Export to CSV
 - Added: Membership and Member XML import and export format
 - Added: Rest API Help docs

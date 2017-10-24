@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Membership 2 Pro
  * Plugin URI:  https://premium.wpmudev.org/project/membership/
- * Version:     1.1.2
+ * Version:     1.2.0-beta1
  * Build Stamp: BUILDTIME
  * Description: The most powerful, easy to use and flexible membership plugin for WordPress sites available.
  * Author:      WPMU DEV
@@ -70,7 +70,7 @@ function membership2_init_app() {
 	 *
 	 * @since  1.0.0
 	 */
-	define( 'MS_PLUGIN_VERSION', '1.1.2' );
+	define( 'MS_PLUGIN_VERSION', '1.2.0' );
 
 	/**
 	 * Free or pro plugin?
