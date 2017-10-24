@@ -128,7 +128,7 @@ class MS_Helper_Database extends MS_Helper {
 		}
 		$sql 	= "SELECT count(ID) FROM $db->posts WHERE post_type = %s";
 		$total 	= $db->get_var( $db->prepare( $sql, $post_type ) );
-		return $total;
+		return ( int ) $total;
 	}
 
 	/**
