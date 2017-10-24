@@ -25,7 +25,7 @@ class MS_View_MigrationM1 extends MS_View {
 			$model->prepare();
 		}
 
-		$view = MS_Factory::create( 'MS_View_Settings_Import' );
+		$view = MS_Factory::create( 'MS_View_Settings_Import_Settings' );
 		$view->data = array( 'model' => $model, 'compact' => true );
 		$msg = __(
 			'Tip: You can also import your data later by visiting the Admin page <b>Membership2 > Settings > Import Tool</b>.',
@@ -64,17 +64,17 @@ class MS_View_MigrationM1 extends MS_View {
 	 */
 	public function enqueue_scripts() {
 		$data = array(
-			'ms_init' => array( 'view_settings_import' ),
-			'close_link' => MS_Controller_Plugin::get_admin_url(),
-			'lang' => array(
-				'progress_title' => __( 'Importing data...', 'membership2' ),
-				'close_progress' => __( 'Okay', 'membership2' ),
-				'import_done' => __( 'All done!', 'membership2' ),
-				'task_start' => __( 'Preparing...', 'membership2' ),
-				'task_done' => __( 'Cleaning up...', 'membership2' ),
-				'task_import_member' => __( 'Importing Member', 'membership2' ),
-				'task_import_membership' => __( 'Importing Membership', 'membership2' ),
-				'task_import_settings' => __( 'Importing Settings', 'membership2' ),
+			'ms_init' 		=> array( 'view_settings_import' ),
+			'close_link' 	=> MS_Controller_Plugin::get_admin_url(),
+			'lang' 			=> array(
+				'progress_title' 			=> __( 'Importing data...', 'membership2' ),
+				'close_progress' 			=> __( 'Okay', 'membership2' ),
+				'import_done' 				=> __( 'All done!', 'membership2' ),
+				'task_start' 				=> __( 'Preparing...', 'membership2' ),
+				'task_done' 				=> __( 'Cleaning up...', 'membership2' ),
+				'task_import_member' 		=> __( 'Importing Member', 'membership2' ),
+				'task_import_membership' 	=> __( 'Importing Membership', 'membership2' ),
+				'task_import_settings' 		=> __( 'Importing Settings', 'membership2' ),
 			),
 		);
 
