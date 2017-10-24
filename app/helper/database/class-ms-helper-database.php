@@ -83,7 +83,7 @@ class MS_Helper_Database extends MS_Helper {
 			global $wpdb;
 			$db = $wpdb;
 		}
-        return ( $db->get_var( $wpdb->prepare( "show tables like %s", $table_name ) ) != $table_name );
+        return ( $db->get_var( $db->prepare( "show tables like %s", $table_name ) ) != $table_name );
     }
 
     /**

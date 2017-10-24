@@ -32,9 +32,12 @@ class MS_Helper_Database_Install extends MS_Helper {
      */
     public static function uninstall() {
         $tables = MS_Helper_Database::table_names();
-        global $wpdb;
+		global $wpdb;
+		
+		$wpdb->hide_errors();
+
         foreach ( $tables as $name => $table ){
-            if ( ! MS_Helper_Database::table_not_exist( $table ) ) {
+            if ( ! MS_Helper_Database::table_not_exist( $table, $wpdb ) ) {
                 $wpdb->query( "DROP TABLE {$table}" );
             }
         }
@@ -47,18 +50,21 @@ class MS_Helper_Database_Install extends MS_Helper {
      */
     public static function create_tables() {
     
-        require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+		
+		global $wpdb;
+		
+		$wpdb->hide_errors();
 
-		$charset_collate = MS_Helper_Database::charset();
+		$charset_collate = MS_Helper_Database::charset( $wpdb );
 		
 		$max_index_length = 191;
-
 
         //Event log Table
         $table_name = MS_Helper_Database::get_table_name( MS_Helper_Database::EVENT_LOG );
         if ( $table_name ) {
 
-            if ( MS_Helper_Database::table_not_exist( $table_name ) ) {
+            if ( MS_Helper_Database::table_not_exist( $table_name, $wpdb  ) ) {
                 $sql = "CREATE TABLE {$table_name} (
                         `ID` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
                         `name` VARCHAR(200) NOT NULL,
@@ -83,7 +89,7 @@ class MS_Helper_Database_Install extends MS_Helper {
         $table_name = MS_Helper_Database::get_table_name( MS_Helper_Database::COMMUNICATION_LOG );
         if ( $table_name ) {
 
-            if ( MS_Helper_Database::table_not_exist( $table_name ) ) {
+            if ( MS_Helper_Database::table_not_exist( $table_name, $wpdb  ) ) {
                 $sql = "CREATE TABLE {$table_name} (
                         `ID` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
                         `sent` TINYINT(1) NOT NULL DEFAULT 0,
@@ -105,7 +111,7 @@ class MS_Helper_Database_Install extends MS_Helper {
         $table_name = MS_Helper_Database::get_table_name( MS_Helper_Database::TRANSACTION_LOG );
         if ( $table_name ) {
 
-            if ( MS_Helper_Database::table_not_exist( $table_name ) ) {
+            if ( MS_Helper_Database::table_not_exist( $table_name, $wpdb  ) ) {
                 $sql = "CREATE TABLE {$table_name} (
                         `ID` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
                         `gateway_id` VARCHAR(200) NULL,
@@ -133,12 +139,12 @@ class MS_Helper_Database_Install extends MS_Helper {
         $table_name = MS_Helper_Database::get_table_name( MS_Helper_Database::META );
         if ( $table_name ) {
 
-            if ( MS_Helper_Database::table_not_exist( $table_name ) ) {
+            if ( MS_Helper_Database::table_not_exist( $table_name, $wpdb  ) ) {
                 $sql = "CREATE TABLE {$table_name} (
                         `ID` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
                         `object_id` bigint(20) unsigned NOT NULL,
                         `object_type` ENUM('Membership', 'Invoice', 'RelationShip', 'TransactionLog', 'Communication') NOT NULL,
-                        `meta_key` VARCHAR(255) default NULL,
+                        `meta_key` VARCHAR(200) default NULL,
                         `meta_value` LONGTEXT NULL,
                         `date_created` datetime NOT NULL default '0000-00-00 00:00:00',
                         `date_updated` datetime NOT NULL default '0000-00-00 00:00:00',
