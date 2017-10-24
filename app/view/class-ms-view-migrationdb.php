@@ -28,7 +28,7 @@ class MS_View_MigrationDb extends MS_View {
 			),
 			array(
 				'type' => MS_Helper_Html::INPUT_TYPE_BUTTON,
-				'class' => 'ms-migration-start',
+				'class' => 'button-primary ms-migration-start',
 				'value' => __( 'Start migration', 'membership2' ),
 			)
 		);
@@ -36,16 +36,28 @@ class MS_View_MigrationDb extends MS_View {
 		
 		?>
 		<div class="ms-wrap wrap">
-			<h2>
-				<?php _e( 'Migrate your Membership data', 'membership2' ); ?>
-			</h2>
-			<div class="ms_migrate_progress"></div>
-			<div class="ms_migrate_message"></div>
-			<?php
-			foreach ( $fields as $field ) {
-				MS_Helper_Html::html_element( $field );
-			}
-			?>
+			<div class="ms-welcome-box" method="POST">
+				<h2 class="ms-welcome-title">
+					<?php _e( 'Database Upgrade!', 'membership2' ); ?>
+				</h2>
+
+				<div class="ms-welcome-text">
+					<?php _e( 'We have made some change to improve the performance of the <strong>Membership2</strong> plugin.<br/> The process can take long depending on the size of your data ', 'membership2' ); ?>
+				</div>
+				<div class="ms-welcome-image-box">
+					<i class="wpmui-fa wpmui-fa-exchange" style="font-size: 20em;" aria-hidden="true"></i>
+				</div>
+				<div class="ms-welcome-text">
+					<div class="ms_migrate_progress"></div>
+					<div class="ms_migrate_message"></div>
+					<?php
+					foreach ( $fields as $field ) {
+						MS_Helper_Html::html_element( $field );
+					}
+					?>
+				</div>
+				
+			</div>
 		</div>
 		<?php
 		return ob_get_clean();
