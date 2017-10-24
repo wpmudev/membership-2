@@ -383,106 +383,108 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 							}
 	
 							$user 		= get_user_by( 'email', $email );
-							$member 	= MS_Factory::load( 'MS_Model_Member', $user->ID );
-							$success 	= false;
-							if ( $member ) {
-								
-								foreach ( $member->subscriptions as $subscription ){
-									if ( $subscription ) {
-										if ( $subscription->is_system() ) { continue; }
-										$membership = $subscription->get_membership();
-										switch ( $event->type ){
-											case 'invoice.created' :
-												if ( $membership->has_trial() ) {
-													//$subscription->check_membership_status();                                                    
-													//if ( $subscription->trial_period_completed ) {
-													if( $subscription->status == MS_Model_Relationship::STATUS_TRIAL_EXPIRED &&
-														MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_TRIAL )){
-														
-														$subscription->status = MS_Model_Relationship::STATUS_PENDING;
-														$subscription->save();
-													}
-												}
-											break;
-											case 'invoice.payment_succeeded' :
-												$invoice_id = false;
-												$prev_invoice = $subscription->get_previous_invoice();
-
-												if ( $prev_invoice && ( date( 'Y-m-d', $stripe_invoice->date ) == $prev_invoice->invoice_date ) ) {
-
-													if( $prev_invoice->status == MS_Model_Invoice::STATUS_PAID ) {
-														break;
-													}
-													$invoice_id = $prev_invoice->id;
-													
-												}
-
-												$invoice_id = ! $invoice_id ? $subscription->first_unpaid_invoice() : $invoice_id;
-
-												if ( $invoice_id ) {
-													$invoice = MS_Factory::load( 'MS_Model_Invoice', $invoice_id );
-													$invoice->ms_relationship_id 	= $subscription->id;
-													$invoice->membership_id 		= $membership->id;
-													if ( 0 == $invoice->total ) {
-														// Free, just process.
-														$invoice->changed();
-														$success = true;
-														$notes = __( 'No payment required for free membership', 'membership2' );
-													} else {
-														$stripe_sub = $this->_api->get_subscription(
-															$stripe_customer,
-															$membership
-														);
-														$reference = $event_id;
-														if ( $stripe_sub ) {
-															$reference = $stripe_sub->id;
-															$this->cancel_if_done( $subscription, $stripe_sub );
+							if ( $user && !is_wp_error( $user ) ) {
+								$member 	= MS_Factory::load( 'MS_Model_Member', $user->ID );
+								$success 	= false;
+								if ( $member ) {
+									
+									foreach ( $member->subscriptions as $subscription ) {
+										if ( $subscription ) {
+											if ( $subscription->is_system() ) { continue; }
+											$membership = $subscription->get_membership();
+											switch ( $event->type ){
+												case 'invoice.created' :
+													if ( $membership->has_trial() ) {
+														//$subscription->check_membership_status();                                                    
+														//if ( $subscription->trial_period_completed ) {
+														if( $subscription->status == MS_Model_Relationship::STATUS_TRIAL_EXPIRED &&
+															MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_TRIAL )){
+															
+															$subscription->status = MS_Model_Relationship::STATUS_PENDING;
+															$subscription->save();
 														}
-														$notes = $this->get_description_for_sub( $stripe_sub );
-														$notes .= __( 'Payment successful', 'membership2' );
-														$success = true;
-														$invoice->status = MS_Model_Invoice::STATUS_PAID;
-														$invoice->pay_it( self::ID, $reference );
-														
-														$log = true;
 													}
-													$invoice->add_notes( $notes );
-													$invoice->save();
-												}else {
-													$this->log( 'Did not get invoice');
-												}
-												
-											break;
-											case 'customer.subscription.deleted' :
-											case 'invoice.payment_failed' :
-												$notes .= __( 'Membership cancelled or Payment failed via webhook', 'membership2' );
-												$success = false;
-												$member->cancel_membership( $membership->id );
-												$member->save();
-											break;
-											default : 
-												$notes = sprintf( __( 'Stripe webhook "%s" received', 'membership2' ), $event->type );
-											break;
+												break;
+												case 'invoice.payment_succeeded' :
+													$invoice_id = false;
+													$prev_invoice = $subscription->get_previous_invoice();
+
+													if ( $prev_invoice && ( date( 'Y-m-d', $stripe_invoice->date ) == $prev_invoice->invoice_date ) ) {
+
+														if( $prev_invoice->status == MS_Model_Invoice::STATUS_PAID ) {
+															break;
+														}
+														$invoice_id = $prev_invoice->id;
+														
+													}
+
+													$invoice_id = ! $invoice_id ? $subscription->first_unpaid_invoice() : $invoice_id;
+
+													if ( $invoice_id ) {
+														$invoice = MS_Factory::load( 'MS_Model_Invoice', $invoice_id );
+														$invoice->ms_relationship_id 	= $subscription->id;
+														$invoice->membership_id 		= $membership->id;
+														if ( 0 == $invoice->total ) {
+															// Free, just process.
+															$invoice->changed();
+															$success = true;
+															$notes = __( 'No payment required for free membership', 'membership2' );
+														} else {
+															$stripe_sub = $this->_api->get_subscription(
+																$stripe_customer,
+																$membership
+															);
+															$reference = $event_id;
+															if ( $stripe_sub ) {
+																$reference = $stripe_sub->id;
+																$this->cancel_if_done( $subscription, $stripe_sub );
+															}
+															$notes = $this->get_description_for_sub( $stripe_sub );
+															$notes .= __( 'Payment successful', 'membership2' );
+															$success = true;
+															$invoice->status = MS_Model_Invoice::STATUS_PAID;
+															$invoice->pay_it( self::ID, $reference );
+															
+															$log = true;
+														}
+														$invoice->add_notes( $notes );
+														$invoice->save();
+													}else {
+														$this->log( 'Did not get invoice');
+													}
+													
+												break;
+												case 'customer.subscription.deleted' :
+												case 'invoice.payment_failed' :
+													$notes .= __( 'Membership cancelled or Payment failed via webhook', 'membership2' );
+													$success = false;
+													$member->cancel_membership( $membership->id );
+													$member->save();
+												break;
+												default : 
+													$notes = sprintf( __( 'Stripe webhook "%s" received', 'membership2' ), $event->type );
+												break;
+											}
+										}
+										
+										
+										if ( $log && $invoice ) {
+											do_action(
+												'ms_gateway_transaction_log',
+												self::ID, // gateway ID
+												'handle', // request|process|handle
+												$success, // success flag
+												$subscription->id, // subscription ID
+												$invoice->id, // invoice ID
+												$invoice->total, // charged amount
+												$notes, // Descriptive text
+												'' // External ID
+											);
 										}
 									}
-									
-									
-									if ( $log && $invoice ) {
-										do_action(
-											'ms_gateway_transaction_log',
-											self::ID, // gateway ID
-											'handle', // request|process|handle
-											$success, // success flag
-											$subscription->id, // subscription ID
-											$invoice->id, // invoice ID
-											$invoice->total, // charged amount
-											$notes, // Descriptive text
-											'' // External ID
-										);
-									}
+								} else {
+									$this->log( 'Did not get member');
 								}
-							} else {
-								$this->log( 'Did not get member');
 							}
 						} else {
 							$this->log( 'Did not get customer');
