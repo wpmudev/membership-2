@@ -382,6 +382,7 @@
 		} else {
 			set_transient( 'ms_migrate_process_done', $step );
 			delete_transient( 'ms_migrate_process_page_'.$step );
+			delete_transient( 'ms_migrate_process_total_'.$step );
 			$response = __( 'Done', 'membership2' );
 		}
 		
