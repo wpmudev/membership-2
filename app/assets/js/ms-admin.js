@@ -2831,8 +2831,8 @@ window.ms_init.view_settings_migrate = function init() {
 		jQuery.post(
 			window.ajaxurl, 
 			{ 'action' : 'ms_check_migration', 'security' : jQuery('input[name=check_migration_nonce]').val() },
-			function(response){
-				if (response.status) {
+			function( response ){
+				if ( response.success ) {
 					migrationBar.value( response.data.percent );
 					jQuery(".ms_migrate_message").html( response.data.message );
 					if ( typeof response.data.pass !== 'undefined' ) {
@@ -2848,8 +2848,8 @@ window.ms_init.view_settings_migrate = function init() {
 						
 				  	}
 				} else {
-					migrationBar.value( 100 );
-					jQuery(".ms_migrate_message").html( ms_data.lang.task_error );
+					migrationBar.value( 0 );
+					jQuery(".ms_migrate_message").html( response.data.message );
 					window.clearInterval( migrationTimer );
 					window.setTimeout(function(){ ms_functions.reload(); }, 6000);
 				}
