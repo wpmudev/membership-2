@@ -49,7 +49,7 @@ class MS_View_MigrationDb extends MS_View {
 				</div>
 				<div class="ms-welcome-text">
 					<div class="ms_migrate_progress"></div>
-					<div class="ms_migrate_message"></div>
+					<h3 class="ms_migrate_message"></h3>
 					<?php
 					foreach ( $fields as $field ) {
 						MS_Helper_Html::html_element( $field );

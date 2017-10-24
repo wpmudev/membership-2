@@ -44,14 +44,14 @@ window.ms_init.view_settings_migrate = function init() {
 				  	}
 				} else {
 					migrationBar.value( 100 );
-					jQuery(".ms_migrate_message").html( ms_data.task_error );
+					jQuery(".ms_migrate_message").html( ms_data.lang.task_error );
 					window.clearInterval( migrationTimer );
 					window.setTimeout(function(){ ms_functions.reload(); }, 6000);
 				}
 			}
 		).fail(function() {
 			window.clearInterval( migrationTimer );
-			jQuery(".ms_migrate_message").html( ms_data.task_error );
+			jQuery(".ms_migrate_message").html( ms_data.lang.task_error );
 			window.setTimeout(function(){ ms_functions.reload(); }, 6000);
 		});
 	}
