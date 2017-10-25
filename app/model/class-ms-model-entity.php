@@ -140,6 +140,7 @@ class MS_Model_Entity extends MS_Model {
 	 */
 	public function prepare_obj() {
 		parent::prepare_obj();
+		$this->_before_prepare_obj();
 
 		$this->before_load();
 

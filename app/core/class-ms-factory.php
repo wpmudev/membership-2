@@ -464,11 +464,13 @@ class MS_Factory {
 			$cache = wp_cache_get( $model_id, $class );
 			if ( $cache ) {
 				$model = $cache;
+				$model->prepare_obj();
 			} else {
 				self::select_blog();
 				$object = $model->get( $model_id );
 
 				if ( ! empty( $object ) ) {
+					$model->prepare_obj();
 					$object_meta 		= MS_Helper_Database_TableMeta::meta( MS_Helper_Database_TableMeta::MEMBERSHIP_TYPE, $model_id );
 					$object_variables 	= get_object_vars( $object ); //Get all vars from the table and assign to the object
 					$object_meta 		= array_merge( $object_meta, $object_variables );

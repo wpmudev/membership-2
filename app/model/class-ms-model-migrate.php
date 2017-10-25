@@ -12,6 +12,12 @@
  */
  class MS_Model_Migrate extends MS_Model {
 
+	const MIGRATION_PAGE = 20;
+
+	const EVENT_POST_TYPE 	= 'ms_event';
+	const COMM_POST_TYPE 	= 'ms_communication_log';
+	const TRANS_POST_TYPE 	= 'ms_transaction_log';
+
 	/**
 	 * Initialize migrate check.
 	 *
@@ -57,9 +63,9 @@
 	 */
 	static function needs_migration() {
 		global $wpdb;
-		return ( MS_Helper_Database::post_type_exists( 'ms_communication_log', $wpdb ) 
-				|| MS_Helper_Database::post_type_exists( 'ms_transaction_log', $wpdb ) 
-				|| MS_Helper_Database::post_type_exists( 'ms_event', $wpdb ) );
+		return ( MS_Helper_Database::post_type_exists( self::COMM_POST_TYPE, $wpdb ) 
+				|| MS_Helper_Database::post_type_exists( self::TRANS_POST_TYPE, $wpdb ) 
+				|| MS_Helper_Database::post_type_exists( self::EVENT_POST_TYPE, $wpdb ) );
 	}
 
 	/**
@@ -71,9 +77,9 @@
 	 */
 	static function init_migration_data() {
 		global $wpdb;
-		$comm_log 	= MS_Helper_Database::post_type_total( 'ms_communication_log', $wpdb );
-		$trans_log 	= MS_Helper_Database::post_type_total( 'ms_transaction_log', $wpdb );
-		$event_log 	= MS_Helper_Database::post_type_total( 'ms_event', $wpdb );
+		$comm_log 	= MS_Helper_Database::post_type_total( self::COMM_POST_TYPE, $wpdb );
+		$trans_log 	= MS_Helper_Database::post_type_total( self::TRANS_POST_TYPE, $wpdb );
+		$event_log 	= MS_Helper_Database::post_type_total( self::EVENT_POST_TYPE, $wpdb );
 		$data = array(
 			'total' 	=> ( $comm_log + $trans_log + $event_log ),
 			'processes' => array()
@@ -85,13 +91,6 @@
 				'total'	=> $comm_log
 			);
 		}
-		if ( $trans_log > 0 ) {
-			$data['processes'][] = array(
-				'step' 	=> 'trans_log',
-				'name' 	=> __( 'Transaction Logs', 'membership2' ),
-				'total'	=> $trans_log
-			);
-		}
 		if ( $event_log > 0 ) {
 			$data['processes'][] = array(
 				'step' 	=> 'event_log',
@@ -99,8 +98,53 @@
 				'total'	=> $event_log
 			);
 		}
+		if ( $trans_log > 0 ) {
+			$data['processes'][] = array(
+				'step' 	=> 'trans_log',
+				'name' 	=> __( 'Transaction Logs', 'membership2' ),
+				'total'	=> $trans_log
+			);
+		}
 		$data['stages'] = count( $data['processes'] );
 		return $data;
+	}
+
+	/**
+	 * Get current stage
+	 * 
+	 * @return bool/array
+	 */
+	static function get_current_stage() {
+		$migration_data 	= get_transient( 'ms_migrate_data' ); 
+		
+		if ( !$migration_data ) {
+			$migration_data = self::init_migration_data();
+			set_transient( 'ms_migrate_data', $migration_data );
+		}
+
+		$completed 	= get_transient( 'ms_migrate_process_done' );
+
+		$total 				= $migration_data['total'];
+		$total_processes 	= count( $migration_data['processes'] );
+		if ( !empty( $migration_data ) 
+			&& $total > 0  && $total_processes > 0 ) {
+			$process	= $migration_data['processes'][0];
+			$step 		= $process['step'];
+			if ( $completed && ( $completed == $step ) ) {
+				if ( $total_processes > 1 ) {
+					unset ( $migration_data['processes'][0] );
+					set_transient( 'ms_migrate_data', $migration_data );
+					delete_transient( 'ms_migrate_process_done' );
+					$process = next( $migration_data['processes'] );
+					$step 		= $process['step'];
+				} else {
+					$process = false;
+				}
+			}
+			return $process;
+		} else {
+			return false;
+		}
 	}
 
 	/**
@@ -134,7 +178,15 @@
 			$migration_data['pass'] = $current_pass;
 			delete_transient( 'ms_migrate_process_pass' );
 		}
-		
+
+		$process 	= self::get_current_stage();
+		if ( !$process ) {
+			$migration_data['error'] = __( 'No new process to find', 'membership' );
+			MS_Model_Settings::reset_special_view();
+		} else {
+			$migration_data['error'] = sprintf( __( 'Currently on %s', 'membership' ), $process['name'] );
+		}
+
 		wp_send_json_success( $migration_data );
 	}
 
@@ -166,9 +218,12 @@
 			) );
 		}
 
-		$pass = isset( $_POST['pass'] ) ? $_POST['pass'] : 0;
-
+		$pass 				= isset( $_POST['pass'] ) ? $_POST['pass'] : 0;
+		if ( $pass == 0 ) {
+			delete_transient( 'ms_migrate_data' );
+		}
 		$migration_data 	= get_transient( 'ms_migrate_data' ); 
+
 		if ( !$migration_data ) {
 			$migration_data = self::init_migration_data();
 			set_transient( 'ms_migrate_data', $migration_data );
@@ -178,27 +233,33 @@
 		$total_processes 	= count( $migration_data['processes'] );
 		if ( !empty( $migration_data ) 
 			&& $total > 0  && $total_processes > 0 ) {
-			$completed 	= get_transient( 'ms_migrate_process_done' );
-			if ( $completed && $total_processes > 1 ) {
-				unset ( $migration_data['processes'][0] );
-				set_transient( 'ms_migrate_data', $migration_data );
-				$process = next( $migration_data['processes'] );
+			$process 	= self::get_current_stage();
+			if ( $process ) {
+				$step 		= $process['step'];
+				$page 		= ceil( $process['total'] / self::MIGRATION_PAGE );
+				$percentage = ( ( $pass + 1 ) * $page );
+				$percent 	= intval( $percentage / $total * 100 );
+				if ( self::MIGRATION_PAGE > $process['total'] ) {
+					$page = $process['total'];
+				} else {
+					$page = $page * self::MIGRATION_PAGE;
+				}
+				set_transient( 'ms_migrate_process_percentage', array(
+					'percent' 	=> $percent,
+					'message'	=> sprintf( __( '%d of %d records processed for %s ', 'membership' ), $page , $process['total'], $process['name'] )
+				) );
+	
+				$resp = self::migrate_log_tables( $process['total'], $step );
+				if ( $resp !== false ) {
+					set_transient( 'ms_migrate_process_pass', $pass + 1 );
+				}
 			} else {
-				$process = $migration_data['processes'][0];
+				set_transient( 'ms_migrate_process_percentage', array(
+					'percent' 	=> 100,
+					'message'	=> __( 'Nothing left to migrate', 'membership' )
+				) );
 			}
-			$page 		= ceil( $process['total'] / 10 );
-			$percentage = ( ( $pass + 1 ) * $page );
-			$percent 	= intval( $percentage / $total * 100 );
-			$step 		= $process['step'];
-
-			set_transient( 'ms_migrate_process_percentage', array(
-				'percent' 	=> $percent,
-				'message'	=> sprintf( __( '%d of %d records processed for %s ', 'membership' ), $percentage , $total, $process['name'] )
-			) );
-
-			self::migrate_log_tables( $process['total'], $step );
-
-			set_transient( 'ms_migrate_process_pass', $pass + 1 );
+			
 		} else {
 			set_transient( 'ms_migrate_process_percentage', array(
 				'percent' 	=> 100,
@@ -221,181 +282,183 @@
 	static function migrate_log_tables( $total, $step = 'comm_log' ) {
 	
 		global $wpdb;
+		$wpdb->show_errors();
+
+		$pages 				= self::MIGRATION_PAGE;
 		$response 			= '';
-		$communication_log 	= 'ms_communication_log';
-		$transaction_log 	= 'ms_transaction_log';
-		$event 				= 'ms_event';
+		$communication_log 	= self::COMM_POST_TYPE;
+		$transaction_log 	= self::TRANS_POST_TYPE;
+		$event 				= self::EVENT_POST_TYPE;
 		$post_ids 			= array();
 		$insert_data 		= array();
-		$sql 				= "SELECT * FROM $wpdb->posts WHERE post_type = %s LIMIT %d, 10";
-		$meta_sql 			= "SELECT * FROM $wpdb->postmeta WHERE post_id = %d";
+		$sql 				= "SELECT * FROM {$wpdb->posts} WHERE post_type = %s LIMIT %d, {$pages}";
+		$meta_sql 			= "SELECT * FROM {$wpdb->postmeta} WHERE post_id = %d";
 		$page 				= get_transient( 'ms_migrate_process_page_'.$step );
-		if ( !$page ) {
-			$page = 0;
-		}
+		$page 				= ( !$page ) ? 0 : ( $page + $pages );
 		if ( $step == 'comm_log' ) {
+			$table_name = MS_Helper_Database::get_table_name( MS_Helper_Database::COMMUNICATION_LOG );
+			$query 		= $wpdb->prepare( $sql, $communication_log, $page );
+			$results 	= $wpdb->get_results( $query );
 			
-			if ( MS_Helper_Database::post_type_exists( $communication_log, $wpdb ) ) {
-				$table_name = MS_Helper_Database::get_table_name( MS_Helper_Database::COMMUNICATION_LOG );
-				$query 		= $wpdb->prepare( $sql, $communication_log, $page );
-				$results 	= $wpdb->get_results( $query );
-				
-				foreach ( $results as $post ){
-					$post_ids[] 			= $post->ID;
-					$metadata 				= $wpdb->get_results( $wpdb->prepare( $meta_sql, $post->ID ) );
-					$data 					= array();
-					$data['date_created'] 	= $post->post_date;
-					$data['title'] 			= $post->title;
-					foreach ( $metadata as $mdata ){
-						if ( $mdata->meta_key  === 'sent') {
-							$data['sent'] = $mdata->meta_value;
-						}
-						if ( $mdata->meta_key  === 'recipient') {
-							$data['recipient'] = $mdata->meta_value;
-						}
-						if ( $mdata->meta_key  === 'subscription_id') {
-							$data['subscription_id'] = $mdata->meta_value;
-						}
-						if ( $mdata->meta_key  === 'trace') {
-							$data['trace'] = $mdata->meta_value;
-						}
-						if ( $mdata->meta_key  === 'user_id') {
-							$data['author'] = $mdata->meta_value;
-						}
+			foreach ( $results as $post ){
+				$post_ids[] 			= $post->ID;
+				$metadata 				= $wpdb->get_results( $wpdb->prepare( $meta_sql, $post->ID ) );
+				$data 					= array();
+				$data['date_created'] 	= $post->post_date;
+				$data['title'] 			= $post->title;
+				foreach ( $metadata as $mdata ){
+					if ( $mdata->meta_key  === 'sent') {
+						$data['sent'] = $mdata->meta_value;
 					}
-					$insert_data[] = $data;
-				}
-				if ( !empty( $insert_data ) ) {
-					foreach ( $insert_data as $data ){
-						$wpdb->insert( $table_name, $data );
+					if ( $mdata->meta_key  === 'recipient') {
+						$data['recipient'] = $mdata->meta_value;
 					}
-					$insert_data = null;
-					$insert_data = array();
+					if ( $mdata->meta_key  === 'subscription_id') {
+						$data['subscription_id'] = $mdata->meta_value;
+					}
+					if ( $mdata->meta_key  === 'trace') {
+						$data['trace'] = $mdata->meta_value;
+					}
+					if ( $mdata->meta_key  === 'user_id') {
+						$data['author'] = $mdata->meta_value;
+					}
 				}
+				$insert_data[] = $data;
 			}
-		}
-		if ( $step == 'trans_log' ) {
-			if ( MS_Helper_Database::post_type_exists( $transaction_log, $wpdb ) ) {
-				$table_name 			= MS_Helper_Database::get_table_name( MS_Helper_Database::TRANSACTION_LOG );
-				$meta_table_name    	= MS_Helper_Database::get_table_name( MS_Helper_Database::META );
-				$meta_name          	= MS_Helper_Database_TableMeta::TRANSACTION_TYPE;
-				$query 					= $wpdb->prepare( $sql, $transaction_log, $page );
-				$results 				= $wpdb->get_results( $query );
-				$insert_defaults		= array( 'gateway_id', 'method', 'success', 'subscription_id', 'invoice_id', 'member_id', 'amount', 'custom_data', 'user_id');
-				$insert_meta_data 		= array();
-			
-				foreach ( $results as $post ){
-					$post_ids[] 				= $post->ID;
-					$metadata 					= $wpdb->get_results( $wpdb->prepare( $meta_sql, $post->ID ) );
+			if ( !empty( $insert_data ) ) {
+				foreach ( $insert_data as $data ){
+					$wpdb->insert( $table_name, $data );
+				}
+				$insert_data = null;
+				$insert_data = array();
+			}
+		} else if ( $step == 'trans_log' ) {
+			$table_name 			= MS_Helper_Database::get_table_name( MS_Helper_Database::TRANSACTION_LOG );
+			$meta_table_name    	= MS_Helper_Database::get_table_name( MS_Helper_Database::META );
+			$meta_name          	= MS_Helper_Database_TableMeta::TRANSACTION_TYPE;
+			$query 					= $wpdb->prepare( $sql, $transaction_log, $page );
+			$results 				= $wpdb->get_results( $query );
+			$insert_defaults		= array( 'gateway_id', 'method', 'success', 'subscription_id', 'invoice_id', 'member_id', 'amount', 'custom_data', 'user_id');
+			$insert_meta_data 		= array();
+		
+			foreach ( $results as $post ){
+				$post_ids[] 				= $post->ID;
+				$metadata 					= $wpdb->get_results( $wpdb->prepare( $meta_sql, $post->ID ) );
+				$data 						= array();
+				$data['date_created'] 		= $post->post_date;
+				$data['last_updated'] 		= $post->post_modified;
+				foreach ( $metadata as $mdata ){
 					$inner_meta 				= array();
-					$data 						= array();
-					$data['date_created'] 		= $post->post_date;
-					$data['last_updated'] 		= $post->post_modified;
 					$inner_meta['object_type'] 	= $meta_name;
-					foreach ( $metadata as $mdata ){
-						if ( in_array( $mdata->meta_key, $insert_defaults ) ) {
-							$data[$mdata->meta_key] 	= $mdata->meta_value;
-						} else {
-							$inner_meta['meta_key'] 	= $mdata->meta_key;
-							$inner_meta['meta_value'] 	= $mdata->meta_value;
-							$inner_meta['date_created'] = $post->post_date;
-						}
+					if ( in_array( $mdata->meta_key, $insert_defaults ) ) {
+						$data[$mdata->meta_key] 	= $mdata->meta_value;
+					} else {
+						$inner_meta['meta_key'] 	= $mdata->meta_key;
+						$inner_meta['meta_value'] 	= $mdata->meta_value;
+						$inner_meta['date_created'] = $post->post_date;
 					}
-					$insert_data[] 		= $data;
 					$insert_meta_data[] = $inner_meta;
 				}
-				if ( !empty( $insert_data ) ) {
-					foreach ( $insert_data as $data ){
-						$result = $wpdb->insert( $table_name, $data );
-						if ( false !== $result ) {
-							$id = $wpdb->insert_id;
-							foreach ( $insert_meta_data as $meta ){
-								$meta['object_id'] = $id;
-								$wpdb->insert( $meta_table_name, $meta );
-							}
-						}
-					}
-					$insert_data = null;
-					$insert_data = array();
-				}
+				$insert_data[] 	= $data;
 			}
-		}
-		if ( $step == 'event_log' ) {
-			if ( MS_Helper_Database::post_type_exists( $event, $wpdb ) ) {
-				$table_name = MS_Helper_Database::get_table_name( MS_Helper_Database::EVENT_LOG );
-				$query 		= $wpdb->prepare( $sql, $event, $page );
-				$results 	= $wpdb->get_results( $query );
-				foreach ( $results as $post ){
-					$post_ids[] 			= $post->ID;
-					$metadata 				= $wpdb->get_results( $wpdb->prepare( $meta_sql, $post->ID ) );
-					$data 					= array();
-					$data['date_created'] 	= $post->post_date;
-					foreach ( $metadata as $mdata ){
-						if ( $mdata->meta_key  === 'name') {
-							$data['name'] 	= $mdata->meta_value;
-						}
-						if ( $mdata->meta_key  === 'membership_id') {
-							$data['membership_id'] = $mdata->meta_value;
-						}
-						if ( $mdata->meta_key  === 'ms_relationship_id') {
-							$data['ms_relationship_id'] = $mdata->meta_value;
-						}
-						if ( $mdata->meta_key  === 'event_topic') {
-							$data['event_topic'] = $mdata->meta_value;
-						}
-						if ( $mdata->meta_key  === 'user_id') {
-							$data['user_id'] = $data->mdata;
-						}
-						if ( $mdata->meta_key  === 'event_type') {
-							$data['event_type'] = $mdata->meta_value;
-						}
-						if ( $mdata->meta_key  === 'description') {
-							$data['description'] = $mdata->meta_value;
+			if ( !empty( $insert_data ) ) {
+				foreach ( $insert_data as $data ){
+					$result = $wpdb->insert( $table_name, $data );
+					if ( false !== $result ) {
+						$id = $wpdb->insert_id;
+						foreach ( $insert_meta_data as $meta ){
+							$meta['object_id'] = $id;
+							$wpdb->insert( $meta_table_name, $meta );
 						}
 					}
-					$insert_data[] = $data;
 				}
-				if ( !empty( $insert_data ) ) {
-					foreach ( $insert_data as $data ){
-						$wpdb->insert( $table_name, $data );
-					}
-					$insert_data = null;
-					$insert_data = array();
-				}
+				$insert_data = null;
+				$insert_data = array();
 			}
+		} else if ( $step == 'event_log' ) {
+			$table_name = MS_Helper_Database::get_table_name( MS_Helper_Database::EVENT_LOG );
+			$query 		= $wpdb->prepare( $sql, $event, $page );
+			$results 	= $wpdb->get_results( $query );
+			foreach ( $results as $post ) {
+				$post_ids[] 			= $post->ID;
+				$metadata 				= $wpdb->get_results( $wpdb->prepare( $meta_sql, $post->ID ) );
+				$data 					= array();
+				$data['date_created'] 	= $post->post_date;
+				foreach ( $metadata as $mdata ) {
+					if ( $mdata->meta_key  === 'name') {
+						$data['name'] 	= $mdata->meta_value;
+					}
+					if ( $mdata->meta_key  === 'membership_id') {
+						$data['membership_id'] = $mdata->meta_value;
+					}
+					if ( $mdata->meta_key  === 'ms_relationship_id') {
+						$data['ms_relationship_id'] = $mdata->meta_value;
+					}
+					if ( $mdata->meta_key  === 'event_topic') {
+						$data['event_topic'] = $mdata->meta_value;
+					}
+					if ( $mdata->meta_key  === 'user_id') {
+						$data['user_id'] = $mdata->meta_value;
+					}
+					if ( $mdata->meta_key  === 'event_type') {
+						$data['event_type'] = $mdata->meta_value;
+					}
+					if ( $mdata->meta_key  === 'description') {
+						$data['description'] = $mdata->meta_value;
+					}
+				}
+				$insert_data[] = $data;
+			}
+			if ( !empty( $insert_data ) ) {
+				foreach ( $insert_data as $data ){
+					$wpdb->insert( $table_name, $data );
+				}
+				$insert_data = null;
+				$insert_data = array();
+			}
+			
 		}
 
-		$total_processed = get_transient( 'ms_migrate_process_total_'.$step );
-		if ( !$total_processed ) {
-			$total_processed = count( $post_ids );
-		} else {
-			$total_processed = $total_processed + count( $post_ids );
-		}
-
-		set_transient( 'ms_migrate_process_total_'.$step, $total_processed );
-
-		if ( $total_processed > 0 && $total_processed < $total ) {
-			$next_page 	= $page + 1;
-			$pages 		= ceil( $total / 10 );
-			set_transient( 'ms_migrate_process_page_'.$step, $next_page );
-			$response = sprintf( __( '%d out of %d in', 'membership2' ), $next_page, $pages ) ;
-		} else {
-			set_transient( 'ms_migrate_process_done', $step );
-			delete_transient( 'ms_migrate_process_page_'.$step );
-			delete_transient( 'ms_migrate_process_total_'.$step );
-			$response = __( 'Done', 'membership2' );
-		}
-		
-
-		if ( !empty( $post_ids ) && is_array( $post_ids ) ) {
-			$how_many 		= count( $post_ids );
+		$how_many = count( $post_ids );
+		if ( $how_many > 0 ) {
+			
 			$placeholders 	= array_fill( 0, $how_many, '%d' );
 			$format 		= implode( ', ', $placeholders );
 			$sql 			= "DELETE FROM $wpdb->postmeta WHERE post_id in($format)";
 			$sql_posts 		= "DELETE FROM $wpdb->posts WHERE ID in($format)";
 			$wpdb->query( $wpdb->prepare( $sql, $post_ids ) );
 			$wpdb->query( $wpdb->prepare( $sql_posts, $post_ids ) );
+		
+			$total_processed = get_transient( 'ms_migrate_process_total_'.$step );
+			if ( !$total_processed ) {
+				$total_processed = $how_many;
+			} else {
+				$total_processed = $total_processed + $how_many;
+			}
+			set_transient( 'ms_migrate_process_total_'.$step, $total_processed );
+			if ( $total_processed >= $total ) {
+				set_transient( 'ms_migrate_process_done', $step );
+				delete_transient( 'ms_migrate_process_page_'.$step );
+				delete_transient( 'ms_migrate_process_total_'.$step );
+				$response = __( 'Done', 'membership2' );
+			} else {
+				$next_page 	= $page + 1;
+				$pages 		= ceil( $total / $pages );
+				set_transient( 'ms_migrate_process_page_'.$step, $next_page );
+				$response = sprintf( __( '%d out of %d in', 'membership2' ), $next_page, $pages ) ;
+			}
+		} else {
+			delete_transient( 'ms_migrate_process_page_'.$step );
+			delete_transient( 'ms_migrate_process_total_'.$step );
+			delete_transient( 'ms_migrate_process_done' );
+			set_transient( 'ms_migrate_process_percentage', array(
+				'percent' 	=> 0,
+				'message'	=> sprintf( __( 'An error occured during migration. %d records copied. Please try again ', 'membership' ), $how_many )
+			) );
 		}
+
+		error_log( $wpdb->last_error );
+		return false;
 	}
  }
 ?>

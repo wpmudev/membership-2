@@ -32,6 +32,8 @@ class MS_View_MigrationDb extends MS_View {
 				'value' => __( 'Start migration', 'membership2' ),
 			)
 		);
+
+		$migration_data = MS_Model_Migrate::init_migration_data();
 		ob_start();
 		
 		?>
@@ -42,7 +44,16 @@ class MS_View_MigrationDb extends MS_View {
 				</h2>
 
 				<div class="ms-welcome-text">
-					<?php _e( 'We have made some change to improve the performance of the <strong>Membership2</strong> plugin.<br/> The process can take long depending on the size of your data ', 'membership2' ); ?>
+					<?php echo sprintf( __( 'We have made some change to improve the performance of the <strong>Membership2</strong> plugin.<br/> The process can take long depending on the size of your data (%d records)', 'membership2' ), $migration_data['total'] ); ?>
+					<ul>
+					<?php
+					foreach ( $migration_data['processes'] as $process ) {
+						?>
+						<li><?php echo sprintf( __( '%s with %d records', 'membership2'), $process['name'], $process['total'] ) ;?></li>
+						<?php
+					}
+					?>
+					</ul>
 				</div>
 				<div class="ms-welcome-image-box">
 					<i class="wpmui-fa wpmui-fa-exchange" style="font-size: 20em;" aria-hidden="true"></i>
