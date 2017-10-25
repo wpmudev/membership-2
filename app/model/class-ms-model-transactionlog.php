@@ -172,7 +172,7 @@ class MS_Model_Transactionlog extends MS_Model_Entity {
 	 *
 	 * @since 1.1.2
 	 */
-	 function _before_prepare_obj() {
+	function _before_prepare_obj() {
 		$this->has_meta  	= true;
 		$this->table_name 	= MS_Helper_Database::get_table_name( MS_Helper_Database::TRANSACTION_LOG );
 		$this->meta_name 	= MS_Helper_Database_TableMeta::TRANSACTION_TYPE;

@@ -45,11 +45,11 @@ class MS_Helper_ListTable_CommunicationLog extends MS_Helper_ListTable {
 		$columns = apply_filters(
 			'ms_helper_listtable_communicationlog_columns',
 			array(
-				'id' => __( 'ID', 'membership2' ),
-				'date' => __( 'Time', 'membership2' ),
-				'status' => '',
-				'type' => __( 'Type', 'membership2' ),
-				'details' => __( 'Details', 'membership2' ),
+				'id' 		=> __( 'ID', 'membership2' ),
+				'date' 		=> __( 'Time', 'membership2' ),
+				'status' 	=> '',
+				'type' 		=> __( 'Type', 'membership2' ),
+				'details' 	> __( 'Details', 'membership2' ),
 			)
 		);
 
@@ -120,13 +120,13 @@ class MS_Helper_ListTable_CommunicationLog extends MS_Helper_ListTable {
 		$current_page = $this->get_pagenum();
 
 		$args = array(
-			'posts_per_page' => $per_page,
+			'per_page' => $per_page,
 			'offset' => ( $current_page - 1 ) * $per_page,
 			'meta_query' => array(),
 		);
 
 		if ( ! empty( $_GET['id'] ) ) {
-			$args['post__in'] = explode( ',', $_GET['id'] );
+			$args['object__in'] = explode( ',', $_GET['id'] );
 		}
 
 		$total_items = MS_Model_Communicationlog::get_item_count( $args );

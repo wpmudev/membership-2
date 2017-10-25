@@ -189,6 +189,7 @@ class MS_Model_Entity extends MS_Model {
 	 */
 	 public function save() {
 		MS_Factory::select_blog();
+		$this->before_load();
 		$this->before_save();
 
 		$class = get_class( $this );
@@ -248,7 +249,7 @@ class MS_Model_Entity extends MS_Model {
 	 */
 	public function get( $id ) {
 		global $wpdb;
-
+		$this->before_load();
 		if ( !is_numeric( $id ) ) {
 			return;
 		}
@@ -382,6 +383,7 @@ class MS_Model_Entity extends MS_Model {
 	 */
 	public function delete() {
 		MS_Factory::select_blog();
+		$this->before_load();
 		global $wpdb;
 		do_action( 'MS_Model_Entity_delete_before', $this );
 		$res = false;
