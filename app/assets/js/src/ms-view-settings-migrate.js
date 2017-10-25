@@ -69,5 +69,18 @@ window.ms_init.view_settings_migrate = function init() {
 			do_migration(0);
 			migrationTimer = window.setInterval( check_migration, 6000 );
 		});
+
+		jQuery('.ms-migration-ignore').on('click', function(){
+			jQuery(this).attr('disabled',true);
+			jQuery.post(
+				window.ajaxurl, 
+				{ 'action' : 'ms_ignore_migration', 'security' : jQuery('input[name=ignore_migration_nonce]').val() },
+				function( response ){
+					ms_functions.reload();
+				}
+			).fail(function() {
+				ms_functions.reload();
+			});
+		});
 	});
 };

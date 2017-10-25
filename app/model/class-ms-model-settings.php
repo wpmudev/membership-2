@@ -132,6 +132,23 @@ class MS_Model_Settings extends MS_Model_Option {
 	 */
 	protected $hide_admin_bar = true;
 
+	/**
+	 * If the database is set up correctly
+	 * Installation
+	 * 
+	 * @var bool
+	 */
+	protected $database_set = false;
+
+
+	/**
+	 * Ignore migration
+	 * Setup
+	 * 
+	 * @var bool
+	 */
+	protected $ignore_migration = false;
+
 
 	/**
 	 * Enable use of cron when performing backen actions

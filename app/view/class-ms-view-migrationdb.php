@@ -27,9 +27,19 @@ class MS_View_MigrationDb extends MS_View {
 				'value' => wp_create_nonce( 'ms_check_migration' ),
 			),
 			array(
+				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+				'name' => 'ignore_migration_nonce',
+				'value' => wp_create_nonce( 'ms_ignore_migration' ),
+			),
+			array(
 				'type' => MS_Helper_Html::INPUT_TYPE_BUTTON,
 				'class' => 'button-primary ms-migration-start',
 				'value' => __( 'Start migration', 'membership2' ),
+			),
+			array(
+				'type' => MS_Helper_Html::INPUT_TYPE_BUTTON,
+				'class' => 'ms-migration-ignore',
+				'value' => __( 'Ignore migration', 'membership2' ),
 			)
 		);
 

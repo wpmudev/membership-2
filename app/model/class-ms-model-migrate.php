@@ -26,11 +26,14 @@
 	public static function init() {
 		self::tables_exist();
 
-		if ( self::needs_migration() ) {
+		$settings = MS_Factory::load( 'MS_Model_Settings' );
+
+		if ( self::needs_migration() && !$settings->ignore_migration ) {
 			MS_Model_Settings::set_special_view( 'MS_View_MigrationDb' );
 			
 			add_action( 'wp_ajax_ms_do_migration', array( __CLASS__, 'process_migration' ) );
 			add_action( 'wp_ajax_ms_check_migration', array( __CLASS__, 'check_migration' ) );
+			add_action( 'wp_ajax_ms_ignore_migration', array( __CLASS__, 'ignore_migration' ) );
 		} else {
 			//falback
 			add_action( 'wp_ajax_ms_do_migration', array( __CLASS__, 'revert_view' ) );
@@ -106,7 +109,7 @@
 			);
 		}
 		$data['stages'] = count( $data['processes'] );
-		return $data;
+		return apply_filters( 'ms_migration_data_steps', $data );
 	}
 
 	/**
@@ -194,8 +197,28 @@
 	 * 
 	 */
 	static function revert_view() {
-		MS_Model_Settings::reset_special_view();
-		wp_send_json_error();
+		if ( is_admin() ) {
+			MS_Model_Settings::reset_special_view();
+			wp_send_json_error();
+		}
+	}
+
+	/**
+	 * Ignore migration
+	 * Incase user data is too big or they just dont want to migrate
+	 * 
+	 */
+	static function ignore_migration() {
+		$valid 	= is_admin() && check_ajax_referer( 'ms_ignore_migration', 'security', false );
+		
+		if ( $valid ) {
+			MS_Model_Settings::reset_special_view();
+			$settings = MS_Factory::load( 'MS_Model_Settings' );
+			$settings->ignore_migration = true;
+			$settings->save();
+			wp_send_json_success();
+		}
+		
 	}
 
 	/**
@@ -234,14 +257,15 @@
 			&& $total > 0  && $total_processes > 0 ) {
 			$process 	= self::get_current_stage();
 			if ( $process ) {
+				$per_page 	= apply_filters( 'ms_migrate_batch_page', self::MIGRATION_PAGE );
 				$step 		= $process['step'];
-				$page 		= ceil( $process['total'] / self::MIGRATION_PAGE );
+				$page 		= ceil( $process['total'] / $per_page );
 				$percentage = ( ( $pass + 1 ) * $page );
 				$percent 	= intval( $percentage / $total * 100 );
-				if ( $process['total'] < self::MIGRATION_PAGE ) {
+				if ( $process['total'] < $per_page ) {
 					$page = $process['total'];
 				} else {
-					$page = $page * self::MIGRATION_PAGE;
+					$page = $page * $per_page;
 				}
 				if ( $pass == 0 ) {
 					delete_transient( 'ms_migrate_process_total_'.$step );
@@ -285,7 +309,7 @@
 		global $wpdb;
 		$wpdb->show_errors();
 
-		$pages 				= self::MIGRATION_PAGE;
+		$pages 				= apply_filters( 'ms_migrate_batch_page', self::MIGRATION_PAGE );
 		$response 			= '';
 		$communication_log 	= self::COMM_POST_TYPE;
 		$transaction_log 	= self::TRANS_POST_TYPE;
@@ -346,7 +370,7 @@
 				$data 						= array();
 				$data['date_created'] 		= $post->post_date;
 				$data['last_updated'] 		= $post->post_modified;
-				foreach ( $metadata as $mdata ){
+				foreach ( $metadata as $mdata ) {
 					$inner_meta 				= array();
 					$inner_meta['object_type'] 	= $meta_name;
 					if ( in_array( $mdata->meta_key, $insert_defaults ) ) {

@@ -1,4 +1,4 @@
-/*! Membership 2 Pro - v1.1.2
+/*! Membership 2 Pro - v1.2.0-beta1
  * https://premium.wpmudev.org/project/membership/
  * Copyright (c) 2017; * Licensed GPLv2+ */
 /*global window:false */
@@ -2873,6 +2873,19 @@ window.ms_init.view_settings_migrate = function init() {
 			jQuery(".ms_migrate_progress").append( migrationBar.$() );
 			do_migration(0);
 			migrationTimer = window.setInterval( check_migration, 6000 );
+		});
+
+		jQuery('.ms-migration-ignore').on('click', function(){
+			jQuery(this).attr('disabled',true);
+			jQuery.post(
+				window.ajaxurl, 
+				{ 'action' : 'ms_ignore_migration', 'security' : jQuery('input[name=ignore_migration_nonce]').val() },
+				function( response ){
+					ms_functions.reload();
+				}
+			).fail(function() {
+				ms_functions.reload();
+			});
 		});
 	});
 };
