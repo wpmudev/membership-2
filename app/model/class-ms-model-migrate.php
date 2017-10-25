@@ -28,17 +28,18 @@
 
 		$settings = MS_Factory::load( 'MS_Model_Settings' );
 
-		if ( self::needs_migration() && !$settings->ignore_migration ) {
-			MS_Model_Settings::set_special_view( 'MS_View_MigrationDb' );
-			
-			add_action( 'wp_ajax_ms_do_migration', array( __CLASS__, 'process_migration' ) );
-			add_action( 'wp_ajax_ms_check_migration', array( __CLASS__, 'check_migration' ) );
-			add_action( 'wp_ajax_ms_ignore_migration', array( __CLASS__, 'ignore_migration' ) );
-		} else {
-			//falback
-			add_action( 'wp_ajax_ms_do_migration', array( __CLASS__, 'revert_view' ) );
-			add_action( 'wp_ajax_ms_check_migration', array( __CLASS__, 'revert_view' ) );
+		if ( !$settings->ignore_migration ) {
+			if ( self::needs_migration() ) {
+				MS_Model_Settings::set_special_view( 'MS_View_MigrationDb' );
+				
+				add_action( 'wp_ajax_ms_do_migration', array( __CLASS__, 'process_migration' ) );
+				add_action( 'wp_ajax_ms_check_migration', array( __CLASS__, 'check_migration' ) );
+				add_action( 'wp_ajax_ms_ignore_migration', array( __CLASS__, 'ignore_migration' ) );
+			}
 		}
+		//falback
+		add_action( 'wp_ajax_ms_do_migration', array( __CLASS__, 'revert_view' ) );
+		add_action( 'wp_ajax_ms_check_migration', array( __CLASS__, 'revert_view' ) );
 	}
 
 	/**
