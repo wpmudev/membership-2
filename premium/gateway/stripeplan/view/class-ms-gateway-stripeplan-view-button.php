@@ -34,7 +34,7 @@ class MS_Gateway_Stripeplan_View_Button extends MS_View {
 		 * @var array
 		 */
 		$stripe_data = apply_filters(
-			'ms_gateway_stripe_form_details',
+			'ms_gateway_stripeplan_form_details',
 			$stripe_data,
 			$invoice
 		);
@@ -42,16 +42,18 @@ class MS_Gateway_Stripeplan_View_Button extends MS_View {
 		$stripe_data['email'] 		= $member->email;
 		$stripe_data['key'] 		= $gateway->get_publishable_key();
 		$stripe_data['currency'] 	= $invoice->currency;
-		$stripe_data['amount'] 		= ceil(abs( $invoice->total * 100 )); // Amount in cents.
+		$stripe_data['amount'] 		= ceil( abs( $invoice->total * 100 ) ); // Amount in cents.
 		$stripe_data['image'] 		= $gateway->get_vendor_logo();
 		$stripe_data['locale'] 		= 'auto';
 		$stripe_data['zip-code'] 	= 'true';
 
 		if ( $invoice->discount && MS_Addon_Coupon_Model::DURATION_ONCE === $invoice->duration ) {
-			$stripe_data['amount'] 		= ceil(abs( $invoice->amount * 100 ));
+			$stripe_data['amount'] 		= ceil( abs( $invoice->amount * 100 ) );
 			$stripe_data['duration'] 	= MS_Addon_Coupon_Model::DURATION_ONCE;
-			$stripe_data['amount_off'] 	= ceil(abs( $invoice->discount * 100 ));
+			$stripe_data['amount_off'] 	= ceil( abs( $invoice->discount * 100 ) );
 		}
+
+		$stripe_data  = apply_filters( 'ms_gateway_stripeplan_form_details_after', $stripe_data, $invoice );
 
 		ob_start();
 		?>
