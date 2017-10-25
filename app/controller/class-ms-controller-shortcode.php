@@ -811,8 +811,8 @@ class MS_Controller_Shortcode extends MS_Controller {
 
 		$data['events'] = MS_Model_Event::get_events(
 			array(
-				'author' 			=> $data['member']->id,
-				'posts_per_page' 	=> $data['limit_activities'],
+				'author' 	=> $data['member']->id,
+				'per_page' 	=> $data['limit_activities'],
 			)
 		);
                 

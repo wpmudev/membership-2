@@ -324,7 +324,7 @@ class MS_Model_Event extends MS_Model_Entity {
 
 		return apply_filters(
 			'ms_model_event_get_event_count',
-			$query->found_posts,
+			$query->found_objects,
 			$args
 		);
 	}
@@ -342,7 +342,7 @@ class MS_Model_Event extends MS_Model_Entity {
 		MS_Factory::select_blog();
 		$args 	= self::get_query_args( $args );
 		$query 	= new MS_Helper_Database_Query_Eventlog( $args );
-		$items 	= $query->posts;
+		$items 	= $query->objects;
 		$events = array();
 		MS_Factory::revert_blog();
 

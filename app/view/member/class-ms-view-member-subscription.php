@@ -78,9 +78,9 @@ class MS_View_Member_Subscription extends MS_Dialog {
 
 		$events = MS_Model_Event::get_events(
 			array(
-				'topic' => 'membership',
-				'nopaging' => true,
-				'relationship_id' => $subscription->id,
+				'event_topic' 			=> 'membership',
+				'nopaging' 				=> true,
+				'ms_relationship_id' 	=> $subscription->id,
 			)
 		);
 

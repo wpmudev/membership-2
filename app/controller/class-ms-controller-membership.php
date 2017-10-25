@@ -829,11 +829,7 @@ class MS_Controller_Membership extends MS_Controller {
 
 		// Select Events args
 		$args = array();
-		$args['meta_query']['membership_id'] = array(
-			'key'     => 'membership_id',
-			'value'   => array( $membership_id, 0 ),
-			'compare' => 'IN',
-		);
+		$args['membership_id'] = $membership_id;
 		$data['events'] = MS_Model_Event::get_events( $args );
 
 		$view = apply_filters( 'ms_view_membership_overview', $view );
@@ -854,7 +850,7 @@ class MS_Controller_Membership extends MS_Controller {
 
 		$args = apply_filters(
 			'ms_controller_membership_page_news_event_args',
-			array( 'posts_per_page' => -1 )
+			array( 'per_page' => -1 )
 		);
 		$data['events'] = MS_Model_Event::get_events( $args );
 
