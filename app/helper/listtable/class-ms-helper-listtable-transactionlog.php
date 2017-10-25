@@ -121,9 +121,9 @@ class MS_Helper_ListTable_TransactionLog extends MS_Helper_ListTable {
 		$current_page = $this->get_pagenum();
 
 		$args = array(
-			'posts_per_page' 	=> $per_page,
-			'offset' 			=> ( $current_page - 1 ) * $per_page,
-			'meta_query' 		=> array(),
+			'per_page' 		=> $per_page,
+			'offset' 		=> ( $current_page - 1 ) * $per_page,
+			'meta_query' 	=> array(),
 		);
 
 		if ( ! empty( $_GET['state'] ) ) {
@@ -131,22 +131,15 @@ class MS_Helper_ListTable_TransactionLog extends MS_Helper_ListTable {
 		}
 
 		if ( ! empty( $_GET['id'] ) ) {
-			$args['post__in'] = explode( ',', $_GET['id'] );
+			$args['object__in'] = explode( ',', $_GET['id'] );
 		}
 
 		if ( ! empty( $_GET['invoice'] ) ) {
-			$args['meta_query']['invoice_id'] = array(
-				'key' 		=> 'invoice_id',
-				'value' 	=> explode( ',', $_GET['invoice'] ),
-				'compare' 	=> 'IN',
-			);
+			$args['invoice_id'] =  $_GET['invoice'];
 		}
 
 		if ( ! empty( $_GET['gateway_id'] ) ) {
-			$args['meta_query']['gateway_id'] = array(
-				'key' 	=> 'gateway_id',
-				'value' => $_GET['gateway_id'],
-			);
+			$args['gateway_id'] =  $_GET['gateway_id'];
 		}
 
 		$total_items = MS_Model_Transactionlog::get_item_count( $args );

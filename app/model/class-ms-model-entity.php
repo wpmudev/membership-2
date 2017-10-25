@@ -154,7 +154,7 @@ class MS_Model_Entity extends MS_Model {
 			}
 		}
 
-		if ( empty( $this->table_name ) ) {
+		if ( $this->table_name == false || empty( $this->table_name ) ) {
 			throw new Exception( 'Class ' . get_class( $this ) . ' has no table name defined' );
 		}
 	}

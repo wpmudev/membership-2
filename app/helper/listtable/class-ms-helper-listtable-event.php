@@ -66,8 +66,8 @@ class MS_Helper_ListTable_Event extends MS_Helper_ListTable {
 		$current_page = $this->get_pagenum();
 
 		$args = array(
-			'posts_per_page' 	=> $per_page,
-			'offset' 			=> ( $current_page - 1 ) * $per_page,
+			'per_page' 		=> $per_page,
+			'offset' 		=> ( $current_page - 1 ) * $per_page,
 		);
 
 		if ( isset( $_REQUEST['membership_id'] ) ) {
@@ -77,7 +77,7 @@ class MS_Helper_ListTable_Event extends MS_Helper_ListTable {
 		if ( ! empty( $_REQUEST['s'] ) ) {
 			$args['s'] 				= $_REQUEST['s'];
 			$this->search_string 	= $args['s'];
-			$args['posts_per_page'] = -1;
+			$args['per_page'] 		= -1;
 			$args['number'] 		= false;
 			$args['offset'] 		= 0;
 		}

@@ -138,8 +138,8 @@ class MS_Helper_ListTable_TransactionMatching extends MS_Helper_ListTable {
 		$current_page = $this->get_pagenum();
 
 		$args = array(
-			'posts_per_page' => -1,
-			'offset' => 0,
+			'per_page' 	=> -1,
+			'offset' 	=> 0,
 		);
 
 		if ( ! empty( $_GET['source'] ) && ! empty( $_GET['source_id'] ) ) {

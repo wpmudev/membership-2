@@ -52,7 +52,7 @@ class MS_Helper_Database extends MS_Helper {
 			global $wpdb;
 			$db = $wpdb;
 		}
-        return $db->get_charset_collate();;
+        return $db->get_charset_collate();
     }
 
     /**

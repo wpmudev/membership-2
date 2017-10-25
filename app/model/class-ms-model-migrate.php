@@ -126,12 +126,11 @@
 
 		$total 				= $migration_data['total'];
 		$total_processes 	= count( $migration_data['processes'] );
-		if ( !empty( $migration_data ) 
-			&& $total > 0  && $total_processes > 0 ) {
+		if ( $total > 0  && $total_processes > 0 ) {
 			$process	= $migration_data['processes'][0];
 			$step 		= $process['step'];
 			if ( $completed && ( $completed == $step ) ) {
-				if ( $total_processes > 1 ) {
+				if ( $total_processes >= 1 ) {
 					unset ( $migration_data['processes'][0] );
 					set_transient( 'ms_migrate_data', $migration_data );
 					delete_transient( 'ms_migrate_process_done' );
@@ -239,10 +238,14 @@
 				$page 		= ceil( $process['total'] / self::MIGRATION_PAGE );
 				$percentage = ( ( $pass + 1 ) * $page );
 				$percent 	= intval( $percentage / $total * 100 );
-				if ( self::MIGRATION_PAGE > $process['total'] ) {
+				if ( $process['total'] < self::MIGRATION_PAGE ) {
 					$page = $process['total'];
 				} else {
 					$page = $page * self::MIGRATION_PAGE;
+				}
+				if ( $pass == 0 ) {
+					delete_transient( 'ms_migrate_process_total_'.$step );
+					delete_transient( 'ms_migrate_process_done' );
 				}
 				set_transient( 'ms_migrate_process_percentage', array(
 					'percent' 	=> $percent,
@@ -250,9 +253,7 @@
 				) );
 	
 				$resp = self::migrate_log_tables( $process['total'], $step );
-				if ( $resp !== false ) {
-					set_transient( 'ms_migrate_process_pass', $pass + 1 );
-				}
+				set_transient( 'ms_migrate_process_pass', $pass + 1 );
 			} else {
 				set_transient( 'ms_migrate_process_percentage', array(
 					'percent' 	=> 100,
@@ -291,13 +292,11 @@
 		$event 				= self::EVENT_POST_TYPE;
 		$post_ids 			= array();
 		$insert_data 		= array();
-		$sql 				= "SELECT * FROM {$wpdb->posts} WHERE post_type = %s LIMIT %d, {$pages}";
+		$sql 				= "SELECT * FROM {$wpdb->posts} WHERE post_type = %s LIMIT {$pages}";
 		$meta_sql 			= "SELECT * FROM {$wpdb->postmeta} WHERE post_id = %d";
-		$page 				= get_transient( 'ms_migrate_process_page_'.$step );
-		$page 				= ( !$page ) ? 0 : ( $page + $pages );
 		if ( $step == 'comm_log' ) {
 			$table_name = MS_Helper_Database::get_table_name( MS_Helper_Database::COMMUNICATION_LOG );
-			$query 		= $wpdb->prepare( $sql, $communication_log, $page );
+			$query 		= $wpdb->prepare( $sql, $communication_log );
 			$results 	= $wpdb->get_results( $query );
 			
 			foreach ( $results as $post ){
@@ -336,7 +335,7 @@
 			$table_name 			= MS_Helper_Database::get_table_name( MS_Helper_Database::TRANSACTION_LOG );
 			$meta_table_name    	= MS_Helper_Database::get_table_name( MS_Helper_Database::META );
 			$meta_name          	= MS_Helper_Database_TableMeta::TRANSACTION_TYPE;
-			$query 					= $wpdb->prepare( $sql, $transaction_log, $page );
+			$query 					= $wpdb->prepare( $sql, $transaction_log );
 			$results 				= $wpdb->get_results( $query );
 			$insert_defaults		= array( 'gateway_id', 'method', 'success', 'subscription_id', 'invoice_id', 'member_id', 'amount', 'custom_data', 'user_id');
 			$insert_meta_data 		= array();
@@ -377,7 +376,7 @@
 			}
 		} else if ( $step == 'event_log' ) {
 			$table_name = MS_Helper_Database::get_table_name( MS_Helper_Database::EVENT_LOG );
-			$query 		= $wpdb->prepare( $sql, $event, $page );
+			$query 		= $wpdb->prepare( $sql, $event );
 			$results 	= $wpdb->get_results( $query );
 			foreach ( $results as $post ) {
 				$post_ids[] 			= $post->ID;
@@ -438,23 +437,16 @@
 			set_transient( 'ms_migrate_process_total_'.$step, $total_processed );
 			if ( $total_processed >= $total ) {
 				set_transient( 'ms_migrate_process_done', $step );
-				delete_transient( 'ms_migrate_process_page_'.$step );
 				delete_transient( 'ms_migrate_process_total_'.$step );
 				$response = __( 'Done', 'membership2' );
 			} else {
 				$next_page 	= $page + 1;
 				$pages 		= ceil( $total / $pages );
-				set_transient( 'ms_migrate_process_page_'.$step, $next_page );
 				$response = sprintf( __( '%d out of %d in', 'membership2' ), $next_page, $pages ) ;
 			}
 		} else {
-			delete_transient( 'ms_migrate_process_page_'.$step );
+			set_transient( 'ms_migrate_process_done', $step );
 			delete_transient( 'ms_migrate_process_total_'.$step );
-			delete_transient( 'ms_migrate_process_done' );
-			set_transient( 'ms_migrate_process_percentage', array(
-				'percent' 	=> 0,
-				'message'	=> sprintf( __( 'An error occured during migration. %d records copied. Please try again ', 'membership' ), $how_many )
-			) );
 		}
 
 		error_log( $wpdb->last_error );
