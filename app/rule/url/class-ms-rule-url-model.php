@@ -152,8 +152,7 @@ class MS_Rule_Url_Model extends MS_Rule {
 	 * @return boolean True if matches.
 	 */
 	public function check_url_expression_match( $url, $check_list ) {
-		$match = false;
-
+		$match 		= false;
 		$check_list = lib3()->array->get( $check_list );
 
 		if ( count( $check_list ) ) {
@@ -233,10 +232,9 @@ class MS_Rule_Url_Model extends MS_Rule {
 	 * @return array The contents array.
 	 */
 	public function get_contents( $args = null ) {
-		$protected_urls = $this->get_protected_urls();
-		$membership_urls = $this->rule_value;
-
-		$contents = array();
+		$protected_urls 	= $this->get_protected_urls( $args );
+		$membership_urls 	= $this->rule_value;
+		$contents 			= array();
 		foreach ( $membership_urls as $hash => $value ) {
 			if ( ! isset( $protected_urls[$hash] ) ) {
 				continue;
@@ -371,12 +369,20 @@ class MS_Rule_Url_Model extends MS_Rule {
 	 * @since  1.0.0
 	 * @param string $hash The URL-hash.
 	 */
-	public function get_protected_urls() {
+	public function get_protected_urls( $args = null ) {
 		static $Protected_Urls = null;
 
 		if ( null === $Protected_Urls ) {
 			$base_rule 		= MS_Model_Membership::get_base()->get_rule( $this->rule_type );
 			$Protected_Urls = $base_rule->rule_value;
+		}
+
+		if ( ! is_null( $args ) ) {
+			
+			$per_page 		= isset( $args[ 'posts_per_page' ] ) ? (int) $args[ 'posts_per_page' ] : -1;
+			$offset 		= isset( $args[ 'offset' ] ) ? (int) $args[ 'offset' ] : 0;
+			$Protected_Urls = array_slice( $Protected_Urls, $offset, $per_page );			
+
 		}
 
 		return $Protected_Urls;
