@@ -90,12 +90,12 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 			$this->save();
 		}
 
-		$this->id = self::ID;
-		$this->name = __( 'Stripe Subscriptions Gateway', 'membership2' );
-		$this->group = 'Stripe';
-		$this->manual_payment = false; // Recurring charged automatically
-		$this->pro_rate = true;
-		$this->unsupported_payment_types = array(
+		$this->id 							= self::ID;
+		$this->name 						= __( 'Stripe Subscriptions Gateway', 'membership2' );
+		$this->group 						= 'Stripe';
+		$this->manual_payment 				= false; // Recurring charged automatically
+		$this->pro_rate 					= true;
+		$this->unsupported_payment_types 	= array(
 			MS_Model_Membership::PAYMENT_TYPE_PERMANENT,
 			MS_Model_Membership::PAYMENT_TYPE_FINITE,
 			MS_Model_Membership::PAYMENT_TYPE_DATE_RANGE,
@@ -230,8 +230,8 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 		$this->_api->set_gateway( $this );
 
 		$plan_data = array(
-			'id' => self::get_the_id( $membership->id, 'plan' ),
-			'amount' => 0,
+			'id' 		=> self::get_the_id( $membership->id, 'plan' ),
+			'amount' 	=> 0,
 		);
 
 		if ( ! $membership->is_free()
@@ -250,18 +250,18 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 			$max_count = 365;
 			switch ( $membership->pay_cycle_period_type ) {
 				case MS_Helper_Period::PERIOD_TYPE_WEEKS:
-					$interval = 'week';
-					$max_count = 52;
+					$interval 	= 'week';
+					$max_count 	= 52;
 					break;
 
 				case MS_Helper_Period::PERIOD_TYPE_MONTHS:
-					$interval = 'month';
-					$max_count = 12;
+					$interval 	= 'month';
+					$max_count 	= 12;
 					break;
 
 				case MS_Helper_Period::PERIOD_TYPE_YEARS:
-					$interval = 'year';
-					$max_count = 1;
+					$interval 	= 'year';
+					$max_count 	= 1;
 					break;
 			}
 
@@ -307,10 +307,10 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 		if ( ! $this->active ) { return false; }
 		$this->_api->set_gateway( $this );
 
-		$settings = MS_Plugin::instance()->settings;
-		$duration = MS_Addon_Coupon_Model::DURATION_ONCE === $coupon->duration ? 'once' : 'forever';
-		$percent_off = null;
-		$amount_off = null;
+		$settings 		= MS_Plugin::instance()->settings;
+		$duration 		= MS_Addon_Coupon_Model::DURATION_ONCE === $coupon->duration ? 'once' : 'forever';
+		$percent_off 	= null;
+		$amount_off 	= null;
 
 		if ( MS_Addon_Coupon_Model::TYPE_VALUE == $coupon->discount_type ) {
 			$amount_off = absint( $coupon->discount * 100 );
@@ -374,7 +374,7 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 				if ( $event ) {
 					$stripe_invoice = $event->data->object;
 					if ( $stripe_invoice && isset( $stripe_invoice->id ) ) {
-						$stripe_customer 	= Stripe_Customer::retrieve( $stripe_invoice->customer );
+						$stripe_customer = Stripe_Customer::retrieve( $stripe_invoice->customer );
 						if ( $stripe_customer ) {
 							$email 	= $stripe_customer->email;
 							
@@ -382,7 +382,7 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 								include_once( ABSPATH . 'wp-includes/pluggable.php' );
 							}
 	
-							$user 		= get_user_by( 'email', $email );
+							$user 	= get_user_by( 'email', $email );
 							if ( $user && !is_wp_error( $user ) ) {
 								$member 	= MS_Factory::load( 'MS_Model_Member', $user->ID );
 								$success 	= false;
@@ -493,9 +493,10 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 						$this->log( 'Did not find stripe invoice' );
 					}
 				}
-			} catch (Exception $e) {
+			} catch ( Exception $e ) {
 				$note = 'Stripe error webhook: '. $e->getMessage();
 				$this->log( $note );
+				$this->log( $e );
 				MS_Helper_Debug::debug_log( $note );
 				$error = $e;
 			}
