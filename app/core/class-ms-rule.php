@@ -1193,7 +1193,8 @@ class MS_Rule extends MS_Model {
 					//Check so we dont mix protection rules on wrong memberships
 					if ( ! empty( $args['membership_id'] ) ) {
 						if ( empty( $child_items ) ) {
-							$exclude = array_diff( $base_items, $child_items );
+							$exclude = $base_items;
+							$include = array( -1 );
 						} else {
 							$include = $child_items;
 						}
