@@ -1190,7 +1190,16 @@ class MS_Rule extends MS_Model {
 			default:
 				// If not visitor membership, just show all Membership2
 				if ( ! $child_rule->is_base_rule ) {
-					$include = $base_items;
+					//Check so we dont mix protection rules on wrong memberships
+					if ( ! empty( $args['membership_id'] ) ) {
+						if ( empty( $child_items ) ) {
+							$exclude = array_diff( $base_items, $child_items );
+						} else {
+							$include = $child_items;
+						}
+					} else {
+						$include = $base_items;
+					}
 				}
 				break;
 		}
