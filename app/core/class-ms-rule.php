@@ -1075,11 +1075,11 @@ class MS_Rule extends MS_Model {
 		switch ( $args_type ) {
 			case 'get_pages':
 				$defaults = array(
-					'number' => false,
-					'hierarchical' => 1,
-					'sort_column' => 'post_title',
-					'sort_order' => 'ASC',
-					'post_type' => 'page',
+					'number' 		=> false,
+					'hierarchical' 	=> 1,
+					'sort_column' 	=> 'post_title',
+					'sort_order' 	=> 'ASC',
+					'post_type' 	=> 'page',
 				);
 				$args['exclude'] = $filter->exclude;
 				$args['include'] = $filter->include;
@@ -1102,15 +1102,15 @@ class MS_Rule extends MS_Model {
 			case 'wp_query':
 			default:
 				$defaults = array(
-					'posts_per_page' => -1,
-					'ignore_sticky_posts' => true,
-					'offset' => 0,
-					'orderby' => 'ID',
-					'order' => 'DESC',
-					'post_status' => 'publish',
+					'posts_per_page' 		=> -1,
+					'ignore_sticky_posts' 	=> true,
+					'offset' 				=> 0,
+					'orderby' 				=> 'ID',
+					'order' 				=> 'DESC',
+					'post_status' 			=> 'publish',
 				);
-				$args['post__not_in'] = $filter->exclude;
-				$args['post__in'] = $filter->include;
+				$args['post__not_in'] 	= $filter->exclude;
+				$args['post__in'] 		= $filter->include;
 				break;
 		}
 
