@@ -158,8 +158,8 @@ class MS_Controller_Dialog extends MS_Controller {
 			}
 
 			$title 		= sprintf( __( '[%s] Password Reset' ), $blogname );
-			$title 		= apply_filters( 'retrieve_password_title', $title );
-			$message 	= apply_filters( 'retrieve_password_message', $message, $reset->key, $reset->url );
+			$title 		= apply_filters( 'retrieve_password_title', $title, $user_login, $user_data );
+			$message 	= apply_filters( 'retrieve_password_message', $message, $user_login, $reset->url, $user_data );
 
 			if ( $message && ! wp_mail( $user_email, wp_specialchars_decode( $title ), $message ) ) {
 				$resp['error'] = __( 'The e-mail could not be sent.' ) . '<br />' .

@@ -241,8 +241,8 @@ class MS_Controller_Plugin extends MS_Controller {
 			// Modify the main menu to handle our special_view for default item.
 			add_submenu_page(
 				self::$base_slug,
-				'Membership 2',
-				'Membership 2',
+				__( 'Membership 2', 'membership2' ),
+				__( 'Membership 2', 'membership2' ),
 				$this->capability,
 				self::$base_slug,
 				array( $this, 'handle_special_view' )
@@ -371,8 +371,8 @@ class MS_Controller_Plugin extends MS_Controller {
 		 * Until this bug is closed the title (2nd argument) can't be translated
 		 */
 		add_menu_page(
-			'Membership 2', // no i18n!
-			'Membership 2', // no i18n!
+			__( 'Membership 2', 'membership2' ), // no i18n!
+			__( 'Membership 2', 'membership2' ), // no i18n!
 			$this->capability,
 			self::$base_slug,
 			null,

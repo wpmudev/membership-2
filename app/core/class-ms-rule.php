@@ -1075,11 +1075,11 @@ class MS_Rule extends MS_Model {
 		switch ( $args_type ) {
 			case 'get_pages':
 				$defaults = array(
-					'number' => false,
-					'hierarchical' => 1,
-					'sort_column' => 'post_title',
-					'sort_order' => 'ASC',
-					'post_type' => 'page',
+					'number' 		=> false,
+					'hierarchical' 	=> 1,
+					'sort_column' 	=> 'post_title',
+					'sort_order' 	=> 'ASC',
+					'post_type' 	=> 'page',
 				);
 				$args['exclude'] = $filter->exclude;
 				$args['include'] = $filter->include;
@@ -1102,15 +1102,15 @@ class MS_Rule extends MS_Model {
 			case 'wp_query':
 			default:
 				$defaults = array(
-					'posts_per_page' => -1,
-					'ignore_sticky_posts' => true,
-					'offset' => 0,
-					'orderby' => 'ID',
-					'order' => 'DESC',
-					'post_status' => 'publish',
+					'posts_per_page' 		=> -1,
+					'ignore_sticky_posts' 	=> true,
+					'offset' 				=> 0,
+					'orderby' 				=> 'ID',
+					'order' 				=> 'DESC',
+					'post_status' 			=> 'publish',
 				);
-				$args['post__not_in'] = $filter->exclude;
-				$args['post__in'] = $filter->include;
+				$args['post__not_in'] 	= $filter->exclude;
+				$args['post__in'] 		= $filter->include;
 				break;
 		}
 
@@ -1190,7 +1190,17 @@ class MS_Rule extends MS_Model {
 			default:
 				// If not visitor membership, just show all Membership2
 				if ( ! $child_rule->is_base_rule ) {
-					$include = $base_items;
+					//Check so we dont mix protection rules on wrong memberships
+					if ( ! empty( $args['membership_id'] ) ) {
+						if ( empty( $child_items ) ) {
+							$exclude = $base_items;
+							$include = array( -1 );
+						} else {
+							$include = $child_items;
+						}
+					} else {
+						$include = $base_items;
+					}
 				}
 				break;
 		}
