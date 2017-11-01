@@ -95,7 +95,6 @@ module.exports = function( grunt ) {
 				'./README.MD',
 				'./changelog.txt',
 				'./premium',
-				'./free',
 				'./membership2.php',
 				'./lib/wpmudev-dashboard',
 				'./app/assets/css/src/**',

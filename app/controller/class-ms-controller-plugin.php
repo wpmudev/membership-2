@@ -235,17 +235,22 @@ class MS_Controller_Plugin extends MS_Controller {
 		if ( ! $view_name ) { return; }
 
 		$view = MS_Factory::load( $view_name );
-		$view->enqueue_scripts();
+		if ( $view != null ) {
+			$view->enqueue_scripts();
 
-		// Modify the main menu to handle our special_view for default item.
-		add_submenu_page(
-			self::$base_slug,
-			'Membership 2',
-			'Membership 2',
-			$this->capability,
-			self::$base_slug,
-			array( $this, 'handle_special_view' )
-		);
+			// Modify the main menu to handle our special_view for default item.
+			add_submenu_page(
+				self::$base_slug,
+				__( 'Membership 2', 'membership2' ),
+				__( 'Membership 2', 'membership2' ),
+				$this->capability,
+				self::$base_slug,
+				array( $this, 'handle_special_view' )
+			);
+		} else {
+			MS_Model_Settings::reset_special_view();
+			return;
+		}
 	}
 
 	/**
@@ -366,8 +371,8 @@ class MS_Controller_Plugin extends MS_Controller {
 		 * Until this bug is closed the title (2nd argument) can't be translated
 		 */
 		add_menu_page(
-			'Membership 2', // no i18n!
-			'Membership 2', // no i18n!
+			__( 'Membership 2', 'membership2' ), // no i18n!
+			__( 'Membership 2', 'membership2' ), // no i18n!
 			$this->capability,
 			self::$base_slug,
 			null,

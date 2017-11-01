@@ -393,7 +393,7 @@ class MS_Addon_Mailchimp extends MS_Addon {
 
 					if ( is_wp_error( $response ) ) {
 						$has_more = false;
-						// MS_Helper_Debug::debug_log( $lists );
+						self::mailchimp_log( $response->get_error_message() );
 					} else {
 						$lists   = $response->lists;
 						$has_more = count( $lists ) >= $items_per_page;

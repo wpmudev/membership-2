@@ -541,9 +541,9 @@ class MS_Controller_Settings extends MS_Controller {
 		
 		if ( ! wp_verify_nonce( $_REQUEST['_wpnonce'], 'sample_users_csv' ) ) { return; }
 		
-		$contents = "username,email,membershipid" . "\r\n";
-		$contents .= "user1,user1@email.com,1" . "\r\n";
-		$contents .= "user2,user2@email.com,2";
+		$contents = "username,email,firstname,lastname,membershipid" . "\r\n";
+		$contents .= "user1,user1@email.com,John,Doe,1" . "\r\n";
+		$contents .= "user2,user2@email.com,Jane,Doe,2";
 		lib3()->net->file_download( $contents, 'ms_sample_user_export.csv' );
 	}
 

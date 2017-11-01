@@ -186,6 +186,7 @@ class MS_Gateway_Authorize extends MS_Gateway {
 		$success 		= false;
 		$notes 			= '';
 		$amount 		= 0;
+		$external_id	= null;
 		$subscription 	= $invoice->get_subscription();
 
 		do_action(

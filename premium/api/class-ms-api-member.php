@@ -52,7 +52,7 @@ class MS_Api_Member extends MS_Api {
 
         register_rest_route( $namepace, self::BASE_API_ROUTE . 'list', array(
 			'method' 				=> WP_REST_Server::READABLE,
-			'callback' 				=> array( $this, 'list' ),
+			'callback' 				=> array( $this, 'list_members' ),
 			'permission_callback' 	=> array( $this, 'validate_request' ),
             'args' 					=> array(
 				'per_page' 		=> array(
@@ -79,7 +79,7 @@ class MS_Api_Member extends MS_Api {
 
         register_rest_route( $namepace, self::BASE_API_ROUTE . 'count', array(
 			'method' 				=> WP_REST_Server::READABLE,
-			'callback' 				=> array( $this, 'count' ),
+			'callback' 				=> array( $this, 'count_members' ),
 			'permission_callback' 	=> array( $this, 'validate_request' ),
             'args' 					=> array(
                 'member_status' 	=> array(
@@ -155,7 +155,7 @@ class MS_Api_Member extends MS_Api {
 	 *
 	 * @return MS_Model_Member[] List of all available Memberships.
 	 */
-    function list( $request ) {
+    function list_members( $request ) {
         $per_page 	= $request->get_param( 'per_page' );
         $page 	    = $request->get_param( 'page' );
         $status 	= $request->get_param( 'member_status' );
@@ -182,7 +182,7 @@ class MS_Api_Member extends MS_Api {
      *
      * @return Long count of all members
      */
-    function count( $request ) {
+    function count_members( $request ) {
         $status = $request->get_param( 'member_status' );
         if ( empty( $status ) ) {
             $status = MS_Model_Relationship::STATUS_ACTIVE;

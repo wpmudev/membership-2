@@ -132,4 +132,8 @@ class MS_View extends MS_Hooker {
 			$this
 		);
 	}
+
+	public function enqueue_scripts() {
+		
+	}
 }

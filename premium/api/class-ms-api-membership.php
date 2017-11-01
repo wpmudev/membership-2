@@ -52,7 +52,7 @@ class MS_Api_Membership extends MS_Api {
 
         register_rest_route( $namepace, self::BASE_API_ROUTE . 'list', array(
 			'method' 				=> WP_REST_Server::READABLE,
-			'callback' 				=> array( $this, 'list' ),
+			'callback' 				=> array( $this, 'list_memberships' ),
 			'permission_callback' 	=> array( $this, 'validate_request' )
 		));
 
@@ -78,7 +78,7 @@ class MS_Api_Membership extends MS_Api {
 	 *
 	 * @return MS_Model_Membership[] List of all available Memberships.
 	 */
-    function list( $request ) {
+    function list_memberships( $request ) {
         return MS_Model_Membership::get_public_memberships();
     }
 
