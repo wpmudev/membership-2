@@ -457,11 +457,12 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 			$invoice->amount = $membership->price;
 			$invoice->save();
 		}*/
-
+		$force_admin = false;
 		if ( 'simulation' == $gateway_id ) {
 			$is_simulated 	= true;
 			$gateway_id 	= 'admin';
 			$subscription 	= false;
+			$force_admin 	= true;
 		}
 
 		// Not found, create a new one.
@@ -475,11 +476,16 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 			}
 		}
 
+		$new_membership = MS_Factory::load( 'MS_Model_Membership', $membership_id );
+		if ( $new_membership->is_free ||  ( $new_membership->price <= 0 ) ) {
+			$force_admin = true;
+		}
+
 		// Always update these fields.
 		$subscription->membership_id 	= $membership_id;
 		$subscription->user_id 			= $user_id;
 		$subscription->move_from_id 	= $move_from_id;
-		$subscription->set_gateway( $gateway_id );
+		$subscription->set_gateway( $gateway_id, $force_admin );
 		$subscription->expire_date 		= '';
 
 		// Set initial state.
@@ -2260,14 +2266,14 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	 * @since 1.0.2.8
 	 * @param string $new_gateway The new payment-gateway ID.
 	 */
-	public function set_gateway( $new_gateway ) {
+	public function set_gateway( $new_gateway, $force_admin = false ) {
 		$old_gateway = $this->gateway_id;
 
 		// Do not set subscription to "No Gateway".
 		if ( ! $new_gateway ) { return; }
 
 		//Incase the gateway is admin, we need to st it to the default active gateway
-		if ( $new_gateway == 'admin' ) {
+		if ( $new_gateway == 'admin' && !$force_admin ) {
 			$gateway_names = MS_Model_Gateway::get_gateway_names( true );
 			if ( count ( $gateway_names ) == 1 ) {
 				$new_gateway = key( $gateway_names );
