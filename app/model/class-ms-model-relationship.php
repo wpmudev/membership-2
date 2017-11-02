@@ -2273,11 +2273,18 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 		if ( ! $new_gateway ) { return; }
 
 		//Incase the gateway is admin, we need to st it to the default active gateway
+		//TODO : Set this an an option
 		if ( $new_gateway == 'admin' && !$force_admin ) {
-			$gateway_names = MS_Model_Gateway::get_gateway_names( true );
-			if ( count ( $gateway_names ) == 1 ) {
-				$new_gateway = key( $gateway_names );
+			$default_gateway = apply_filters( 'membership_model_relationship_default_admin_gateway', false );
+			if ( $default_gateway !== false ) {
+				$new_gateway = $default_gateway;
+			} else {
+				$gateway_names = MS_Model_Gateway::get_gateway_names( true );
+				if ( count ( $gateway_names ) == 1 ) {
+					$new_gateway = key( $gateway_names );
+				}
 			}
+			
 		}
 
 		// No change needed. Skip.
