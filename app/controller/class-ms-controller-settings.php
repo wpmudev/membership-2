@@ -24,6 +24,7 @@ class MS_Controller_Settings extends MS_Controller {
 	const AJAX_ACTION_UPDATE_PROTECTION_MSG 	= 'update_protection_msg';
 	const AJAX_ACTION_TOGGLE_CRON 				= 'toggle_cron';
 	const AJAX_ACTION_TOGGLE_PROTECTION_FILE 	= 'toggle_protection_file';
+	const AJAX_ACTION_RESET_MIGRATION 			= 'rerun_migration';
 
 	/**
 	 * Settings tabs.
@@ -86,6 +87,7 @@ class MS_Controller_Settings extends MS_Controller {
 		$this->add_ajax_action( self::AJAX_ACTION_UPDATE_PROTECTION_MSG, 'ajax_action_update_protection_msg' );
 		$this->add_ajax_action( self::AJAX_ACTION_TOGGLE_CRON, 'ajax_action_toggle_cron' );
 		$this->add_ajax_action( self::AJAX_ACTION_TOGGLE_PROTECTION_FILE, 'ajax_action_toggle_protection_file' );
+		$this->add_ajax_action( self::AJAX_ACTION_RESET_MIGRATION, 'rerun_migration' );
 		
 	}
 
@@ -685,5 +687,25 @@ class MS_Controller_Settings extends MS_Controller {
 			}
 		}
 		wp_die( $msg );
+	}
+
+	/**
+	 * Re run migration and return to special view
+	 * 
+	 * @since 1.1.3
+	 */
+	public function rerun_migration() {
+		if ( $this->verify_nonce( 'rerun_migration_nonce' ) && $this->is_admin_user() ) {
+			$settings = MS_Factory::load( 'MS_Model_Settings' );
+			MS_Model_Settings::set_special_view( 'MS_View_MigrationDb' );
+			$settings->ignore_migration = false;
+			$settings->save();
+			$redirect_url = MS_Controller_Plugin::get_admin_url();
+			wp_send_json_success( array(
+				'href' => $redirect_url
+			) );
+		}
+		wp_send_json_error();
+		
 	}
 }

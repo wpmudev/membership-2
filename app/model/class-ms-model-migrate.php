@@ -34,6 +34,11 @@
 				
 				add_action( 'wp_ajax_ms_do_migration', array( __CLASS__, 'process_migration' ) );
 				add_action( 'wp_ajax_ms_ignore_migration', array( __CLASS__, 'ignore_migration' ) );
+			} else {
+				MS_Model_Settings::reset_special_view();
+				$settings = MS_Factory::load( 'MS_Model_Settings' );
+				$settings->ignore_migration = true;
+				$settings->save();
 			}
 		}
 		//falback

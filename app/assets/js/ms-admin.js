@@ -2370,6 +2370,27 @@ window.ms_init.view_settings = function init () {
 	jQuery( '.wpmui-wp-pages' ).on( 'ms-ajax-updated', page_changed );
 	jQuery( '.ms-action a' ).on( 'click', ignore_disabled );
 	jQuery(function() { page_changed(); });
+
+	//Migration reset button
+	jQuery(document).on('click', '.ms-settings-run-migration', function(){
+		var $container = jQuery('.ms-settings-wrapper');
+		$container.addClass( 'ms-processing wpmui-loading' );
+		jQuery(this).attr('disabled',true);
+		jQuery.post(
+			window.ajaxurl, 
+			{ 'action' : 'rerun_migration', '_wpnonce' : jQuery('input[name=rerun_migration_nonce]').val() },
+			function( response ){
+				if ( response.success ) {
+					window.location.href = response.data.href;
+				} else {
+					jQuery(this).attr('disabled',false);
+					$container.removeClass( 'ms-processing wpmui-loading' );
+				}
+		}).fail(function(xhr, status, error) {
+			jQuery(this).attr('disabled',false);
+			$container.removeClass( 'ms-processing wpmui-loading' );
+		});
+	});
 };
 
 /*global window:false */
@@ -2849,7 +2870,7 @@ window.ms_init.view_settings_migrate = function init() {
 	 * Migration button
 	 */
 	jQuery(document).ready(function(){
-		jQuery('.ms-migration-start').on('click', function(){
+		jQuery(document).on('click', '.ms-migration-start', function(){
 			jQuery(this).attr('disabled',true);
 			migrationBar = wpmUi.progressbar();
 			jQuery(".ms_migrate_progress").append( migrationBar.$() );
@@ -2858,7 +2879,7 @@ window.ms_init.view_settings_migrate = function init() {
 			ms_do_migration();
 		});
 
-		jQuery('.ms-migration-ignore').on('click', function(){
+		jQuery(document).on('click', '.ms-migration-ignore', function(){
 			jQuery(this).attr('disabled',true);
 			jQuery.post(
 				window.ajaxurl, 

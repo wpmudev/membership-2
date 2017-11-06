@@ -51,8 +51,29 @@ class MS_View_Settings_Page_General extends MS_View_Settings_Edit {
 
 		MS_Helper_Html::settings_tab_header();
 		?>
-
 		<form action="<?php echo esc_url( $action_url ); ?>" method="post" class="cf">
+			<?php
+			$settings = MS_Factory::load( 'MS_Model_Settings' );
+			if ( $settings->ignore_migration && MS_Model_Migrate::needs_migration() ) {
+				?>
+				<div class="cf">
+					<?php 
+					
+					MS_Helper_Html::html_element( array(
+						'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+						'name' => 'rerun_migration_nonce',
+						'value' => wp_create_nonce( 'rerun_migration_nonce' ),
+					));
+					
+					MS_Helper_Html::html_element( array(
+						'type' 	=> MS_Helper_Html::INPUT_TYPE_BUTTON,
+						'class' => 'ms-settings-run-migration',
+						'value' => __( 'Run Data Migration', 'membership2' ),
+					) ); ?>
+				</div>
+				<?php
+			}
+			?>
 			<div class="cf">
 				<div class="ms-third">
 					<?php MS_Helper_Html::html_element( $fields['plugin_enabled'] ); ?>

@@ -90,4 +90,26 @@ window.ms_init.view_settings = function init () {
 	jQuery( '.wpmui-wp-pages' ).on( 'ms-ajax-updated', page_changed );
 	jQuery( '.ms-action a' ).on( 'click', ignore_disabled );
 	jQuery(function() { page_changed(); });
+
+	//Migration reset button
+	jQuery(document).on('click', '.ms-settings-run-migration', function(){
+		var $container = jQuery('.ms-settings-wrapper'),
+			$btn = jQuery(this);
+		$container.addClass( 'ms-processing wpmui-loading' );
+		$btn.attr('disabled',true);
+		jQuery.post(
+			window.ajaxurl, 
+			{ 'action' : 'rerun_migration', '_wpnonce' : jQuery('input[name=rerun_migration_nonce]').val() },
+			function( response ){
+				if ( response.success ) {
+					window.location.href = response.data.href;
+				} else {
+					$btn.attr('disabled',false);
+					$container.removeClass( 'ms-processing wpmui-loading' );
+				}
+		}).fail(function(xhr, status, error) {
+			$btn.attr('disabled',false);
+			$container.removeClass( 'ms-processing wpmui-loading' );
+		});
+	});
 };

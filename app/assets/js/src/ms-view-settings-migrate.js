@@ -44,7 +44,7 @@ window.ms_init.view_settings_migrate = function init() {
 	 * Migration button
 	 */
 	jQuery(document).ready(function(){
-		jQuery('.ms-migration-start').on('click', function(){
+		jQuery(document).on('click', '.ms-migration-start', function(){
 			jQuery(this).attr('disabled',true);
 			migrationBar = wpmUi.progressbar();
 			jQuery(".ms_migrate_progress").append( migrationBar.$() );
@@ -53,7 +53,7 @@ window.ms_init.view_settings_migrate = function init() {
 			ms_do_migration();
 		});
 
-		jQuery('.ms-migration-ignore').on('click', function(){
+		jQuery(document).on('click', '.ms-migration-ignore', function(){
 			jQuery(this).attr('disabled',true);
 			jQuery.post(
 				window.ajaxurl, 
