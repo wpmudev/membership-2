@@ -1030,6 +1030,7 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 		if ( ! $this->ms_relationship_id ) {
 			MS_Helper_Debug::debug_log( 'Cannot process transaction: No relationship defined (inv #' . $this->id  .')' );
 		} else {
+			$force_admin 	= false;
 			$subscription 	= $this->get_subscription();
 			$member 		= MS_Factory::load( 'MS_Model_Member', $this->user_id );
 			$membership 	= $subscription->get_membership();
@@ -1045,6 +1046,7 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 							MS_Model_Event::TYPE_PAID,
 							$subscription
 						);
+						$force_admin = true;
 					}
 
 					do_action(
@@ -1119,7 +1121,7 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 			$member->save();
 			$this->save();
 
-			$subscription->set_gateway( $this->gateway_id );
+			$subscription->set_gateway( $this->gateway_id, $force_admin );
 			$subscription->save();
 		}
 
