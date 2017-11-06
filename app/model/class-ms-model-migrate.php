@@ -12,7 +12,7 @@
  */
  class MS_Model_Migrate extends MS_Model {
 
-	const MIGRATION_PAGE = 20;
+	const MIGRATION_PAGE 	= 20;
 
 	const EVENT_POST_TYPE 	= 'ms_event';
 	const COMM_POST_TYPE 	= 'ms_communication_log';
@@ -33,13 +33,12 @@
 				MS_Model_Settings::set_special_view( 'MS_View_MigrationDb' );
 				
 				add_action( 'wp_ajax_ms_do_migration', array( __CLASS__, 'process_migration' ) );
-				add_action( 'wp_ajax_ms_check_migration', array( __CLASS__, 'check_migration' ) );
 				add_action( 'wp_ajax_ms_ignore_migration', array( __CLASS__, 'ignore_migration' ) );
 			}
 		}
 		//falback
 		add_action( 'wp_ajax_ms_do_migration', array( __CLASS__, 'revert_view' ) );
-		add_action( 'wp_ajax_ms_check_migration', array( __CLASS__, 'revert_view' ) );
+		add_action( 'wp_ajax_ms_ignore_migration', array( __CLASS__, 'revert_view' ) );
 	}
 
 	/**
@@ -110,7 +109,11 @@
 			);
 		}
 		$data['stages'] = count( $data['processes'] );
-		return apply_filters( 'ms_migration_data_steps', $data );
+		$total_data = get_transient( 'ms_migrate_process_total_data' );
+		if ( !$total_data ) {
+			set_transient( 'ms_migrate_process_total_data', ( $comm_log + $trans_log + $event_log ) );
+		}
+		return $data;
 	}
 
 	/**
@@ -119,78 +122,14 @@
 	 * @return bool/array
 	 */
 	static function get_current_stage() {
-		$migration_data 	= get_transient( 'ms_migrate_data' ); 
-		
-		if ( !$migration_data ) {
-			$migration_data = self::init_migration_data();
-			set_transient( 'ms_migrate_data', $migration_data );
-		}
-
-		$completed 	= get_transient( 'ms_migrate_process_done' );
-
+		$migration_data 	= self::init_migration_data();
 		$total 				= $migration_data['total'];
 		$total_processes 	= count( $migration_data['processes'] );
 		if ( $total > 0  && $total_processes > 0 ) {
-			$process	= $migration_data['processes'][0];
-			$step 		= $process['step'];
-			if ( $completed && ( $completed == $step ) ) {
-				if ( $total_processes >= 1 ) {
-					unset ( $migration_data['processes'][0] );
-					set_transient( 'ms_migrate_data', $migration_data );
-					delete_transient( 'ms_migrate_process_done' );
-					$process = next( $migration_data['processes'] );
-					$step 		= $process['step'];
-				} else {
-					$process = false;
-				}
-			}
-			return $process;
+			return $migration_data['processes'][0];
 		} else {
 			return false;
 		}
-	}
-
-	/**
-	 * Check migration progress
-	 * Mainly for the progress bar
-	 * 
-	 * @return application/json
-	 */
-	static function check_migration() {
-		$valid 	= is_admin() && check_ajax_referer( 'ms_check_migration', 'security', false );
-		
-		if ( ! $valid ) {
-			wp_send_json_error( array(
-				'message' => __( 'Invalid access', 'membership2' )
-			) );
-		}
-
-		$migration_data = get_transient( 'ms_migrate_process_percentage' );
-		if ( !$migration_data ) {
-			$migration_data = array(
-				'percent' 	=> 0,
-				'message'	=> __( 'Initializing migration', 'membership' )
-			);
-		}
-		if ( $migration_data['percent'] == 100 ) {
-			delete_transient( 'ms_migrate_process_percentage' );
-			MS_Model_Settings::reset_special_view();
-		}
-		$current_pass = get_transient( 'ms_migrate_process_pass' );
-		if ( $current_pass ) {
-			$migration_data['pass'] = $current_pass;
-			delete_transient( 'ms_migrate_process_pass' );
-		}
-
-		$process 	= self::get_current_stage();
-		if ( !$process ) {
-			$migration_data['error'] = __( 'No new process to find', 'membership' );
-			MS_Model_Settings::reset_special_view();
-		} else {
-			$migration_data['error'] = sprintf( __( 'Currently on %s', 'membership' ), $process['name'] );
-		}
-
-		wp_send_json_success( $migration_data );
 	}
 
 	/**
@@ -237,77 +176,56 @@
 		$valid 	= is_admin() && check_ajax_referer( 'ms_do_migration', 'security', false );
 		
 		if ( ! $valid ) {
-			set_transient( 'ms_migrate_process_percentage', array(
+			$migration_data = array(
 				'percent' 	=> 0,
 				'message'	=> __( 'Invalid access', 'membership2' )
-			) );
-		}
-
-		$pass 				= isset( $_POST['pass'] ) ? $_POST['pass'] : 0;
-		if ( $pass == 0 ) {
-			delete_transient( 'ms_migrate_data' );
-		}
-		$migration_data 	= get_transient( 'ms_migrate_data' ); 
-
-		if ( !$migration_data ) {
-			$migration_data = self::init_migration_data();
-			set_transient( 'ms_migrate_data', $migration_data );
-		}
-
-		$total 				= $migration_data['total'];
-		$total_processes 	= count( $migration_data['processes'] );
-		if ( !empty( $migration_data ) 
-			&& $total > 0  && $total_processes > 0 ) {
+			);
+		} else {
 			$process 	= self::get_current_stage();
 			if ( $process ) {
+				$pass = get_transient( 'ms_migrate_process_pass' );
+				if ( !$pass ) {
+					set_transient( 'ms_migrate_process_pass', 1 );
+					$pass = 1;
+				}
+				$total_data = get_transient( 'ms_migrate_process_total_data' );
 				$per_page 	= apply_filters( 'ms_migrate_batch_page', self::MIGRATION_PAGE );
 				$step 		= $process['step'];
-				$page 		= ceil( $process['total'] / $per_page );
-				$percentage = ( ( $pass + 1 ) * $page );
-				$percent 	= intval( $percentage / $total * 100 );
+				$page 		= ceil( $process['total'] / $total_data );
+				$percentage = ( $pass * $page );
+				$percent 	= intval( $percentage / $total_data * 100 );
 				if ( $process['total'] < $per_page ) {
 					$page = $process['total'];
 				} else {
 					$page = $page * $per_page;
 				}
-				if ( $pass == 0 ) {
-					delete_transient( 'ms_migrate_process_total_'.$step );
-					delete_transient( 'ms_migrate_process_done' );
-				}
-				set_transient( 'ms_migrate_process_percentage', array(
+				self::migrate_log_tables( $step );
+				$migration_data = array(
 					'percent' 	=> $percent,
-					'message'	=> sprintf( __( '%d of %d records processed for %s ', 'membership' ), $page , $process['total'], $process['name'] )
-				) );
-	
-				$resp = self::migrate_log_tables( $process['total'], $step );
-				set_transient( 'ms_migrate_process_pass', $pass + 1 );
+					'message'	=> sprintf( __( '%d of %d records processed', 'membership' ), $page , $total_data )
+				);
+				set_transient( 'ms_migrate_process_pass', ( $pass + 1 ) );
+				
 			} else {
-				set_transient( 'ms_migrate_process_percentage', array(
+				delete_transient( 'ms_migrate_process_pass' );
+				$migration_data = array(
 					'percent' 	=> 100,
 					'message'	=> __( 'Nothing left to migrate', 'membership' )
-				) );
+				);
 			}
-			
-		} else {
-			set_transient( 'ms_migrate_process_percentage', array(
-				'percent' 	=> 100,
-				'message'	=> __( 'Nothing to migrate', 'membership' )
-			) );
 		}
-
-		
+		wp_send_json_success( $migration_data );
 	}
 
 
 	/**
 	 * Migrate custom log post type data to custom tables
 	 * This checks if the custom post type exists before starting the upgrade
-	 * TODO : Modify this to work in chunks incase the date is huge
 	 *
 	 * @since 1.1.2
 	 *
 	 */
-	static function migrate_log_tables( $total, $step = 'comm_log' ) {
+	static function migrate_log_tables( $step = 'comm_log' ) {
 	
 		global $wpdb;
 		$wpdb->show_errors();
@@ -367,7 +285,7 @@
 			$insert_defaults		= array( 'gateway_id', 'method', 'success', 'subscription_id', 'invoice_id', 'member_id', 'amount', 'custom_data', 'user_id');
 			$insert_meta_data 		= array();
 		
-			foreach ( $results as $post ){
+			foreach ( $results as $post ) {
 				$post_ids[] 				= $post->ID;
 				$metadata 					= $wpdb->get_results( $wpdb->prepare( $meta_sql, $post->ID ) );
 				$data 						= array();
@@ -454,30 +372,7 @@
 			$sql_posts 		= "DELETE FROM $wpdb->posts WHERE ID in($format)";
 			$wpdb->query( $wpdb->prepare( $sql, $post_ids ) );
 			$wpdb->query( $wpdb->prepare( $sql_posts, $post_ids ) );
-		
-			$total_processed = get_transient( 'ms_migrate_process_total_'.$step );
-			if ( !$total_processed ) {
-				$total_processed = $how_many;
-			} else {
-				$total_processed = $total_processed + $how_many;
-			}
-			set_transient( 'ms_migrate_process_total_'.$step, $total_processed );
-			if ( $total_processed >= $total ) {
-				set_transient( 'ms_migrate_process_done', $step );
-				delete_transient( 'ms_migrate_process_total_'.$step );
-				$response = __( 'Done', 'membership2' );
-			} else {
-				$next_page 	= $page + 1;
-				$pages 		= ceil( $total / $pages );
-				$response = sprintf( __( '%d out of %d in', 'membership2' ), $next_page, $pages ) ;
-			}
-		} else {
-			set_transient( 'ms_migrate_process_done', $step );
-			delete_transient( 'ms_migrate_process_total_'.$step );
 		}
-
-		error_log( $wpdb->last_error );
-		return false;
 	}
  }
 ?>
