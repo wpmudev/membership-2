@@ -200,8 +200,10 @@
 	static function revert_view() {
 		if ( is_admin() ) {
 			MS_Model_Settings::reset_special_view();
-			wp_send_json_error();
 		}
+		wp_send_json_error( array(
+			'message' => __( 'Nothing to migrate', 'membership2' )
+		) );
 	}
 
 	/**
