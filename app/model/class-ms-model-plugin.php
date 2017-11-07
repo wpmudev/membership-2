@@ -408,7 +408,8 @@ class MS_Model_Plugin extends MS_Model {
 				MS_Model_Pages::MS_PAGE_PROTECTED_CONTENT,
 				false
 			);
-			$current_page_url = MS_Helper_Utility::get_current_url();
+			//Get current page url
+			$current_page_url = lib3()->net->current_url();
 
 			// Don't (re-)redirect the protection page.
 			if ( ! MS_Model_Pages::is_membership_page( null, MS_Model_Pages::MS_PAGE_PROTECTED_CONTENT ) ) {
