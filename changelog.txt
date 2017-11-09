@@ -21,6 +21,7 @@ Change Log:
 - Fixed: Rest API input integer validation (https://github.com/WP-API/WP-API/issues/1520) and change param of /member status to member_status
 - Fixed: Auth Net Payment Gateway (Fix the 'Extra Options is invalid.' authorize error)
 - Fixed: Profile Fields add-on readonly option was not working
+- Fixed: Custom Post type protection rule to exclude private post types
 
 
 1.1.1
