@@ -275,8 +275,12 @@ class MS_Rule_CptGroup_Model extends MS_Rule {
 	 * @return array
 	 */
 	public static function get_custom_post_types() {
-		$cpts = get_post_types();
-		$excluded = self::get_excluded_content();
+		$args 		= apply_filters( 'ms_rule_cptgroup_model_get_post_types_args',  array(
+			'public'   => true,
+			'_builtin' => false
+		) );
+		$cpts 		= get_post_types( $args );
+		$excluded 	= self::get_excluded_content();
 
 		return apply_filters(
 			'ms_rule_cptgroup_model_get_custom_post_types',
