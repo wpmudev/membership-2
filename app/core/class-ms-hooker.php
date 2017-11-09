@@ -431,7 +431,8 @@ class MS_Hooker {
 	 */
 	public function log( $message ) {
 		if( defined( 'WP_DEBUG' ) && WP_DEBUG === true ) { 
-			lib3()->debug->log( '[M2]' . $message );
+			lib3()->debug->log( '[M2] Log : ' );
+			lib3()->debug->log( $message );
 		}
 	}
 }

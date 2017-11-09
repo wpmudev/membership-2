@@ -116,7 +116,7 @@
 		$data['stages'] = count( $data['processes'] );
 		$total_data = get_transient( 'ms_migrate_process_total_data' );
 		if ( !$total_data ) {
-			set_transient( 'ms_migrate_process_total_data', ( $comm_log + $trans_log + $event_log ) );
+			set_transient( 'ms_migrate_process_total_data', $data['total'] );
 		}
 		return $data;
 	}
@@ -285,6 +285,8 @@
 			$table_name 			= MS_Helper_Database::get_table_name( MS_Helper_Database::TRANSACTION_LOG );
 			$meta_table_name    	= MS_Helper_Database::get_table_name( MS_Helper_Database::META );
 			$meta_name          	= MS_Helper_Database_TableMeta::TRANSACTION_TYPE;
+			$insert_query			= "INSERT INTO $table_name(`gateway_id`, `method`, `success`, `subscription_id`, `invoice_id`, `member_id`, `amount`, `custom_data`, `user_id`, `date_created`, `last_updated`) VALUES(%s,%s,%s,%d,%d,%d,%d,%s,%d,%s,%s)";
+			$insert_meta_query		= "INSERT INTO $meta_table_name(`object_id`,`object_type`,`meta_key`,`meta_value`,`date_created`) VALUES(%d,%s,%s,%s,%s)";
 			$query 					= $wpdb->prepare( $sql, $transaction_log );
 			$results 				= $wpdb->get_results( $query );
 			$insert_defaults		= array( 'gateway_id', 'method', 'success', 'subscription_id', 'invoice_id', 'member_id', 'amount', 'custom_data', 'user_id');
@@ -312,12 +314,30 @@
 			}
 			if ( !empty( $insert_data ) ) {
 				foreach ( $insert_data as $data ){
-					$result = $wpdb->insert( $table_name, $data );
+					$result = $wpdb->query( $wpdb->prepare( $insert_query, 
+															$data['gateway_id'], 
+															$data['method'], 
+															$data['success'], 
+															$data['subscription_id'], 
+															$data['invoice_id'], 
+															$data['member_id'], 
+															$data['amount'],
+															$data['custom_data'],
+															$data['user_id'],
+															$data['date_created'],
+															$data['last_updated'] ) 
+											);
 					if ( false !== $result ) {
 						$id = $wpdb->insert_id;
 						foreach ( $insert_meta_data as $meta ){
 							$meta['object_id'] = $id;
-							$wpdb->insert( $meta_table_name, $meta );
+							$wpdb->query( $wpdb->prepare( $insert_meta_query, 
+															$id, 
+															$meta['object_type'], 
+															$meta['meta_key'], 
+															$meta['meta_value'], 
+															$meta['date_created'] ) 
+														);
 						}
 					}
 				}
