@@ -1108,6 +1108,7 @@ class MS_Rule extends MS_Model {
 					'orderby' 				=> 'ID',
 					'order' 				=> 'DESC',
 					'post_status' 			=> 'publish',
+					'public'   				=> true,
 				);
 				$args['post__not_in'] 	= $filter->exclude;
 				$args['post__in'] 		= $filter->include;
