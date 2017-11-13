@@ -203,6 +203,19 @@ class MS_Model_Settings extends MS_Model_Option {
 	);
 
 	/**
+	 * Invoice Settings
+	 * 
+	 * @since 1.1.3
+	 * 
+	 * @var array
+	 */
+	protected $invoice = array(
+		'sequence_type' 	=> MS_Addon_Invoice::DEFAULT_SEQUENCE,
+		'invoice_preffix'	=> 'MS',
+		'prefix_gateways'	=> array()
+	);
+
+	/**
 	 * Global payments already set indicator.
 	 *
 	 * @since  1.0.4
@@ -534,6 +547,18 @@ class MS_Model_Settings extends MS_Model_Option {
 					$this->downloads['direct_access'] = explode( ",", sanitize_text_field( $value ) );
 					break;
 
+				case 'sequence_type':
+					$this->invoice['sequence_type'] = sanitize_text_field( $value );
+					break;
+
+				case 'invoice_preffix':
+					$this->invoice['invoice_preffix'] = sanitize_text_field( $value );
+					break;
+				
+				case 'prefix_gateways':
+					$this->downloads['prefix_gateways'] = explode( ",", sanitize_text_field( $value ) );
+					break;
+					
 				case 'api_namespace' :
 					$this->wprest['api_namespace'] = sanitize_text_field( $value );
 					break;
