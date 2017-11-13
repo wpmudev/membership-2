@@ -474,7 +474,7 @@ class MS_Model_Addon extends MS_Model_Option {
 					'id' 		=> 'advanced_protection',
 					'type' 		=> MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
 					'title' 	=> __( 'Advanced Media Protection', 'membership2' ),
-					'desc' 		=> __( 'Enable this to add a new tab in "Membership2" where you can manually set advanced media protection for all your uploaded files', 'membership2' ),
+					'desc' 		=> __( 'Enable this to add a new tab in "Membership2" settings page where you can manually set advanced media protection for all your uploaded files', 'membership2' ),
 					'value' 	=> $settings->is_advanced_media_protection,
 					'data_ms' 	=> array(
 						'field' 	=> 'advanced_media_protection',

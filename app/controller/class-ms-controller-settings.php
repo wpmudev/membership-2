@@ -37,6 +37,7 @@ class MS_Controller_Settings extends MS_Controller {
 	const TAB_MESSAGES 	= 'messages';
 	const TAB_EMAILS 	= 'emails';
 	const TAB_MEDIA 	= 'media';
+	const TAB_INVOICE 	= 'invoice';
 	const TAB_IMPORT 	= 'import';
 
 	/**
@@ -335,6 +336,9 @@ class MS_Controller_Settings extends MS_Controller {
 			self::TAB_MEDIA => array(
 				'title' => __( 'Advanced Media Protection', 'membership2' ),
 			),
+			self::TAB_INVOICE => array(
+				'title' => __( 'Additional Invoice Settings', 'membership2' ),
+			),
 			self::TAB_IMPORT => array(
 				'title' => __( 'Import Tool', 'membership2' ),
 			)
@@ -342,6 +346,10 @@ class MS_Controller_Settings extends MS_Controller {
 		$settings = $this->get_model();
 		if ( ! MS_Model_Addon::is_enabled( MS_Addon_Mediafiles::ID ) || !$settings->is_advanced_media_protection ) {
 			unset( $tabs[self::TAB_MEDIA] );
+		}
+
+		if ( ! MS_Model_Addon::is_enabled( MS_Addon_Invoice::ID ) ) {
+			unset( $tabs[self::TAB_INVOICE] );
 		}
 
 		$def_key = MS_Controller_Plugin::MENU_SLUG . '-settings';
