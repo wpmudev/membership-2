@@ -210,9 +210,10 @@ class MS_Model_Settings extends MS_Model_Option {
 	 * @var array
 	 */
 	protected $invoice = array(
-		'sequence_type' 	=> MS_Addon_Invoice::DEFAULT_SEQUENCE,
-		'invoice_preffix'	=> 'MS',
-		'prefix_gateways'	=> array()
+		'sequence_type' 		=> MS_Addon_Invoice::DEFAULT_SEQUENCE,
+		'invoice_preffix'		=> 'MS',
+		'gateway_prefix_enabled'=> false,
+		'prefix_gateways'		=> array()
 	);
 
 	/**
@@ -554,7 +555,11 @@ class MS_Model_Settings extends MS_Model_Option {
 				case 'invoice_preffix':
 					$this->invoice['invoice_preffix'] = sanitize_text_field( $value );
 					break;
-				
+					
+				case 'gateway_prefix_enabled':
+					$this->$property = lib3()->is_true( $value );
+					break;
+
 				case 'prefix_gateways':
 					$this->downloads['prefix_gateways'] = explode( ",", sanitize_text_field( $value ) );
 					break;

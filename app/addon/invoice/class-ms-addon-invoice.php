@@ -72,8 +72,8 @@ class MS_Addon_Invoice extends MS_Addon {
 	public static function sequence_types() {
 		return apply_filters( 'ms_addon_invoice_sequence_types', array(
 			self::DEFAULT_SEQUENCE 		=> __( 'Basic invoice ID generation (default)', 'membership2' ),
-			self::PROGRESSIVE_SEQUENCE 	=> __( 'Progressive invoice ID generation ( e.g. 1,2,3,4 )', 'membership2' ),
-			self::CUSTOM_SEQUENCE 		=> __( 'Custom invoice ID generation for all or each gateway ( e.g. MINE_1, PP_2, STRIPE_3 )', 'membership2' ),
+			self::PROGRESSIVE_SEQUENCE 	=> __( 'Progressive invoice ID generation', 'membership2' ),
+			self::CUSTOM_SEQUENCE 		=> __( 'Custom invoice ID generation for all or each gateway', 'membership2' ),
 		) );
 	}
 
@@ -131,7 +131,7 @@ class MS_Addon_Invoice extends MS_Addon {
 						$value,
 						$this->data
 					);
-					$html 				= call_user_func( $render_callback );
+					$html 				= call_user_func( $render_callback, $settings );
 					$display 			= 'none;';
 					if ( $settings->invoice['sequence_type'] === $key  ) {
 						$display = 'block;';
@@ -150,15 +150,24 @@ class MS_Addon_Invoice extends MS_Addon {
 		return $html;
 	}
 
-	public function render_sequence_type_default() {
+	public function render_sequence_type_default( $settings ) {
 		return "Default";
 	}
 
-	public function render_sequence_type_progressive() {
+	public function render_sequence_type_progressive( $settings ) {
 		return "Progressive";
 	}
 
-	public function render_sequence_type_custom() {
+	public function render_sequence_type_custom( $settings ) {
+		$gateways 	= MS_Model_Gateway::get_gateways();
+		$groups 	= array();
+
+		foreach ( $gateways as $gateway ) {
+			$group = $gateway->group;
+			if ( empty( $group ) ) { continue; }
+			$groups[$group] = lib3()->array->get( $groups[$group] );
+			$groups[$group][$gateway->id] = $gateway;
+		}
 		return "Custom";
 	}
 }
