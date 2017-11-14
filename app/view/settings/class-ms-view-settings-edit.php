@@ -358,17 +358,7 @@ class MS_View_Settings_Edit extends MS_View {
 
 		return $tab->to_html();
 	}
-
-	/* ====================================================================== *
-	 *                               INVOICES
-	 * ====================================================================== */
-	public function render_tab_invoice() {
-		$tab = MS_Factory::create( 'MS_View_Settings_Page_Invoice' );
-		$tab->data = $this->data;
-
-		return $tab->to_html();
-	}
-
+	
 	/* ====================================================================== *
 	 *                               IMPORT
 	 * ====================================================================== */

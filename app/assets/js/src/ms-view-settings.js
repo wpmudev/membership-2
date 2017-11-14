@@ -89,14 +89,5 @@ window.ms_init.view_settings = function init () {
 	// Membership Pages: Update contents after a page was saved
 	jQuery( '.wpmui-wp-pages' ).on( 'ms-ajax-updated', page_changed );
 	jQuery( '.ms-action a' ).on( 'click', ignore_disabled );
-	jQuery( '#invoice_sequence_type' ).on( 'ms-ajax-updated', function(){
-		var $selected = jQuery( '#invoice_sequence_type' ).val();
-		jQuery('.invoice-types').each(function(){
-			jQuery(this).hide();
-		});
-		if ( jQuery('#' + $selected).length ) {
-			jQuery('#' + $selected).show();
-		}
-	} );
 	jQuery(function() { page_changed(); });
 };

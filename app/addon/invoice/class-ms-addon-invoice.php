@@ -85,19 +85,81 @@ class MS_Addon_Invoice extends MS_Addon {
 	 * @return array The updated Add-Ons list.
 	 */
 	public function register( $list ) {
+		$settings 		= MS_Factory::load( 'MS_Model_Settings' );
 		$list[ self::ID ] = (object) array(
 			'name' 			=> __( 'Additional Invoice Settings', 'membership2' ),
 			'description' 	=> __( 'Take full control of your invoices', 'membership2' ),
 			'icon' 			=> 'wpmui-fa wpmui-fa-credit-card',
+			'footer' 		=> sprintf( '<i class="dashicons dashicons dashicons-admin-settings"></i> %s', __( 'Options available', 'membership2' ) ),
 			'class' 		=> 'ms-options',
 			'details' 		=> array(
 				array(
-					'type' => MS_Helper_Html::TYPE_HTML_TEXT,
-					'value' => __( 'Additional invoice settings for better invoices. A new menu item will appear under the settings menu where you can configure the invoices', 'membership2' ),
+					'id' 			=> 'invoice_sequence_type',
+					'type' 			=> MS_Helper_Html::INPUT_TYPE_SELECT,
+					'title' 		=> __( 'Select invoice number sequence', 'membership2' ),
+					'value' 		=> $settings->invoice['sequence_type'],
+					'field_options' => MS_Addon_Invoice::sequence_types(),
+					'class' 		=> 'ms-select',
+					'ajax_data' 	=> array(
+						'field' 	=> 'sequence_type',
+						'action' 	=> MS_Controller_Settings::AJAX_ACTION_UPDATE_SETTING,
+						'_wpnonce' 	=> true, // Nonce will be generated from 'action'
+					)
+				),
+				array(
+					'type' 	=> MS_Helper_Html::TYPE_HTML_TEXT,
+					'value' => $this->render_settings_html( $settings )
 				)
 			)
 		);
 		return $list;
+	}
+
+	protected function render_settings_html( $settings ) {
+		ob_start();
+		?>
+		<div id="ms-invoice-settings-wrapper">
+			<div class="ms-list-table-wrapper">
+				<?php
+				$sequence_types = self::sequence_types();
+				foreach ( $sequence_types as $key => $value ) {
+					$callback_name 		= 'render_' . $key;
+					$render_callback 	= apply_filters(
+						'ms_addon_invoice_render_settings_html_callback',
+						array( $this, $callback_name ),
+						$key,
+						$value,
+						$this->data
+					);
+					$html 				= call_user_func( $render_callback );
+					$display 			= 'none;';
+					if ( $settings->invoice['sequence_type'] === $key  ) {
+						$display = 'block;';
+					}
+					?>
+					<div class="space invoice-types" style="display:<?php echo $display;?>" id="<?php echo $key; ?>">
+						<?php echo $html; ?>
+					</div>
+					<?php
+				}
+				?>
+			</div>
+		</div>
+		<?php
+		$html = ob_get_clean();
+		return $html;
+	}
+
+	public function render_sequence_type_default() {
+		return "Default";
+	}
+
+	public function render_sequence_type_progressive() {
+		return "Progressive";
+	}
+
+	public function render_sequence_type_custom() {
+		return "Custom";
 	}
 }
 
