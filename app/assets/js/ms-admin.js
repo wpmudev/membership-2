@@ -2287,6 +2287,18 @@ window.ms_init.view_addons = function init () {
 			jQuery('#' + $selected).show();
 		}
 	} );
+
+	jQuery( '#gateway_prefix_enabled' ).on( 'ms-ajax-updated', function(){
+		var $selected = jQuery( '#gateway_prefix_enabled' ).val();
+		jQuery('.gateway_prefix-types').each(function(){
+			jQuery(this).hide();
+		});
+		if ( $selected === '1' ) {
+			jQuery('.ms-gateway-group-list').show();
+		} else {
+			jQuery('.ms-common-prefix').show();
+		}
+	} );
 };
 
 /*global window:false */

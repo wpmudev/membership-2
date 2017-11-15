@@ -63,6 +63,11 @@ class MS_Addon_Invoice extends MS_Addon {
 	public function init() {
 		if ( self::is_active() ) {
 			$this->plugin_settings = MS_Factory::load( 'MS_Model_Settings' );
+			$this->add_filter(
+				'ms_model_invoice_the_number',
+				'invoice_number',
+				10, 2
+			);
         }
 	}
 
@@ -75,6 +80,39 @@ class MS_Addon_Invoice extends MS_Addon {
 			self::PROGRESSIVE_SEQUENCE 	=> __( 'Progressive invoice ID generation', 'membership2' ),
 			self::CUSTOM_SEQUENCE 		=> __( 'Custom invoice ID generation for all or each gateway', 'membership2' ),
 		) );
+	}
+
+	/**
+	 * Set the invoice number depending on the addon settings
+	 * 
+	 * @param string $default_number - default invoice number
+	 * @param MS_Model_Invoice $invoice - the current invoice
+	 * 
+	 * @return string
+	 */
+	public function invoice_number( $default_number, $invoice ) {
+		switch ( $this->plugin_settings->invoice['sequence_type'] ) {
+			case self::PROGRESSIVE_SEQUENCE :
+				if ( $invoice->custom_invoice_id > 0 ) {
+					$default_number = $invoice->custom_invoice_id;
+				}
+			break;
+
+			case self::CUSTOM_SEQUENCE :
+				$gateway_prefix = $this->plugin_settings->invoice['gateway_prefix'];
+				$prefix 		= $this->plugin_settings->invoice['invoice_prefix'];
+				if ( $gateway_prefix ) {
+					$gateway_prefixes 	= $this->plugin_settings->invoice['prefix_gateways'];
+					$gateway_id 		= $invoice->gateway_id;
+					if ( $gateway_id && isset( $gateway_prefixes[ $gateway_id ] ) ) {
+						$prefix = $gateway_prefixes[ $gateway_id ];
+					}
+				}
+				$default_number = substr( $default_number, 1 );
+				$default_number = $prefix . '' . $default_number;
+			break;
+		}
+		return $default_number;
 	}
 
 	/**
@@ -151,24 +189,80 @@ class MS_Addon_Invoice extends MS_Addon {
 	}
 
 	public function render_sequence_type_default( $settings ) {
-		return "Default";
+		return __( "Invoice ID's will be generated in the default order", "membership2" );
 	}
 
 	public function render_sequence_type_progressive( $settings ) {
-		return "Progressive";
+		return __( "Invoice ID's will be generated in a progressive order. This will depend on the total number of invoices you have in your installation", "membership2" );
 	}
 
 	public function render_sequence_type_custom( $settings ) {
-		$gateways 	= MS_Model_Gateway::get_gateways();
-		$groups 	= array();
-
-		foreach ( $gateways as $gateway ) {
-			$group = $gateway->group;
-			if ( empty( $group ) ) { continue; }
-			$groups[$group] = lib3()->array->get( $groups[$group] );
-			$groups[$group][$gateway->id] = $gateway;
+		$gateways 			= MS_Model_Gateway::get_gateways();
+		$groups 			= array();
+		$gateway_prefix 	= $settings->invoice['gateway_prefix'];
+		$gateway_prefixes 	= $settings->invoice['gateway_prefixes'];
+		$prefix 			= $settings->invoice['invoice_prefix'];
+		$gw_display 		= 'none;';
+		$com_display 		= 'block;';
+		if ( $gateway_prefix ) {
+			$gw_display 	= 'block;';
+			$com_display 	= 'none;';
 		}
-		return "Custom";
+		ob_start();
+		?>
+		<div>
+			<?php MS_Helper_Html::html_element( array(
+				'id' 			=> 'gateway_prefix_enabled',
+				'type' 			=> MS_Helper_Html::INPUT_TYPE_SELECT,
+				'title' 		=> __( 'Select custom invoice type', 'membership2' ),
+				'value' 		=> $gateway_prefix,
+				'field_options' => array(
+					true 	=> __( 'Set for each gateway', 'membership2' ),
+					false 	=> __( 'Apply to all gateways', 'membership2' )
+				),
+				'class' 		=> 'ms-select',
+				'ajax_data' 	=> array(
+					'field' 	=> 'gateway_prefix',
+					'action' 	=> MS_Controller_Settings::AJAX_ACTION_UPDATE_SETTING,
+					'_wpnonce' 	=> true, // Nonce will be generated from 'action'
+				)
+			) ); ?>
+		</div>
+		<div class="ms-common-prefix gateway_prefix-types" style="display:<?php echo $com_display;?>">
+			<?php MS_Helper_Html::html_element( array(
+				'id' 	=> 'invoice_prefix',
+				'type' 	=> MS_Helper_Html::INPUT_TYPE_TEXT,
+				'desc' 	=> __( 'Invoice prefix to apply to all invoice', 'membership2' ),
+				'value' => $prefix,
+				'class' => 'ms-text-large',
+				'data_ms' => array(
+					'field' 	=> 'invoice_prefix',
+					'action' 	=> MS_Controller_Settings::AJAX_ACTION_UPDATE_SETTING,
+					'_wpnonce' 	=> true, // Nonce will be generated from 'action'
+				),
+			) ); ?>
+		</div>
+		<div class="ms-gateway-group-list gateway_prefix-types" style="display:<?php echo $gw_display;?>">
+		<?php
+		foreach ( $gateways as $gateway ) : ?>
+			<div class="ms-half">
+				<?php MS_Helper_Html::html_element( array(
+					'id' 		=> 'gateway_prefixes',
+					'type' 		=> MS_Helper_Html::INPUT_TYPE_TEXT,
+					'desc' 		=> sprintf( __( '%s payment gateway invoice prefix', 'membership2' ), $gateway->name ),
+					'value' 	=> isset( $gateway_prefixes[ $gateway->id ] ) ? isset( $gateway_prefixes[ $gateway->id ] ) : $prefix,
+					'class' 	=> 'ms-text-large',
+					'data_ms' 	=> array(
+						'field' 	=> 'gateway_prefixes['.$gateway->id.']',
+						'action' 	=> MS_Controller_Settings::AJAX_ACTION_UPDATE_SETTING,
+						'_wpnonce' 	=> true, // Nonce will be generated from 'action'
+					),
+				) ); ?>
+			</div>
+		<?php endforeach;
+		?></div> <?php
+		$html = ob_get_clean();
+		return $html;
 	}
 }
 

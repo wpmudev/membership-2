@@ -210,10 +210,10 @@ class MS_Model_Settings extends MS_Model_Option {
 	 * @var array
 	 */
 	protected $invoice = array(
-		'sequence_type' 		=> MS_Addon_Invoice::DEFAULT_SEQUENCE,
-		'invoice_preffix'		=> 'MS',
-		'gateway_prefix_enabled'=> false,
-		'prefix_gateways'		=> array()
+		'sequence_type' 	=> MS_Addon_Invoice::DEFAULT_SEQUENCE,
+		'invoice_prefix'	=> 'MS-',
+		'gateway_prefix'	=> false,
+		'gateway_prefixes'	=> array()
 	);
 
 	/**
@@ -552,16 +552,16 @@ class MS_Model_Settings extends MS_Model_Option {
 					$this->invoice['sequence_type'] = sanitize_text_field( $value );
 					break;
 
-				case 'invoice_preffix':
-					$this->invoice['invoice_preffix'] = sanitize_text_field( $value );
+				case 'invoice_prefix':
+					$this->invoice['invoice_prefix'] = sanitize_text_field( $value );
 					break;
 					
-				case 'gateway_prefix_enabled':
-					$this->$property = lib3()->is_true( $value );
+				case 'gateway_prefix':
+					$this->$invoice['gateway_prefix'] = lib3()->is_true( $value );
 					break;
 
-				case 'prefix_gateways':
-					$this->downloads['prefix_gateways'] = explode( ",", sanitize_text_field( $value ) );
+				case 'gateway_prefixes':
+					$this->invoice['gateway_prefixes'] = array_merge( $this->invoice['gateway_prefixes'], sanitize_text_field( $value ) );
 					break;
 					
 				case 'api_namespace' :

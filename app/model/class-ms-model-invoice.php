@@ -268,6 +268,15 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	protected $invoice_number = 0;
 
 	/**
+	 * Invoice id.
+	 * Incase custom invoice generation is set up
+	 *
+	 * @since  1.0.0
+	 * @var int
+	 */
+	protected $custom_invoice_id = 0;
+
+	/**
 	 * Tax rate value.
 	 *
 	 * @since  1.0.0
@@ -814,8 +823,8 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 
 		// No existing invoice, create a new one.
 		if ( ! $invoice || ! $invoice->id ) {
-			$invoice = MS_Factory::create( 'MS_Model_Invoice' );
-			$invoice = apply_filters( 'ms_model_invoice', $invoice );
+			$invoice 				= MS_Factory::create( 'MS_Model_Invoice' );
+			$invoice 				= apply_filters( 'ms_model_invoice', $invoice );
 		}
 		// Update invoice info.
 		$invoice->ms_relationship_id 	= $subscription->id;
@@ -837,7 +846,8 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 		$invoice->discount 				= 0;
 		$invoice->notes 				= $notes;
 		$invoice->amount 				= $membership->price; // Without taxes!
-
+		$total_invoices 				= self::get_invoice_count();
+		$invoice->custom_invoice_id		= $total_invoices + 1;
 		// Check for trial period in the first period.
 		if ( $subscription->is_trial_eligible()
 			&& $invoice_number === $subscription->current_invoice_number
@@ -846,6 +856,8 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 			$invoice->uses_trial 		= true;
 			$invoice->trial_ends 		= $subscription->trial_expire_date;
 		}
+		
+		
 
 		$invoice->set_due_date();
 
@@ -857,7 +869,7 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 		$invoice->save();
 	
 		//If gateway is admin then set the invoice as paid.
-		if ( 'admin' == $invoice->gateway_id) {
+		if ( 'admin' == $invoice->gateway_id ) {
 			$invoice->pay_it( $invoice->gateway_id );
 		}
 
