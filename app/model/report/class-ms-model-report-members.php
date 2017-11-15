@@ -23,16 +23,17 @@
 		$status 		= $_REQUEST['status'];
 		$dir 			= MS_Helper_Media::get_membership_dir();
 		$milliseconds 	= round( microtime( true ) * 1000 );
-		$filename 		= $milliseconds . '_' . $status.'-memberships.csv';
 		if ( empty( $status ) ) { 
 			$status = MS_Model_Relationship::STATUS_ACTIVE; 
 		}
+		$filename 		= $milliseconds . '_' . $status.'-memberships.csv';
 		$header = apply_filters( 'ms_model_report_members_csv_header', array( 
 			__( 'User ID', 'membership2' ),
 			__( 'Email', 'membership2' ),
 			__( 'Username', 'membership2' ),
 			__( 'First Name', 'membership2' ),
 			__( 'Last Name', 'membership2' ),
+			__( 'Membership Name', 'membership2' ),
 			__( 'Subscription Status', 'membership2' ),
 			__( 'Payment Gateway', 'membership2' ),
 			__( 'Payment Type', 'membership2' ),
@@ -47,6 +48,9 @@
 		$args['number'] 				= false;
 		$args['offset'] 				= 0;
 		$args['subscription_status'] 	= $status;
+		if ( isset( $_REQUEST['membership_id'] ) ) {
+			$args['membership_id'] 	= $_REQUEST['membership_id'];
+		}
 		$count = 0;
 		$members = MS_Model_Member::get_members( $args );
 		if ( is_array( $members ) && !empty( $members ) ) {
@@ -66,10 +70,12 @@
 						$sub = $subscription;
 					}
 					if ( $sub ) {
-						$data[$count]['status'] = $sub->status;
+						
 						
 						$the_membership = $sub->get_membership();
 						unset( $unused_memberships[$the_membership->id] );
+						$data[$count]['membership'] = $the_membership->name;
+						$data[$count]['status'] 	= $sub->status;
 	
 						if ( isset( $gateways[ $sub->gateway_id ] ) ) {
 							$gateway_name = $gateways[ $sub->gateway_id ];
@@ -84,6 +90,7 @@
 						$data[$count]['start'] 		= $sub->start_date;
 						$data[$count]['end'] 		= $sub->expire_date;
 					} else {
+						$data[$count]['membership'] = 'N/A';
 						$data[$count]['status'] 	= 'N/A';
 						$data[$count]['gateway'] 	= 'N/A';
 						$data[$count]['type'] 		= 'N/A';
@@ -92,6 +99,7 @@
 					}
 					
 				} else {
+					$data[$count]['membership'] = 'N/A';
 					$data[$count]['status'] 	= 'N/A';
 					$data[$count]['gateway'] 	= 'N/A';
 					$data[$count]['type'] 		= 'N/A';
