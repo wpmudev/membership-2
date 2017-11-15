@@ -332,7 +332,7 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 		$args = array(
 			'label' 				=> __( 'Membership2 Invoices', 'membership2' ),
 			'description' 			=> __( 'Member Invoices', 'membership2' ),
-			'public' 				=> true,
+			'public' 				=> false,
 			'show_ui' 				=> false,
 			'show_in_menu' 			=> false,
 			'has_archive' 			=> false,
