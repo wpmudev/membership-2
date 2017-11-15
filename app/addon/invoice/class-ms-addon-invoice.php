@@ -120,7 +120,7 @@ class MS_Addon_Invoice extends MS_Addon {
 		$settings 		= MS_Factory::load( 'MS_Model_Settings' );
 		$list[ self::ID ] = (object) array(
 			'name' 			=> __( 'Additional Invoice Settings', 'membership2' ),
-			'description' 	=> __( 'Take full control of your invoices', 'membership2' ),
+			'description' 	=> __( 'More control for your invoices', 'membership2' ),
 			'icon' 			=> 'wpmui-fa wpmui-fa-credit-card',
 			'footer' 		=> sprintf( '<i class="dashicons dashicons dashicons-admin-settings"></i> %s', __( 'Options available', 'membership2' ) ),
 			'class' 		=> 'ms-options',
