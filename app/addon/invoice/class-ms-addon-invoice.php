@@ -99,27 +99,21 @@ class MS_Addon_Invoice extends MS_Addon {
 			break;
 
 			case self::CUSTOM_SEQUENCE :
-				$gateway_prefix = $this->plugin_settings->invoice['gateway_prefix'];
 				$prefix 		= $this->plugin_settings->invoice['invoice_prefix'];
-				if ( $gateway_prefix ) {
-					$gateway_prefixes 	= $this->plugin_settings->invoice['prefix_gateways'];
-					$gateway_id 		= $invoice->gateway_id;
-					if ( $gateway_id && isset( $gateway_prefixes[ $gateway_id ] ) ) {
-						$prefix = $gateway_prefixes[ $gateway_id ];
-					}
-				}
 				$default_number = substr( $default_number, 1 );
 				$default_number = $prefix . '' . $default_number;
 			break;
 		}
-		return $default_number;
+		return apply_filters( 'ms_addon_invoice_invoice_number', $default_number, $invoice );
 	}
 
 	/**
 	 * Registers the Add-On
 	 *
 	 * @since  1.0.4
+	 * 
 	 * @param  array $list The Add-Ons list.
+	 * 
 	 * @return array The updated Add-Ons list.
 	 */
 	public function register( $list ) {
@@ -197,43 +191,14 @@ class MS_Addon_Invoice extends MS_Addon {
 	}
 
 	public function render_sequence_type_custom( $settings ) {
-		$gateways 			= MS_Model_Gateway::get_gateways();
-		$groups 			= array();
-		$gateway_prefix 	= $settings->invoice['gateway_prefix'];
-		$gateway_prefixes 	= $settings->invoice['gateway_prefixes'];
-		$prefix 			= $settings->invoice['invoice_prefix'];
-		$gw_display 		= 'none;';
-		$com_display 		= 'block;';
-		if ( $gateway_prefix ) {
-			$gw_display 	= 'block;';
-			$com_display 	= 'none;';
-		}
 		ob_start();
 		?>
-		<div>
-			<?php MS_Helper_Html::html_element( array(
-				'id' 			=> 'gateway_prefix_enabled',
-				'type' 			=> MS_Helper_Html::INPUT_TYPE_SELECT,
-				'title' 		=> __( 'Select custom invoice type', 'membership2' ),
-				'value' 		=> $gateway_prefix,
-				'field_options' => array(
-					true 	=> __( 'Set for each gateway', 'membership2' ),
-					false 	=> __( 'Apply to all gateways', 'membership2' )
-				),
-				'class' 		=> 'ms-select',
-				'ajax_data' 	=> array(
-					'field' 	=> 'gateway_prefix',
-					'action' 	=> MS_Controller_Settings::AJAX_ACTION_UPDATE_SETTING,
-					'_wpnonce' 	=> true, // Nonce will be generated from 'action'
-				)
-			) ); ?>
-		</div>
-		<div class="ms-common-prefix gateway_prefix-types" style="display:<?php echo $com_display;?>">
+		<div class="ms-common-prefix">
 			<?php MS_Helper_Html::html_element( array(
 				'id' 	=> 'invoice_prefix',
 				'type' 	=> MS_Helper_Html::INPUT_TYPE_TEXT,
 				'desc' 	=> __( 'Invoice prefix to apply to all invoice', 'membership2' ),
-				'value' => $prefix,
+				'value' => $settings->invoice['invoice_prefix'],
 				'class' => 'ms-text-large',
 				'data_ms' => array(
 					'field' 	=> 'invoice_prefix',
@@ -242,25 +207,7 @@ class MS_Addon_Invoice extends MS_Addon {
 				),
 			) ); ?>
 		</div>
-		<div class="ms-gateway-group-list gateway_prefix-types" style="display:<?php echo $gw_display;?>">
 		<?php
-		foreach ( $gateways as $gateway ) : ?>
-			<div class="ms-half">
-				<?php MS_Helper_Html::html_element( array(
-					'id' 		=> 'gateway_prefixes',
-					'type' 		=> MS_Helper_Html::INPUT_TYPE_TEXT,
-					'desc' 		=> sprintf( __( '%s payment gateway invoice prefix', 'membership2' ), $gateway->name ),
-					'value' 	=> isset( $gateway_prefixes[ $gateway->id ] ) ? isset( $gateway_prefixes[ $gateway->id ] ) : $prefix,
-					'class' 	=> 'ms-text-large',
-					'data_ms' 	=> array(
-						'field' 	=> 'gateway_prefixes['.$gateway->id.']',
-						'action' 	=> MS_Controller_Settings::AJAX_ACTION_UPDATE_SETTING,
-						'_wpnonce' 	=> true, // Nonce will be generated from 'action'
-					),
-				) ); ?>
-			</div>
-		<?php endforeach;
-		?></div> <?php
 		$html = ob_get_clean();
 		return $html;
 	}

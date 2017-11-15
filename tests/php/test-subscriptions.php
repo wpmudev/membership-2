@@ -101,6 +101,7 @@ class MS_Test_Subscriptions extends WP_UnitTestCase {
 		$invoice2->name = $invoice1->name = '0';
 		$invoice2->price_date = $invoice1->price_date = '0';
 		$invoice2->post_modified = $invoice1->post_modified = '0';
+		$invoice2->custom_invoice_id = $invoice1->custom_invoice_id = 0;
 
 		$this->assertEquals( $subscription1, $subscription2 );
 		$this->assertEquals( $invoice1, $invoice2 );

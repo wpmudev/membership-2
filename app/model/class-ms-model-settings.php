@@ -212,8 +212,6 @@ class MS_Model_Settings extends MS_Model_Option {
 	protected $invoice = array(
 		'sequence_type' 	=> MS_Addon_Invoice::DEFAULT_SEQUENCE,
 		'invoice_prefix'	=> 'MS-',
-		'gateway_prefix'	=> false,
-		'gateway_prefixes'	=> array()
 	);
 
 	/**
@@ -555,14 +553,7 @@ class MS_Model_Settings extends MS_Model_Option {
 				case 'invoice_prefix':
 					$this->invoice['invoice_prefix'] = sanitize_text_field( $value );
 					break;
-					
-				case 'gateway_prefix':
-					$this->$invoice['gateway_prefix'] = lib3()->is_true( $value );
-					break;
 
-				case 'gateway_prefixes':
-					$this->invoice['gateway_prefixes'] = array_merge( $this->invoice['gateway_prefixes'], sanitize_text_field( $value ) );
-					break;
 					
 				case 'api_namespace' :
 					$this->wprest['api_namespace'] = sanitize_text_field( $value );

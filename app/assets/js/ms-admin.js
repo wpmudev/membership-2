@@ -1,4 +1,4 @@
-/*! Membership 2 Pro - v1.1.3
+/*! Membership 2 Pro - v1.1.2
  * https://premium.wpmudev.org/project/membership/
  * Copyright (c) 2017; * Licensed GPLv2+ */
 /*global window:false */
@@ -2285,18 +2285,6 @@ window.ms_init.view_addons = function init () {
 		});
 		if ( jQuery('#' + $selected).length ) {
 			jQuery('#' + $selected).show();
-		}
-	} );
-
-	jQuery( '#gateway_prefix_enabled' ).on( 'ms-ajax-updated', function(){
-		var $selected = jQuery( '#gateway_prefix_enabled' ).val();
-		jQuery('.gateway_prefix-types').each(function(){
-			jQuery(this).hide();
-		});
-		if ( $selected === '1' ) {
-			jQuery('.ms-gateway-group-list').show();
-		} else {
-			jQuery('.ms-common-prefix').show();
 		}
 	} );
 };
