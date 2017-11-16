@@ -70,7 +70,7 @@ class MS_Helper_Cache extends MS_Helper {
 	 */
 	public static function get_transient( $key ) {
 		$results = MS_Factory::get_transient( $key );
-		if ( self::is_query_cache_enabled() ) {
+		if ( self::is_query_cache_enabled() && !empty( $results ) ) {
 			return $results;
 		} else {
 			self::delete_transient( $key );

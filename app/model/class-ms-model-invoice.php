@@ -496,14 +496,27 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 			'ms_model_invoice_get_invoice_count_args',
 			wp_parse_args( $args, $defaults )
 		);
-
+		$count 		= 0;
+		$cache_key 	= 'ms_model_invoice_counts';
+		if ( !is_null( $args ) && isset ( $args['meta_query']['status']['value'] ) ) {
+			$cache_key = $cache_key . '_' . implode ( "_", $args['meta_query']['status']['value'] );
+		}
 		MS_Factory::select_blog();
-		$query = new WP_Query( $args );
+		$cache_key 	= MS_Helper_Cache::generate_cache_key( $cache_key, $args );
+		$results 	= MS_Helper_Cache::get_transient( $cache_key );
+		if ( $results ) {
+			$count = $results;
+		} else {
+			$query = new WP_Query( $args );
+			$count = $query->found_posts;
+			MS_Helper_Cache::query_cache( $count, $cache_key );
+		}
+		
 		MS_Factory::revert_blog();
 
 		return apply_filters(
 			'ms_model_invoice_get_invoice_count',
-			$query->found_posts,
+			$count,
 			$args
 		);
 	}
@@ -573,11 +586,30 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 			'ms_model_invoice_get_invoices_args',
 			wp_parse_args( $args, $defaults )
 		);
+		$invoices 	= array();
+		$items 		= array();
+
+		$cache_key 	= 'ms_model_invoice_list';
+		if ( !is_null( $args ) ) {
+			if ( isset ( $args['meta_query']['status']['value'] ) ) {
+				$cache_key = $cache_key . '_' . implode ( "_", $args['meta_query']['status']['value'] );
+			}
+			if ( isset ( $args['author'] ) ) {
+				$cache_key = $cache_key . '_author_' . $args['author']; 
+			}
+		}
 
 		MS_Factory::select_blog();
-		$query 		= new WP_Query( $args );
-		$items 		= $query->posts;
-		$invoices 	= array();
+		$cache_key 	= MS_Helper_Cache::generate_cache_key( $cache_key, $args );
+		$results 	= MS_Helper_Cache::get_transient( $cache_key );
+		if ( $results ) {
+			$items = $results;
+		} else {
+			$query 	= new WP_Query( $args );
+			$items 	= $query->posts;
+			MS_Helper_Cache::query_cache( $items, $cache_key );
+		}
+
 		MS_Factory::revert_blog();
 
 		foreach ( $items as $item ) {
@@ -648,6 +680,8 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 			'order' 		=> 'DESC',
 		);
 
+		$cache_key = 'ms_model_invoice_' . $subscription_id;
+
 		$args['meta_query']['ms_relationship_id'] = array(
 			'key'     => 'ms_relationship_id',
 			'value'   => $subscription_id,
@@ -657,21 +691,33 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 				'key'     => 'status',
 				'value'   => $status,
 			);
+			$cache_key .= '_' . $status;
 		}
 		if ( ! empty( $invoice_number ) ) {
 			$args['meta_query']['invoice_number'] = array(
 				'key'     => 'invoice_number',
 				'value'   => $invoice_number,
 			);
+			$cache_key .= '_' . $invoice_number;
 		}
+
+		$invoice	= null;
+		$item 		= array();
 
 		MS_Factory::select_blog();
 		$args 	= apply_filters( 'ms_model_invoice_get_invoice_args', $args );
-		$query 	= new WP_Query( $args );
-		$item 	= $query->posts;
+		$cache_key 	= MS_Helper_Cache::generate_cache_key( $cache_key, $args );
+		$results 	= MS_Helper_Cache::get_transient( $cache_key );
+		if ( $results ) {
+			$item = $results;
+		} else {
+			$query 	= new WP_Query( $args );
+			$item 	= $query->posts;
+			MS_Helper_Cache::query_cache( $item, $cache_key );
+		}
+		
 		MS_Factory::revert_blog();
 
-		$invoice = null;
 		if ( ! empty( $item[0] ) ) {
 			$invoice = MS_Factory::load( 'MS_Model_Invoice', $item[0] );
 		}

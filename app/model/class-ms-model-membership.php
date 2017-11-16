@@ -1319,6 +1319,9 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 			$rule->membership_id = $this->id;
 		}
 
+		//clear old data
+		MS_Helper_Cache::delete_transient( 'ms_model_membership_ids' );
+
 		if ( $this->is_valid() ) {
 			$this->check_revision();
 		}
@@ -2163,26 +2166,34 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 * @internal
 	 */
 	private function get_rules_hierarchy() {
-		$rule_types 	= MS_Model_Rule::get_rule_types();
 		$rules 			= array();
-		$subscription 	= MS_Factory::load( 'MS_Model_Relationship', $this->subscription_id );
-
-		foreach ( $rule_types as $rule_type ) {
-			$rule 		= $this->get_rule( $rule_type );
-
-			if ( $rule->rule_type != $rule_type ) {
-				// This means that the $rule_type was not found...
-				continue;
+		$cache_key 	= MS_Helper_Cache::generate_cache_key( 'ms_model_membership_get_rules_hierarchy_' . $this->subscription_id . '_' . $this->id );
+		$results 	= MS_Helper_Cache::get_transient( $cache_key );
+		if ( $results ) {
+			$rules = $results;
+		} else {
+			$rule_types 	= MS_Model_Rule::get_rule_types();
+			$subscription 	= MS_Factory::load( 'MS_Model_Relationship', $this->subscription_id );
+	
+			foreach ( $rule_types as $rule_type ) {
+				$rule 		= $this->get_rule( $rule_type );
+	
+				if ( $rule->rule_type != $rule_type ) {
+					// This means that the $rule_type was not found...
+					continue;
+				}
+	
+				// Sometimes the $subscription->id can be 0, which is intentional:
+				// This is the case when the membership was auto-assigned to guest
+				// or default membership.
+				$rule->_subscription_id = $subscription->id;
+	
+				$rule->membership_id 	= $this->id;
+				$rules[ $rule_type ] 	= $rule;
 			}
-
-			// Sometimes the $subscription->id can be 0, which is intentional:
-			// This is the case when the membership was auto-assigned to guest
-			// or default membership.
-			$rule->_subscription_id = $subscription->id;
-
-			$rule->membership_id 	= $this->id;
-			$rules[ $rule_type ] 	= $rule;
+			MS_Helper_Cache::query_cache( $rules, $cache_key );
 		}
+		
 
 		return apply_filters(
 			'ms_model_membership_get_rules_hierarchy',
@@ -2551,7 +2562,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 */
 	public function has_access_to_content( $id ) {
 		$rules = $this->get_rules_hierarchy();
-		return $rules['content']->get_rule_value($id);
+		return $rules['content']->get_rule_value( $id );
 	}	
 
 	/**
