@@ -41,6 +41,18 @@ class MS_View_Settings_Page_General extends MS_View_Settings_Edit {
 					'setting' 	=> 'enable_cron_use',
 				),
 			),
+
+			'enable_query_cache' => array(
+				'id' 		=> 'enable_query_cache',
+				'type' 		=> MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
+				'title' 	=> __( 'Speed up results', 'membership2' ),
+				'desc' 		=> __( 'Cache your Membership queries for faster results. Enabling this will cache results for 12 hours. Good for sites with alot of data', 'membership2' ),
+				'value' 	=> $settings->enable_query_cache,
+				'data_ms' 	=> array(
+					'action' 	=> MS_Controller_Settings::AJAX_ACTION_TOGGLE_SETTINGS,
+					'setting' 	=> 'enable_query_cache',
+				),
+			),
 		);
 
 		$fields = apply_filters( 'ms_view_settings_prepare_general_fields', $fields );
@@ -54,14 +66,22 @@ class MS_View_Settings_Page_General extends MS_View_Settings_Edit {
 
 		<form action="<?php echo esc_url( $action_url ); ?>" method="post" class="cf">
 			<div class="cf">
-				<div class="ms-third">
+				<div class="ms-half">
 					<?php MS_Helper_Html::html_element( $fields['plugin_enabled'] ); ?>
 				</div>
-				<div class="ms-third">
+				<div class="ms-half">
 					<?php MS_Helper_Html::html_element( $fields['hide_admin_bar'] ); ?>
 				</div>
-				<div class="ms-third">
+			</div>
+			<?php
+			MS_Helper_Html::html_separator();
+			?>
+			<div class="cf">
+				<div class="ms-half">
 					<?php MS_Helper_Html::html_element( $fields['enable_cron_use'] ); ?>
+				</div>
+				<div class="ms-half">
+					<?php MS_Helper_Html::html_element( $fields['enable_query_cache'] ); ?>
 				</div>
 			</div>
 			<?php

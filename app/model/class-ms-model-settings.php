@@ -143,6 +143,18 @@ class MS_Model_Settings extends MS_Model_Option {
 	 * @var boolean
 	 */
 	protected $enable_cron_use = true;
+	
+
+	/**
+	 * Enable use of query cache
+	 *
+	 * Settings
+	 *
+	 * @since  1.1.3
+	 *
+	 * @var boolean
+	 */
+	protected $enable_query_cache = false;
 
 	/**
 	 * The currency used in the plugin.
@@ -512,6 +524,7 @@ class MS_Model_Settings extends MS_Model_Option {
 				case 'initial_setup':
 				case 'is_first_membership':
 				case 'enable_cron_use':
+				case 'enable_query_cache':
 				case 'hide_admin_bar':
 					$this->$property = lib3()->is_true( $value );
 					break;
