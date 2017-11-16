@@ -680,8 +680,6 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 			'order' 		=> 'DESC',
 		);
 
-		$cache_key = 'ms_model_invoice_' . $subscription_id;
-
 		$args['meta_query']['ms_relationship_id'] = array(
 			'key'     => 'ms_relationship_id',
 			'value'   => $subscription_id,
@@ -691,33 +689,21 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 				'key'     => 'status',
 				'value'   => $status,
 			);
-			$cache_key .= '_' . $status;
 		}
 		if ( ! empty( $invoice_number ) ) {
 			$args['meta_query']['invoice_number'] = array(
 				'key'     => 'invoice_number',
 				'value'   => $invoice_number,
 			);
-			$cache_key .= '_' . $invoice_number;
 		}
-
-		$invoice	= null;
-		$item 		= array();
 
 		MS_Factory::select_blog();
 		$args 	= apply_filters( 'ms_model_invoice_get_invoice_args', $args );
-		$cache_key 	= MS_Helper_Cache::generate_cache_key( $cache_key, $args );
-		$results 	= MS_Helper_Cache::get_transient( $cache_key );
-		if ( $results ) {
-			$item = $results;
-		} else {
-			$query 	= new WP_Query( $args );
-			$item 	= $query->posts;
-			MS_Helper_Cache::query_cache( $item, $cache_key );
-		}
-		
+		$query 	= new WP_Query( $args );
+		$item 	= $query->posts;
 		MS_Factory::revert_blog();
 
+		$invoice = null;
 		if ( ! empty( $item[0] ) ) {
 			$invoice = MS_Factory::load( 'MS_Model_Invoice', $item[0] );
 		}
