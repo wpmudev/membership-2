@@ -554,10 +554,18 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 
 		if ( ! isset( $Subscription_IDs[ $key ] ) ) {
 			$Subscription_IDs[ $key ] = array();
-
+			$items 		= array();
 			MS_Factory::select_blog();
-			$query = new WP_Query( $args );
-			$items = $query->posts;
+			$cache_key 	= MS_Helper_Cache::generate_cache_key( 'ms_model_relationship_get_subscription_ids', $args );
+			$results 	= MS_Helper_Cache::get_transient( $cache_key );
+			if ( $results ) {
+				$items = $results;
+			} else {
+				$query = new WP_Query( $args );
+				$items = $query->posts;
+				MS_Helper_Cache::query_cache( $items, $cache_key );
+			}
+			
 			MS_Factory::revert_blog();
 			$subscriptions = array();
 
@@ -695,9 +703,19 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 			)
 		);
 
+		$post = array();
+
 		MS_Factory::select_blog();
-		$query 	= new WP_Query( $args );
-		$post 	= $query->posts;
+		$cache_key 	= MS_Helper_Cache::generate_cache_key( 'ms_model_relationship_get_subscription_' . $membership_id . '_' . $user_id );
+		$results 	= MS_Helper_Cache::get_transient( $cache_key );
+		if ( $results ) {
+			$post 	= $results;
+		} else {
+			$query 	= new WP_Query( $args );
+			$post 	= $query->posts;
+			MS_Helper_Cache::query_cache( $post, $cache_key );
+		}
+		
 		MS_Factory::revert_blog();
 
 		$subscription = null;
@@ -836,6 +854,9 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 			$generate_event
 		);
 
+		$cache_key 	= MS_Helper_Cache::generate_cache_key( 'ms_model_relationship_get_subscription_' . $this->membership_id . '_' . $this->user_id );
+		MS_Helper_Cache::delete_transient( $cache_key );
+
 		if ( self::STATUS_CANCELED == $this->status ) { return; }
 		if ( self::STATUS_DEACTIVATED == $this->status ) { return; }
 
@@ -855,6 +876,8 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 
 			// Remove any unpaid invoices.
 			$this->remove_unpaid_invoices();
+
+			
 
 			if ( $generate_event ) {
 				MS_Model_Event::save_event( MS_Model_Event::TYPE_MS_CANCELED, $this );
@@ -892,6 +915,9 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 		if ( MS_Plugin::get_modifier( 'MS_LOCK_SUBSCRIPTIONS' ) ) {
 			return false;
 		}
+
+		$cache_key 	= MS_Helper_Cache::generate_cache_key( 'ms_model_relationship_get_subscription_' . $this->membership_id . '_' . $this->user_id );
+		MS_Helper_Cache::delete_transient( $cache_key );
 
 		if ( self::STATUS_DEACTIVATED == $this->status ) { return; }
 
@@ -2772,6 +2798,9 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 		if ( MS_Plugin::get_modifier( 'MS_LOCK_SUBSCRIPTIONS' ) ) {
 			return false;
 		}
+
+		$cache_key 	= MS_Helper_Cache::generate_cache_key( 'ms_model_relationship_get_subscription_' . $this->membership_id . '_' . $this->user_id );
+		MS_Helper_Cache::delete_transient( $cache_key );
 
 		$membership = $this->get_membership();
 		$comms 		= MS_Model_Communication::get_communications( $membership );

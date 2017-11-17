@@ -425,7 +425,7 @@ class MS_Model_Member extends MS_Model {
 			$members[0] = __( 'Select a user', 'membership2' );
 		}
 
-		$cache_key 	= MS_Helper_Cache::generate_cache_key( 'ms_model_get_usernames', $args );
+		$cache_key 	= MS_Helper_Cache::generate_cache_key( 'ms_model_member_get_usernames', $args );
 		$results 	= MS_Helper_Cache::get_transient( $cache_key );
 		if ( $results ) {
 			$members = $results;

@@ -229,11 +229,18 @@ class MS_Model_Transactionlog extends MS_Model_CustomPostType {
 	 */
 	public static function get_item_count( $args = null ) {
 		$args = lib3()->array->get( $args );
-		$args['posts_per_page'] = -1;
-		$items = self::get_items( $args );
-
-		$count = count( $items );
-
+		$cache_key 	= MS_Helper_Cache::generate_cache_key( 'ms_model_transaction_item_count', $args );
+		$results 	= MS_Helper_Cache::get_transient( $cache_key );
+		$count		= 0;
+		if ( $results ) {
+			$count = $results;
+		} else {
+			$args['posts_per_page'] = -1;
+			$items = self::get_items( $args );
+			$count = count( $items );
+			MS_Helper_Cache::query_cache( $count, $cache_key );
+		}
+		
 		return apply_filters(
 			'ms_model_transactionlog_get_item_count',
 			$count,
@@ -337,54 +344,63 @@ class MS_Model_Transactionlog extends MS_Model_CustomPostType {
 	 * @return array List of post_ids.
 	 */
 	static public function get_state_ids( $state ) {
-		global $wpdb;
-
-		$sql = "
-		SELECT p.ID
-		FROM
-			{$wpdb->posts} p
-			LEFT JOIN {$wpdb->postmeta} state1 ON
-				state1.post_id = p.ID AND state1.meta_key = 'success'
-			LEFT JOIN {$wpdb->postmeta} state2 ON
-				state2.post_id = p.ID AND state2.meta_key = 'manual_state'
-			INNER JOIN {$wpdb->postmeta} method ON
-				method.post_id = p.ID AND method.meta_key = 'method'
-		WHERE
-			p.post_type = %s
-			AND LENGTH( method.meta_value ) > 0
-		";
-
+		$ids 		= array( 0 );
 		if ( ! is_array( $state ) ) { $state = array( $state ); }
-		$state_cond = array();
+		$cache_key 	= MS_Helper_Cache::generate_cache_key( 'ms_model_transaction_log_state_ids_' . implode ( "_", $state ) );
+		$results 	= MS_Helper_Cache::get_transient( $cache_key );
+		if ( $results ) {
+			$ids = $results;
+		} else {
+			global $wpdb;
 
-		foreach ( $state as $key ) {
-			switch ( $key ) {
-				case 'err':
-					$state_cond[] = "(
-						(state1.meta_value IS NULL OR state1.meta_value IN ('','0','err'))
-						AND (state2.meta_value IS NULL OR state2.meta_value IN (''))
-					)";
-					break;
+			$sql = "
+			SELECT p.ID
+			FROM
+				{$wpdb->posts} p
+				LEFT JOIN {$wpdb->postmeta} state1 ON
+					state1.post_id = p.ID AND state1.meta_key = 'success'
+				LEFT JOIN {$wpdb->postmeta} state2 ON
+					state2.post_id = p.ID AND state2.meta_key = 'manual_state'
+				INNER JOIN {$wpdb->postmeta} method ON
+					method.post_id = p.ID AND method.meta_key = 'method'
+			WHERE
+				p.post_type = %s
+				AND LENGTH( method.meta_value ) > 0
+			";
 
-				case 'ok':
-					$state_cond[] = "(
-						state1.meta_value IN ('1','ok')
-						OR state2.meta_value IN ('1','ok')
-					)";
-					break;
+			
+			$state_cond = array();
 
-				case 'ignore':
-					$state_cond[] = "(
-						state1.meta_value IN ('ignore')
-						OR state2.meta_value IN ('ignore')
-					)";
-					break;
+			foreach ( $state as $key ) {
+				switch ( $key ) {
+					case 'err':
+						$state_cond[] = "(
+							(state1.meta_value IS NULL OR state1.meta_value IN ('','0','err'))
+							AND (state2.meta_value IS NULL OR state2.meta_value IN (''))
+						)";
+						break;
+
+					case 'ok':
+						$state_cond[] = "(
+							state1.meta_value IN ('1','ok')
+							OR state2.meta_value IN ('1','ok')
+						)";
+						break;
+
+					case 'ignore':
+						$state_cond[] = "(
+							state1.meta_value IN ('ignore')
+							OR state2.meta_value IN ('ignore')
+						)";
+						break;
+				}
 			}
-		}
-		$sql .= 'AND (' . implode( ' OR ', $state_cond ) . ')';
+			$sql .= 'AND (' . implode( ' OR ', $state_cond ) . ')';
 
-		$sql = $wpdb->prepare( $sql, self::get_post_type() );
-		$ids = $wpdb->get_col( $sql );
+			$sql = $wpdb->prepare( $sql, self::get_post_type() );
+			$ids = $wpdb->get_col( $sql );
+			MS_Helper_Cache::query_cache( $ids, $cache_key );
+		}
 
 		if ( ! count( $ids ) ) {
 			$ids = array( 0 );
@@ -404,42 +420,50 @@ class MS_Model_Transactionlog extends MS_Model_CustomPostType {
 	 * @return array List of post_ids.
 	 */
 	static public function get_matched_ids( $source_id, $source ) {
-		global $wpdb;
+		$ids 		= array( 0 );
+		$cache_key 	= MS_Helper_Cache::generate_cache_key( 'ms_model_transaction_log_matched_ids_' . $source . '_' . $source_id );
+		$results 	= MS_Helper_Cache::get_transient( $cache_key );
+		if ( $results ) {
+			$ids = $results;
+		} else {
+			global $wpdb;
 
-		$sql = "
-		SELECT p.ID
-		FROM
-			{$wpdb->posts} p
-			LEFT JOIN {$wpdb->postmeta} form ON
-				form.post_id = p.ID AND form.meta_key = 'post'
-			LEFT JOIN {$wpdb->postmeta} gateway ON
-				gateway.post_id = p.ID AND gateway.meta_key = 'gateway_id'
-		WHERE
-			p.post_type = %s
-		";
+			$sql = "
+			SELECT p.ID
+			FROM
+				{$wpdb->posts} p
+				LEFT JOIN {$wpdb->postmeta} form ON
+					form.post_id = p.ID AND form.meta_key = 'post'
+				LEFT JOIN {$wpdb->postmeta} gateway ON
+					gateway.post_id = p.ID AND gateway.meta_key = 'gateway_id'
+			WHERE
+				p.post_type = %s
+			";
 
-		$source_int = intval( $source_id );
-		$int_len = strlen( $source_int );
+			$source_int = intval( $source_id );
+			$int_len 	= strlen( $source_int );
 
-		switch ( $source ) {
-			case 'm1':
-				$sql .= "
-				AND gateway.meta_value = 'paypalstandard'
-				AND form.meta_value REGEXP 's:6:\"custom\";s:[0-9]+:\"[0-9]+:[0-9]+:{$source_int}:'
-				";
-				break;
+			switch ( $source ) {
+				case 'm1':
+					$sql .= "
+					AND gateway.meta_value = 'paypalstandard'
+					AND form.meta_value REGEXP 's:6:\"custom\";s:[0-9]+:\"[0-9]+:[0-9]+:{$source_int}:'
+					";
+					break;
 
-			case 'pay_btn':
-				$sql .= "
-				AND gateway.meta_value = 'paypalstandard'
-				AND form.meta_value LIKE '%%s:6:\"btn_id\";s:{$int_len}:\"{$source_int}\";%%'
-				AND form.meta_value LIKE '%%s:11:\"payer_email\";%%'
-				";
-				break;
+				case 'pay_btn':
+					$sql .= "
+					AND gateway.meta_value = 'paypalstandard'
+					AND form.meta_value LIKE '%%s:6:\"btn_id\";s:{$int_len}:\"{$source_int}\";%%'
+					AND form.meta_value LIKE '%%s:11:\"payer_email\";%%'
+					";
+					break;
+			}
+
+			$sql = $wpdb->prepare( $sql, self::get_post_type() );
+			$ids = $wpdb->get_col( $sql );
+			MS_Helper_Cache::query_cache( $ids, $cache_key );
 		}
-
-		$sql = $wpdb->prepare( $sql, self::get_post_type() );
-		$ids = $wpdb->get_col( $sql );
 
 		if ( ! count( $ids ) ) {
 			$ids = array( 0 );
@@ -458,37 +482,45 @@ class MS_Model_Transactionlog extends MS_Model_CustomPostType {
 	 * @return bool True if the transaction was processed/paid already.
 	 */
 	static public function was_processed( $gateway, $external_id ) {
-		global $wpdb;
+		$processed 	= false;
+		$cache_key 	= MS_Helper_Cache::generate_cache_key( 'ms_model_transaction_log_was_processed_' . $gateway . '_' . $external_id );
+		$results 	= MS_Helper_Cache::get_transient( $cache_key );
+		if ( $results ) {
+			$processed = (bool) $results;
+		} else {
+			global $wpdb;
 
-		$sql = "
-		SELECT COUNT(1)
-		FROM {$wpdb->posts} p
-			INNER JOIN {$wpdb->postmeta} gateway ON
-				gateway.post_id=p.ID AND gateway.meta_key='gateway_id'
-			INNER JOIN {$wpdb->postmeta} ext_id ON
-				ext_id.post_id=p.ID AND ext_id.meta_key='external_id'
-			LEFT JOIN {$wpdb->postmeta} state1 ON
-				state1.post_id = p.ID AND state1.meta_key = 'success'
-			LEFT JOIN {$wpdb->postmeta} state2 ON
-				state2.post_id = p.ID AND state2.meta_key = 'manual_state'
-		WHERE
-			p.post_type = %s
-			AND gateway.meta_value = %s
-			AND ext_id.meta_value = %s
-			AND (
-				state1.meta_value IN ('1','ok')
-				OR state2.meta_value IN ('1','ok')
-			)
-		";
-		$sql = $wpdb->prepare(
-			$sql,
-			self::get_post_type(),
-			$gateway,
-			$external_id
-		);
-		$res = intval( $wpdb->get_var( $sql ) );
-
-		return $res > 0;
+			$sql = "
+			SELECT COUNT(1)
+			FROM {$wpdb->posts} p
+				INNER JOIN {$wpdb->postmeta} gateway ON
+					gateway.post_id=p.ID AND gateway.meta_key='gateway_id'
+				INNER JOIN {$wpdb->postmeta} ext_id ON
+					ext_id.post_id=p.ID AND ext_id.meta_key='external_id'
+				LEFT JOIN {$wpdb->postmeta} state1 ON
+					state1.post_id = p.ID AND state1.meta_key = 'success'
+				LEFT JOIN {$wpdb->postmeta} state2 ON
+					state2.post_id = p.ID AND state2.meta_key = 'manual_state'
+			WHERE
+				p.post_type = %s
+				AND gateway.meta_value = %s
+				AND ext_id.meta_value = %s
+				AND (
+					state1.meta_value IN ('1','ok')
+					OR state2.meta_value IN ('1','ok')
+				)
+			";
+			$sql = $wpdb->prepare(
+				$sql,
+				self::get_post_type(),
+				$gateway,
+				$external_id
+			);
+			$res = intval( $wpdb->get_var( $sql ) );
+			$processed =  $res > 0;
+			MS_Helper_Cache::query_cache( $processed, $cache_key );
+		}
+		return $processed;
 	}
 
 
