@@ -386,10 +386,11 @@ class MS_Model_Member extends MS_Model {
 		$members 	= array();
 		$cache_key 	= MS_Helper_Cache::generate_cache_key( 'ms_model_members_' . $search_option, $args );
 		$results 	= MS_Helper_Cache::get_transient( $cache_key );
+		$ids 		= self::get_member_ids( $args, $search_option );
 		if ( $results ) {
 			$members = $results;
 		} else {
-			$ids = self::get_member_ids( $args, $search_option );
+			
 			foreach ( $ids as $user_id ) {
 				$members[] = MS_Factory::load( 'MS_Model_Member', $user_id );
 			}

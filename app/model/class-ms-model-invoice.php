@@ -497,11 +497,11 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 			wp_parse_args( $args, $defaults )
 		);
 		$count 		= 0;
-		$cache_key 	= 'ms_model_invoice_counts';
-		if ( !is_null( $args ) && isset ( $args['meta_query']['status']['value'] ) ) {
-			$cache_key = $cache_key . '_' . implode ( "_", $args['meta_query']['status']['value'] );
-		}
 		MS_Factory::select_blog();
+		$cache_key 	= 'ms_model_invoice_counts';
+		if ( !is_null( $args ) && isset ( $args['meta_query']['status']['value'] ) && is_array( $args['meta_query']['status']['value'] ) ) {
+			$cache_key .= '_' . implode ( "_", $args['meta_query']['status']['value'] );
+		}
 		$cache_key 	= MS_Helper_Cache::generate_cache_key( $cache_key, $args );
 		$results 	= MS_Helper_Cache::get_transient( $cache_key );
 		if ( $results ) {
