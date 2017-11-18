@@ -40,8 +40,8 @@ class MS_Addon_ExcludeFromSearch extends MS_Addon {
 	 */
 	public function init() {
 		if ( self::is_active() ) {
-                    add_filter( 'pre_get_posts', array(&$this, 'exclude_pages_from_search') );
-                }
+			$this->add_filter( 'pre_get_posts', 'exclude_pages_from_search' );
+		}
 	}
 
 	/**
@@ -53,9 +53,9 @@ class MS_Addon_ExcludeFromSearch extends MS_Addon {
 	 */
 	public function register( $list ) {
 		$list[ self::ID ] = (object) array(
-			'name' => __( 'Exclude system pages from Search', 'membership2' ),
-			'description' => __( 'Excludes the membership system pages from search results.', 'membership2' ),
-			'icon' => 'wpmui-fa wpmui-fa-search',
+			'name' 			=> __( 'Exclude system pages from Search', 'membership2' ),
+			'description' 	=> __( 'Excludes the membership system pages from search results.', 'membership2' ),
+			'icon' 			=> 'wpmui-fa wpmui-fa-search',
 		);
 
 		return $list;
@@ -73,15 +73,14 @@ class MS_Addon_ExcludeFromSearch extends MS_Addon {
 		if ( !$this->is_frontend_search ( $wp_query ) ) {
 			return;
 		}
-
-                $page_types = MS_Model_Pages::get_page_types();
-                $i = 0;
+		$denied_ids = array();
+		$page_types = MS_Model_Pages::get_page_types();
+		$i 			= 0;
 		foreach ( $page_types as $key => $val ) {
 			$denied_ids[$i] = MS_Model_Pages::get_setting( $key );
-                        $i++;
+            $i++;
 		}
 
-		//$denied_ids = array_slice($denied_ids, 0);
 		$denied_ids = array_unique( $denied_ids, SORT_NUMERIC );
 
 		// Tell the WP query which pages are actually off limit for the user.

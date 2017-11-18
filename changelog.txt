@@ -7,6 +7,7 @@ Change Log:
 1.1.3
 - Improved: Membership database queries. Added cache membership setting to allow 12 hour cache of data
 - New: constant MS_QUERY_CACHE_DURATION to define custom cache duration
+- New: Exclude system pages from Search addon
 
 1.1.2
 - Added: Members List Export to CSV
