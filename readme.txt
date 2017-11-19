@@ -121,6 +121,9 @@ We provide comprehensive and guaranteed support on the <a href='http://premium.w
 * Fixed: Mail sending cron fix
 * Fixed: Category Protection
 * Fixed: Auth Net Payment Gateway
+* Fixed: Profile Fields add-on readonly option was not working
+* Fixed: Custom Post type protection rule to exclude private post types
+* Fixed: Conflict with Yoast WordPress SEO when registering for a membership
 
 = 4.1.1 =
 * Fixed: Menu Protection items not showing to all users except admin
