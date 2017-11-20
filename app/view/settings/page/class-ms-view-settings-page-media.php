@@ -79,8 +79,6 @@ class MS_View_Settings_Page_Media extends MS_View_Settings_Edit {
 			'regenerate_htaccess' => array(
 				'id' 	=> 'regenerate_htaccess',
 				'type' 	=> MS_Helper_Html::INPUT_TYPE_BUTTON,
-				'title' => __( 'Regenerate htaccess file', 'membership2' ),
-				'desc' 	=> __( 'This will update the Membership rules in the htaccess file in the uploads directory.', 'membership2' ),
 				'value' => __( 'Update htaccess', 'membership2' ),
 				'data_ms' => array(
 					'field' 	=> 'regenerate_htaccess',
@@ -88,6 +86,10 @@ class MS_View_Settings_Page_Media extends MS_View_Settings_Edit {
 					'_wpnonce' 	=> true, // Nonce will be generated from 'action'
 				),
 			),
+			'instructions'	=> array(
+				'type' 	=> MS_Helper_Html::TYPE_HTML_TEXT,
+				'value' => __( "We will place <strong>.htaccess</strong> file into the /wp-content/uploads/ folder to prevent direct access to files other than those defined. Each change in the files needs the htaccess file updated", "membership2" ),
+			)
 		);
 		
 
@@ -106,12 +108,34 @@ class MS_View_Settings_Page_Media extends MS_View_Settings_Edit {
 			}
 			?>
 			<div style="display:<?php echo ( $server != 'apache' ) ? 'none' : 'block'; ?>"  class="application-servers application-server-apache">
-				<?php MS_Helper_Html::html_element( $apache_settings['regenerate_htaccess'] ); ?>
+				<?php 
+				MS_Helper_Html::html_element( $apache_settings['instructions'] );
+				MS_Helper_Html::html_separator();
+				MS_Helper_Html::html_element( $apache_settings['regenerate_htaccess'] ); 
+				?>
 			</div>
 			<div style="display:<?php echo ( $server != 'litespeed' ) ? 'none' : 'block'; ?>" class="application-servers application-server-litespeed">
-				<?php MS_Helper_Html::html_element( $apache_settings['regenerate_htaccess'] ); ?>
+				<?php 
+				MS_Helper_Html::html_element( $apache_settings['instructions'] );
+				MS_Helper_Html::html_separator();
+				MS_Helper_Html::html_element( $apache_settings['regenerate_htaccess'] ); 
+				?>
 			</div>
 			<div style="display:<?php echo ( $server != 'nginx' ) ? 'none' : 'block'; ?>" class="application-servers application-server-nginx">
+				<p><?php esc_html_e( "For NGINX servers:", "membership2" ); ?></p>
+                    <ol>
+                        <li>
+                            <?php esc_html_e( "Copy the generated code into your site specific .conf file usually located in a subdirectory under /etc/nginx/... or /usr/local/nginx/conf/...", "membership2" ); ?>
+                        </li>
+                        <li>
+                            <?php _e( "Add the code above inside the <strong>server</strong> section in the file, right before the php location block. Looks something like:", "membership2" ); ?>
+                            <pre>location ~ \.php$ {</pre>
+                        </li>
+                        <li>
+                            <?php esc_html_e( "Reload NGINX.", "membership2" ); ?>
+                        </li>
+                    </ol>
+                    <p><?php echo sprintf( __( "Still having trouble? <a target='_blank' href=\"%s\">Open a support ticket</a>.", "membership2" ), 'https://premium.wpmudev.org/forums/forum/support#question' ); ?></p>
 				<?php
 				$rules = "
 				# Deny direct access to media files in the /wp-content/uploads/ directory (including sub-folders)
@@ -135,8 +159,9 @@ class MS_View_Settings_Page_Media extends MS_View_Settings_Edit {
 				## Membership 2 - End ##
 				</pre>
 			</div>
-			<div stle="display:<?php echo ( $server != 'iis' ) ? 'none' : 'block'; ?>" class="application-servers application-server-iis">
-
+			<div style="display:<?php echo ( $server != 'iis' ) ? 'none' : 'block'; ?>" class="application-servers application-server-iis">
+				<p><?php _e( "We will place <strong>web.config</strong> file into the uploads folder to prevent direct access to files other than those defined.", "membership2" ); ?></p>
+				<p><?php printf( __( 'For more information, please <a href="%s">visit Microsoft TechNet</a>', "membership2" ), 'https://technet.microsoft.com/en-us/library/cc725855(v=ws.10).aspx' ); ?></p>
 			</div>
 		</div>
 		<?php

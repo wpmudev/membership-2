@@ -12,7 +12,7 @@ window.ms_init.view_settings_media = function init () {
 			var array = excludedFiles.split(',');
 			var $wp_content = jQuery('#wp_content_dir').val();
 			var $extensions = array.join("|");
-			var newRule = "location ~* ^"+$wp_content+"/.*\.("+$extensions+")$ {"+
+			var newRule = "location ~* ^"+$wp_content+"/.*&#92;.("+$extensions+")$ {"+
 					" \n  allow all;"+
 					"\n}";
 			jQuery('.application-servers-nginx-extra-instructions').html(newRule);
