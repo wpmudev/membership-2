@@ -25,6 +25,11 @@ class MS_View_Settings_Page_Media extends MS_View_Settings_Edit {
 			$direct_access = $settings->downloads['direct_access'];
 		}
 
+		$server = MS_Helper_Media::get_server();
+		if ( isset( $settings->downloads['application_server'] ) && !empty( $settings->downloads['application_server'] ) ) {
+			$server = $settings->downloads['application_server'];
+		}
+
 		$fields = array(
 			'direct_access' => array(
 				'id' 	=> 'direct_access',
@@ -39,6 +44,22 @@ class MS_View_Settings_Page_Media extends MS_View_Settings_Edit {
 				),
 			),
 
+			'select_server' => array(
+				'id' 			=> 'application_server',
+				'type' 			=> MS_Helper_Html::INPUT_TYPE_SELECT,
+				'title' 		=> __( 'Application Server', 'membership2' ),
+				'value' 		=> $server,
+				'field_options' => MS_Helper_Media::server_types(),
+				'class' 		=> 'ms-select',
+				'data_ms' 		=> array(
+					'field' 	=> 'application_server',
+					'action' 	=> MS_Controller_Settings::AJAX_ACTION_TOGGLE_PROTECTION_FILE,
+					'_wpnonce' 	=> true, // Nonce will be generated from 'action'
+				),
+			),
+		);
+
+		$apache_settings = array(
 			'regenerate_htaccess' => array(
 				'id' 	=> 'regenerate_htaccess',
 				'type' 	=> MS_Helper_Html::INPUT_TYPE_BUTTON,

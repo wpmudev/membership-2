@@ -212,6 +212,7 @@ class MS_Model_Settings extends MS_Model_Option {
 		'protection_type' 	=> MS_Rule_Media_Model::PROTECTION_TYPE_COMPLETE,
 		'masked_url' 		=> 'downloads',
 		'direct_access' 	=> array( 'jpg', 'jpeg', 'png', 'gif', 'mp3', 'ogg' ),
+		'application_server'=> ''
 	);
 
 	/**
@@ -557,6 +558,9 @@ class MS_Model_Settings extends MS_Model_Option {
 
 				case 'direct_access':
 					$this->downloads['direct_access'] = explode( ",", sanitize_text_field( $value ) );
+					break;
+				case 'application_server':
+					$this->downloads['application_server'] = sanitize_text_field( $value );
 					break;
 
 				case 'sequence_type':

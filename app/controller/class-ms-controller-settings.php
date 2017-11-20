@@ -635,6 +635,10 @@ class MS_Controller_Settings extends MS_Controller {
 			case self::TAB_GENERAL:
 				$data['ms_init'][] = 'view_settings_setup';
 				break;
+
+			case self::TAB_MEDIA:
+				$data['ms_init'][] = 'view_settings_media';
+				break;
 		}
 		wp_enqueue_script( 'jquery-ui-datepicker' );
 		lib3()->ui->data( 'ms_data', $data );

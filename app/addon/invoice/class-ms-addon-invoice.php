@@ -194,12 +194,13 @@ class MS_Addon_Invoice extends MS_Addon {
 			?>
 			<div class="ms-common-prefix">
 				<?php MS_Helper_Html::html_element( array(
-					'id' 	=> 'invoice_prefix',
-					'type' 	=> MS_Helper_Html::INPUT_TYPE_BUTTON,
-					'desc' 	=> sprintf( __( "Update ID's of current (%d) invoices. You will need to reload the page after its done", 'membership2' ), $total_invoices ),
-					'value' => __( 'Update', 'membership2' ),
-					'class' => 'button-primary',
-					'data_ms' => array(
+					'id' 		=> 'invoice_id_update',
+					'type' 		=> MS_Helper_Html::INPUT_TYPE_BUTTON,
+					'desc' 		=> sprintf( __( "Update ID's of current (%d) invoices.", 'membership2' ), $total_invoices ),
+					'value' 	=> __( 'Update', 'membership2' ),
+					'class' 	=> 'button-primary',
+					'data_ms' 	=> array(
+						'field' 	=> 'invoice_id_update',
 						'action' 	=> MS_Controller_Settings::AJAX_ACTION_GENERATE_INVOICE_ID,
 						'_wpnonce' 	=> true, // Nonce will be generated from 'action'
 					)
