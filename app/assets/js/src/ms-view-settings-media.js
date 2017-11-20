@@ -7,6 +7,16 @@
 window.ms_init.view_settings_media = function init () {
 	jQuery( '#direct_access' ).on( 'ms-ajax-updated', function(){
 		//update nginx rules
+		var excludedFiles = jQuery( '#direct_access' ).val();
+		if(excludedFiles){
+			var array = excludedFiles.split(',');
+			var $wp_content = jQuery('#wp_content_dir').val();
+			var $extensions = array.join("|");
+			var newRule = "location ~* ^"+$wp_content+"/.*\.("+$extensions+")$ {"+
+					" \n  allow all;"+
+					"\n}";
+			jQuery('.application-servers-nginx-extra-instructions').html(newRule);
+		}
 	} );
 
 	jQuery( '#application_server' ).on( 'ms-ajax-updated', function(){
@@ -15,8 +25,6 @@ window.ms_init.view_settings_media = function init () {
 		jQuery('.application-servers').each(function(){
 			jQuery(this).hide();
 		});
-		if ( jQuery('#' + $selected).length ) {
-			jQuery('#' + $selected).show();
-		}
+		jQuery('.application-server-' + $selected).show();
 	} );
 };

@@ -207,7 +207,7 @@ class MS_Addon_Invoice extends MS_Addon {
 				) );
 				MS_Helper_Html::html_element( array(
 					'type' 	=> MS_Helper_Html::TYPE_HTML_TEXT,
-					'value' => "Invoice ID's will be generated in a progressive order. This will depend on the total number of invoices you have in your installation"
+					'value' => __( "Invoice ID's will be generated in a progressive order. This will depend on the total number of invoices you have in your installation", "membership2" )
 				) ); ?>
 
 			</div>
