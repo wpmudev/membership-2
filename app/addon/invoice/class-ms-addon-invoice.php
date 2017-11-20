@@ -187,7 +187,35 @@ class MS_Addon_Invoice extends MS_Addon {
 	}
 
 	public function render_sequence_type_progressive( $settings ) {
-		return __( "Invoice ID's will be generated in a progressive order. This will depend on the total number of invoices you have in your installation", "membership2" );
+		$total_invoices = MS_Model_Invoice::get_invoice_count();
+		$invoices_set = (bool) MS_Factory::get_option( 'ms_addon_invoice_set_invoice_numeric_id' );
+		if ( $total_invoices > 0 && !$invoices_set ) {
+			ob_start();
+			?>
+			<div class="ms-common-prefix">
+				<?php MS_Helper_Html::html_element( array(
+					'id' 	=> 'invoice_prefix',
+					'type' 	=> MS_Helper_Html::INPUT_TYPE_BUTTON,
+					'desc' 	=> sprintf( __( "Update ID's of current (%d) invoices. You will need to reload the page after its done", 'membership2' ), $total_invoices ),
+					'value' => __( 'Update', 'membership2' ),
+					'class' => 'button-primary',
+					'data_ms' => array(
+						'action' 	=> MS_Controller_Settings::AJAX_ACTION_GENERATE_INVOICE_ID,
+						'_wpnonce' 	=> true, // Nonce will be generated from 'action'
+					)
+				) );
+				MS_Helper_Html::html_element( array(
+					'type' 	=> MS_Helper_Html::TYPE_HTML_TEXT,
+					'value' => "Invoice ID's will be generated in a progressive order. This will depend on the total number of invoices you have in your installation"
+				) ); ?>
+
+			</div>
+			<?php
+			$html = ob_get_clean();
+			return $html;
+		} else {
+			return __( "Invoice ID's will be generated in a progressive order. This will depend on the total number of invoices you have in your installation", "membership2" );
+		}
 	}
 
 	public function render_sequence_type_custom( $settings ) {
@@ -210,6 +238,32 @@ class MS_Addon_Invoice extends MS_Addon {
 		<?php
 		$html = ob_get_clean();
 		return $html;
+	}
+
+	/**
+	 * Set numeric ids of invoices
+	 */
+	public static function set_invoice_numeric_id() {
+		$invoices_set = (bool) MS_Factory::get_option( 'ms_addon_invoice_set_invoice_numeric_id' );
+		if ( !$invoices_set ) {
+			$args = array(
+				'posts_per_page' 	=> -1,
+				'post_status' 		=> 'any',
+				'fields' 			=> 'ids',
+				'order' 			=> 'DESC',
+				'orderby' 			=> 'ID',
+			);
+			$invoices = MS_Model_Invoice::get_invoices( $args, false );
+			$count = 1;
+			foreach ( $invoices as $invoice ) {
+				if ( $invoice->custom_invoice_id <= 0 ) {
+					$invoice->custom_invoice_id = $count;
+					$invoice->save();
+					$count++;
+				}
+			}
+			MS_Factory::update_option( 'ms_addon_invoice_set_invoice_numeric_id', true );
+		}
 	}
 }
 

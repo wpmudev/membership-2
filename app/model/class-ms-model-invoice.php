@@ -573,7 +573,7 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	 * @param mixed $args The arguments to select data.
 	 * @return array $invoices
 	 */
-	public static function get_invoices( $args = null ) {
+	public static function get_invoices( $args = null, $cache = true ) {
 		$defaults = array(
 			'post_type' 		=> self::get_post_type(),
 			'posts_per_page' 	=> 10,
@@ -602,12 +602,14 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 		MS_Factory::select_blog();
 		$cache_key 	= MS_Helper_Cache::generate_cache_key( $cache_key, $args );
 		$results 	= MS_Helper_Cache::get_transient( $cache_key );
-		if ( $results ) {
+		if ( $results && $cache ) {
 			$items = $results;
 		} else {
 			$query 	= new WP_Query( $args );
 			$items 	= $query->posts;
-			MS_Helper_Cache::query_cache( $items, $cache_key );
+			if ( $cache ) {
+				MS_Helper_Cache::query_cache( $items, $cache_key );
+			}
 		}
 
 		MS_Factory::revert_blog();

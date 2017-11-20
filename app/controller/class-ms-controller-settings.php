@@ -24,6 +24,7 @@ class MS_Controller_Settings extends MS_Controller {
 	const AJAX_ACTION_UPDATE_PROTECTION_MSG 	= 'update_protection_msg';
 	const AJAX_ACTION_TOGGLE_CRON 				= 'toggle_cron';
 	const AJAX_ACTION_TOGGLE_PROTECTION_FILE 	= 'toggle_protection_file';
+	const AJAX_ACTION_GENERATE_INVOICE_ID 		= 'generate_invoice_id';
 
 	/**
 	 * Settings tabs.
@@ -86,7 +87,8 @@ class MS_Controller_Settings extends MS_Controller {
 		$this->add_ajax_action( self::AJAX_ACTION_UPDATE_PROTECTION_MSG, 'ajax_action_update_protection_msg' );
 		$this->add_ajax_action( self::AJAX_ACTION_TOGGLE_CRON, 'ajax_action_toggle_cron' );
 		$this->add_ajax_action( self::AJAX_ACTION_TOGGLE_PROTECTION_FILE, 'ajax_action_toggle_protection_file' );
-		
+		$this->add_ajax_action( self::AJAX_ACTION_GENERATE_INVOICE_ID, 'ajax_action_generate_invoice_id' );
+
 	}
 
 	/**
@@ -683,6 +685,22 @@ class MS_Controller_Settings extends MS_Controller {
 				MS_Model_Addon::toggle_media_htaccess();
 				$msg = MS_Helper_Settings::SETTINGS_MSG_UPDATED;
 			}
+		}
+		wp_die( $msg );
+	}
+
+
+	/**
+	 * Generate Invoice Ids
+	 * Ajax action to udate ids of past invoices
+	 * 
+	 * @since 1.1.3
+	 */
+	public function ajax_action_generate_invoice_id() {
+		$msg = MS_Helper_Settings::SETTINGS_MSG_NOT_UPDATED;
+		if ( $this->verify_nonce() && $this->is_admin_user() ) {
+			MS_Addon_Invoice::set_invoice_numeric_id();
+			$msg = MS_Helper_Settings::SETTINGS_MSG_UPDATED;
 		}
 		wp_die( $msg );
 	}
