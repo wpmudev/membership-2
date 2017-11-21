@@ -5,12 +5,13 @@ Build Stamp: BUILDTIME
 Change Log:
 ----------------------------------------------------------------------
 1.1.3
-- Improved: Membership database queries. Added cache membership setting to allow 12 hour cache of data
-- New: constant MS_QUERY_CACHE_DURATION to define custom cache duration
-- New: Exclude system pages from Search addon
+- Added: Cache membership setting to allow 12 hour cache of data
+- Added: constant MS_QUERY_CACHE_DURATION to define custom cache duration
+- Added: Exclude system pages from Search addon
 - Added: Menu protection for parent menu items now extends to submenu items
 - Added: Advanced media protection support for more server types
 - Added: Setting to set the default active gateway for manually added users
+- Added: Email notification for paid manual payment gateway
 - Fixed: Creating a new membership setting the visibility to private will hide the membership from the list
 
 1.1.2
