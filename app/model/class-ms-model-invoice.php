@@ -1016,11 +1016,6 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 			 * All changes above are also saved at the end of changed()
 			 */
 			$this->changed();
-		} else if ( MS_Gateway_Manual::ID == $gateway_id && $is_paid ) {
-			MS_Model_Event::save_event(
-				MS_Model_Event::TYPE_PAID,
-				$subscription
-			);
 		}
 
 		/**
