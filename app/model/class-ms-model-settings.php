@@ -156,6 +156,18 @@ class MS_Model_Settings extends MS_Model_Option {
 	 */
 	protected $enable_query_cache = false;
 
+
+	/**
+	 * Fore a single payment gateway as the default gateway
+	 *
+	 * Settings
+	 *
+	 * @since  1.1.3
+	 *
+	 * @var boolean
+	 */
+	protected $force_single_gateway = false;
+
 	/**
 	 * The currency used in the plugin.
 	 *
@@ -526,6 +538,7 @@ class MS_Model_Settings extends MS_Model_Option {
 				case 'is_first_membership':
 				case 'enable_cron_use':
 				case 'enable_query_cache':
+				case 'force_single_gateway':
 				case 'hide_admin_bar':
 					$this->$property = lib3()->is_true( $value );
 					break;

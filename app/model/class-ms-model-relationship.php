@@ -1885,9 +1885,9 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	 * @return string The description.
 	 */
 	public function get_payment_description( $invoice = null, $short = false ) {
-		$currency = MS_Plugin::instance()->settings->currency;
+		$currency 	= MS_Plugin::instance()->settings->currency;
 		$membership = $this->get_membership();
-		$desc = '';
+		$desc 		= '';
 
 		if ( null !== $invoice ) {
 			$total_price = $invoice->total; // Includes Tax
@@ -2297,6 +2297,11 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 
 		// Do not set subscription to "No Gateway".
 		if ( ! $new_gateway ) { return; }
+		
+		if ( !$force_admin ) {
+			$force_admin = MS_Plugin::instance()->settings->force_single_gateway;
+		}
+		
 
 		//Incase the gateway is admin, we need to st it to the default active gateway
 		//TODO : Set this an an option

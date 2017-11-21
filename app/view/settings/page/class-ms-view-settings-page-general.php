@@ -53,6 +53,19 @@ class MS_View_Settings_Page_General extends MS_View_Settings_Edit {
 					'setting' 	=> 'enable_query_cache',
 				),
 			),
+
+			'force_single_gateway' => array(
+				'id' 		=> 'force_single_gateway',
+				'type' 		=> MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
+				'title' 	=> __( 'Force default gateway', 'membership2' ),
+				'desc' 		=> __( 'This will force all manually registered members to use the default single active Payment gateway', 'membership2' ),
+				'value' 	=> $settings->force_single_gateway,
+				'data_ms' 	=> array(
+					'action' 	=> MS_Controller_Settings::AJAX_ACTION_TOGGLE_SETTINGS,
+					'setting' 	=> 'force_single_gateway',
+				),
+			),
+			
 		);
 
 		$fields = apply_filters( 'ms_view_settings_prepare_general_fields', $fields );
@@ -82,6 +95,14 @@ class MS_View_Settings_Page_General extends MS_View_Settings_Edit {
 				</div>
 				<div class="ms-half">
 					<?php MS_Helper_Html::html_element( $fields['enable_query_cache'] ); ?>
+				</div>
+			</div>
+			<?php
+			MS_Helper_Html::html_separator();
+			?>
+			<div class="cf">
+				<div class="ms-half">
+					<?php MS_Helper_Html::html_element( $fields['force_single_gateway'] ); ?>
 				</div>
 			</div>
 			<?php
