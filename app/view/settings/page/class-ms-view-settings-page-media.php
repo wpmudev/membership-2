@@ -160,8 +160,7 @@ class MS_View_Settings_Page_Media extends MS_View_Settings_Edit {
 				</pre>
 			</div>
 			<div style="display:<?php echo ( $server != 'iis' ) ? 'none' : 'block'; ?>" class="application-servers application-server-iis">
-				<p><?php _e( "We will place <strong>web.config</strong> file into the uploads folder to prevent direct access to files other than those defined.", "membership2" ); ?></p>
-				<p><?php printf( __( 'For more information, please <a href="%s">visit Microsoft TechNet</a>', "membership2" ), 'https://technet.microsoft.com/en-us/library/cc725855(v=ws.10).aspx' ); ?></p>
+				<p><?php printf( __( 'Please <a href="%s">visit Microsoft Docs</a> on how to configure IIS', "membership2" ), 'https://docs.microsoft.com/en-us/iis/configuration/system.webserver/security/requestfiltering/fileextensions/' ); ?></p>
 			</div>
 		</div>
 		<?php
