@@ -156,7 +156,7 @@ class MS_Gateway_Manual extends MS_Gateway {
 				break;
 			}
 		}
-
+		
 		return apply_filters(
 			'ms_gateway_manual_is_configured',
 			$is_configured

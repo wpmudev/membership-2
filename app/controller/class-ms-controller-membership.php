@@ -448,9 +448,13 @@ class MS_Controller_Membership extends MS_Controller {
 				unset( $save_data['_wpnonce'] );
 				unset( $save_data['action'] );
 
-				if ( isset( $_POST['set_private_flag'] ) ) {
-					lib3()->array->equip_post( 'public' );
-					$save_data['public'] = ! lib3()->is_true( $_POST['public'] );
+				if ( isset( $_POST['set_public_flag'] ) ) {
+					//lib3()->array->equip_post( 'public' );
+					if ( isset( $_POST['public'] ) ) {
+						$save_data['private'] = false;
+					} else {
+						$save_data['private'] = true;
+					}
 				}
 				if ( isset( $_POST['set_paid_flag'] ) ) {
 					lib3()->array->equip_post( 'paid' );

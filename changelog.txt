@@ -11,6 +11,7 @@ Change Log:
 - Added: Menu protection for parent menu items now extends to submenu items
 - Added: Advanced media protection support for more server types
 - Added: Setting to set the default active gateway for manually added users
+- Fixed: Creating a new membership setting the visibility to private will hide the membership from the list
 
 1.1.2
 - Added: Members List Export to CSV
