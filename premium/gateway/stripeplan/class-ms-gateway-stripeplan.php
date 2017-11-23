@@ -453,8 +453,8 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 																}
 															}
 															$invoice->save();
-														}else {
-															$this->log( 'Did not get invoice');
+														} else {
+															$this->log( 'Did not get invoice' );
 														}
 														
 													break;
@@ -469,6 +469,8 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 														$notes = sprintf( __( 'Stripe webhook "%s" received', 'membership2' ), $event->type );
 													break;
 												}
+											} else {
+												$this->log( 'Invalid stripe sub' );
 											}
 										}
 										
