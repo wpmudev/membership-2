@@ -430,13 +430,13 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 															$invoice = MS_Factory::load( 'MS_Model_Invoice', $invoice_id );
 															$invoice->ms_relationship_id 	= $subscription->id;
 															$invoice->membership_id 		= $membership->id;
+															
 															if ( 0 == $invoice->total ) {
 																// Free, just process.
 																$invoice->changed();
 																$success = true;
 																$notes = __( 'No payment required for free membership', 'membership2' );
 																$invoice->add_notes( $notes );
-																$invoice->save();
 															} else {
 																//incase there is tax
 																if ( $stripe_invoice_amount >= $invoice->total ) {
@@ -448,12 +448,11 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 																	$invoice->status = MS_Model_Invoice::STATUS_PAID;
 																	$invoice->pay_it( self::ID, $reference );
 																	$invoice->add_notes( $notes );
-																	$invoice->save();
 																	$log = true;
 																	
 																}
 															}
-															
+															$invoice->save();
 														}else {
 															$this->log( 'Did not get invoice');
 														}
