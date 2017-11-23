@@ -8,6 +8,8 @@
  */
 class MS_Helper_Cache extends MS_Helper {
 
+	const CACHE_GROUP = 'ms_helper_cache';
+
 	/**
 	 * Check if query cache is enabled
 	 * 
@@ -55,21 +57,21 @@ class MS_Helper_Cache extends MS_Helper {
 			if ( defined( 'MS_QUERY_CACHE_DURATION' ) && is_int( MS_QUERY_CACHE_DURATION ) ) {
 				$duration = MS_QUERY_CACHE_DURATION;
 			}
-			MS_Factory::set_transient( $key, $results, $duration );
+			wp_cache_set( $key, $results, self::CACHE_GROUP, $duration );
 		}
 	}
 
 	/**
-	 * Wrapper to get an transient value (regards network-wide protection mode)
+	 * Wrapper to get an cache value (regards network-wide protection mode)
 	 *
 	 * @since  1.1.3
 	 * 
-	 * @param  string $key Transient Key
+	 * @param  string $key cache Key
 	 * 
-	 * @return mixed Transient value
+	 * @return mixed cache value
 	 */
 	public static function get_transient( $key ) {
-		$results = MS_Factory::get_transient( $key );
+		$results = wp_cache_get( $key, self::CACHE_GROUP );
 		if ( self::is_query_cache_enabled() && !empty( $results ) ) {
 			return $results;
 		} else {
@@ -79,13 +81,13 @@ class MS_Helper_Cache extends MS_Helper {
 	}
 
 	/**
-	 * Delete transient
+	 * Delete cache
 	 *
 	 * @since  1.1.3
-	 * @param  string $key Transient Key
+	 * @param  string $key cache Key
 	 */
 	public static function delete_transient( $key ) {
-		MS_Factory::delete_transient( $key );
+		wp_cache_delete( $key, self::CACHE_GROUP );
 	}
 }
 ?>
