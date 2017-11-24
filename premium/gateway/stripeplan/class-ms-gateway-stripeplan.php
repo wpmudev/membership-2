@@ -374,7 +374,7 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 				if ( $event ) {
 					$stripe_invoice = $event->data->object;
 					if ( $stripe_invoice && isset( $stripe_invoice->id ) ) {
-						$stripe_invoice_amount 	= sprintf( '$%0.2f', $stripe_invoice->total / 100.0 );
+						$stripe_invoice_amount 	= $stripe_invoice->total / 100.0;
 						$stripe_customer 		= Stripe_Customer::retrieve( $stripe_invoice->customer );
 						if ( $stripe_customer ) {
 							$email 	= $stripe_customer->email;
@@ -440,13 +440,16 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 															} else {
 																//incase there is tax
 																if ( $stripe_invoice_amount >= $invoice->total ) {
-																	$reference = $stripe_sub->id;
-																	$this->cancel_if_done( $subscription, $stripe_sub );
-																	$notes = $this->get_description_for_sub( $stripe_sub );
-																	$notes .= __( 'Payment successful', 'membership2' );
+																	/*$stripe_subcriber = $this->_api->subscribe(
+																		$stripe_customer,
+																		$invoice
+																	);*/
+																	//$external_id = $stripe_subcriber->id;
+																	//$this->cancel_if_done( $subscription, $stripe_subcriber );
+																	$notes = __( 'Payment successful', 'membership2' );
 																	$success = true;
 																	$invoice->status = MS_Model_Invoice::STATUS_PAID;
-																	$invoice->pay_it( self::ID, $reference );
+																	$invoice->pay_it( self::ID, $stripe_invoice->id );
 																	$invoice->add_notes( $notes );
 																	$log = true;
 																	

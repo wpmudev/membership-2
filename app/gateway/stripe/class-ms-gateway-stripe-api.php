@@ -298,7 +298,6 @@ class MS_Gateway_Stripe_Api extends MS_Model_Option {
 		return apply_filters(
 			'ms_gateway_stripe_get_subscription',
 			$subscription,
-			$customer,
 			$membership,
 			$this
 		);
