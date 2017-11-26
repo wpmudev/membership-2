@@ -857,8 +857,14 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 
 		// No existing invoice, create a new one.
 		if ( ! $invoice || ! $invoice->id ) {
-			$invoice 				= MS_Factory::create( 'MS_Model_Invoice' );
-			$invoice 				= apply_filters( 'ms_model_invoice', $invoice );
+			$invoice 					= MS_Factory::create( 'MS_Model_Invoice' );
+			$invoice 					= apply_filters( 'ms_model_invoice', $invoice );
+		}
+
+		$previous_invoice 				= self::get_previous_invoice( $subscription );
+		if ( $previous_invoice ) {
+			$invoice->checkout_ip 		= $previous_invoice->checkout_ip;
+			$invoice->tax_rate 			= $previous_invoice->tax_rate;
 		}
 		// Update invoice info.
 		$invoice->ms_relationship_id 	= $subscription->id;
