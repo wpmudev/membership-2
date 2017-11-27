@@ -2,7 +2,7 @@
 Contributors: WPMUDEV
 Tags: Content Protection, Control Access, Membership, Membership 2, Multisite Membership, Paid Membership, Pay Wall, Paying Users, Registration, Restrict Content, Subscription, WordPress Membership, WPMU DEV
 Requires at least: 3.7
-Tested up to: 4.8.1
+Tested up to: 4.9
 Stable tag: 4.1.2
 
 Membership 2 transforms your WordPress website into a fully functional membership site.
