@@ -105,6 +105,21 @@ class MS_Helper_Media extends MS_Helper {
 	}
 
 	/**
+	 * List server types
+	 *
+	 * @return array
+	 */
+	public function server_types() {
+		return apply_filters( 'ms_helper_media_server_types', array(
+			'apache'    => 'Apache',
+			'litespeed' => 'LiteSpeed',
+			'nginx'     => 'NGINX',
+			'iis'       => 'IIS',
+			'iis-7'     => 'IIS 7'
+		) );
+	}
+
+	/**
 	 * Get the membership directory in the uploads directory
 	 *
 	 * @since 1.1.3

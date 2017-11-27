@@ -305,14 +305,24 @@ class MS_Model_Member extends MS_Model {
 	 * @return int The count.
 	 */
 	public static function get_members_count( $args = null ) {
-		$args 					= self::get_query_args( $args, self::SEARCH_ALL_USERS );
-		$args['number'] 		= 0;
-		$args['count_total'] 	= true;
-		$wp_user_search 		= new WP_User_Query( $args );
+		
+		$total 		= 0;
+		$cache_key 	= MS_Helper_Cache::generate_cache_key( 'ms_model_members_total', $args );
+		$results 	= MS_Helper_Cache::get_transient( $cache_key );
+		if ( $results ) {
+			$total = $results;
+		} else {
+			$args 					= self::get_query_args( $args, self::SEARCH_ALL_USERS );
+			$args['number'] 		= 0;
+			$args['count_total'] 	= true;
+			$wp_user_search 		= new WP_User_Query( $args );
+			$total 					= $wp_user_search->get_total();
+			MS_Helper_Cache::query_cache( $total, $cache_key );
+		}
 
 		return apply_filters(
 			'ms_model_member_get_members_count',
-			$wp_user_search->get_total()
+			$total
 		);
 	}
 
@@ -336,13 +346,20 @@ class MS_Model_Member extends MS_Model {
 		$key = json_encode( $args );
 
 		if ( ! isset( $Members[$key] ) ) {
-			$args 			= self::get_query_args( $args, $search_option );
-			$wp_user_search = new WP_User_Query( $args );
-			$users 			= $wp_user_search->get_results();
-			$members 		= array();
+			$cache_key 	= MS_Helper_Cache::generate_cache_key( 'ms_model_members_ids', $args );
+			$results 	= MS_Helper_Cache::get_transient( $cache_key );
+			$members	= array();
+			if ( $results ) {
+				$members = $results;
+			} else {
+				$args 			= self::get_query_args( $args, $search_option );
+				$wp_user_search = new WP_User_Query( $args );
+				$users 			= $wp_user_search->get_results();
 
-			foreach ( $users as $user_id ) {
-				$members[] 	= $user_id;
+				foreach ( $users as $user_id ) {
+					$members[] 	= $user_id;
+				}
+				MS_Helper_Cache::query_cache( $members, $cache_key );
 			}
 
 			$Members[$key] 	= apply_filters(
@@ -367,10 +384,17 @@ class MS_Model_Member extends MS_Model {
 	 */
 	public static function get_members( $args = null, $search_option = self::SEARCH_ALL_USERS ) {
 		$members 	= array();
+		$cache_key 	= MS_Helper_Cache::generate_cache_key( 'ms_model_members_' . $search_option, $args );
+		$results 	= MS_Helper_Cache::get_transient( $cache_key );
 		$ids 		= self::get_member_ids( $args, $search_option );
-
-		foreach ( $ids as $user_id ) {
-			$members[] = MS_Factory::load( 'MS_Model_Member', $user_id );
+		if ( $results ) {
+			$members = $results;
+		} else {
+			
+			foreach ( $ids as $user_id ) {
+				$members[] = MS_Factory::load( 'MS_Model_Member', $user_id );
+			}
+			MS_Helper_Cache::query_cache( $members, $cache_key );
 		}
 
 		return apply_filters(
@@ -402,25 +426,33 @@ class MS_Model_Member extends MS_Model {
 			$members[0] = __( 'Select a user', 'membership2' );
 		}
 
-		$args['fields'] = array( 'ID', 'user_login' );
-		$args['number'] = 0;
-		$args 			= self::get_query_args( $args, $search_option );
-		$wp_user_search = new WP_User_Query( $args );
-		$users 			= $wp_user_search->get_results();
+		$cache_key 	= MS_Helper_Cache::generate_cache_key( 'ms_model_member_get_usernames', $args );
+		$results 	= MS_Helper_Cache::get_transient( $cache_key );
+		if ( $results ) {
+			$members = $results;
+		} else {
 
-		foreach ( $users as $user ) {
-			if ( ! self::is_admin_user( $user->ID ) ) {
-				if ( $return_array ) {
-					$members[ $user->ID ] = $user->user_login;
-				} else {
-					$members[] = array(
-						'id' 	=> $user->ID,
-						'text' 	=> $user->user_login,
-					);
+			$args['fields'] = array( 'ID', 'user_login' );
+			$args['number'] = 0;
+			$args 			= self::get_query_args( $args, $search_option );
+			$wp_user_search = new WP_User_Query( $args );
+			$users 			= $wp_user_search->get_results();
+
+			foreach ( $users as $user ) {
+				if ( ! self::is_admin_user( $user->ID ) ) {
+					if ( $return_array ) {
+						$members[ $user->ID ] = $user->user_login;
+					} else {
+						$members[] = array(
+							'id' 	=> $user->ID,
+							'text' 	=> $user->user_login,
+						);
+					}
 				}
 			}
-		}
 
+			MS_Helper_Cache::query_cache( $members, $cache_key );
+		}
 		return apply_filters(
 			'ms_model_member_get_members_usernames',
 			$members,
@@ -443,6 +475,7 @@ class MS_Model_Member extends MS_Model {
 	 */
 	public static function get_query_args( $args = null, $search_option = self::SEARCH_ONLY_MEMBERS ) {
 		global $wpdb;
+		
 
 		$defaults = apply_filters(
 			'ms_model_member_get_query_args_defaults',
@@ -486,42 +519,49 @@ class MS_Model_Member extends MS_Model {
 		) {
 			$membership_id = intval( $args['membership_id'] );
 			$status = $args['subscription_status'];
+			$ids		= false;
+			$cache_key 	= MS_Helper_Cache::generate_cache_key( 'ms_model_member_' . $membership_id . '_' . $status, $args );
+			$results 	= MS_Helper_Cache::get_transient( $cache_key );
+			if ( $results ) {
+				$ids = $results;
+			} else {
+				switch ( $status ) {
+					case 'expired':
+						$status_val = implode(
+							',',
+							array(
+								"'" . MS_Model_Relationship::STATUS_TRIAL_EXPIRED . "'",
+								"'" . MS_Model_Relationship::STATUS_EXPIRED . "'",
+							)
+						);
+						break;
 
-			switch ( $status ) {
-				case 'expired':
-					$status_val = implode(
-						',',
-						array(
-							"'" . MS_Model_Relationship::STATUS_TRIAL_EXPIRED . "'",
-							"'" . MS_Model_Relationship::STATUS_EXPIRED . "'",
-						)
-					);
-					break;
+					default:
+						$status_val = $wpdb->prepare( " '%s' ", $status );
+						break;
+				}
 
-				default:
-					$status_val = $wpdb->prepare( " '%s' ", $status );
-					break;
+				$sql = "
+				SELECT DISTINCT usr.meta_value
+				FROM {$wpdb->posts} p
+				INNER JOIN {$wpdb->postmeta} mem ON mem.post_id=p.ID AND mem.meta_key='membership_id'
+				INNER JOIN {$wpdb->postmeta} sta ON sta.post_id=p.ID AND sta.meta_key='status'
+				INNER JOIN {$wpdb->postmeta} usr ON usr.post_id=p.ID AND usr.meta_key='user_id'
+				WHERE
+					p.post_type = %s
+					AND ('0' = %s OR mem.meta_value = %s)
+					AND ('' = %s OR sta.meta_value IN ({$status_val}))
+				";
+				$sql = $wpdb->prepare(
+					$sql,
+					MS_Model_Relationship::get_post_type(),
+					$membership_id,
+					$membership_id,
+					$status
+				);
+				$ids = $wpdb->get_col( $sql );
+				MS_Helper_Cache::query_cache( $ids, $cache_key );
 			}
-
-			$sql = "
-			SELECT DISTINCT usr.meta_value
-			FROM {$wpdb->posts} p
-			INNER JOIN {$wpdb->postmeta} mem ON mem.post_id=p.ID AND mem.meta_key='membership_id'
-			INNER JOIN {$wpdb->postmeta} sta ON sta.post_id=p.ID AND sta.meta_key='status'
-			INNER JOIN {$wpdb->postmeta} usr ON usr.post_id=p.ID AND usr.meta_key='user_id'
-			WHERE
-				p.post_type = %s
-				AND ('0' = %s OR mem.meta_value = %s)
-				AND ('' = %s OR sta.meta_value IN ({$status_val}))
-			";
-			$sql = $wpdb->prepare(
-				$sql,
-				MS_Model_Relationship::get_post_type(),
-				$membership_id,
-				$membership_id,
-				$status
-			);
-			$ids = $wpdb->get_col( $sql );
 			if ( empty( $ids ) || ! is_array( $ids ) ) { $ids = array( 0 ); }
 			$args['include'] = $ids;
 		}

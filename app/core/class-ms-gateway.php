@@ -288,8 +288,8 @@ class MS_Gateway extends MS_Model_Option {
 			$this
 		);
 
-		$invoice = $subscription->get_current_invoice();
-		$invoice->gateway_id = $this->id;
+		$invoice		 		= $subscription->get_current_invoice();
+		$invoice->gateway_id 	= $this->id;
 		$invoice->save();
 
 		// The default handler only processes free subscriptions.

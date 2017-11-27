@@ -148,9 +148,9 @@ class MS_Addon_Taxamo extends MS_Addon {
 			);
                         
 			$this->add_filter(
-					'ms_gateway_paypalsingle_view_prepare_fields',
-					'apply_tax_on_pp_checkout_form',
-					99, 2
+				'ms_gateway_paypalsingle_view_prepare_fields',
+				'apply_tax_on_pp_checkout_form',
+				99, 2
 			);
 			
 			// Standard gateway doesn't support sales tax for recurring payments
@@ -161,9 +161,9 @@ class MS_Addon_Taxamo extends MS_Addon {
 			);*/
 			
 			$this->add_filter(
-					'ms_gateway_2checkout_view_prepare_fields',
-					'apply_tax_on_2co_checkout_form',
-					99, 2
+				'ms_gateway_2checkout_view_prepare_fields',
+				'apply_tax_on_2co_checkout_form',
+				99, 2
 			);
                         
 		}
