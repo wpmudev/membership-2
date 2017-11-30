@@ -275,7 +275,9 @@ class MS_Addon_Redirect extends MS_Addon {
 
         public function m2_replace_username_url($url, $user) {
             if(strpos($url, '[username]')) {
-                if(!isset($user->ID)) {return $url;}
+                if(!isset($user->ID)) {
+                    return $url;
+                }
 
                 $user_info = get_userdata($user->ID);
                 $url = str_replace('[username]', $user_info->user_login, $url);
