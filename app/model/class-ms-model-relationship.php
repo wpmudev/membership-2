@@ -554,10 +554,18 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 
 		if ( ! isset( $Subscription_IDs[ $key ] ) ) {
 			$Subscription_IDs[ $key ] = array();
-
+			$items 		= array();
 			MS_Factory::select_blog();
-			$query = new WP_Query( $args );
-			$items = $query->posts;
+			$cache_key 	= MS_Helper_Cache::generate_cache_key( 'ms_model_relationship_get_subscription_ids', $args );
+			$results 	= MS_Helper_Cache::get_transient( $cache_key );
+			if ( $results ) {
+				$items = $results;
+			} else {
+				$query = new WP_Query( $args );
+				$items = $query->posts;
+				MS_Helper_Cache::query_cache( $items, $cache_key );
+			}
+			
 			MS_Factory::revert_blog();
 			$subscriptions = array();
 
@@ -695,9 +703,19 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 			)
 		);
 
+		$post = array();
+
 		MS_Factory::select_blog();
-		$query 	= new WP_Query( $args );
-		$post 	= $query->posts;
+		$cache_key 	= MS_Helper_Cache::generate_cache_key( 'ms_model_relationship_get_subscription_' . $membership_id . '_' . $user_id );
+		$results 	= MS_Helper_Cache::get_transient( $cache_key );
+		if ( $results ) {
+			$post 	= $results;
+		} else {
+			$query 	= new WP_Query( $args );
+			$post 	= $query->posts;
+			MS_Helper_Cache::query_cache( $post, $cache_key );
+		}
+		
 		MS_Factory::revert_blog();
 
 		$subscription = null;
@@ -836,6 +854,9 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 			$generate_event
 		);
 
+		$cache_key 	= MS_Helper_Cache::generate_cache_key( 'ms_model_relationship_get_subscription_' . $this->membership_id . '_' . $this->user_id );
+		MS_Helper_Cache::delete_transient( $cache_key );
+
 		if ( self::STATUS_CANCELED == $this->status ) { return; }
 		if ( self::STATUS_DEACTIVATED == $this->status ) { return; }
 
@@ -855,6 +876,8 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 
 			// Remove any unpaid invoices.
 			$this->remove_unpaid_invoices();
+
+			
 
 			if ( $generate_event ) {
 				MS_Model_Event::save_event( MS_Model_Event::TYPE_MS_CANCELED, $this );
@@ -892,6 +915,9 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 		if ( MS_Plugin::get_modifier( 'MS_LOCK_SUBSCRIPTIONS' ) ) {
 			return false;
 		}
+
+		$cache_key 	= MS_Helper_Cache::generate_cache_key( 'ms_model_relationship_get_subscription_' . $this->membership_id . '_' . $this->user_id );
+		MS_Helper_Cache::delete_transient( $cache_key );
 
 		if ( self::STATUS_DEACTIVATED == $this->status ) { return; }
 
@@ -1859,9 +1885,9 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	 * @return string The description.
 	 */
 	public function get_payment_description( $invoice = null, $short = false ) {
-		$currency = MS_Plugin::instance()->settings->currency;
+		$currency 	= MS_Plugin::instance()->settings->currency;
 		$membership = $this->get_membership();
-		$desc = '';
+		$desc 		= '';
 
 		if ( null !== $invoice ) {
 			$total_price = $invoice->total; // Includes Tax
@@ -2271,9 +2297,12 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 
 		// Do not set subscription to "No Gateway".
 		if ( ! $new_gateway ) { return; }
+		
+		if ( !$force_admin ) {
+			$force_admin = MS_Plugin::instance()->settings->force_single_gateway;
+		}
 
 		//Incase the gateway is admin, we need to st it to the default active gateway
-		//TODO : Set this an an option
 		if ( $new_gateway == 'admin' && !$force_admin ) {
 			$default_gateway = apply_filters( 'membership_model_relationship_default_admin_gateway', false );
 			if ( $default_gateway !== false ) {
@@ -2773,6 +2802,9 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 			return false;
 		}
 
+		$cache_key 	= MS_Helper_Cache::generate_cache_key( 'ms_model_relationship_get_subscription_' . $this->membership_id . '_' . $this->user_id );
+		MS_Helper_Cache::delete_transient( $cache_key );
+
 		$membership = $this->get_membership();
 		$comms 		= MS_Model_Communication::get_communications( $membership );
 		
@@ -3026,14 +3058,14 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 					);
 					if ( $comm_days == $days->remaining ) {
 						$member = $this->get_member();
-						if(!$member->get_meta( 'ms_comm_before_finishes_sent_'.strtotime($this->expire_date) ) ){
+						if ( !$member->get_meta( 'ms_comm_before_finishes_sent_' . strtotime( $this->expire_date ) ) ){
 							$comm->add_to_queue( $this->id );
 							MS_Model_Event::save_event(
 								MS_Model_Event::TYPE_MS_BEFORE_FINISHES,
 								$this
 							);
 							// Mark the member as has received message.
-							$member->set_meta('ms_comm_before_finishes_sent_'.strtotime($this->expire_date),1);
+							$member->set_meta( 'ms_comm_before_finishes_sent_' . strtotime( $this->expire_date ), 1 );
 						}
 					}
 

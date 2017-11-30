@@ -143,6 +143,30 @@ class MS_Model_Settings extends MS_Model_Option {
 	 * @var boolean
 	 */
 	protected $enable_cron_use = true;
+	
+
+	/**
+	 * Enable use of query cache
+	 *
+	 * Settings
+	 *
+	 * @since  1.1.3
+	 *
+	 * @var boolean
+	 */
+	protected $enable_query_cache = false;
+
+
+	/**
+	 * Fore a single payment gateway as the default gateway
+	 *
+	 * Settings
+	 *
+	 * @since  1.1.3
+	 *
+	 * @var boolean
+	 */
+	protected $force_single_gateway = false;
 
 	/**
 	 * The currency used in the plugin.
@@ -200,6 +224,19 @@ class MS_Model_Settings extends MS_Model_Option {
 		'protection_type' 	=> MS_Rule_Media_Model::PROTECTION_TYPE_COMPLETE,
 		'masked_url' 		=> 'downloads',
 		'direct_access' 	=> array( 'jpg', 'jpeg', 'png', 'gif', 'mp3', 'ogg' ),
+		'application_server'=> ''
+	);
+
+	/**
+	 * Invoice Settings
+	 * 
+	 * @since 1.1.3
+	 * 
+	 * @var array
+	 */
+	protected $invoice = array(
+		'sequence_type' 	=> MS_Addon_Invoice::DEFAULT_SEQUENCE,
+		'invoice_prefix'	=> 'MS-',
 	);
 
 	/**
@@ -500,6 +537,8 @@ class MS_Model_Settings extends MS_Model_Option {
 				case 'initial_setup':
 				case 'is_first_membership':
 				case 'enable_cron_use':
+				case 'enable_query_cache':
+				case 'force_single_gateway':
 				case 'hide_admin_bar':
 					$this->$property = lib3()->is_true( $value );
 					break;
@@ -533,7 +572,19 @@ class MS_Model_Settings extends MS_Model_Option {
 				case 'direct_access':
 					$this->downloads['direct_access'] = explode( ",", sanitize_text_field( $value ) );
 					break;
+				case 'application_server':
+					$this->downloads['application_server'] = sanitize_text_field( $value );
+					break;
 
+				case 'sequence_type':
+					$this->invoice['sequence_type'] = sanitize_text_field( $value );
+					break;
+
+				case 'invoice_prefix':
+					$this->invoice['invoice_prefix'] = sanitize_text_field( $value );
+					break;
+
+					
 				case 'api_namespace' :
 					$this->wprest['api_namespace'] = sanitize_text_field( $value );
 					break;

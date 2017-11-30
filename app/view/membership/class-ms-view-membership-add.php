@@ -113,10 +113,10 @@ class MS_View_Membership_Add extends MS_View {
 
 			'config_fields' => array(
 				'public' => array(
-					'id' => 'public',
-					'type' => MS_Helper_Html::INPUT_TYPE_CHECKBOX,
+					'id' 	=> 'public',
+					'type' 	=> MS_Helper_Html::INPUT_TYPE_CHECKBOX,
 					'title' => __( 'Allow users to register for this membership.', 'membership2' ),
-					'desc' => __( 'If selected, registration experience will be added to your site. Do not tick if you want to make this a private membership.', 'membership2' ),
+					'desc' 	=> __( 'If selected, registration experience will be added to your site. Do not tick if you want to make this a private membership.', 'membership2' ),
 					'after' => sprintf(
 						'<span class="locked-info">%1$s</span>',
 						__( 'Not available for this Membership', 'membership2' )
@@ -124,7 +124,7 @@ class MS_View_Membership_Add extends MS_View {
 					'value' => ! $membership->private,
 				),
 				'public_flag' => array(
-					// See MS_Controller_Membership->membership_admin_page_process()
+					// See MS_Controller_Membership->process_admin_page()
 					'id' => 'set_public_flag',
 					'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 					'value' => 1,
@@ -141,7 +141,7 @@ class MS_View_Membership_Add extends MS_View {
 					'value' => ! $membership->is_free(),
 				),
 				'paid_flag' => array(
-					// See MS_Controller_Membership->membership_admin_page_process()
+					// See MS_Controller_Membership->process_admin_page()
 					'id' => 'set_paid_flag',
 					'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 					'value' => 1,

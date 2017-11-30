@@ -355,14 +355,27 @@ class MS_Model_Event extends MS_Model_CustomPostType {
 	 * @return int The total count.
 	 */
 	public static function get_event_count( $args = null ) {
+		$total_events = 0;
 		MS_Factory::select_blog();
-		$args 	= self::get_query_args( $args );
-		$query 	= new WP_Query( $args );
+		$cache_key = "ms_model_event_count";
+		if ( !is_null( $args ) && isset( $args['membership_id'] ) ) {
+			$cache_key .= "_" . $args['membership_id'];
+		}
+		$cache_key 	= MS_Helper_Cache::generate_cache_key( $cache_key, $args );
+		$results 	= MS_Helper_Cache::get_transient( $cache_key );
+		if ( $results ) {
+			$total_events = $results;
+		} else {
+			$args 			= self::get_query_args( $args );
+			$query 			= new WP_Query( $args );
+			$total_events 	= $query->found_posts;
+			MS_Helper_Cache::query_cache( $total_events, $cache_key );
+		}
 		MS_Factory::revert_blog();
 
 		return apply_filters(
 			'ms_model_event_get_event_count',
-			$query->found_posts,
+			$total_events,
 			$args
 		);
 	}
@@ -377,11 +390,22 @@ class MS_Model_Event extends MS_Model_CustomPostType {
 	 * @return MS_Model_Event[] The events found.
 	 */
 	public static function get_events( $args = null ) {
-		MS_Factory::select_blog();
-		$args 	= self::get_query_args( $args );
-		$query 	= new WP_Query( $args );
-		$items 	= $query->posts;
 		$events = array();
+		MS_Factory::select_blog();
+		$cache_key = "ms_model_event_list";
+		if ( !is_null( $args ) && isset( $args['membership_id'] ) ) {
+			$cache_key .= "_" . $args['membership_id'];
+		}
+		$cache_key 	= MS_Helper_Cache::generate_cache_key( $cache_key, $args );
+		$results 	= MS_Helper_Cache::get_transient( $cache_key );
+		if ( $results ) {
+			$items = $results;
+		} else {
+			$args 	= self::get_query_args( $args );
+			$query 	= new WP_Query( $args );
+			$items 	= $query->posts;
+			MS_Helper_Cache::query_cache( $items, $cache_key );
+		}
 		MS_Factory::revert_blog();
 
 		foreach ( $items as $item ) {

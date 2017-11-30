@@ -10,6 +10,12 @@ Change Log:
 - Added: Rest API Help docs
 - Added: Duration for coupons - coupon can be applied onetime or recurring
 - Added: Bulk import of users in CSV as members to a membership
+- Added: Cache membership setting to allow 12 hour cache of data. This speeds up loading of pages
+- Added: constant MS_QUERY_CACHE_DURATION to define custom cache duration
+- Added: Exclude system pages from Search addon
+- Added: Menu protection for parent menu items now extends to submenu items
+- Added: Advanced media protection support for more server types
+- Added: Setting to set the default active gateway for manually added users
 - Fixed: MailChimp Addon list function
 - Fixed: Styling for Membership Attributes PopUp
 - Fixed: Dripped Membership Url protection and menu protection
@@ -23,7 +29,9 @@ Change Log:
 - Fixed: Profile Fields add-on readonly option was not working
 - Fixed: Custom Post type protection rule to exclude private post types
 - Fixed: Conflict with Yoast WordPress SEO when registering for a membership
-
+- Fixed: Email notification for paid manual payment gateway
+- Fixed: Creating a new membership setting the visibility to private will hide the membership from the list
+- Fixed: Manual Gatewey not setting the gateway name in the invoice
 
 1.1.1
 - Fixed: Menu Protection items not showing to all users except admin

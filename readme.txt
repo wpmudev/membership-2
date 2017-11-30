@@ -2,7 +2,7 @@
 Contributors: WPMUDEV
 Tags: Content Protection, Control Access, Membership, Membership 2, Multisite Membership, Paid Membership, Pay Wall, Paying Users, Registration, Restrict Content, Subscription, WordPress Membership, WPMU DEV
 Requires at least: 3.7
-Tested up to: 4.8.1
+Tested up to: 4.9
 Stable tag: 4.1.2
 
 Membership 2 transforms your WordPress website into a fully functional membership site.
@@ -114,6 +114,11 @@ We provide comprehensive and guaranteed support on the <a href='http://premium.w
 * Added: Membership List Export to CSV
 * Added: Membership and Member XML import and export format
 * Added: Bulk import of users in CSV as members to a membership
+* Added: Cache membership setting to allow 12 hour cache of data. This speeds up loading of pages
+* Added: constant MS_QUERY_CACHE_DURATION to define custom cache duration
+* Added: Menu protection for parent menu items now extends to submenu items
+* Added: Advanced media protection support for more server types
+* Added: Setting to set the default active gateway for manually added users
 * Fixed: MailChimp Addon list function
 * Fixed: Dripped Membership Url protection and menu protection
 * Fixed: Buddypress media protection conflict
@@ -124,6 +129,9 @@ We provide comprehensive and guaranteed support on the <a href='http://premium.w
 * Fixed: Profile Fields add-on readonly option was not working
 * Fixed: Custom Post type protection rule to exclude private post types
 * Fixed: Conflict with Yoast WordPress SEO when registering for a membership
+* Fixed: Email notification for paid manual payment gateway
+* Fixed: Creating a new membership setting the visibility to private will hide the membership from the list
+* Fixed: Manual Gatewey not setting the gateway name in the invoice
 
 = 4.1.1 =
 * Fixed: Menu Protection items not showing to all users except admin

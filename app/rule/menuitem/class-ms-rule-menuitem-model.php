@@ -154,6 +154,10 @@ class MS_Rule_MenuItem_Model extends MS_Rule {
 			foreach ( $items as $key => $item ) {
 				if ( ! isset( self::$allowed_items[ $item->ID ] ) ) {
 					unset( $items[ $key ] );
+				} else if ( $item->menu_item_parent > 0 ) {
+					if ( ! isset( self::$allowed_items[ $item->menu_item_parent ] ) ) {
+						unset( $items[ $key ] );
+					}
 				}
 			}
 		}
@@ -232,7 +236,7 @@ class MS_Rule_MenuItem_Model extends MS_Rule {
 
 			if ( ! empty( $items ) ) {
 				foreach ( $items as $item ) {
-					$item_id = $item->ID;
+					$item_id 							= $item->ID;
 					$contents[ $item_id ] 				= $item;
 					$contents[ $item_id ]->id 			= $item_id;
 					$contents[ $item_id ]->title 		= esc_html( $item->title );

@@ -550,33 +550,41 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 		static $Have_Paid = null;
 
 		if ( null === $Have_Paid ) {
-			global $wpdb;
-			// Using a custom WPDB query because building the meta-query is more
-			// complex than really required here...
-			$sql = "
-			SELECT COUNT( 1 )
-			FROM {$wpdb->posts} p
-			INNER JOIN {$wpdb->postmeta} free ON free.post_id = p.ID AND free.meta_key = %s
-			INNER JOIN {$wpdb->postmeta} pric ON pric.post_id = p.ID AND pric.meta_key = %s
-			INNER JOIN {$wpdb->postmeta} acti ON acti.post_id = p.ID AND acti.meta_key = %s
-			WHERE
-				p.post_type = %s
-				AND acti.meta_value = '1'
-				AND NOT (
-					free.meta_value = '1'
-					OR pric.meta_value = '0'
-				)
-			";
+			$cache_key 	= MS_Helper_Cache::generate_cache_key( "ms_model_membership_have_paid_membership" );
+			$res		= 0;
+			$results 	= MS_Helper_Cache::get_transient( $cache_key );
+			if ( $results ) {
+				$res = $results;
+			} else {
+				global $wpdb;
+				// Using a custom WPDB query because building the meta-query is more
+				// complex than really required here...
+				$sql = "
+				SELECT COUNT( 1 )
+				FROM {$wpdb->posts} p
+				INNER JOIN {$wpdb->postmeta} free ON free.post_id = p.ID AND free.meta_key = %s
+				INNER JOIN {$wpdb->postmeta} pric ON pric.post_id = p.ID AND pric.meta_key = %s
+				INNER JOIN {$wpdb->postmeta} acti ON acti.post_id = p.ID AND acti.meta_key = %s
+				WHERE
+					p.post_type = %s
+					AND acti.meta_value = '1'
+					AND NOT (
+						free.meta_value = '1'
+						OR pric.meta_value = '0'
+					)
+				";
 
-			$sql = $wpdb->prepare(
-				$sql,
-				'is_free',       // INNER JOIN
-				'price',         // INNER JOIN
-				'active',        // INNER JOIN
-				self::get_post_type() // WHERE condition
-			);
+				$sql = $wpdb->prepare(
+					$sql,
+					'is_free',       // INNER JOIN
+					'price',         // INNER JOIN
+					'active',        // INNER JOIN
+					self::get_post_type() // WHERE condition
+				);
 
-			$res 		= $wpdb->get_var( $sql );
+				$res = $wpdb->get_var( $sql );
+				MS_Helper_Cache::query_cache( $res, $cache_key );
+			}
 
 			$Have_Paid 	= apply_filters(
 				'ms_model_membership_have_paid_membership',
@@ -674,10 +682,18 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 
 		if ( ! isset( $Membership_IDs[ $key ] ) ) {
 			$Membership_IDs[ $key ] = array();
-
+			$items 					= array();
 			MS_Factory::select_blog();
-			$query = new WP_Query( $args );
-			$items = $query->posts;
+			$cache_key 	= MS_Helper_Cache::generate_cache_key( 'ms_model_membership_ids', $args );
+			$results 	= MS_Helper_Cache::get_transient( $cache_key );
+			if ( $results ) {
+				$items = $results;
+			} else {
+				$query = new WP_Query( $args );
+				$items = $query->posts;
+				MS_Helper_Cache::query_cache( $items, $cache_key );
+			}
+			
 			MS_Factory::revert_blog();
 
 			/**
@@ -731,18 +747,25 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 			AND ( m.meta_value = %s OR p.post_name = %s )
 		ORDER BY ID
 		;";
-
+		$ids	= array();
 		MS_Factory::select_blog();
-		$sql = $wpdb->prepare(
-			$sql,
-			'name',
-			self::get_post_type(),
-			$name_or_slug,
-			$name_or_slug
-		);
+		$cache_key 	= MS_Helper_Cache::generate_cache_key( 'ms_model_membership_id_' . $name_or_slug );
+		$results 	= MS_Helper_Cache::get_transient( $cache_key );
+		if ( $results ) {
+			$ids = $results;
+		} else {
+			$sql = $wpdb->prepare(
+				$sql,
+				'name',
+				self::get_post_type(),
+				$name_or_slug,
+				$name_or_slug
+			);
 
-		$ids = $wpdb->get_col( $sql );
-		MS_Factory::revert_blog();
+			$ids = $wpdb->get_col( $sql );
+			MS_Helper_Cache::query_cache( $ids, $cache_key );
+			MS_Factory::revert_blog();
+		}
 
 		if ( is_array( $ids ) && count( $ids ) ) {
 			$res = reset( $ids );
@@ -1034,33 +1057,43 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 			global $wpdb;
 
 			MS_Factory::select_blog();
-			/*
-			 * We are using a normal SQL query instead of using the WP_Query object
-			 * here, because the WP_Query object does some strange things sometimes:
-			 * In some cases new Membership2 memberships were created when a
-			 * guest accessed the page.
-			 *
-			 * By using a manual query we are very certain that only one
-			 * base-membership exists on the database.
-			 */
-			$sql = "
-				SELECT ID
-				FROM {$wpdb->posts} p
-				INNER JOIN {$wpdb->postmeta} m_type ON m_type.post_id = p.ID
-				WHERE
-					p.post_type = %s
-					AND m_type.meta_key = %s
-					AND m_type.meta_value = %s
-			";
-			$values = array(
-				self::get_post_type(),
-				'type',
-				$type,
-			);
 
-			$sql 	= $wpdb->prepare( $sql, $values );
-			$item 	= $wpdb->get_results( $sql );
-			$base 	= array_shift( $item ); // Remove the base membership from the results
+			$cache_key 	= MS_Helper_Cache::generate_cache_key( 'ms_model_membership_system_membership' );
+			$results 	= MS_Helper_Cache::get_transient( $cache_key );
+			if ( $results ) {
+				$base = $results;
+			} else {
+				/*
+				* We are using a normal SQL query instead of using the WP_Query object
+				* here, because the WP_Query object does some strange things sometimes:
+				* In some cases new Membership2 memberships were created when a
+				* guest accessed the page.
+				*
+				* By using a manual query we are very certain that only one
+				* base-membership exists on the database.
+				*/
+				$sql = "
+					SELECT ID
+					FROM {$wpdb->posts} p
+					INNER JOIN {$wpdb->postmeta} m_type ON m_type.post_id = p.ID
+					WHERE
+						p.post_type = %s
+						AND m_type.meta_key = %s
+						AND m_type.meta_value = %s
+				";
+				$values = array(
+					self::get_post_type(),
+					'type',
+					$type,
+				);
+
+				$sql 	= $wpdb->prepare( $sql, $values );
+				$item 	= $wpdb->get_results( $sql );
+				$base 	= array_shift( $item ); // Remove the base membership from the results
+				if ( ! empty( $base ) ) {
+					MS_Helper_Cache::query_cache( $base, $cache_key );
+				}
+			}
 			MS_Factory::revert_blog();
 
 			if ( ! empty( $base ) ) {
@@ -1285,6 +1318,9 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 		foreach ( $this->_rules as $rule ) {
 			$rule->membership_id = $this->id;
 		}
+
+		//clear old data
+		MS_Helper_Cache::delete_transient( 'ms_model_membership_ids' );
 
 		if ( $this->is_valid() ) {
 			$this->check_revision();
@@ -2130,26 +2166,34 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 * @internal
 	 */
 	private function get_rules_hierarchy() {
-		$rule_types 	= MS_Model_Rule::get_rule_types();
 		$rules 			= array();
-		$subscription 	= MS_Factory::load( 'MS_Model_Relationship', $this->subscription_id );
-
-		foreach ( $rule_types as $rule_type ) {
-			$rule 		= $this->get_rule( $rule_type );
-
-			if ( $rule->rule_type != $rule_type ) {
-				// This means that the $rule_type was not found...
-				continue;
+		$cache_key 	= MS_Helper_Cache::generate_cache_key( 'ms_model_membership_get_rules_hierarchy_' . $this->subscription_id . '_' . $this->id );
+		$results 	= MS_Helper_Cache::get_transient( $cache_key );
+		if ( $results ) {
+			$rules = $results;
+		} else {
+			$rule_types 	= MS_Model_Rule::get_rule_types();
+			$subscription 	= MS_Factory::load( 'MS_Model_Relationship', $this->subscription_id );
+	
+			foreach ( $rule_types as $rule_type ) {
+				$rule 		= $this->get_rule( $rule_type );
+	
+				if ( $rule->rule_type != $rule_type ) {
+					// This means that the $rule_type was not found...
+					continue;
+				}
+	
+				// Sometimes the $subscription->id can be 0, which is intentional:
+				// This is the case when the membership was auto-assigned to guest
+				// or default membership.
+				$rule->_subscription_id = $subscription->id;
+	
+				$rule->membership_id 	= $this->id;
+				$rules[ $rule_type ] 	= $rule;
 			}
-
-			// Sometimes the $subscription->id can be 0, which is intentional:
-			// This is the case when the membership was auto-assigned to guest
-			// or default membership.
-			$rule->_subscription_id = $subscription->id;
-
-			$rule->membership_id 	= $this->id;
-			$rules[ $rule_type ] 	= $rule;
+			MS_Helper_Cache::query_cache( $rules, $cache_key );
 		}
+		
 
 		return apply_filters(
 			'ms_model_membership_get_rules_hierarchy',
@@ -2518,7 +2562,7 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 */
 	public function has_access_to_content( $id ) {
 		$rules = $this->get_rules_hierarchy();
-		return $rules['content']->get_rule_value($id);
+		return $rules['content']->get_rule_value( $id );
 	}	
 
 	/**

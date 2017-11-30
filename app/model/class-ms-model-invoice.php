@@ -268,6 +268,15 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	protected $invoice_number = 0;
 
 	/**
+	 * Invoice id.
+	 * Incase custom invoice generation is set up
+	 *
+	 * @since  1.0.0
+	 * @var int
+	 */
+	protected $custom_invoice_id = 0;
+
+	/**
 	 * Tax rate value.
 	 *
 	 * @since  1.0.0
@@ -487,14 +496,27 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 			'ms_model_invoice_get_invoice_count_args',
 			wp_parse_args( $args, $defaults )
 		);
-
+		$count 		= 0;
 		MS_Factory::select_blog();
-		$query = new WP_Query( $args );
+		$cache_key 	= 'ms_model_invoice_counts';
+		if ( !is_null( $args ) && isset ( $args['meta_query']['status']['value'] ) && is_array( $args['meta_query']['status']['value'] ) ) {
+			$cache_key .= '_' . implode ( "_", $args['meta_query']['status']['value'] );
+		}
+		$cache_key 	= MS_Helper_Cache::generate_cache_key( $cache_key, $args );
+		$results 	= MS_Helper_Cache::get_transient( $cache_key );
+		if ( $results ) {
+			$count = $results;
+		} else {
+			$query = new WP_Query( $args );
+			$count = $query->found_posts;
+			MS_Helper_Cache::query_cache( $count, $cache_key );
+		}
+		
 		MS_Factory::revert_blog();
 
 		return apply_filters(
 			'ms_model_invoice_get_invoice_count',
-			$query->found_posts,
+			$count,
 			$args
 		);
 	}
@@ -551,7 +573,7 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	 * @param mixed $args The arguments to select data.
 	 * @return array $invoices
 	 */
-	public static function get_invoices( $args = null ) {
+	public static function get_invoices( $args = null, $cache = true ) {
 		$defaults = array(
 			'post_type' 		=> self::get_post_type(),
 			'posts_per_page' 	=> 10,
@@ -564,11 +586,32 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 			'ms_model_invoice_get_invoices_args',
 			wp_parse_args( $args, $defaults )
 		);
+		$invoices 	= array();
+		$items 		= array();
+
+		$cache_key 	= 'ms_model_invoice_list';
+		if ( !is_null( $args ) ) {
+			if ( isset ( $args['meta_query']['status']['value'] ) ) {
+				$cache_key = $cache_key . '_' . implode ( "_", $args['meta_query']['status']['value'] );
+			}
+			if ( isset ( $args['author'] ) ) {
+				$cache_key = $cache_key . '_author_' . $args['author']; 
+			}
+		}
 
 		MS_Factory::select_blog();
-		$query 		= new WP_Query( $args );
-		$items 		= $query->posts;
-		$invoices 	= array();
+		$cache_key 	= MS_Helper_Cache::generate_cache_key( $cache_key, $args );
+		$results 	= MS_Helper_Cache::get_transient( $cache_key );
+		if ( $results && $cache ) {
+			$items = $results;
+		} else {
+			$query 	= new WP_Query( $args );
+			$items 	= $query->posts;
+			if ( $cache ) {
+				MS_Helper_Cache::query_cache( $items, $cache_key );
+			}
+		}
+
 		MS_Factory::revert_blog();
 
 		foreach ( $items as $item ) {
@@ -814,8 +857,14 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 
 		// No existing invoice, create a new one.
 		if ( ! $invoice || ! $invoice->id ) {
-			$invoice = MS_Factory::create( 'MS_Model_Invoice' );
-			$invoice = apply_filters( 'ms_model_invoice', $invoice );
+			$invoice 					= MS_Factory::create( 'MS_Model_Invoice' );
+			$invoice 					= apply_filters( 'ms_model_invoice', $invoice );
+		}
+
+		$previous_invoice 				= self::get_previous_invoice( $subscription );
+		if ( $previous_invoice ) {
+			$invoice->checkout_ip 		= $previous_invoice->checkout_ip;
+			$invoice->tax_rate 			= $previous_invoice->tax_rate;
 		}
 		// Update invoice info.
 		$invoice->ms_relationship_id 	= $subscription->id;
@@ -837,7 +886,8 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 		$invoice->discount 				= 0;
 		$invoice->notes 				= $notes;
 		$invoice->amount 				= $membership->price; // Without taxes!
-
+		$total_invoices 				= self::get_invoice_count();
+		$invoice->custom_invoice_id		= $total_invoices + 1;
 		// Check for trial period in the first period.
 		if ( $subscription->is_trial_eligible()
 			&& $invoice_number === $subscription->current_invoice_number
@@ -846,6 +896,8 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 			$invoice->uses_trial 		= true;
 			$invoice->trial_ends 		= $subscription->trial_expire_date;
 		}
+		
+		
 
 		$invoice->set_due_date();
 
@@ -857,7 +909,7 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 		$invoice->save();
 	
 		//If gateway is admin then set the invoice as paid.
-		if ( 'admin' == $invoice->gateway_id) {
+		if ( 'admin' == $invoice->gateway_id ) {
 			$invoice->pay_it( $invoice->gateway_id );
 		}
 
