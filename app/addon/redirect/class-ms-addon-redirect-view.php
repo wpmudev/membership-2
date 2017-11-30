@@ -52,7 +52,10 @@ class MS_Addon_Redirect_View extends MS_View {
 				'id' 			=> 'redirect_login',
 				'type' 			=> MS_Helper_Html::INPUT_TYPE_TEXT,
 				'title' 		=> __( 'After Login', 'membership2' ),
-				'desc' 			=> __( 'This page is displayed to users right after login.', 'membership2' ),
+				'desc' 			=> __( '<p>This page is displayed to users right after login.</p>
+                                                                <p>You can add [username] to URL which will be replaced by members username.<p>
+                                                                <p>Useful for redirecting to a BuddyPress profile page.</p>
+                                                                <p>Example: http://yourdomain.com/members/[username]/profile will be replaced with http://yourdomain.com/members/myusername/profile</p>', 'membership2' ),
 				'placeholder' 	=> MS_Model_Pages::get_url_after_login( false ),
 				'value' 		=> $model->get( 'redirect_login' ),
 				'class' 		=> 'ms-text-large',
