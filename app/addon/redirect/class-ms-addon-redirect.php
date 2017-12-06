@@ -77,13 +77,13 @@ class MS_Addon_Redirect extends MS_Addon {
 				'filter_url_after_logout',
 				10, 2
 			);
-                        
+
 			$this->add_filter(
 				'login_redirect',
 				'm2_login_redirect',
 				999, 3
 			);
-			
+
 			$this->add_action(
 				'wp_logout',
 				'm2_logout_redirect',
@@ -214,7 +214,7 @@ class MS_Addon_Redirect extends MS_Addon {
 
 		return $url;
 	}
-        
+
 	/**
 	 * Login redirect
 	 *
@@ -229,8 +229,8 @@ class MS_Addon_Redirect extends MS_Addon {
 				$redirect_to = lib3()->net->expand_url( $new_url );
 			}
 		}
-		
-		return $redirect_to;
+
+		return self::m2_replace_username_url($redirect_to, $user);
 	}
 
 	/**
@@ -253,7 +253,7 @@ class MS_Addon_Redirect extends MS_Addon {
 
 		return $url;
 	}
-        
+
 	/**
 	 * Logout URL
 	 *
@@ -262,15 +262,28 @@ class MS_Addon_Redirect extends MS_Addon {
 	public function m2_logout_redirect() {
 		$model 		= self::model();
 		$new_url 	= $model->get( 'redirect_logout' );
-		
+
 		if ( ! empty( $new_url ) ) {
 			$logout_url = lib3()->net->expand_url( $new_url );
 		}else{
 			$logout_url = site_url();
 		}
-		
+
 		wp_redirect( $logout_url );
 		exit;
 	}
+
+        public function m2_replace_username_url($url, $user) {
+            if(strpos($url, '[username]')) {
+                if(!isset($user->ID)) {
+                    return $url;
+                }
+
+                $user_info = get_userdata($user->ID);
+                $url = str_replace('[username]', $user_info->user_login, $url);
+            }
+
+            return $url;
+        }
 
 }
