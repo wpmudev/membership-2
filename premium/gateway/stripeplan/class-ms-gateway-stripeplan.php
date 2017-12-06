@@ -488,7 +488,7 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 												$invoice->id, // invoice ID
 												$invoice->total, // charged amount
 												$notes, // Descriptive text
-												'' // External ID
+												$stripe_invoice->id // External ID
 											);
 										}
 									}
