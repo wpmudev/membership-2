@@ -2292,7 +2292,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	 * @since 1.0.2.8
 	 * @param string $new_gateway The new payment-gateway ID.
 	 */
-	public function set_gateway( $new_gateway, $force_admin = false ) {
+	public function set_gateway( $new_gateway, $force_admin = true ) {
 		$old_gateway = $this->gateway_id;
 
 		// Do not set subscription to "No Gateway".
