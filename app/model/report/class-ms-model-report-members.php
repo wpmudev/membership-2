@@ -54,59 +54,37 @@
 		$count = 0;
 		$members = MS_Model_Member::get_members( $args );
 		if ( is_array( $members ) && !empty( $members ) ) {
+			$gateways = MS_Model_Gateway::get_gateway_names( false, true );
 			foreach ( $members as $member ) {
-				$data[$count]['id'] 		= $member->id;
-				$data[$count]['email'] 		= $member->email;
-				$data[$count]['username'] 	= $member->username;
-				$data[$count]['fname'] 		= $member->first_name;
-				$data[$count]['lname'] 		= $member->last_name;
 				if ( $member->subscriptions ) {
-					$gateways = MS_Model_Gateway::get_gateway_names( false, true );
 					$sub = false;
 					foreach ( $member->subscriptions as $subscription ) {
-						if ( MS_Model_Relationship::STATUS_DEACTIVATED == $subscription->status ) {
-							continue;
-						}
-						$sub = $subscription;
-					}
-					if ( $sub ) {
-						
-						
-						$the_membership = $sub->get_membership();
-						unset( $unused_memberships[$the_membership->id] );
+						$the_membership 			= $subscription->get_membership();
+						$data[$count]['id'] 		= $member->id;
+						$data[$count]['email'] 		= $member->email;
+						$data[$count]['username'] 	= $member->username;
+						$data[$count]['fname'] 		= $member->first_name;
+						$data[$count]['lname'] 		= $member->last_name;
 						$data[$count]['membership'] = $the_membership->name;
-						$data[$count]['status'] 	= $sub->status;
+						$data[$count]['status'] 	= $subscription->status;
 	
-						if ( isset( $gateways[ $sub->gateway_id ] ) ) {
-							$gateway_name = $gateways[ $sub->gateway_id ];
-						} elseif ( empty( $sub->gateway_id ) ) {
+						if ( isset( $gateways[ $subscription->gateway_id ] ) ) {
+							$gateway_name = $gateways[ $subscription->gateway_id ];
+						} elseif ( empty( $subscription->gateway_id ) ) {
 							$gateway_name = __( '- No Gateway -', 'membership2' );
 						} else {
-							$gateway_name = '(' . $sub->gateway_id . ')';
+							$gateway_name = '(' . $subscription->gateway_id . ')';
 						}
 	
 						$data[$count]['gateway'] 	= $gateway_name;
-						$data[$count]['type'] 		= $sub->get_payment_description( null, true );
-						$data[$count]['start'] 		= $sub->start_date;
-						$data[$count]['end'] 		= $sub->expire_date;
-					} else {
-						$data[$count]['membership'] = 'N/A';
-						$data[$count]['status'] 	= 'N/A';
-						$data[$count]['gateway'] 	= 'N/A';
-						$data[$count]['type'] 		= 'N/A';
-						$data[$count]['start'] 		= 'N/A';
-						$data[$count]['end'] 		= 'N/A';
+						$data[$count]['type'] 		= $subscription->get_payment_description( null, true );
+						$data[$count]['start'] 		= $subscription->start_date;
+						$data[$count]['end'] 		= $subscription->expire_date;
+						$count++;
 					}
 					
-				} else {
-					$data[$count]['membership'] = 'N/A';
-					$data[$count]['status'] 	= 'N/A';
-					$data[$count]['gateway'] 	= 'N/A';
-					$data[$count]['type'] 		= 'N/A';
-					$data[$count]['start'] 		= 'N/A';
-					$data[$count]['end'] 		= 'N/A';
 				}
-				$count++;
+				
 			}
 
 			$filepath 		= $dir . DIRECTORY_SEPARATOR . $filename;
