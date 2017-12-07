@@ -2292,14 +2292,14 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	 * @since 1.0.2.8
 	 * @param string $new_gateway The new payment-gateway ID.
 	 */
-	public function set_gateway( $new_gateway, $force_admin = true ) {
+	public function set_gateway( $new_gateway, $force_admin = false ) {
 		$old_gateway = $this->gateway_id;
 
 		// Do not set subscription to "No Gateway".
 		if ( ! $new_gateway ) { return; }
 		
-		if ( $force_admin ) {
-			$force_admin = MS_Plugin::instance()->settings->force_single_gateway;
+		if ( !$force_admin ) {
+			$force_admin = !MS_Plugin::instance()->settings->force_single_gateway;
 		}
 
 		//Incase the gateway is admin, we need to st it to the default active gateway
@@ -2321,7 +2321,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 
 		// Don't change an non-free gateway to Free.
 		if ( $old_gateway && MS_Gateway_Free::ID == $new_gateway ) { return; }
-		
+
 		// Okay, change the gateway and save the subscription!
 		$this->gateway_id = $new_gateway;
 		$this->save();
