@@ -427,22 +427,13 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 																	$notes = __( 'No payment required for free membership', 'membership2' );
 																	$invoice->add_notes( $notes );
 																} else {
-																	//incase there is tax
-																	if ( $stripe_invoice_amount >= $invoice->total ) {
-																		/*$stripe_subcriber = $this->_api->subscribe(
-																			$stripe_customer,
-																			$invoice
-																		);*/
-																		//$external_id = $stripe_subcriber->id;
-																		//$this->cancel_if_done( $subscription, $stripe_subcriber );
-																		$notes = __( 'Payment successful', 'membership2' );
-																		$success = true;
-																		$invoice->status = MS_Model_Invoice::STATUS_PAID;
-																		$invoice->pay_it( self::ID, $stripe_invoice->id );
-																		$invoice->add_notes( $notes );
-																		$log = true;
-																		
-																	}
+																	$notes = __( 'Payment successful', 'membership2' );
+																	$success = true;
+																	$invoice->amount_paid = $stripe_invoice_amount;
+																	$invoice->status = MS_Model_Invoice::STATUS_PAID;
+																	$invoice->pay_it( self::ID, $stripe_invoice->id );
+																	$invoice->add_notes( $notes );
+																	$log = true;
 																}
 																$invoice->save();
 															} else {

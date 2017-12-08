@@ -141,6 +141,14 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	protected $amount = 0;
 
 	/**
+	 * Amount paid in gateway
+	 *
+	 * @since  1.0.0
+	 * @var float
+	 */
+	protected $amount_paid = 0;
+
+	/**
 	 * Discount value.
 	 *
 	 * @since  1.0.0
