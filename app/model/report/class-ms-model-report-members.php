@@ -36,7 +36,7 @@
 			__( 'Membership Name', 'membership2' ),
 			__( 'Subscription Status', 'membership2' ),
 			__( 'Payment Gateway', 'membership2' ),
-			__( 'Payment Type', 'membership2' ),
+			__( 'Payment Description', 'membership2' ),
 			__( 'Start Date', 'membership2' ),
 			__( 'End Date', 'membership2' )
 		) );
