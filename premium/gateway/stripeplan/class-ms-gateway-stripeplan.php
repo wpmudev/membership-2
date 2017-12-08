@@ -376,6 +376,7 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 					if ( $stripe_invoice && isset( $stripe_invoice->id ) ) {
 						$stripe_invoice_amount 	= $stripe_invoice->total / 100.0;
 						$stripe_customer 		= Stripe_Customer::retrieve( $stripe_invoice->customer );
+						$current_date 			= MS_Helper_Period::current_date( null, true );
 						if ( $stripe_customer ) {
 							$email 	= $stripe_customer->email;
 							
@@ -412,52 +413,43 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 														}
 													break;
 													case 'invoice.payment_succeeded' :
-														$invoice_id = false;
-														$prev_invoice = $subscription->get_previous_invoice();
+														if ( $current_date != $subscription->start_date ) {
+															$invoice = $subscription->get_current_invoice();
 
-														if ( $prev_invoice && ( date( 'Y-m-d', $stripe_invoice->date ) == $prev_invoice->invoice_date ) ) {
-
-															if( $prev_invoice->status == MS_Model_Invoice::STATUS_PAID ) {
-																break;
-															}
-															$invoice_id = $prev_invoice->id;
-															
-														}
-
-														$invoice_id = ! $invoice_id ? $subscription->first_unpaid_invoice() : $invoice_id;
-
-														if ( $invoice_id ) {
-															$invoice = MS_Factory::load( 'MS_Model_Invoice', $invoice_id );
-															$invoice->ms_relationship_id 	= $subscription->id;
-															$invoice->membership_id 		= $membership->id;
-															
-															if ( 0 == $invoice->total ) {
-																// Free, just process.
-																$invoice->changed();
-																$success = true;
-																$notes = __( 'No payment required for free membership', 'membership2' );
-																$invoice->add_notes( $notes );
-															} else {
-																//incase there is tax
-																if ( $stripe_invoice_amount >= $invoice->total ) {
-																	/*$stripe_subcriber = $this->_api->subscribe(
-																		$stripe_customer,
-																		$invoice
-																	);*/
-																	//$external_id = $stripe_subcriber->id;
-																	//$this->cancel_if_done( $subscription, $stripe_subcriber );
-																	$notes = __( 'Payment successful', 'membership2' );
+															if ( $invoice ) {
+																$invoice->ms_relationship_id 	= $subscription->id;
+																$invoice->membership_id 		= $membership->id;
+																
+																if ( 0 == $invoice->total ) {
+																	// Free, just process.
+																	$invoice->changed();
 																	$success = true;
-																	$invoice->status = MS_Model_Invoice::STATUS_PAID;
-																	$invoice->pay_it( self::ID, $stripe_invoice->id );
+																	$notes = __( 'No payment required for free membership', 'membership2' );
 																	$invoice->add_notes( $notes );
-																	$log = true;
-																	
+																} else {
+																	//incase there is tax
+																	if ( $stripe_invoice_amount >= $invoice->total ) {
+																		/*$stripe_subcriber = $this->_api->subscribe(
+																			$stripe_customer,
+																			$invoice
+																		);*/
+																		//$external_id = $stripe_subcriber->id;
+																		//$this->cancel_if_done( $subscription, $stripe_subcriber );
+																		$notes = __( 'Payment successful', 'membership2' );
+																		$success = true;
+																		$invoice->status = MS_Model_Invoice::STATUS_PAID;
+																		$invoice->pay_it( self::ID, $stripe_invoice->id );
+																		$invoice->add_notes( $notes );
+																		$log = true;
+																		
+																	}
 																}
+																$invoice->save();
+															} else {
+																$this->log( 'Invoice not found' );
 															}
-															$invoice->save();
 														} else {
-															$this->log( 'Did not get invoice' );
+															$this->log( 'Invoice already paid since its the first date' );
 														}
 														
 													break;
