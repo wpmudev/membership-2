@@ -371,7 +371,7 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 				$event 		= Stripe_Event::retrieve( $event_id );
 				$log 		= false;
 				$invoice 	= false;
-				if ( $event ) {
+				if ( $event && $this->valid_event( $event->type ) ) {
 					$stripe_invoice = $event->data->object;
 					if ( $stripe_invoice && isset( $stripe_invoice->id ) ) {
 						$stripe_invoice_amount 	= $stripe_invoice->total / 100.0;
@@ -498,6 +498,22 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 		do_action(
 			'ms_gateway_handle_stripe_webhook_after',
 			$this
+		);
+	}
+
+	/**
+	 * Valid Stripe events to check
+	 * 
+	 * @param string $event - the event
+	 * 
+	 * @return bool
+	 */
+	private function valid_event( $event ) {
+		$valid_events = array( 'invoice.created', 'invoice.payment_succeeded', 'customer.subscription.deleted', 'invoice.payment_failed' );
+		$valid_event  = in_array( $event, $valid_events );
+		return apply_filters(
+			'ms_gateway_stripeplan_valid_event',
+			$valid_event
 		);
 	}
 
