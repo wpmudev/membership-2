@@ -1706,6 +1706,51 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 		);
 	}
 
+
+	/**
+	 * Get a list of all pending invoices
+	 *
+	 * @since  1.0.0
+	 * @api
+	 *
+	 * @return MS_Model_Invoice[] List of invoices.
+	 */
+	public function get_pending_invoices() {
+		$args = array(
+			'nopaging' 		=> true,
+			'meta_query' 	=> array(
+					array(
+						'key'   => 'ms_relationship_id',
+						'value' => $this->id,
+					),
+					array(
+						'relation' => 'OR',
+						array(
+							'key'   	=> 'status',
+							'value' 	=> 'billed',
+							'compare' 	=> '=',
+						),
+						array(
+							'key'   	=> 'status',
+							'value' 	=> 'pending',
+							'compare' 	=> '=',
+						),
+						array(
+							'key'   	=> 'status',
+							'value' 	=> 'new',
+							'compare' 	=> '=',
+						)
+					)
+			),
+		);
+		$invoices = MS_Model_Invoice::get_invoices( $args );
+
+		return apply_filters(
+			'ms_model_relationship_get_invoices',
+			$invoices
+		);
+	}
+
 	/**
 	 * Finds the first unpaid invoice of the current subscription and returns
 	 * the invoice_id.
@@ -1719,7 +1764,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 		$invoice_id = 0;
 
 		// list all unpaid invoices where status != paid
-		$invoices = $this->get_invoices( 'paid' );
+		$invoices = $this->get_pending_invoices();
 		foreach ( $invoices as $invoice ) {
 			if ( ! $invoice->is_paid() ) {
 				$invoice_id = $invoice->id;
