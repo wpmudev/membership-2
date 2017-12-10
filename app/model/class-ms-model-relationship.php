@@ -877,8 +877,6 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 			// Remove any unpaid invoices.
 			$this->remove_unpaid_invoices();
 
-			
-
 			if ( $generate_event ) {
 				MS_Model_Event::save_event( MS_Model_Event::TYPE_MS_CANCELED, $this );
 			}
@@ -973,7 +971,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	 * @internal
 	 */
 	public function remove_unpaid_invoices() {
-		$invoices = $this->get_invoices();
+		$invoices = $this->get_invoices( 'paid' );
 
 		foreach ( $invoices as $invoice ) {
 			if ( 'paid' != $invoice->status ) {
