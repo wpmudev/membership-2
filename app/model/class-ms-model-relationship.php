@@ -973,7 +973,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	 * @internal
 	 */
 	public function remove_unpaid_invoices() {
-		$invoices = $this->get_invoices( 'paid' );
+		$invoices = $this->get_invoices();
 
 		foreach ( $invoices as $invoice ) {
 			if ( 'paid' != $invoice->status ) {
@@ -1684,10 +1684,10 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 		$args = array(
 			'nopaging' 		=> true,
 			'meta_query' 	=> array(
-					array(
-						'key'   => 'ms_relationship_id',
-						'value' => $this->id,
-					)
+				array(
+					'key'   => 'ms_relationship_id',
+					'value' => $this->id,
+				)
 			),
 		);
 
@@ -1719,31 +1719,31 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 		$args = array(
 			'nopaging' 		=> true,
 			'meta_query' 	=> array(
+				array(
+					'key'   => 'ms_relationship_id',
+					'value' => $this->id,
+				),
+				array(
+					'relation' => 'OR',
 					array(
-						'key'   => 'ms_relationship_id',
-						'value' => $this->id,
+						'key'   	=> 'status',
+						'value' 	=> 'billed',
+						'compare' 	=> '=',
 					),
 					array(
-						'relation' => 'OR',
-						array(
-							'key'   	=> 'status',
-							'value' 	=> 'billed',
-							'compare' 	=> '=',
-						),
-						array(
-							'key'   	=> 'status',
-							'value' 	=> 'pending',
-							'compare' 	=> '=',
-						),
-						array(
-							'key'   	=> 'status',
-							'value' 	=> 'new',
-							'compare' 	=> '=',
-						)
+						'key'   	=> 'status',
+						'value' 	=> 'pending',
+						'compare' 	=> '=',
+					),
+					array(
+						'key'   	=> 'status',
+						'value' 	=> 'new',
+						'compare' 	=> '=',
 					)
+				)
 			),
 		);
-		$invoices = MS_Model_Invoice::get_invoices( $args );
+		$invoices = MS_Model_Invoice::get_invoices( $args, false );
 
 		return apply_filters(
 			'ms_model_relationship_get_invoices',
