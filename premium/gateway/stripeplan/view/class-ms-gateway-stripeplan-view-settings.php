@@ -21,7 +21,7 @@ class MS_Gateway_Stripeplan_View_Settings extends MS_View {
 				),
 				sprintf(
 					__( 'Set up the url <strong>%s</strong> in your %sStripe Webhook Settings%s', 'membership2' ),
-					site_url( 'ms-web-hook/stripe' ),
+					$this->data['model']->get_webhook_url(),
 					'<a href="https://dashboard.stripe.com/account/webhooks" target="_blank">',
 					'</a>'
 				)

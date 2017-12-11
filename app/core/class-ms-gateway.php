@@ -402,6 +402,22 @@ class MS_Gateway extends MS_Model_Option {
 	}
 
 	/**
+	 * Url that fires handle_webhook of this gateway (IPN).
+	 *
+	 * @since  1.1.2
+	 * @return string The webhook url.
+	 */
+	public function get_webhook_url() {
+		$url = MS_Helper_Utility::home_url( '/ms-web-hook/' . $this->id );
+
+		return apply_filters(
+			'ms_gateway_get_webhook_url',
+			$url,
+			$this
+		);
+	}
+
+	/**
 	 * Get gateway mode types.
 	 *
 	 * @since  1.0.0
