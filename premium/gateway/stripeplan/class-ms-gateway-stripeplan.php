@@ -374,7 +374,8 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 				if ( $event && $this->valid_event( $event->type ) ) {
 					$stripe_invoice = $event->data->object;
 					if ( $stripe_invoice && isset( $stripe_invoice->id ) ) {
-						$stripe_invoice_amount 	= $stripe_invoice->total / 100.0;
+						$stripe_invoice_amount 		= $stripe_invoice->total / 100.0;
+						$stripe_invoice_subtotal 	= $stripe_invoice->subtotal / 100.0;
 						$stripe_customer 		= Stripe_Customer::retrieve( $stripe_invoice->customer );
 						$current_date 			= MS_Helper_Period::current_date( null, true );
 						if ( $stripe_customer ) {
@@ -428,6 +429,9 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 																	$notes = __( 'No payment required for free membership', 'membership2' );
 																	$invoice->add_notes( $notes );
 																} else {
+																	if ( isset( $stripe_invoice->tax_percent ) ) {
+																		$invoice->tax_rate = $stripe_invoice->tax_percent;
+																	}
 																	$notes = __( 'Payment successful', 'membership2' );
 																	$success = true;
 																	$invoice->amount_paid = $stripe_invoice_amount;
@@ -613,38 +617,38 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 	 * @return bool True on success.
 	 */
 	public function request_payment( $subscription ) {
-		if ( defined( 'IS_UNIT_TEST' ) && IS_UNIT_TEST ) {
-			$was_paid = false;
-			$note = '';
-			$external_id = '';
-	
-			do_action(
-				'ms_gateway_stripeplan_request_payment_before',
-				$subscription,
-				$this
-			);
-			$this->_api->set_gateway( $this );
-	
-			$member = $subscription->get_member();
-			$invoice = $subscription->get_current_invoice();
-	
-			if ( ! $invoice->is_paid() ) {
-				try {
-					$customer = $this->_api->find_customer( $member );
-	
-					if ( ! empty( $customer ) ) {
-						if ( 0 == $invoice->total ) {
-							$invoice->changed();
-							$success = true;
-							$note = __( 'No payment required for free membership', 'membership2' );
-						} else {
-							// Get or create the subscription.
-							$stripe_sub = $this->_api->subscribe(
-								$customer,
-								$invoice
-							);
-							$external_id = $stripe_sub->id;
-	
+		
+		$was_paid = false;
+		$note = '';
+		$external_id = '';
+
+		do_action(
+			'ms_gateway_stripeplan_request_payment_before',
+			$subscription,
+			$this
+		);
+		$this->_api->set_gateway( $this );
+
+		$member = $subscription->get_member();
+		$invoice = $subscription->get_current_invoice();
+
+		if ( ! $invoice->is_paid() ) {
+			try {
+				$customer = $this->_api->find_customer( $member );
+
+				if ( ! empty( $customer ) ) {
+					if ( 0 == $invoice->total ) {
+						$invoice->changed();
+						$success = true;
+						$note = __( 'No payment required for free membership', 'membership2' );
+					} else {
+						// Get or create the subscription.
+						$stripe_sub = $this->_api->subscribe(
+							$customer,
+							$invoice
+						);
+						$external_id = $stripe_sub->id;
+						if ( defined( 'IS_UNIT_TEST' ) && IS_UNIT_TEST ) {
 							$note = $this->get_description_for_sub( $stripe_sub );
 	
 							if ( 'active' == $stripe_sub->status || 'trialing' == $stripe_sub->status ) {
@@ -652,27 +656,31 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 								$invoice->pay_it( self::ID, $external_id );
 								$this->cancel_if_done( $subscription, $stripe_sub );
 							}
+						} else {
+							$this->cancel_if_done( $subscription, $stripe_sub );
+							$was_paid = true;
 						}
-					} else {
-						MS_Helper_Debug::debug_log( "Stripe customer is empty for user $member->username" );
 					}
-				} catch ( Exception $e ) {
-					$note = 'Stripe error: '. $e->getMessage();
-					MS_Model_Event::save_event( MS_Model_Event::TYPE_PAYMENT_FAILED, $subscription );
-					MS_Helper_Debug::debug_log( $note );
+				} else {
+					MS_Helper_Debug::debug_log( "Stripe customer is empty for user $member->username" );
 				}
-			} else {
-				// Invoice was already paid earlier.
-				$was_paid = true;
+			} catch ( Exception $e ) {
+				$note = 'Stripe error: '. $e->getMessage();
+				MS_Model_Event::save_event( MS_Model_Event::TYPE_PAYMENT_FAILED, $subscription );
+				MS_Helper_Debug::debug_log( $note );
 			}
-	
-			do_action(
-				'ms_gateway_stripeplan_request_payment_after',
-				$subscription,
-				$was_paid,
-				$this
-			);
-	
+		} else {
+			// Invoice was already paid earlier.
+			$was_paid = true;
+		}
+
+		do_action(
+			'ms_gateway_stripeplan_request_payment_after',
+			$subscription,
+			$was_paid,
+			$this
+		);
+		if ( defined( 'IS_UNIT_TEST' ) && IS_UNIT_TEST ) {
 			do_action(
 				'ms_gateway_transaction_log',
 				self::ID, // gateway ID
@@ -684,18 +692,9 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 				$note, // Descriptive text
 				$external_id // External ID
 			);
-	
-			return $was_paid;
-		} else {
-			do_action(
-				'ms_gateway_request_payment',
-				$subscription,
-				$this
-			);
-	
-			// Default to "Payment successful"
-			return true;
 		}
+
+		return $was_paid;
 	}
 
 	/**
