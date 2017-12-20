@@ -434,8 +434,9 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 																	}
 																	$notes = __( 'Payment successful', 'membership2' );
 																	$success = true;
-																	$invoice->amount_paid = $stripe_invoice_amount;
-																	$invoice->status = MS_Model_Invoice::STATUS_PAID;
+																	$invoice->amount_paid 	= $stripe_invoice_subtotal;
+																	$invoice->total 		= $stripe_invoice_amount;
+																	$invoice->status 		= MS_Model_Invoice::STATUS_PAID;
 																	$invoice->pay_it( self::ID, $stripe_invoice->id );
 																	$invoice->add_notes( $notes );
 																	$log = true;

@@ -827,6 +827,37 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	}
 
 	/**
+	 * Get the first paid invoice
+	 * 
+	 * @param MS_Model_Relationship $subscription The membership relationship.
+	 * 
+	 * @return bool|MS_Model_Invoice
+	 */
+	public static function get_first_paid_invoice( $subscription ) {
+		$args = array(
+			'posts_per_page'=> 1,
+			'order' 		=> 'ASC',
+			'meta_query' 	=> array(
+				array(
+					'key'   => 'ms_relationship_id',
+					'value' => $subscription->id,
+				),
+				array(
+					'key'   	=> 'status',
+					'value' 	=> self::STATUS_PAID,
+					'compare' 	=> '=',
+				)
+			),
+		);
+		$invoices = self::get_invoices( $args, true );
+		if ( $invoices && is_array( $invoices ) && count( $invoices ) > 0 ) {
+			return $invoices[0];
+		} else {
+			return self::get_previous_invoice( $subscription, self::STATUS_PAID );
+		}
+	}
+
+	/**
 	 * Create invoice.
 	 *
 	 * Create a new invoice using the membership information.
@@ -869,7 +900,7 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 			$invoice 					= apply_filters( 'ms_model_invoice', $invoice );
 		}
 
-		$previous_invoice 				= self::get_previous_invoice( $subscription );
+		$previous_invoice 				= self::get_first_paid_invoice( $subscription );
 		if ( $previous_invoice ) {
 			$invoice->checkout_ip 		= $previous_invoice->checkout_ip;
 			$invoice->tax_rate 			= $previous_invoice->tax_rate;
