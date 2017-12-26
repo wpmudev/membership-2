@@ -109,7 +109,7 @@ class MS_Helper_Media extends MS_Helper {
 	 *
 	 * @return array
 	 */
-	public function server_types() {
+	public static function server_types() {
 		return apply_filters( 'ms_helper_media_server_types', array(
 			'apache'    => 'Apache',
 			'litespeed' => 'LiteSpeed',
