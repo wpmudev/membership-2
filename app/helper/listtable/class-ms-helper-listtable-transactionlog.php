@@ -342,6 +342,7 @@ class MS_Helper_ListTable_TransactionLog extends MS_Helper_ListTable {
 	 */
 	public function column_invoice( $item, $column_name ) {
 		if ( $item->invoice_id ) {
+			$invoice = MS_Factory::load( 'MS_Model_Invoice', $item->invoice_id );
 			$invoice_url = MS_Controller_Plugin::get_admin_url(
 				'billing',
 				array( 'action' => 'edit', 'invoice_id' => $item->invoice_id )
@@ -350,7 +351,7 @@ class MS_Helper_ListTable_TransactionLog extends MS_Helper_ListTable {
 			$html = sprintf(
 				'<a href="%1$s">%2$s</a>',
 				$invoice_url,
-				$item->invoice_id
+				$invoice->get_invoice_number()
 			);
 		} else {
 			$html = '-';
