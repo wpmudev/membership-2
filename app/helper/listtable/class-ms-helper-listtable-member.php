@@ -271,7 +271,7 @@ class MS_Helper_ListTable_Member extends MS_Helper_ListTable {
 	 */
 	public function column_username( $member ) {
 		$actions = array();
-		if ( !user_can( $member->id, 'administrator' ) ) {
+		if ( !MS_Model_Member::is_admin_user( $member->id ) ) {
 			$actions['edit'] = sprintf(
 				'<a href="%s">%s</a>',
 				MS_Controller_Plugin::get_admin_url(
