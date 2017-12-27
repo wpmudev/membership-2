@@ -451,31 +451,35 @@ class MS_Controller_Member extends MS_Controller {
 				if ( self::validate_required( $fields_subscribe, 'POST' ) ) {
 					$subscribe_to 	= $_POST['subscribe'];
 
-					if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MULTI_MEMBERSHIPS ) ) {
-						// Memberships is an array.
-						foreach ( $subscribe_to as $membership_id ) {
-							$user->add_membership( $membership_id, 'admin' );
-						}
-					} else {
-						// Memberships is a single ID.
-						foreach ( $user->subscriptions as $subscription ) {
-							$subscription->deactivate_membership( false );
-						}
-						$user->add_membership( $subscribe_to, 'admin' );
+					if ( !empty( $subscribe_to ) ) {
+						if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MULTI_MEMBERSHIPS ) ) {
+							// Memberships is an array.
+							foreach ( $subscribe_to as $membership_id ) {
+								$user->add_membership( $membership_id, 'admin' );
+							}
+						} else {
+							// Memberships is a single ID.
+							foreach ( $user->subscriptions as $subscription ) {
+								$subscription->deactivate_membership( false );
+							}
+							$user->add_membership( $subscribe_to, 'admin' );
 
-						if ( isset ( $_POST['create_invoice'] ) && $_POST['create_invoice'] ) {
-							//Get the payment mode for the membership
-							$subscription 		= $user->get_subscription( $subscribe_to );
-							$subscription->set_recalculate_expire_date( false ); //Dont adjust the subscription expire date
-							$invoice 			= $subscription->get_current_invoice();
-							$this->payment_info .= sprintf(
-								'<div class="ms-manual-price">%s: <span class="ms-price">%s%s</span></div>',
-								__( 'Total value', 'membership2' ),
-								$invoice->currency,
-								$invoice->total
-							);
-							$invoice->status = MS_Model_Invoice::STATUS_BILLED;
-							$invoice->save();
+							if ( isset ( $_POST['create_invoice'] ) && $_POST['create_invoice'] ) {
+								//Get the payment mode for the membership
+								$subscription 		= $user->get_subscription( $subscribe_to );
+								if ( $subscription && $subscription->id > 0 ) {
+									$subscription->set_recalculate_expire_date( false ); //Dont adjust the subscription expire date
+									$invoice 			= $subscription->get_current_invoice();
+									$invoice->payment_info .= sprintf(
+										'<div class="ms-manual-price">%s: <span class="ms-price">%s%s</span></div>',
+										__( 'Total value', 'membership2' ),
+										$invoice->currency,
+										$invoice->total
+									);
+									$invoice->status = MS_Model_Invoice::STATUS_BILLED;
+									$invoice->save();
+								}
+							}
 						}
 					}
 				}
