@@ -3,10 +3,10 @@
 class MS_View_Membership_Overview_Dripped extends MS_View_Membership_Overview_Simple {
 
 	public function available_content_panel_data() {
-		$relative = array();
-		$absolute = array();
-		$membership = $this->data['membership'];
-		$rule_types = MS_Model_Rule::get_dripped_rule_types();
+		$relative 		= array();
+		$absolute 		= array();
+		$membership 	= $this->data['membership'];
+		$rule_types 	= MS_Model_Rule::get_dripped_rule_types();
 
 		foreach ( $rule_types as $rule_type ) {
 			$rule = $membership->get_rule( $rule_type );
@@ -49,80 +49,79 @@ class MS_View_Membership_Overview_Dripped extends MS_View_Membership_Overview_Si
 					}
 				}
 			}
-		}
-		?>
-		<div class="clear"></div>
-
-		<div class="cf">
-			<div class="ms-half ms-available-soon space">
-				<div class="ms-bold">
-					<i class="dashicons dashicons-calendar ms-low"></i>
-					<?php _e( 'Available on a specific date:', 'membership2' ); ?>
+			?>
+			<div class="clear"></div>
+			<div class="cf">
+				<div class="ms-half ms-available-soon space">
+					<div class="ms-bold">
+						<i class="dashicons dashicons-calendar ms-low"></i>
+						<?php _e( 'Available on a specific date:', 'membership2' ); ?>
+					</div>
+					<div class="inside">
+						<?php $this->content_box( $absolute, $rule ); ?>
+					</div>
 				</div>
-				<div class="inside">
-					<?php $this->content_box( $absolute ); ?>
+
+				<div class="ms-half ms-available">
+					<div class="ms-bold">
+						<i class="dashicons dashicons-clock ms-low"></i>
+						<?php _e( 'Relative to registration:', 'membership2' ); ?>
+					</div>
+					<div class="inside">
+						<?php $this->content_box( $relative, $rule ); ?>
+					</div>
 				</div>
 			</div>
 
-			<div class="ms-half ms-available">
-				<div class="ms-bold">
-					<i class="dashicons dashicons-clock ms-low"></i>
-					<?php _e( 'Relative to registration:', 'membership2' ); ?>
-				</div>
-				<div class="inside">
-					<?php $this->content_box( $relative ); ?>
-				</div>
-			</div>
-		</div>
-
-		<div class="cf">
-			<div class="ms-half">
-				<div class="inside">
-					<div class="ms-protection-edit-wrapper">
-						<?php
-						$edit_url = MS_Controller_Plugin::get_admin_url(
-							'protection',
-							array(
-								'tab' => $rule->rule_type,
-								'membership_id' => $membership->id,
-							)
-						);
-						MS_Helper_Html::html_element(
-							array(
-								'id' => 'edit_dripped',
-								'type' => MS_Helper_Html::TYPE_HTML_LINK,
-								'value' => __( 'Edit Dripped Content', 'membership2' ),
-								'url' => $edit_url,
-								'class' => 'wpmui-field-button button',
-							)
-						);
-
-						if ( ! $membership->is_free ) {
-							$payment_url = esc_url_raw(
-								add_query_arg(
-									array(
-										'step' => MS_Controller_Membership::STEP_PAYMENT,
-										'edit' => 1,
-									)
+			<div class="cf">
+				<div class="ms-half">
+					<div class="inside">
+						<div class="ms-protection-edit-wrapper">
+							<?php
+							$edit_url = MS_Controller_Plugin::get_admin_url(
+								'protection',
+								array(
+									'tab' => $rule->rule_type,
+									'membership_id' => $membership->id,
 								)
 							);
 							MS_Helper_Html::html_element(
 								array(
-									'id' => 'setup_payment',
+									'id' => 'edit_dripped',
 									'type' => MS_Helper_Html::TYPE_HTML_LINK,
-									'value' => __( 'Payment Options', 'membership2' ),
-									'url' => $payment_url,
+									'value' => __( 'Edit Dripped Content', 'membership2' ),
+									'url' => $edit_url,
 									'class' => 'wpmui-field-button button',
 								)
 							);
-						}
-						?>
+
+							if ( ! $membership->is_free ) {
+								$payment_url = esc_url_raw(
+									add_query_arg(
+										array(
+											'step' => MS_Controller_Membership::STEP_PAYMENT,
+											'edit' => 1,
+										)
+									)
+								);
+								MS_Helper_Html::html_element(
+									array(
+										'id' => 'setup_payment',
+										'type' => MS_Helper_Html::TYPE_HTML_LINK,
+										'value' => __( 'Payment Options', 'membership2' ),
+										'url' => $payment_url,
+										'class' => 'wpmui-field-button button',
+									)
+								);
+							}
+							?>
+						</div>
 					</div>
 				</div>
 			</div>
-		</div>
 
-		<?php
+			<?php
+		}
 	}
 
 	/**
@@ -134,17 +133,12 @@ class MS_View_Membership_Overview_Dripped extends MS_View_Membership_Overview_Si
 	 *
 	 * @param  array $contents List of content items to display.
 	 */
-	protected function content_box( $contents ) {
+	protected function content_box( $contents, $rule ) {
 		$row_class = '';
 		ksort( $contents );
 		$rule_titles = MS_Model_Rule::get_rule_type_titles();
 
-		$edit_url = MS_Controller_Plugin::get_admin_url(
-			'protection',
-			array(
-				'tab' => $rule->rule_type,
-			)
-		);
+		
 		$edit_link = array(
 			'id' => 'edit_dripped',
 			'type' => MS_Helper_Html::TYPE_HTML_LINK,
@@ -163,6 +157,12 @@ class MS_View_Membership_Overview_Dripped extends MS_View_Membership_Overview_Si
 			<tbody>
 			<?php foreach ( $contents as $id => $content ) :
 				$row_class = ($row_class == 'alternate' ? '' : 'alternate' );
+				$edit_url = MS_Controller_Plugin::get_admin_url(
+					'protection',
+					array(
+						'tab' => $rule->rule_type,
+					)
+				);
 				?>
 				<tr class="<?php echo esc_attr( $row_class . ' ' . $content->icon ); ?>">
 					<td class="col-icon">
