@@ -32,6 +32,9 @@ Change Log:
 - Fixed: Email notification for paid manual payment gateway
 - Fixed: Creating a new membership setting the visibility to private will hide the membership from the list
 - Fixed: Manual Gatewey not setting the gateway name in the invoice
+- Fixed: Invitation Addon errors
+- Fixed: User with admin roles cannot be assigned for a membership from backend (admin and editors)
+- Fixed: Dripped content membership details page showing error.
 
 1.1.1
 - Fixed: Menu Protection items not showing to all users except admin
