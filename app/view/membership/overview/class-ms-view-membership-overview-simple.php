@@ -328,7 +328,7 @@ class MS_View_Membership_Overview_Simple extends MS_View {
 				if ( ! $rule->is_active() ) { continue; }
 
 				if ( $rule->has_rules() ) {
-					$this->content_box( $rule );
+					$this->content_box( array(), $rule );
 				}
 			}
 			?>
@@ -365,7 +365,7 @@ class MS_View_Membership_Overview_Simple extends MS_View {
 	 *
 	 * @param  array $contents List of content items to display.
 	 */
-	protected function content_box( $rule ) {
+	protected function content_box( $contents = array(), $rule ) {
 		static $row_items = 0;
 
 		$rule_titles = MS_Model_Rule::get_rule_type_titles();
