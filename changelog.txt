@@ -37,6 +37,7 @@ Change Log:
 - Fixed: User with admin roles cannot be assigned for a membership from backend (admin and editors)
 - Fixed: Dripped content membership details page showing error.
 - Fixed: Stripe subscription duplicate invoices generated
+- Fixed: End date on expired membership mail
 
 1.1.1
 - Fixed: Menu Protection items not showing to all users except admin
