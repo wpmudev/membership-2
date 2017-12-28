@@ -2169,21 +2169,28 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 			$this->set_status( self::STATUS_TRIAL );
 		} else {
 			
-			/*
-			 * Important:
-			 * FIRST set the EXPIRE DATE, otherwise  %ms-expiry-date% doesn't available
-			 *  for Subscription - Completed with payment Message emails
-			 */
-			$this->set_status( self::STATUS_ACTIVE );
-
-			/*
-			 * Renew period. Every time this function is called, the expire
-			 * date is extended for 1 period
-			 */
-			$this->expire_date = $this->calc_expire_date(
-				$this->expire_date, // Extend past the current expire date.
-				true                // Grant the user a full payment interval.
-			);
+			//This order has to be followed
+			if ( $this->is_trial_eligible() ) {
+				$this->set_status( self::STATUS_ACTIVE );	
+				/*
+				* Renew period. Every time this function is called, the expire
+				* date is extended for 1 period
+				*/
+				$this->expire_date = $this->calc_expire_date(
+					$this->expire_date, // Extend past the current expire date.
+					true                // Grant the user a full payment interval.
+				);
+			} else {
+				/*
+				* Renew period. Every time this function is called, the expire
+				* date is extended for 1 period
+				*/
+				$this->expire_date = $this->calc_expire_date(
+					$this->expire_date, // Extend past the current expire date.
+					true                // Grant the user a full payment interval.
+				);
+				$this->set_status( self::STATUS_ACTIVE );	
+			}	
 		}
 
 		$this->save();
