@@ -15,14 +15,15 @@ Change Log:
 - Added: Exclude system pages from Search addon
 - Added: Menu protection for parent menu items now extends to submenu items
 - Added: Advanced media protection support for more server types
-- Added: Setting to set the default active gateway for manually added users
+- Added: Force Default Gateway Setting to set the default active gateway for manually added users
+- Added: Additional Invoice Setting add-on. Allows setting custom invoice id rendering but keeps the default invoice id in the gateway
 - Fixed: MailChimp Addon list function
 - Fixed: Styling for Membership Attributes PopUp
 - Fixed: Dripped Membership Url protection and menu protection
 - Fixed: Buddypress media protection conflict
 - Fixed: Update Member status for manually created members
 - Fixed: Mail sending cron fix
-- Fixed: Posts displaying when protected in categoryy protection
+- Fixed: Posts displaying when protected in category protection
 - Fixed: Rest API addon
 - Fixed: Rest API input integer validation (https://github.com/WP-API/WP-API/issues/1520) and change param of /member status to member_status
 - Fixed: Auth Net Payment Gateway (Fix the 'Extra Options is invalid.' authorize error)
@@ -35,6 +36,7 @@ Change Log:
 - Fixed: Invitation Addon errors
 - Fixed: User with admin roles cannot be assigned for a membership from backend (admin and editors)
 - Fixed: Dripped content membership details page showing error.
+- Fixed: Stripe subscription duplicate invoices generated
 
 1.1.1
 - Fixed: Menu Protection items not showing to all users except admin

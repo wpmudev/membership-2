@@ -27,6 +27,7 @@ class MS_Addon_Invoice extends MS_Addon {
 	const DEFAULT_SEQUENCE 		= 'sequence_type_default'; //default
 	const PROGRESSIVE_SEQUENCE 	= 'sequence_type_progressive'; //sequence like 1,2,3,4
 	const CUSTOM_SEQUENCE 		= 'sequence_type_custom'; //custom allows for prefix with or without sequence
+	const COMBINED				= 'sequence_type_combined'; //combined sequence of progressive and custom
 
 	/**
 	 * Plugin Settings
@@ -78,7 +79,8 @@ class MS_Addon_Invoice extends MS_Addon {
 		return apply_filters( 'ms_addon_invoice_sequence_types', array(
 			self::DEFAULT_SEQUENCE 		=> __( 'Basic invoice ID generation (default)', 'membership2' ),
 			self::PROGRESSIVE_SEQUENCE 	=> __( 'Progressive invoice ID generation', 'membership2' ),
-			self::CUSTOM_SEQUENCE 		=> __( 'Custom invoice ID generation for all or each gateway', 'membership2' ),
+			self::CUSTOM_SEQUENCE 		=> __( 'Custom invoice ID generation for all gateways', 'membership2' ),
+			self::COMBINED				=> __( 'Combined generation that combines custom prefix and progressive invoice ID settings', 'membership2' ),
 		) );
 	}
 
@@ -102,6 +104,17 @@ class MS_Addon_Invoice extends MS_Addon {
 				$prefix 		= $this->plugin_settings->invoice['invoice_prefix'];
 				$default_number = substr( $default_number, 1 );
 				$default_number = $prefix . '' . $default_number;
+			break;
+
+			case self::COMBINED :
+				$prefix 		= $this->plugin_settings->invoice['invoice_prefix'];
+				if ( $invoice->custom_invoice_id > 0 ) {
+					$default_number = $invoice->custom_invoice_id;
+				} else {
+					$default_number = substr( $default_number, 1 );
+				}
+				$default_number = $prefix . '' . $default_number;
+				
 			break;
 		}
 		return apply_filters( 'ms_addon_invoice_invoice_number', $default_number, $invoice );
@@ -182,10 +195,28 @@ class MS_Addon_Invoice extends MS_Addon {
 		return $html;
 	}
 
+	/**
+	 * Render default sequence type
+	 * 
+	 * @param MS_Model_Settings $settings
+	 * 
+	 * @since 1.1.2
+	 * 
+	 * @return string
+	 */
 	public function render_sequence_type_default( $settings ) {
 		return __( "Invoice ID's will be generated in the default order", "membership2" );
 	}
 
+	/**
+	 * Render progressive sequence type
+	 * 
+	 * @param MS_Model_Settings $settings
+	 * 
+	 * @since 1.1.2
+	 * 
+	 * @return string
+	 */
 	public function render_sequence_type_progressive( $settings ) {
 		$total_invoices = MS_Model_Invoice::get_invoice_count();
 		$invoices_set = (bool) MS_Factory::get_option( 'ms_addon_invoice_set_invoice_numeric_id' );
@@ -219,6 +250,15 @@ class MS_Addon_Invoice extends MS_Addon {
 		}
 	}
 
+	/**
+	 * Render custom sequence type
+	 * 
+	 * @param MS_Model_Settings $settings
+	 * 
+	 * @since 1.1.2
+	 * 
+	 * @return string
+	 */
 	public function render_sequence_type_custom( $settings ) {
 		ob_start();
 		?>
@@ -237,6 +277,63 @@ class MS_Addon_Invoice extends MS_Addon {
 			) ); ?>
 		</div>
 		<?php
+		$html = ob_get_clean();
+		return $html;
+	}
+
+
+	/**
+	 * Render combined sequence type
+	 * 
+	 * @param MS_Model_Settings $settings
+	 * 
+	 * @since 1.1.2
+	 * 
+	 * @return string
+	 */
+	public function render_sequence_type_combined( $settings ) {
+		ob_start();
+		?>
+		<div class="ms-common-prefix">
+			<?php MS_Helper_Html::html_element( array(
+				'id' 	=> 'invoice_prefix',
+				'type' 	=> MS_Helper_Html::INPUT_TYPE_TEXT,
+				'desc' 	=> __( 'Invoice prefix to apply to all invoice. This will be combined with the progressive sequence', 'membership2' ),
+				'value' => $settings->invoice['invoice_prefix'],
+				'class' => 'ms-text-large',
+				'data_ms' => array(
+					'field' 	=> 'invoice_prefix',
+					'action' 	=> MS_Controller_Settings::AJAX_ACTION_UPDATE_SETTING,
+					'_wpnonce' 	=> true, // Nonce will be generated from 'action'
+				),
+			) ); ?>
+		</div>
+		<?php
+		$total_invoices = MS_Model_Invoice::get_invoice_count();
+		$invoices_set = (bool) MS_Factory::get_option( 'ms_addon_invoice_set_invoice_numeric_id' );
+		if ( $total_invoices > 0 && !$invoices_set ) {
+			?>
+			<div class="ms-common-prefix">
+				<?php MS_Helper_Html::html_element( array(
+					'id' 		=> 'invoice_id_update',
+					'type' 		=> MS_Helper_Html::INPUT_TYPE_BUTTON,
+					'desc' 		=> sprintf( __( "Update ID's of current (%d) invoices.", 'membership2' ), $total_invoices ),
+					'value' 	=> __( 'Update', 'membership2' ),
+					'class' 	=> 'button-primary',
+					'data_ms' 	=> array(
+						'field' 	=> 'invoice_id_update',
+						'action' 	=> MS_Controller_Settings::AJAX_ACTION_GENERATE_INVOICE_ID,
+						'_wpnonce' 	=> true, // Nonce will be generated from 'action'
+					)
+				) );
+				MS_Helper_Html::html_element( array(
+					'type' 	=> MS_Helper_Html::TYPE_HTML_TEXT,
+					'value' => __( "Invoice ID's will be generated in a progressive order. This will depend on the total number of invoices you have in your installation", "membership2" )
+				) ); ?>
+
+			</div>
+			<?php
+		}
 		$html = ob_get_clean();
 		return $html;
 	}
