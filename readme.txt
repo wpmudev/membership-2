@@ -132,6 +132,10 @@ We provide comprehensive and guaranteed support on the <a href='http://premium.w
 * Fixed: Email notification for paid manual payment gateway
 * Fixed: Creating a new membership setting the visibility to private will hide the membership from the list
 * Fixed: Manual Gatewey not setting the gateway name in the invoice
+* Fixed: End date on expired membership mail
+* Fixed: Wording in help page activity section
+* Fixed: Creating a new membership setting the visibility to private will hide the membership from the list
+* Fixed: User with admin roles cannot be assigned for a membership from backend (admin and editors)
 
 = 4.1.1 =
 * Fixed: Menu Protection items not showing to all users except admin
