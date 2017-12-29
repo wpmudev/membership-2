@@ -1536,7 +1536,7 @@ class MS_View_Help extends MS_View {
 					<li>
 						<code>activity_title</code>
 						<?php _ex( '(text)', 'help', 'membership2' ); ?>
-						<?php _ex( 'Title of the invoices section', 'help', 'membership2' ); ?>
+						<?php _ex( 'Title of the activities section', 'help', 'membership2' ); ?>
 						<span class="ms-help-default">
 							<?php _ex( 'Default:', 'help', 'membership2' ); ?>
 							"<?php _e( 'Activities', 'membership2' ); ?>"
@@ -1554,7 +1554,7 @@ class MS_View_Help extends MS_View {
 					<li>
 						<code>show_all_activities</code>
 						<?php _ex( '(yes|no)', 'help', 'membership2' ); ?>
-						<?php _ex( 'Display the link to the complete list of users invoices', 'help', 'membership2' ); ?>
+						<?php _ex( 'Display the link to the complete list of users activities', 'help', 'membership2' ); ?>
 						<span class="ms-help-default">
 							<?php _ex( 'Default:', 'help', 'membership2' ); ?>
 							yes
@@ -1573,7 +1573,7 @@ class MS_View_Help extends MS_View {
 
 				<p><em><?php _ex( 'Example:', 'help', 'membership2' ); ?></em></p>
 				<p><code>[ms-membership-account]</code></p>
-				<p><code>[ms-membership-account show_profile_change="no" show_activity="no" limit_invoices="3" invoices_title="Last 3 invoices"]</code></p>
+				<p><code>[ms-membership-account show_profile_change="no" show_activity="no" limit_activities="3" activity_title="Last 3 activities"]</code></p>
 			</div>
 		</div>
 
