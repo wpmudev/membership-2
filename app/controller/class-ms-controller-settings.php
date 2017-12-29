@@ -342,7 +342,7 @@ class MS_Controller_Settings extends MS_Controller {
 			)
 		);
 		$settings = $this->get_model();
-		if ( ! MS_Model_Addon::is_enabled( MS_Addon_Mediafiles::ID ) || !$settings->is_advanced_media_protection ) {
+		if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MEDIA ) || !$settings->is_advanced_media_protection ) {
 			unset( $tabs[self::TAB_MEDIA] );
 		}
 
