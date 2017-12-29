@@ -232,7 +232,7 @@ class MS_Gateway_Paypalstandard_View_Button extends MS_View {
 				'value' => $trial_type,
 			);
 		}
-
+		$once_duration = false;
 		$recurring = 0;
 		switch ( $membership->payment_type ) {
 			// == RECURRING PAYMENTS
