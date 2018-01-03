@@ -488,7 +488,7 @@ class MS_Addon_Invitation_Model extends MS_Model_CustomPostType {
                 
 		if ( $user->is_member ) {
 			if( in_array( $this->id, $code ) ) {
-				$code = get_user_meta( $user_id, 'invitation_code_used', true );
+				$code = get_user_meta( $user->id, 'invitation_code_used', true );
 				$code = ! isset( $code ) || ! is_array( $code ) ? array() : $code;
 				//$code = array_filter( $code, function( $v ) { return $v != $this->id; } );
 				if( ( $key = array_search( $this->id, $code ) ) !== false ) {
