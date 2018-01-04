@@ -328,7 +328,8 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	public static function get_register_post_type_args() {
 		$args = array(
 			'label' 				=> __( 'Membership2 Subscriptions', 'membership2' ),
-            'exclude_from_search' 	=> true
+			'exclude_from_search' 	=> true,
+			'public' 				=> false,
 		);
 
 		return apply_filters(

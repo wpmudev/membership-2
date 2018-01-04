@@ -188,20 +188,6 @@ function membership2_init_app() {
 	 */
 	MS_Plugin::instance();
 
-
-	//Yoast Fix
-	add_action( 'ms_model_before_save', function( $model ) {
-		if ( is_a( $model, 'MS_Model_Relationship' ) || is_a( $model, 'MS_Model_Invoice' ) ) {
-			add_filter( 'transient_wpseo_meta_table_accessible', '__return_false' );
-		}
-	} );
-	
-	add_action( 'ms_model_after_save', function( $model ) {
-		if ( is_a( $model, 'MS_Model_Relationship' ) || is_a( $model, 'MS_Model_Invoice' ) ) {
-			remove_filter( 'transient_wpseo_meta_table_accessible', '__return_false' );
-		}
-	} );
-
 	/**
 	 * Ajax Logins
 	 *
