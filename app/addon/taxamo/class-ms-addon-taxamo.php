@@ -123,7 +123,7 @@ class MS_Addon_Taxamo extends MS_Addon {
 			// Add taxes to the price, based on users country.
 			$this->add_filter(
 				'ms_apply_taxes',
-				'apply_taxes'
+				'apply_taxes', 10, 2
 			);
 
 			// Set tax-details on a new invoice.
@@ -134,7 +134,7 @@ class MS_Addon_Taxamo extends MS_Addon {
 
 			$this->add_filter(
 				'ms_invoice_tax_name',
-				'invoice_tax_name'
+				'invoice_tax_name', 10, 2
 			);
 
 			$this->add_filter(
@@ -324,7 +324,7 @@ class MS_Addon_Taxamo extends MS_Addon {
 	 * @param  numeric $net_value Net value
 	 * @return numeric Gross value
 	 */
-	public function apply_taxes( $net_value ) {
+	public function apply_taxes( $net_value, $membership ) {
 		$gross_value = 0;
 
 		if ( is_numeric( $net_value ) ) {
@@ -355,7 +355,7 @@ class MS_Addon_Taxamo extends MS_Addon {
 	 * @param  string $name Default name (empty string)
 	 * @return string Tax display-name (e.g. 'EU Standard Tax (20 %)')
 	 */
-	public function invoice_tax_name( $rate ) {
+	public function invoice_tax_name( $rate, $invoice ) {
 		$tax = MS_Addon_Taxamo_Api::tax_info();
 
 		return $tax->rate . '% ' . $tax->name;
