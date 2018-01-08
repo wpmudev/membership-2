@@ -319,6 +319,7 @@ class MS_Addon_Profilefields extends MS_Addon {
 					foreach ( $fields as $field ) {
 						$Profile_Fields['xprofile_' . $field->id] = array(
 							'label' => $field->name,
+							'type' => $field->type
 						);
 					}
 				}
@@ -410,7 +411,25 @@ class MS_Addon_Profilefields extends MS_Addon {
 				}
 
 				if ( 'required' == $setting ) {
-					$required[$key] = $all_fields[$field]['label'];
+					
+					if( 'datebox' == $all_fields[$field]['type'] && 0 === strpos( $field, 'xprofile_' ) ){
+
+						if( function_exists( 'xprofile_get_field' ) ){
+
+							$xfield_id = substr( $field, 9 );
+							$xfield = xprofile_get_field( $xfield_id );
+
+							$required[$key . '_day'] = $all_fields[$field]['label'];
+							$required[$key . '_month'] = $all_fields[$field]['label'];
+							$required[$key . '_year'] = $all_fields[$field]['label'];
+
+						}						
+
+					}
+					else{
+						$required[$key] = $all_fields[$field]['label'];
+					}
+					
 				}
 			}
 		}
