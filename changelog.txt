@@ -4,7 +4,7 @@ Build Stamp: BUILDTIME
 
 Change Log:
 ----------------------------------------------------------------------
-1.1.2
+1.1.2 (Jan 08 2018)
 - Added: Members List Export to CSV
 - Added: Membership and Member XML import and export format
 - Added: Rest API Help docs
