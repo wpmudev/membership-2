@@ -70,6 +70,13 @@ class MS_Auth {
                                 $enforce
                             );
 						}
+
+						/**
+						 * Login filter for redirect
+						 * 
+						 * @since 1.1.2
+						 */
+						$resp['redirect'] = apply_filters( 'ms_auth_ajax_login_redirect_url', $resp['redirect'], $user_signon->ID );
 						
 						/**
 						 * After login success action
