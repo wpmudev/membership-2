@@ -624,14 +624,16 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 				if ( ! empty( $notes_pay ) ) { $invoice->add_notes( $notes_pay ); }
 				if ( ! empty( $notes_txn ) ) { $invoice->add_notes( $notes_txn ); }
 
-				if ( $success ) {
-					$invoice->pay_it( self::ID, $external_id );
-				} elseif ( ! empty( $status ) ) {
-					$invoice->status = $status;
-					$invoice->changed();
-				}
+				if ( !$ignore ) {
+					if ( $success ) {
+						$invoice->pay_it( self::ID, $external_id );
+					} elseif ( ! empty( $status ) ) {
+						$invoice->status = $status;
+						$invoice->changed();
+					}
 
-				$invoice->save();
+					$invoice->save();
+				}
 
 				do_action(
 					'ms_gateway_paypalstandard_payment_processed_' . $status,
