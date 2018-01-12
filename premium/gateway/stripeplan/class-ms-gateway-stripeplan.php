@@ -439,6 +439,9 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 																	$invoice->status 		= MS_Model_Invoice::STATUS_PAID;
 																	$invoice->pay_it( self::ID, $stripe_invoice->id );
 																	$invoice->add_notes( $notes );
+																	if ( defined( 'MS_STRIPE_PLAN_RENEWAL_MAIL' ) &&  MS_STRIPE_PLAN_RENEWAL_MAIL ) {
+																		MS_Model_Event::save_event( MS_Model_Event::TYPE_MS_RENEWED, $subscription );
+																	}
 																	$log = true;
 																}
 																$invoice->save();
