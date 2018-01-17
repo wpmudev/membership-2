@@ -69,7 +69,7 @@ class MS_Addon_BuddyPress extends MS_Addon {
 				$this->get_setting( 'buddypress_registration' )
 			);
                         
-                        $this->buddypress_xprofile = lib3()->is_true(
+            $this->buddypress_xprofile = lib3()->is_true(
 				$this->get_setting( 'buddypress_xprofile' )
 			);
 
