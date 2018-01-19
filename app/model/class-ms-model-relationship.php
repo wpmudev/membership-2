@@ -3078,7 +3078,14 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 				} else {
 					// set to false to avoid creation of new invoice
 					$invoice = $this->get_current_invoice(false);
+					if ( is_null( $invoice ) ) {
+						$invoice = $this->get_previous_invoice();
+					}
+					if ( is_null( $invoice ) ) {
+						return;
+					}
 				}
+
 				/**
 				 * Todo: Move the advanced communication code into some addon
 				 *       file and use this action to trigger the messages.
