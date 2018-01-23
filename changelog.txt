@@ -5,6 +5,7 @@ Build Stamp: BUILDTIME
 Change Log:
 ----------------------------------------------------------------------
 1.1.3
+- Improved: Check if membership is free on trial periods
 - Fixed: Login page script loading
 - Fixed: Login page login_footer action to load in wp_footer
 - Fixed: Protection rule for All BuddyPress Pages is not protecting pages like activity, groups, members.
