@@ -237,7 +237,7 @@ class MS_View_Shortcode_Login extends MS_View {
 			style="<?php esc_attr_e( $show_form ); ?>">
 
 			<div class="form">
-				<?php wp_nonce_field( 'ms-ajax-login' ); ?>
+				<?php wp_nonce_field( 'ms-ajax-login', '_membership_auth_nonce' ); ?>
 				<?php echo apply_filters( 'login_form_top', '', $args ); ?>
 				<?php if ( 'top' === $nav_pos ) : ?>
 					<div class="status" style="display:none"></div>
@@ -371,7 +371,7 @@ class MS_View_Shortcode_Login extends MS_View {
 			class="<?php esc_attr_e( $form_class ); ?>"
 			style="<?php esc_attr_e( $show_form ); ?>">
 			<div class="form">
-				<?php wp_nonce_field( 'ms-ajax-lostpass' ); ?>
+				<?php wp_nonce_field( 'ms-ajax-lostpass', '_membership_auth_lostpass_nonce' ); ?>
 				<?php echo apply_filters( 'lostpass_form_top', '', $args ); ?>
 				<?php if ( 'top' === $nav_pos ) : ?>
 					<div class="status" style="display:none"></div>

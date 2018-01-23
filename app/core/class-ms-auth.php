@@ -22,7 +22,7 @@ class MS_Auth {
 
                 function ms_ajax_login() {
                     $resp = array();
-                    check_ajax_referer( 'ms-ajax-login' );
+                    check_ajax_referer( 'ms-ajax-login', '_membership_auth_nonce' );
 
                     if ( empty( $_POST['username'] ) && ! empty( $_POST['log'] ) ) {
                         $_POST['username'] = $_POST['log'];

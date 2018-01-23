@@ -88,7 +88,7 @@ class MS_Controller_Dialog extends MS_Controller {
 		$resp = array();
 
 		// First check the nonce, if it fails the function will break
-		check_ajax_referer( 'ms-ajax-lostpass' );
+		check_ajax_referer( 'ms-ajax-lostpass', '_membership_auth_lostpass_nonce' );
 
 		// Nonce is checked, get the POST data and sign user on
 		$errors = new WP_Error();
