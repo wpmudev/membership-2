@@ -18,8 +18,12 @@ class MS_Helper_Cache extends MS_Helper {
 	 * @return bool
 	 */
 	public static function is_query_cache_enabled() {
-		$settings = MS_Factory::load( 'MS_Model_Settings' );
-		return $settings->enable_query_cache;
+		$simulate = MS_Factory::load( 'MS_Model_Simulate' );
+		if ( !$simulate->is_simulating() ) {
+			$settings = MS_Factory::load( 'MS_Model_Settings' );
+			return $settings->enable_query_cache;
+		}
+		return false;
 	}
 
 	/**
