@@ -1193,7 +1193,7 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 						// Update the current_invoice_number counter.
 						$subscription->current_invoice_number = max(
 							$subscription->current_invoice_number,
-							$this->invoice_number + 1
+							$this->invoice_number
 						);
 					}
 
