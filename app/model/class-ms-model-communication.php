@@ -1073,7 +1073,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 						$current_delay 	= MS_Helper_Period::subtract_dates(
 							$now,
 							$sent_date,
-							HOURS_IN_SECONDS
+							HOUR_IN_SECONDS
 						);
 
 						$can_add = $current_delay >= $pause_hours;

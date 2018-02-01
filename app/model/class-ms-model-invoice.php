@@ -886,13 +886,14 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 
 		$invoice = null;
 		$member = MS_Factory::load( 'MS_Model_Member', $subscription->user_id );
-                
-		if( isset( $_SESSION['m2_status_check'] ) && $_SESSION['m2_status_check'] == 'inv' ){
+		
+		$status_check = MS_Factory::get_option( 'm2_status_check' );
+		if ( isset( $status_check ) && $status_check == 'inv' ) {
 			$invoice_status = self::STATUS_BILLED;
-		}else{
+		} else {
 			$invoice_status = self::STATUS_NEW;
 		}
-		unset( $_SESSION['m2_status_check'] );
+		MS_Factory::delete_option( 'm2_status_check' );
                 
 		$notes = array();
 
@@ -1193,7 +1194,7 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 						// Update the current_invoice_number counter.
 						$subscription->current_invoice_number = max(
 							$subscription->current_invoice_number,
-							$this->invoice_number
+							$this->invoice_number + 1
 						);
 					}
 
