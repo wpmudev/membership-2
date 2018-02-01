@@ -5,6 +5,7 @@ Build Stamp: BUILDTIME
 Change Log:
 ----------------------------------------------------------------------
 1.1.3
+- Added: ms_auth_ajax_login_can_login filter to select usernames allowed to login
 - Improved: Check if membership is free on trial periods
 - Improved: Unique nonce field names for login and registration forms
 - Fixed: Login page script loading
