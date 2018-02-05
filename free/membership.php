@@ -197,6 +197,17 @@ function membership2_init_app() {
 	
 }
 
+
+if ( ! function_exists( 'is_plugin_active' ) ) {
+	include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
+}
+
+
+if ( is_plugin_active( 'membership-pro/membership2.php' ) ) {
+	return;
+}
+
+
 function membership2_init_old_app() {
 	require_once 'app_old/membership.php';
 }

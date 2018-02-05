@@ -218,4 +218,13 @@ function membership2_init_app() {
 	MS_Auth::check_ms_ajax();
 }
 
+if ( ! function_exists( 'is_plugin_active' ) ) {
+	include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
+}
+
+//Deactivate free
+if ( is_plugin_active( 'membership/membership.php' ) ) {
+	deactivate_plugins( array( 'membership/membership.php' ) );
+}
+
 membership2_init_app();
