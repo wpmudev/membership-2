@@ -13,6 +13,7 @@ Change Log:
 - Fixed: Login page login_footer action to load in wp_footer
 - Fixed: Protection rule for All BuddyPress Pages is not protecting pages like activity, groups, members.
 - Fixed: Duplicate memberships when subscribed to a previous membership
+- Fixed: Category protection should not check for pages
 
 1.1.2 (Jan 08 2018)
 - Added: Members List Export to CSV

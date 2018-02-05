@@ -61,12 +61,10 @@ class MS_Rule_Category_Model extends MS_Rule {
 			$post_type = self::get_post_type( $wp_query );
 
 
-			/*
-			 * '' .. when post type is unknown assume 'post'
-			 * 'post' .. obviously protect certain posts
-			 * 'page' .. when front page is set to static page
+			/**
+			 * Only post. Pages dont need protection
 			 */
-			if ( in_array( $post_type, array( 'post', 'page', '' ) ) ) {
+			if ( in_array( $post_type, array( 'post' ) ) ) {
 				// This list is already filtered (see the get_terms filter!)
 				$contents = get_categories( 'get=all' );
 				$categories = array();
