@@ -22,6 +22,13 @@ class MS_Rule_Category_Model extends MS_Rule {
 	static public $All_Categories;
 
 	/**
+	 * Protected categories
+	 * 
+	 * @var array
+	 */
+	static public $protected_categories = array();
+
+	/**
 	 * Returns the active flag for a specific rule.
 	 * State depends on Add-on
 	 *
@@ -42,6 +49,7 @@ class MS_Rule_Category_Model extends MS_Rule {
 
 		$this->add_action( 'pre_get_posts', 'protect_posts', 98 );
 		$this->add_filter( 'get_terms', 'protect_categories', 99, 2 );
+		$this->add_filter( 'ms_rule_post_model_has_access', 'override_ms_rule_post_model_has_access', 999, 3 );
 	}
 
 	/**
@@ -118,9 +126,48 @@ class MS_Rule_Category_Model extends MS_Rule {
 			}
 		}
 
+		self::$protected_categories = $new_terms;
+
 		return apply_filters(
 			'ms_rule_category_model_protect_categories',
 			$new_terms
+		);
+	}
+
+	/**
+	 * Verify access to the current content overwriting page rule
+	 *
+	 *
+	 * @since  1.1.3
+	 *
+	 * @param bool $has_access If user has access or not
+	 * @param int $id The content post ID to verify access.
+	 * @param MS_Rule_Post_Model $obj Instance of MS_Rule_Post_Model
+	 *
+	 * @return bool|null True if has access, false otherwise.
+	 *     Null means: Rule not relevant for current page.
+	 */
+	public function override_ms_rule_post_model_has_access( $has_access, $id, $obj ) {
+		if ( ! empty( $id )  && $id > 0 ) {
+			$post = get_post( $id );
+			if ( is_a( $post, 'WP_Post' )
+				|| ( ! empty( $post->post_type ) && 'post' == $post->post_type )
+			)  {
+				$categories = wp_get_post_categories( $id );
+				if ( !empty( $categories ) ) {
+					foreach ( $categories as $category ) {
+						if ( !$this->has_access( $category, true, true ) ) {
+							$has_access = false;
+						}
+					}
+				}
+			}
+		}
+		return apply_filters(
+			'ms_rule_category_overwrite_page_has_access',
+			$has_access,
+			$id,
+			$obj
 		);
 	}
 

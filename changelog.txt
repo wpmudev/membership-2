@@ -14,6 +14,7 @@ Change Log:
 - Fixed: Protection rule for All BuddyPress Pages is not protecting pages like activity, groups, members.
 - Fixed: Duplicate memberships when subscribed to a previous membership
 - Fixed: Category protection should not check for pages
+- Fixed: Category protection of post when individual post protection addon is enabled
 
 1.1.2 (Jan 08 2018)
 - Added: Members List Export to CSV

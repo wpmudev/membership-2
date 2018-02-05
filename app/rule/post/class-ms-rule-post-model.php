@@ -78,7 +78,7 @@ class MS_Rule_Post_Model extends MS_Rule {
 			&& ( ! isset( $wp_query->query_vars['post_type'] )
 				|| in_array( $wp_query->query_vars['post_type'], array( 'post', '' ) )
 			) )
-                        || is_home()
+            || is_home()
 		) {
 			foreach ( $this->rule_value as $id => $value ) {
 				if ( $this->has_access( $id ) ) {
