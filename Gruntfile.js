@@ -196,7 +196,7 @@ module.exports = function( grunt ) {
 			pot_dir: 'languages/', // With trailing slash.
 			textdomain: 'membership2',
 		},
-
+		
 		plugin_dir: 'membership/',
 		plugin_file: 'membership2.php',
 		free_plugin_file: './free/membership.php'
@@ -440,7 +440,7 @@ module.exports = function( grunt ) {
 				expand: true,
 				cwd: 'release/<%= pkg.version %>-pro/',
 				src: [ '**/*' ],
-				dest: conf.plugin_dir
+				dest: conf.plugin_dir + "-pro"
 			},
 			free: {
 				options: {

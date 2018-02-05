@@ -8,9 +8,11 @@ Change Log:
 - Added: ms_auth_ajax_login_can_login filter to select usernames allowed to login
 - Improved: Check if membership is free on trial periods
 - Improved: Unique nonce field names for login and registration forms
+- Fixed: Update issues between pro and free
 - Fixed: Login page script loading
 - Fixed: Login page login_footer action to load in wp_footer
 - Fixed: Protection rule for All BuddyPress Pages is not protecting pages like activity, groups, members.
+- Fixed: Duplicate memberships when subscribed to a previous membership
 
 1.1.2 (Jan 08 2018)
 - Added: Members List Export to CSV
