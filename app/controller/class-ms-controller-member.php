@@ -905,7 +905,7 @@ class MS_Controller_Member extends MS_Controller {
         
         $new_columns = $columns_4 + array( 'membership' => __('Membership' , 'membership2' ) ) + $columns_5;
 	
-        return $new_columns;
+        return apply_filters( 'ms_controller_member_manage_users_columns', $new_columns, $columns );
 	}
 
 	/**
@@ -955,7 +955,7 @@ class MS_Controller_Member extends MS_Controller {
 			}
 
 		}
-        return $value;
+        return apply_filters( 'ms_controller_member_manage_users_custom_column', $value, $column_name, $user_id );
 	}
 
 }
