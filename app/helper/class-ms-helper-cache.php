@@ -13,17 +13,22 @@ class MS_Helper_Cache extends MS_Helper {
 	/**
 	 * Check if query cache is enabled
 	 * 
+	 * @param bool $default_enable - Optional enable b default
+	 * 
 	 * @since 1.1.3
 	 * 
 	 * @return bool
 	 */
-	public static function is_query_cache_enabled() {
-		$simulate = MS_Factory::load( 'MS_Model_Simulate' );
-		if ( !$simulate->is_simulating() ) {
-			$settings = MS_Factory::load( 'MS_Model_Settings' );
-			return $settings->enable_query_cache;
+	public static function is_query_cache_enabled( $default_enable = false ) {
+		if ( !$default_enable ) {
+			$simulate = MS_Factory::load( 'MS_Model_Simulate' );
+			if ( !$simulate->is_simulating() ) {
+				$settings = MS_Factory::load( 'MS_Model_Settings' );
+				return $settings->enable_query_cache;
+			}
+			return false;
 		}
-		return false;
+		return true;
 	}
 
 	/**
@@ -54,9 +59,10 @@ class MS_Helper_Cache extends MS_Helper {
 	 * 
 	 * @param object $results - the query results
 	 * @param string $key - query key
+	 * @param bool $default_enable - Optional enable b default
 	 */
-	public static function query_cache( $results, $key ) {
-		if ( self::is_query_cache_enabled() ) {
+	public static function query_cache( $results, $key, $default_enable = false ) {
+		if ( self::is_query_cache_enabled( $default_enable ) ) {
 			$duration = 12 * HOUR_IN_SECONDS;
 			if ( defined( 'MS_QUERY_CACHE_DURATION' ) && is_int( MS_QUERY_CACHE_DURATION ) ) {
 				$duration = MS_QUERY_CACHE_DURATION;
@@ -71,12 +77,13 @@ class MS_Helper_Cache extends MS_Helper {
 	 * @since  1.1.3
 	 * 
 	 * @param  string $key cache Key
+	 * @param bool $default_enable - Optional enable b default
 	 * 
 	 * @return mixed cache value
 	 */
-	public static function get_transient( $key ) {
+	public static function get_transient( $key, $default_enable = false ) {
 		$results = wp_cache_get( $key, self::CACHE_GROUP );
-		if ( self::is_query_cache_enabled() && !empty( $results ) ) {
+		if ( self::is_query_cache_enabled( $default_enable ) && !empty( $results ) ) {
 			return $results;
 		} else {
 			self::delete_transient( $key );

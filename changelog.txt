@@ -8,6 +8,7 @@ Change Log:
 - Added: ms_auth_ajax_login_can_login filter to select usernames allowed to login
 - Improved: Check if membership is free on trial periods
 - Improved: Unique nonce field names for login and registration forms
+- Improved: Cache enabled by default on media protection
 - Fixed: Update issues between pro and free
 - Fixed: Login page script loading
 - Fixed: Login page login_footer action to load in wp_footer

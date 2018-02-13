@@ -605,7 +605,7 @@ class MS_Rule_Media_Model extends MS_Rule {
 			} else {
 				$member 			= MS_Model_Member::get_current_member();
 				$cache_key 			= 'ms_media_protection_member_'.$member->id.'_'.$attachment_id;
-				$member_has_access 	= MS_Helper_Cache::get_transient( $cache_key );
+				$member_has_access 	= MS_Helper_Cache::get_transient( $cache_key, true );
 				if ( $member_has_access ) {
 					$access = $member_has_access;
 				} else {
@@ -628,7 +628,7 @@ class MS_Rule_Media_Model extends MS_Rule {
 			 */
 			$member 			= MS_Model_Member::get_current_member();
 			$cache_key 			= 'ms_media_protection_addon_member_'.$member->id.'_'.$attachment_id;
-			$member_has_access 	= MS_Helper_Cache::get_transient( $cache_key );
+			$member_has_access 	= MS_Helper_Cache::get_transient( $cache_key, true );
 
 			if ( $member_has_access ) {
 				$access = $member_has_access;
