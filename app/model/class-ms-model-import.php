@@ -705,11 +705,14 @@ class MS_Model_Import extends MS_Model {
 				$membership->price,
 				'admin',
 				'imported'
-			);
-
-			$subscription->expire_date = $obj->end;
-			$subscription->save();
+			);			
 		}
+
+		//Re-saving the expire date, as $subscription->add_payment and import_invoice()
+		//call MS_Model_Relationship::calc_expire_date
+		$subscription->expire_date = $obj->end;
+		$subscription->save();
+
 	}
 
 	/**
