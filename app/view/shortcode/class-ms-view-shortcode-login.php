@@ -127,20 +127,6 @@ class MS_View_Shortcode_Login extends MS_View {
 					$html .= apply_filters( 'register', $link );
 				}
 			}
-
-			// Load the ajax script that handles the Ajax login functions.
-			wp_enqueue_script( 'ms-ajax-login' );
-
-			lib3()->ui->data(
-				'ms_ajax_login',
-				array(
-					'loginmessage' 		=> __( 'Please log in to access this page.', 'membership2' ),
-					'resetmessage' 		=> __( 'Please enter your details to reset your password', 'membership2' ),
-					'ajaxurl' 			=> admin_url( 'admin-ajax.php', is_ssl() ? 'https' : 'http' ),
-					'loadingmessage' 	=> __( 'Please wait...', 'membership2' ),
-					'errormessage' 		=> __( 'Request failed, please try again.', 'membership2' ),
-				)
-			);
 		}
 		// Remove linebreaks to bypass the "wpautop" filter.
 		$html = str_replace( array( "\r\n", "\r", "\n" ), '', $html );
@@ -251,7 +237,7 @@ class MS_View_Shortcode_Login extends MS_View {
 			style="<?php esc_attr_e( $show_form ); ?>">
 
 			<div class="form">
-				<?php wp_nonce_field( 'ms-ajax-login' ); ?>
+				<?php wp_nonce_field( 'ms-ajax-login', '_membership_auth_nonce' ); ?>
 				<?php echo apply_filters( 'login_form_top', '', $args ); ?>
 				<?php if ( 'top' === $nav_pos ) : ?>
 					<div class="status" style="display:none"></div>
@@ -327,19 +313,11 @@ class MS_View_Shortcode_Login extends MS_View {
 			</div>
 		</form>
 		<?php
-
-		/**
-		 * Fire the login-footer action, which is usually done in the page footer
-		 * of the wp-login.php page. This hook is used by other plugins to include
-		 * custom javascript or CSS on the login page.
-		 *
-		 * We need it specifically for our Domain Mapping plugin.
-		 *
-		 * @since  1.0.3.2
-		 */
-		do_action( 'login_footer' );
-
 		$html = ob_get_clean();
+		/**
+		 * Footer actions
+		 */
+		$this->run_action( 'wp_footer', 'login_footer' );
 		$html = apply_filters( 'ms_compact_code', $html );
 		return $html;
 	}
@@ -393,7 +371,7 @@ class MS_View_Shortcode_Login extends MS_View {
 			class="<?php esc_attr_e( $form_class ); ?>"
 			style="<?php esc_attr_e( $show_form ); ?>">
 			<div class="form">
-				<?php wp_nonce_field( 'ms-ajax-lostpass' ); ?>
+				<?php wp_nonce_field( 'ms-ajax-lostpass', '_membership_auth_lostpass_nonce' ); ?>
 				<?php echo apply_filters( 'lostpass_form_top', '', $args ); ?>
 				<?php if ( 'top' === $nav_pos ) : ?>
 					<div class="status" style="display:none"></div>
@@ -666,5 +644,39 @@ class MS_View_Shortcode_Login extends MS_View {
 		}
 
 		return $Reset_Result;
+	}
+
+	public function enqueue_scripts() {
+		// Load the ajax script that handles the Ajax login functions.
+		wp_enqueue_script( 'ms-ajax-login' );
+
+		lib3()->ui->data(
+			'ms_ajax_login',
+			array(
+				'loginmessage' 		=> __( 'Please log in to access this page.', 'membership2' ),
+				'resetmessage' 		=> __( 'Please enter your details to reset your password', 'membership2' ),
+				'ajaxurl' 			=> admin_url( 'admin-ajax.php', is_ssl() ? 'https' : 'http' ),
+				'loadingmessage' 	=> __( 'Please wait...', 'membership2' ),
+				'errormessage' 		=> __( 'Request failed, please try again.', 'membership2' ),
+			)
+		);
+	}
+
+	/**
+	 * Login footer actions
+	 * 
+	 * @since 1.1.3
+	 */
+	public function login_footer() {
+		/**
+		 * Fire the login-footer action, which is usually done in the page footer
+		 * of the wp-login.php page. This hook is used by other plugins to include
+		 * custom javascript or CSS on the login page.
+		 *
+		 * We need it specifically for our Domain Mapping plugin.
+		 *
+		 * @since  1.0.3.2
+		 */
+		do_action( 'login_footer' );
 	}
 }

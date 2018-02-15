@@ -53,6 +53,8 @@ class MS_View extends MS_Hooker {
 			$Simulate = MS_Factory::load( 'MS_Model_Simulate' );
 			self::$is_simulating = $Simulate->is_simulating();
 		}
+
+		$this->run_action( 'wp_enqueue_scripts', 'enqueue_scripts' );
 	}
 
 	/**

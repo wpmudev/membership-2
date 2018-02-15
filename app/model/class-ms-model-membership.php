@@ -1660,15 +1660,18 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 * @return bool
 	 */
 	public function has_trial() {
-		$result = $this->trial_period_enabled;
+		if ( !$this->is_free ) {
+			$result = $this->trial_period_enabled;
 
-		if ( $result ) {
-			if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_TRIAL ) ) {
-				$result = false;
+			if ( $result ) {
+				if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_TRIAL ) ) {
+					$result = false;
+				}
 			}
-		}
 
-		return $result;
+			return $result;
+		}
+		return false;
 	}
 
 	/**

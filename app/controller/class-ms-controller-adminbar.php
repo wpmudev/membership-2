@@ -83,6 +83,9 @@ class MS_Controller_Adminbar extends MS_Controller {
 			$this->add_action( 'admin_enqueue_scripts', 'enqueue_scripts' );
 			$this->add_action( 'wp_enqueue_scripts', 'enqueue_scripts' );
 		}
+		$this->add_action( 'admin_head', 'custom_adminbar_styles' );
+		$this->add_action( 'wp_head', 'custom_adminbar_styles' );
+
 	}
 
 	/**
@@ -97,13 +100,19 @@ class MS_Controller_Adminbar extends MS_Controller {
 		if ( MS_Model_Member::is_admin_user()
 			&& MS_Plugin::is_enabled()
 			&& ! is_network_admin()
-			&& MS_Model_Simulate::can_simulate()
 		) {
-			if ( $this->simulate->is_simulating() ) {
-				$this->add_detail_nodes();
-			} else {
-				$this->add_test_membership_node();
+			if ( MS_Model_Simulate::can_simulate() ) {
+				if ( $this->simulate->is_simulating() ) {
+					$this->add_detail_nodes();
+				} else {
+					$this->add_test_membership_node();
+				}
 			}
+			
+			if ( MS_Helper_Cache::is_query_cache_enabled() ) {
+				$this->add_cache_notice();
+			}
+
 		} else if ( ! MS_Plugin::is_enabled() ) {
 			$this->add_unprotected_node();
 		}
@@ -264,6 +273,28 @@ class MS_Controller_Adminbar extends MS_Controller {
 	}
 
 	/**
+	 * Add cache notice on admin bar
+	 * 
+	 * @since 1.1.3
+	 */
+	private function add_cache_notice() {
+		global $wp_admin_bar;
+
+		$wp_admin_bar->add_menu(
+			array(
+				'id'    => 'membership-cache-notice',
+				'title' => __( 'Membership Cache Enabled', 'membership2' ),
+				'href'  => '#',
+				'meta'   => array(
+					'class'    => 'membership-cache-notice',
+					'title'    => __( 'Membership is enabled to cache data', 'membership2' ),
+					'tabindex' => '1',
+				)
+			)
+		);
+	}
+
+	/**
 	 * Add membership description nodes.
 	 *
 	 * @since  1.0.0
@@ -378,6 +409,25 @@ class MS_Controller_Adminbar extends MS_Controller {
 		wp_enqueue_script( 'jquery-ui-datepicker' );
 
 		wp_enqueue_style( 'ms-public' );
+	}
+
+	/**
+	 * Add in-line css to admin head
+	 * 
+	 * @since 1.1.3
+	 * 
+	 * @return string
+	 */
+	public function custom_adminbar_styles() {
+		?>
+		<style type="text/css">
+		#wpadminbar .ms-test-memberships{
+			color:#f0f0f0;
+			background-color: #0073aa;
+			font-size: 10px !important;
+		}
+		</style>
+		<?php
 	}
 
 }

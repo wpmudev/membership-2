@@ -84,6 +84,10 @@ class MS_Gateway_Paypalstandard_View_Button extends MS_View {
 		$invoice 			= $subscription->get_current_invoice();
 		$regular_invoice 	= null;
 		$settings 			= MS_Factory::load( 'MS_Model_Settings' );
+		$membership_price 	= $once_duration ? $invoice->amount : $invoice->total;
+		if ( $membership_price <= 0 ) {
+			return;
+		}
 
 		$nonce 				= wp_create_nonce( $gateway->id. '_' . $subscription->id );
 		$cancel_url 		= MS_Model_Pages::get_page_url( MS_Model_Pages::MS_PAGE_REGISTER );

@@ -886,13 +886,14 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 
 		$invoice = null;
 		$member = MS_Factory::load( 'MS_Model_Member', $subscription->user_id );
-                
-		if( isset( $_SESSION['m2_status_check'] ) && $_SESSION['m2_status_check'] == 'inv' ){
+		
+		$status_check = MS_Factory::get_option( 'm2_status_check' );
+		if ( isset( $status_check ) && $status_check == 'inv' ) {
 			$invoice_status = self::STATUS_BILLED;
-		}else{
+		} else {
 			$invoice_status = self::STATUS_NEW;
 		}
-		unset( $_SESSION['m2_status_check'] );
+		MS_Factory::delete_option( 'm2_status_check' );
                 
 		$notes = array();
 
@@ -1069,6 +1070,24 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 			 * All changes above are also saved at the end of changed()
 			 */
 			$this->changed();
+		}
+
+		//remove other memberships
+		//Safety ccheck incase other membership is not removed
+		if ( !MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MULTI_MEMBERSHIPS ) ) {
+			$member 				= $subscription->get_member();
+			$cur_membership 		= $subscription->get_membership();
+			$all_member_memberships = $member->get_membership_ids();
+
+			foreach ( $all_member_memberships as $member_membership_id ) {
+
+				if ( $member_membership_id == $cur_membership->id ) {
+					continue;
+				}
+
+				$member->cancel_membership( $member_membership_id );
+				$member->save();
+			}
 		}
 
 		/**

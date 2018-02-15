@@ -546,12 +546,13 @@ class MS_Model_Addon extends MS_Model_Option {
 			),
 		);
 
-		// New since 1.1
+		/* start:pro */
 		$list[ self::ADDON_ADMINSIDE ] = (object) array(
 			'name' 			=> __( 'Admin Side Protection', 'membership2' ),
 			'description' 	=> __( 'Control the pages and even Meta boxes that members can access on the admin side.', 'membership2' ),
 			'icon' 			=> 'dashicons dashicons-admin-network',
 		);
+		/* end:pro */
 
 		$list[ self::ADDON_MEMBERCAPS ] = (object) array(
 			'name' 			=> __( 'Member Capabilities', 'membership2' ),

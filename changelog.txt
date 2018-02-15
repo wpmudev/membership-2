@@ -4,6 +4,19 @@ Build Stamp: BUILDTIME
 
 Change Log:
 ----------------------------------------------------------------------
+1.1.3
+- Added: ms_auth_ajax_login_can_login filter to select usernames allowed to login
+- Improved: Check if membership is free on trial periods
+- Improved: Unique nonce field names for login and registration forms
+- Improved: Cache enabled by default on media protection
+- Fixed: Update issues between pro and free
+- Fixed: Login page script loading
+- Fixed: Login page login_footer action to load in wp_footer
+- Fixed: Protection rule for All BuddyPress Pages is not protecting pages like activity, groups, members.
+- Fixed: Duplicate memberships when subscribed to a previous membership
+- Fixed: Category protection should not check for pages
+- Fixed: Category protection of post when individual post protection addon is enabled
+
 1.1.2 (Jan 08 2018)
 - Added: Members List Export to CSV
 - Added: Membership and Member XML import and export format

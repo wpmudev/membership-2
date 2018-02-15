@@ -752,8 +752,8 @@ class MS_Model_Plugin extends MS_Model {
 			wp_clear_scheduled_hook( $hook );
 			$this->setup_cron_services( $hook );
 		}
-                
-        $_SESSION['m2_status_check'] = 'inv';
+		
+		MS_Factory::update_option( 'm2_status_check', 'inv' );
 
 		// Perform the actual status checks!
 		foreach ( $subscriptions as $subscription ) {

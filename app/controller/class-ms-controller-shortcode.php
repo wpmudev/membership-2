@@ -17,7 +17,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 	public function __construct() {
 		parent::__construct();
 		$this->run_action( 'init', 'init' );
-                // Enqueue scripts.
+        // Enqueue scripts.
 		$this->add_action( 'wp_enqueue_scripts', 'enqueue_scripts' );
 	}
 
