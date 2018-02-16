@@ -372,7 +372,7 @@ class MS_Controller_Plugin extends MS_Controller {
 		 */
 		add_menu_page(
 			__( 'Membership 2', 'membership2' ), // no i18n!
-			__( 'Membership 2', 'membership2' ), // no i18n!
+			'Membership 2', // no i18n!. Translating menu could affect screen ids
 			$this->capability,
 			self::$base_slug,
 			null,
