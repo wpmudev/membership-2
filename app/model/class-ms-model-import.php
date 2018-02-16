@@ -708,6 +708,8 @@ class MS_Model_Import extends MS_Model {
 			);			
 		}
 
+		//Re-saving the start date as it gets updated to current date
+		$subscription->start_date = $obj->start;
 		//Re-saving the expire date, as $subscription->add_payment and import_invoice()
 		//call MS_Model_Relationship::calc_expire_date
 		$subscription->expire_date = $obj->end;
