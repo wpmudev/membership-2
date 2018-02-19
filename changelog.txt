@@ -17,6 +17,7 @@ Change Log:
 - Fixed: Duplicate memberships when subscribed to a previous membership
 - Fixed: Category protection should not check for pages
 - Fixed: Category protection of post when individual post protection addon is enabled
+- Fixed: Minor UI fixes
 
 1.1.2 (Jan 08 2018)
 - Added: Members List Export to CSV

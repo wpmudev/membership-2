@@ -820,7 +820,7 @@ class MS_Controller_Frontend extends MS_Controller {
 				$data['member'] = $member;
 				$data['action'] = $action;
 				$view->data = apply_filters( 'ms_view_frontend_profile_data', $data, $this );
-				$view->add_filter( 'the_content', 'to_html', 1 );
+				$view->add_filter( 'the_content', 'to_html', 10 );
 				break;
 
 			case self::ACTION_VIEW_INVOICES:
@@ -834,7 +834,7 @@ class MS_Controller_Frontend extends MS_Controller {
 					$data,
 					$this
 				);
-				$view->add_filter( 'the_content', 'to_html', 1 );
+				$view->add_filter( 'the_content', 'to_html', 10 );
 				break;
 
 			case self::ACTION_VIEW_ACTIVITIES:
@@ -851,7 +851,7 @@ class MS_Controller_Frontend extends MS_Controller {
 					$data,
 					$this
 				);
-				$view->add_filter( 'the_content', 'to_html', 1 );
+				$view->add_filter( 'the_content', 'to_html', 10 );
 				break;
 
 			case self::ACTION_VIEW_RESETPASS:
