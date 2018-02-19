@@ -51,7 +51,7 @@
 }
 
 #ms-taxamo-wrapper .modal-header {
-	height: 25px;
+	height: 50px;
 	padding: 15px;
 	border-bottom: 1px solid #E5E5E5;
 	position: relative;
@@ -84,7 +84,7 @@
 
 #ms-taxamo-wrapper .modal-footer {
 	position: absolute;
-	bottom: 0;
+	bottom: 35px;
 	left: 0;
 	right: 0;
 	height: 35px;

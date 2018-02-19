@@ -628,7 +628,7 @@ class MS_Controller_Frontend extends MS_Controller {
 			self::$register_errors = $e->getMessage();
 
 			// step back
-			$this->add_action( 'the_content', 'register_form', 1 );
+			$this->add_action( 'the_content', 'register_form', 10 );
 			do_action(
 				'ms_controller_frontend_register_user_error',
 				self::$register_errors
@@ -866,7 +866,7 @@ class MS_Controller_Frontend extends MS_Controller {
 				$view = MS_Factory::create( 'MS_View_Shortcode_Login' );
 				$view->data = array( 'action' => 'resetpass' );
 
-				$view->add_filter( 'the_content', 'to_html', 1 );
+				$view->add_filter( 'the_content', 'to_html', 10 );
 				break;
 
 			default:
