@@ -180,6 +180,7 @@ class MS_View_Billing_List extends MS_View {
 			?>
 			<div>
 				<?php
+				$buttons = apply_filters( 'ms_view_billing_list_buttons', $buttons, $this );
 				foreach ( $buttons as $button ) {
 					MS_Helper_Html::html_element( $button );
 				}
@@ -187,10 +188,12 @@ class MS_View_Billing_List extends MS_View {
 			</div>
 			<?php
 			$listview->views();
+			add_action( 'ms_view_billing_list_before_search', $module, $this );
 			$listview->search_box(
 				__( 'User', 'membership2' ),
 				'search'
 			);
+			add_action( 'ms_view_billing_list_after_search', $module, $this );
 			?>
 			<form action="" method="post">
 				<?php $listview->display(); ?>

@@ -484,7 +484,7 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 			}
 		}
 
-		return $args;
+		return apply_filters( 'ms_model_invoice_get_query_args', $args );
 	}
 
 	/**
