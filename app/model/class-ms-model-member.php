@@ -823,6 +823,13 @@ class MS_Model_Member extends MS_Model {
 			}
 		}
 
+		$site_email = get_bloginfo( 'admin_email' );
+		if ( $site_email ) {
+			if ( !isset( $admins[ $site_email ] ) ) {
+				$admins[ $site_email ] = $site_email;
+			}
+		}
+
 		return apply_filters(
 			'ms_model_member_get_admin_user_emails',
 			$admins
