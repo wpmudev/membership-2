@@ -198,6 +198,7 @@ module.exports = function( grunt ) {
 		},
 		
 		plugin_dir: 'membership/',
+		pro_plugin_dir: 'membership-pro/',
 		plugin_file: 'membership2.php',
 		free_plugin_file: './free/membership.php'
 	};
@@ -440,7 +441,7 @@ module.exports = function( grunt ) {
 				expand: true,
 				cwd: 'release/<%= pkg.version %>-pro/',
 				src: [ '**/*' ],
-				dest: conf.plugin_dir + "-pro"
+				dest: conf.pro_plugin_dir
 			},
 			free: {
 				options: {
