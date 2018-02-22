@@ -531,6 +531,12 @@ class MS_Model_Plugin extends MS_Model {
 		if ( ! $this->member->is_normal_admin() && MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MULTI_MEMBERSHIPS ) ) {
 
 			foreach ( $this->member->subscriptions as $subscription ) {
+				/**
+				 * Dont check base memberships for multi
+				 * 
+				 * @since 1.1.3
+				 */
+				if ( $subscription->is_base() ) { continue; }
 				// Verify status of the membership.
 				// Only active, trial or canceled (until it expires) status memberships.
 				if ( ! $this->member->has_membership( $subscription->membership_id ) ) {
