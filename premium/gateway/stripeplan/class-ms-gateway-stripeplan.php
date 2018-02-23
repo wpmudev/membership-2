@@ -273,7 +273,9 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 			$settings 						= MS_Plugin::instance()->settings;
 			$plan_data['amount'] 			= absint( $membership->price * 100 );
 			$plan_data['currency'] 			= $settings->currency;
-			$plan_data['name'] 				= $membership->name;
+			$plan_data['product'] 			= array(
+				"name" => $membership->name
+			);
 			$plan_data['interval'] 			= $interval;
 			$plan_data['interval_count'] 	= $interval_count;
 			$plan_data['trial_period_days'] = $trial_days;
