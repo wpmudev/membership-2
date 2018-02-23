@@ -576,15 +576,16 @@ class MS_Model_Import extends MS_Model {
 	 *
 	 */
 	public function import_user( $obj, $membership, $status, $start, $expire ) {
-		lib3()->array->equip( $obj, 'username', 'email', 'ms_membership' );
+		lib3()->array->equip( $obj, 'username', 'email', 'ms_membership', 'firstname', 'lastname' );
 		$wpuser = get_user_by( 'email', $obj->email );
+		$member = false;
 		if ( $wpuser ) {
 			$member = MS_Factory::load( 'MS_Model_Member', $wpuser->ID );
 		} else {
-			$wpuser = wp_create_user( $obj->username, '', $obj->email );
-			if ( is_numeric( $wpuser ) ) {
-				wp_update_user( array( 'ID' => $wpuser, 'first_name' => $obj->firstname, 'last_name' => $obj->lastname ) );
-				$member = MS_Factory::load( 'MS_Model_Member', $wpuser );
+			$wpuser 	= wp_create_user( $obj->username, '', $obj->email );
+			if ( !is_wp_error( $wpuser )  && is_numeric( $wpuser ) ) {		
+				$user_id = (int) $wpuser;
+				$member = MS_Factory::load( 'MS_Model_Member', $user_id );
 			} else {
 				$this->errors[] = sprintf(
 					__( 'Could not import Member <strong>%1$s</strong> (%2$s)', 'membership2' ),
@@ -596,49 +597,51 @@ class MS_Model_Import extends MS_Model {
 				return;
 			}
 		}
-
-		$member->is_member = true;
-
-		$member->save();
-		
-		if ( $membership ) {
-			$membership_obj = MS_Factory::load(
-				'MS_Model_Membership',
-				$membership
-			);
-			if ( $membership_obj && $membership_obj->id > 0 ) {
-				$membership = $membership_obj->id;
-			} else {
-				$membership = false;
+		if ( $member ) {
+			$member->is_member 	= true;
+			$member->first_name = $obj->firstname;
+			$member->last_name 	= $obj->lastname;
+			$member->save();
+			
+			if ( $membership ) {
+				$membership_obj = MS_Factory::load(
+					'MS_Model_Membership',
+					$membership
+				);
+				if ( $membership_obj && $membership_obj->id > 0 ) {
+					$membership = $membership_obj->id;
+				} else {
+					$membership = false;
+				}
 			}
-		}
 
-		if ( !$membership ) {
-			$membership = $obj->membershipid;
-		}
+			if ( !$membership ) {
+				$membership = $obj->membershipid;
+			}
 
-		if ( $membership ) {
-			$subscription = MS_Model_Relationship::create_ms_relationship(
-				$membership,
-				$member->id
-			);
-			if ( $subscription ) {
-				$invoice 	= $subscription->get_current_invoice( false );
-				if ( $invoice ) {
-					if ( $status === MS_Model_Relationship::STATUS_ACTIVE ) {
-						$invoice->status = MS_Model_Invoice::STATUS_PAID;
-						$invoice->save();
-					} else if ( $status === MS_Model_Relationship::STATUS_CANCELED ) {
-						if ( $invoice->status !== MS_Model_Invoice::STATUS_PAID ) {
-							$invoice->status = MS_Model_Invoice::STATUS_PENDING;
+			if ( $membership ) {
+				$subscription = MS_Model_Relationship::create_ms_relationship(
+					$membership,
+					$member->id
+				);
+				if ( $subscription ) {
+					$invoice 	= $subscription->get_current_invoice( false );
+					if ( $invoice ) {
+						if ( $status === MS_Model_Relationship::STATUS_ACTIVE ) {
+							$invoice->status = MS_Model_Invoice::STATUS_PAID;
 							$invoice->save();
+						} else if ( $status === MS_Model_Relationship::STATUS_CANCELED ) {
+							if ( $invoice->status !== MS_Model_Invoice::STATUS_PAID ) {
+								$invoice->status = MS_Model_Invoice::STATUS_PENDING;
+								$invoice->save();
+							}
 						}
 					}
+					$subscription->start_date 	= $start;
+					$subscription->expire_date 	= $expire;
+					$subscription->status 		= $status;
+					$subscription->save();
 				}
-				$subscription->start_date 	= $start;
-				$subscription->expire_date 	= $expire;
-				$subscription->status 		= $status;
-				$subscription->save();
 			}
 		}
 	}

@@ -18,6 +18,7 @@ Change Log:
 - Fixed: Category protection should not check for pages
 - Fixed: Category protection of post when individual post protection addon is enabled
 - Fixed: More tag protection when multi-membership add-on is active
+- Fixed: Bulk user import first and last name
 - Fixed: Minor UI fixes
 
 1.1.2 (Jan 08 2018)
