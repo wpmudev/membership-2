@@ -2190,7 +2190,16 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 					$this->expire_date, // Extend past the current expire date.
 					true                // Grant the user a full payment interval.
 				);
-				$this->set_status( self::STATUS_ACTIVE );	
+				//$this->set_status( self::STATUS_ACTIVE );	
+				/*
+				* Instead of $this->set_status, lets simply set the status property 
+				* of subscription to active, because: 
+				* we need to set invoice to paid when called from MS_Model_Invoice::pay_it(), but 
+				* $this->set_status() calls $this->calculate_status() which requires the invoice to be paid 
+				* already, in order to set status to active
+				*/
+
+				$this->status = self::STATUS_ACTIVE;
 			}	
 		}
 
