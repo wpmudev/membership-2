@@ -703,10 +703,19 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 			'value'   => $subscription_id,
 		);
 		if ( ! empty( $status ) ) {
-			$args['meta_query']['status'] = array(
-				'key'     => 'status',
-				'value'   => $status,
-			);
+			if( is_array( $status ) ) {
+				$args['meta_query']['status'] = array(
+					'key'     => 'status',
+					'value'   => $status,
+					'compare' => 'IN'
+				);
+			}
+			else {
+				$args['meta_query']['status'] = array(
+					'key'     => 'status',
+					'value'   => $status,
+				);
+			}
 		}
 		if ( ! empty( $invoice_number ) ) {
 			$args['meta_query']['invoice_number'] = array(
