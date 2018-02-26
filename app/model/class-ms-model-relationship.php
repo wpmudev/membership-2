@@ -184,7 +184,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	 * @since  1.0.0
 	 * @var $current_invoice_number
 	 */
-	protected $current_invoice_number = 1;
+	protected $current_invoice_number = null;
 
 	/**
 	 * The moving/change/downgrade/upgrade from membership ID.
@@ -2343,6 +2343,26 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 			$this->status,
 			$this
 		);
+	}
+
+	/**
+	 * Get the current invoice number of the Subscription
+	 *
+	 * Uses MS_Model_Invoice::get_current_invoice_number only once to 
+	 * set the property $current_invoice_number
+	 *
+	 * @since  3.1.1
+	 *
+	 * @return integer The invoice number of subscription
+	 */
+	public function get_current_invoice_number() {
+		
+		if( is_null( $this->current_invoice_number ) ) {
+			$this->current_invoice_number = MS_Model_Invoice::get_current_invoice_number( $this );
+		}
+
+		return $this->current_invoice_number;
+
 	}
 
 	/**

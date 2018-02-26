@@ -736,6 +736,34 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	}
 
 	/**
+	 * Get current invoice number of a subscription.
+	 *
+	 * @since  1.1.3
+	 *
+	 * @param  MS_Model_Relationship $subscription The membership relationship.
+	 * @return Integer The invoice number
+	 */
+	public static function get_current_invoice_number( $subscription ){
+
+		$current_invoice = $invoice = self::get_invoice(
+			$subscription->id,
+			null,
+			array( 
+				self::STATUS_PAID, 
+				self::STATUS_BILLED, 
+				self::STATUS_PENDING, 
+				self::STATUS_DENIED 
+			)
+		);
+
+		if( ! empty( $current_invoice ) ){
+			return $current_invoice->invoice_number;
+		}
+
+		return $subscription->current_invoice_number;
+	}
+
+	/**
 	 * Get current member membership invoice.
 	 *
 	 * The current invoice is the not paid one. Every time a invoice is paid,
@@ -751,14 +779,14 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	public static function get_current_invoice( $subscription, $create_missing = true ) {
 		$invoice = self::get_invoice(
 			$subscription->id,
-			$subscription->current_invoice_number
+			$subscription->get_current_invoice_number()
 		);
 
 		if ( ! $invoice && $create_missing ) {
 			// Create a new invoice.
 			$invoice = self::create_invoice(
 				$subscription,
-				$subscription->current_invoice_number 
+				$subscription->get_current_invoice_number() 
 			);
 		}
 
@@ -783,14 +811,14 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	public static function get_next_invoice( $subscription, $create_missing = true ) {
 		$invoice = self::get_invoice(
 			$subscription->id,
-			$subscription->current_invoice_number + 1
+			$subscription->get_current_invoice_number() + 1
 		);
 
 		if ( ! $invoice && $create_missing ) {
 			// Create a new invoice.
 			$invoice = self::create_invoice(
 				$subscription,
-				$subscription->current_invoice_number + 1
+				$subscription->get_current_invoice_number() + 1
 			);
 		}
 
@@ -822,7 +850,7 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	public static function get_previous_invoice( $subscription, $status = null ) {
 		$invoice = self::get_invoice(
 			$subscription->id,
-			$subscription->current_invoice_number - 1,
+			$subscription->get_current_invoice_number() - 1,
 			$status
 		);
 
@@ -898,7 +926,7 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 		$notes = array();
 
 		if ( empty( $invoice_number ) ) {
-			$invoice_number = $subscription->current_invoice_number;
+			$invoice_number = $subscription->get_current_invoice_number();
 		}
 
 		$invoice = self::get_invoice( $subscription->id, $invoice_number );
@@ -938,7 +966,7 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 		$invoice->custom_invoice_id		= $total_invoices + 1;
 		// Check for trial period in the first period.
 		if ( $subscription->is_trial_eligible()
-			&& $invoice_number === $subscription->current_invoice_number
+			&& $invoice_number === $subscription->get_current_invoice_number()
 		) {
 			$invoice->trial_price 		= $membership->trial_price; // Without taxes!
 			$invoice->uses_trial 		= true;
@@ -1211,7 +1239,7 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 					if ( in_array( $membership->payment_type, $multi_invoice ) ) {
 						// Update the current_invoice_number counter.
 						$subscription->current_invoice_number = max(
-							$subscription->current_invoice_number,
+							$subscription->get_current_invoice_number(),
 							$this->invoice_number + 1
 						);
 					}
