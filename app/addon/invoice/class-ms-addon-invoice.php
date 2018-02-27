@@ -161,6 +161,7 @@ class MS_Addon_Invoice extends MS_Addon {
 	}
 
 	protected function render_settings_html( $settings ) {
+		$total_invoices = MS_Model_Invoice::get_invoice_count();
 		ob_start();
 		?>
 		<div id="ms-invoice-settings-wrapper">
@@ -176,7 +177,7 @@ class MS_Addon_Invoice extends MS_Addon {
 						$value,
 						$this->data
 					);
-					$html 				= call_user_func( $render_callback, $settings );
+					$html 				= call_user_func( $render_callback, $settings, $total_invoices );
 					$display 			= 'none;';
 					if ( $settings->invoice['sequence_type'] === $key  ) {
 						$display = 'block;';
@@ -204,7 +205,7 @@ class MS_Addon_Invoice extends MS_Addon {
 	 * 
 	 * @return string
 	 */
-	public function render_sequence_type_default( $settings ) {
+	public function render_sequence_type_default( $settings, $total_invoices ) {
 		return __( "Invoice ID's will be generated in the default order", "membership2" );
 	}
 
@@ -217,8 +218,7 @@ class MS_Addon_Invoice extends MS_Addon {
 	 * 
 	 * @return string
 	 */
-	public function render_sequence_type_progressive( $settings ) {
-		$total_invoices = MS_Model_Invoice::get_invoice_count();
+	public function render_sequence_type_progressive( $settings, $total_invoices ) {
 		$invoices_set = (bool) MS_Factory::get_option( 'ms_addon_invoice_set_invoice_numeric_id' );
 		if ( $total_invoices > 0 && !$invoices_set ) {
 			ob_start();
@@ -259,7 +259,7 @@ class MS_Addon_Invoice extends MS_Addon {
 	 * 
 	 * @return string
 	 */
-	public function render_sequence_type_custom( $settings ) {
+	public function render_sequence_type_custom( $settings, $total_invoices ) {
 		ob_start();
 		?>
 		<div class="ms-common-prefix">
@@ -291,7 +291,7 @@ class MS_Addon_Invoice extends MS_Addon {
 	 * 
 	 * @return string
 	 */
-	public function render_sequence_type_combined( $settings ) {
+	public function render_sequence_type_combined( $settings, $total_invoices ) {
 		ob_start();
 		?>
 		<div class="ms-common-prefix">
@@ -309,7 +309,6 @@ class MS_Addon_Invoice extends MS_Addon {
 			) ); ?>
 		</div>
 		<?php
-		$total_invoices = MS_Model_Invoice::get_invoice_count();
 		$invoices_set = (bool) MS_Factory::get_option( 'ms_addon_invoice_set_invoice_numeric_id' );
 		if ( $total_invoices > 0 && !$invoices_set ) {
 			?>
