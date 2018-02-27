@@ -769,7 +769,7 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 			return $current_invoice->invoice_number;
 		}
 
-		return $subscription->current_invoice_number;
+		return !is_null( $subscription->current_invoice_number ) ? $subscription->current_invoice_number : 1;
 	}
 
 	/**

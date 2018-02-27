@@ -183,7 +183,7 @@ class MS_Test_Subscriptions extends WP_UnitTestCase {
 		$subscription = TData::subscribe( $user_id, $membership_id );
 
 		// No invoice was paid yet, to the current invoice counter must be 1.
-		$this->assertEquals( 1, $subscription->current_invoice_number );
+		$this->assertEquals( 1, $subscription->get_current_invoice_number() );
 
 		$invoice1 = $subscription->get_current_invoice();
 		$this->assertEquals( 1, $invoice1->invoice_number );
@@ -192,20 +192,20 @@ class MS_Test_Subscriptions extends WP_UnitTestCase {
 		// -> so the invoice counter must still be 1
 		$invoice1->pay_it( 'free', '' );
 		$this->assertEquals( 1, $invoice1->invoice_number );
-		$this->assertEquals( 1, $subscription->current_invoice_number );
+		$this->assertEquals( 1, $subscription->get_current_invoice_number() );
 		$invoice2 = $subscription->get_current_invoice();
 		$this->assertEquals( $invoice1, $invoice2 );
 
 		// After the next (real) payment the invoice counter will be increased.
 		$invoice2->pay_it( 'stripe', 'external_100' );
-		$this->assertEquals( 2, $subscription->current_invoice_number );
+		$this->assertEquals( 2, $subscription->get_current_invoice_number() );
 		$invoice3 = $subscription->get_current_invoice();
 		$this->assertNotEquals( $invoice1, $invoice3 );
 		$this->assertEquals( 2, $invoice3->invoice_number );
 
 		// After the next (real) payment the invoice counter will be increased.
 		$invoice3->pay_it( 'stripe', 'external_200' );
-		$this->assertEquals( 3, $subscription->current_invoice_number );
+		$this->assertEquals( 3, $subscription->get_current_invoice_number() );
 		$invoice4 = $subscription->get_current_invoice();
 		$this->assertNotEquals( $invoice1, $invoice4 );
 		$this->assertEquals( 3, $invoice4->invoice_number );
