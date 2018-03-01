@@ -177,9 +177,6 @@ class MS_Controller_Plugin extends MS_Controller {
 		// This will do the ADMIN-SIDE initialization of the controllers
 		$this->add_action( 'ms_plugin_admin_setup', 'run_admin_init' );
 
-		//The new ui lib has some conflicts
-		$this->add_filter( 'admin_body_class', 'disable_wpmui_lib_autoload' );
-
 		// Changes the current themes "single" template to the invoice form when an invoice is displayed.
 		$this->add_filter( 'single_template', 'custom_single_template' );
 		$this->add_filter( 'page_template', 'custom_page_template' );
@@ -963,6 +960,12 @@ class MS_Controller_Plugin extends MS_Controller {
 		);
 
 		wp_register_script(
+			'ms-admin-wpmui',
+			$plugin_url . 'app/assets/js/m2.wpmu-ui.3.min.js',
+			array( 'jquery' ), $version
+		);
+
+		wp_register_script(
 			'm2-jquery-plugins',
 			$plugin_url . 'app/assets/js/jquery.m2.plugins.js',
 			array( 'jquery' ), $version
@@ -1061,6 +1064,8 @@ class MS_Controller_Plugin extends MS_Controller {
 		if ( strpos( $screen->id , 'membership2') !== false ) {
 			lib3()->ui->css( 'ms-admin-styles' );
 			lib3()->ui->add( 'core' );
+			wp_dequeue_script( 'wpmu-wpmu-ui-3-min-js' );
+			wp_deregister_script( 'wpmu-wpmu-ui-3-min-js' );
 			lib3()->ui->add( 'select' );
 			lib3()->ui->add( 'fontawesome' );
 		}
@@ -1090,6 +1095,7 @@ class MS_Controller_Plugin extends MS_Controller {
 		if( self::is_admin_page( ) ){
 			lib3()->ui->js( 'jquery-validate' );
 		}
+		lib3()->ui->js( 'ms-admin-wpmui' );
 		lib3()->ui->js( 'ms-admin' );
 		lib3()->ui->add( 'select' );
 	}
@@ -1135,22 +1141,5 @@ class MS_Controller_Plugin extends MS_Controller {
 		<?php
 		$script = ob_get_clean();
 		lib3()->ui->script( $script );
-	}
-
-	/**
-	 * Disable auto loading of the ui lib
-	 * 
-	 * @since 1.0.3
-	 * 
-	 * @param string $class - the current class
-	 * 
-	 * @return string
-	 */
-	function disable_wpmui_lib_autoload( $class ) {
-		$screen = get_current_screen();
-		if ( strpos( $screen->id , 'membership2') !== false ) {
-			return 'no-auto-init';
-		}
-		return $class;
 	}
 }
