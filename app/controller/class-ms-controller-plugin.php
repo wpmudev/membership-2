@@ -989,6 +989,13 @@ class MS_Controller_Plugin extends MS_Controller {
 			$plugin_url . 'app/assets/css/ms-admin.min.css',
 			null, $version
 		);
+
+		//Load our own ui lib since cnt load it separately
+		wp_register_style(
+			'wpmu-wpmu-ui-3-min-css',
+			$plugin_url . 'app/assets/css/wpmu-ui.3.min.css',
+			null, $version
+		);
 	}
 
 	/**
@@ -1000,6 +1007,12 @@ class MS_Controller_Plugin extends MS_Controller {
 		$plugin_url = MS_Plugin::instance()->url;
 		$version = MS_Plugin::instance()->version;
 
+		wp_register_script(
+			'ms-admin-wpmu-ui-3',
+			$plugin_url . 'app/assets/js/wpmu-ui.3.min.js',
+			array( 'jquery' ), $version
+		);
+		
 		// The main plugin script.
 		wp_register_script(
 			'ms-admin',
@@ -1057,7 +1070,7 @@ class MS_Controller_Plugin extends MS_Controller {
 		$screen = get_current_screen();
 		if ( strpos( $screen->id , 'membership2') !== false ) {
 			lib3()->ui->css( 'ms-admin-styles' );
-			lib3()->ui->add( 'core' );
+			lib3()->ui->css( 'wpmu-wpmu-ui-3-min-css' );
 			lib3()->ui->add( 'select' );
 			lib3()->ui->add( 'fontawesome' );
 		}
@@ -1088,6 +1101,7 @@ class MS_Controller_Plugin extends MS_Controller {
 			lib3()->ui->js( 'jquery-validate' );
 		}
 		lib3()->ui->js( 'ms-admin' );
+		lib3()->ui->js( 'ms-admin-wpmu-ui-3' );
 		lib3()->ui->add( 'select' );
 	}
 
