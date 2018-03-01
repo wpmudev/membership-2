@@ -177,6 +177,9 @@ class MS_Controller_Plugin extends MS_Controller {
 		// This will do the ADMIN-SIDE initialization of the controllers
 		$this->add_action( 'ms_plugin_admin_setup', 'run_admin_init' );
 
+		//The new ui lib has some conflicts
+		$this->add_filter( 'admin_body_class', 'disable_wpmui_lib_autoload' );
+
 		// Changes the current themes "single" template to the invoice form when an invoice is displayed.
 		$this->add_filter( 'single_template', 'custom_single_template' );
 		$this->add_filter( 'page_template', 'custom_page_template' );
@@ -1132,5 +1135,22 @@ class MS_Controller_Plugin extends MS_Controller {
 		<?php
 		$script = ob_get_clean();
 		lib3()->ui->script( $script );
+	}
+
+	/**
+	 * Disable auto loading of the ui lib
+	 * 
+	 * @since 1.0.3
+	 * 
+	 * @param string $class - the current class
+	 * 
+	 * @return string
+	 */
+	function disable_wpmui_lib_autoload( $class ) {
+		$screen = get_current_screen();
+		if ( strpos( $screen->id , 'membership2') !== false ) {
+			return 'no-auto-init';
+		}
+		return $class;
 	}
 }
