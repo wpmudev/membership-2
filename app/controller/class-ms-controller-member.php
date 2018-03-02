@@ -125,9 +125,13 @@ class MS_Controller_Member extends MS_Controller {
 
 		$this->add_filter( 'set-screen-option', array($this, 'members_admin_page_set_screen_option' ) , 10, 3 );
 
-		$this->add_filter( 'manage_users_columns', array($this, 'manage_users_columns' ) , 10, 1 );
-		$this->add_filter( 'manage_users_sortable_columns', array($this, 'manage_users_columns' ) , 10, 1 );
-		$this->add_filter( 'manage_users_custom_column', array($this, 'manage_users_custom_column' ) , 10, 3 );
+		//User columns
+		$this->add_filter( 'manage_users_columns', array( $this, 'manage_users_columns' ) , 10, 1 );
+		$this->add_filter( 'manage_users_sortable_columns', array( $this, 'manage_users_columns' ) , 10, 1 );
+		$this->add_filter( 'manage_users_custom_column', array( $this, 'manage_users_custom_column' ) , 10, 3 );
+
+		//Profile update hooks
+		$this->add_action( 'profile_update', 'handle_profile_membership', 10, 2 );
 	}
 
 	/**
@@ -956,6 +960,31 @@ class MS_Controller_Member extends MS_Controller {
 
 		}
         return apply_filters( 'ms_controller_member_manage_users_custom_column', $value, $column_name, $user_id );
+	}
+
+	/**
+	 * Check updated profile
+	 * If a normal user with a membership is update to admin, we need to clear the subscription
+	 * 
+	 * @since 1.0.0
+	 * 
+	 * @param int $user_id - the user id
+	 * @param array $old_user_data - the old user data
+	 *
+	 */
+	function handle_profile_membership( $user_id, $old_user_data ) {
+		if ( MS_Model_Member::is_admin_user( $user_id ) ) {
+			$member = MS_Factory::load( 'MS_Model_Member', $user_id );
+			if ( $member ) {
+				$memberships_ids 	= ( array ) $member->get_membership_ids();
+				if( ! empty( $memberships_ids ) ) {
+					foreach( $memberships_ids as $memberships_id ) {
+						$member->drop_membership( $memberships_id );
+					}
+					$member->save();
+				}
+			}
+		}
 	}
 
 }
