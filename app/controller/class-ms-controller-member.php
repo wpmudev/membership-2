@@ -131,7 +131,7 @@ class MS_Controller_Member extends MS_Controller {
 		$this->add_filter( 'manage_users_custom_column', array( $this, 'manage_users_custom_column' ) , 10, 3 );
 
 		//Profile update hooks
-		$this->add_action( 'profile_update', 'handle_profile_membership', 10, 2 );
+		add_action( 'profile_update', array( $this, 'handle_profile_membership' ), 10, 2 );
 	}
 
 	/**
@@ -951,9 +951,9 @@ class MS_Controller_Member extends MS_Controller {
 				$value = $html;
 			}
 
-			if( empty( $value ) ) {
+			if ( empty( $value ) ) {
 				$value 		= __( 'None' , 'membership' );
-				if( user_can( $user_id, 'manage_options' ) ) {
+				if ( MS_Model_Member::is_admin_user( $user_id ) ) {
 					$value 	= '<span style="font-weight:bold;">' . __( 'None (Admin User)', 'membership' ) . '</span>';
 				}
 			}
@@ -966,22 +966,32 @@ class MS_Controller_Member extends MS_Controller {
 	 * Check updated profile
 	 * If a normal user with a membership is update to admin, we need to clear the subscription
 	 * 
-	 * @since 1.0.0
+	 * @since 1.1.3
 	 * 
 	 * @param int $user_id - the user id
 	 * @param array $old_user_data - the old user data
 	 *
 	 */
 	function handle_profile_membership( $user_id, $old_user_data ) {
+		$this->remove_membership_from_admin( $user_id );
+	}
+
+	/**
+	 * Check updated profile
+	 * If a normal user with a membership is update to admin, we need to clear the subscription
+	 * Admin edit screen
+	 * 
+	 * @since 1.1.3
+	 * 
+	 * @param int $user_id - the user id
+	 *
+	 */
+	function remove_membership_from_admin( $user_id ) {
 		if ( MS_Model_Member::is_admin_user( $user_id ) ) {
 			$member = MS_Factory::load( 'MS_Model_Member', $user_id );
 			if ( $member ) {
-				$memberships_ids 	= ( array ) $member->get_membership_ids();
-				if( ! empty( $memberships_ids ) ) {
-					foreach( $memberships_ids as $memberships_id ) {
-						$member->drop_membership( $memberships_id );
-					}
-					$member->save();
+				foreach ( $member->subscriptions as $subscription ) {
+					$subscription->delete();
 				}
 			}
 		}
