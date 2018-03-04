@@ -198,6 +198,7 @@ class MS_View_Shortcode_Login extends MS_View {
 			'show_remember' 	=> true,
 			'value_username' 	=> '',
 			'value_remember' 	=> false, // Set this to true to default the "Remember me" checkbox to checked
+			'error_message'		=> ''
 		);
 
 		/**
@@ -240,7 +241,18 @@ class MS_View_Shortcode_Login extends MS_View {
 				<?php wp_nonce_field( 'ms-ajax-login', '_membership_auth_nonce' ); ?>
 				<?php echo apply_filters( 'login_form_top', '', $args ); ?>
 				<?php if ( 'top' === $nav_pos ) : ?>
-					<div class="status" style="display:none"></div>
+					<?php
+						if ( !empty( $error_message ) ) {
+							?>
+							<div class="status"><?php echo $error_message; ?></div>
+							<?php
+						} else {
+							?>
+							<div class="status" style="display:none"></div>
+							<?php
+						}
+					?>
+					
 				<?php endif; ?>
 				<p class="login-username ms-field">
 					<?php if ( $show_labels ) : ?>
@@ -305,7 +317,17 @@ class MS_View_Shortcode_Login extends MS_View {
 				</p>
 				<?php echo apply_filters( 'login_form_bottom', '', $args ); ?>
 			<?php if ( 'bottom' === $nav_pos ) : ?>
-				<div class="status" style="display:none"></div>
+				<?php
+					if ( !empty( $error_message ) ) {
+						?>
+						<div class="status"><?php echo $error_message; ?></div>
+						<?php
+					} else {
+						?>
+						<div class="status" style="display:none"></div>
+						<?php
+					}
+				?>
 			</div>
 			<div class="nav">
 				<p><a class="lost" href="#lostpassword"><?php _e( 'Lost your password?', 'membership2' ); ?></a></p>

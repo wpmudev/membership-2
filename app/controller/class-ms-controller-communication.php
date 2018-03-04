@@ -262,6 +262,10 @@ class MS_Controller_Communication extends MS_Controller {
 			case MS_Model_Event::TYPE_MS_RESETPASSWORD:
 				$process[] = MS_Model_Communication::COMM_TYPE_RESETPASSWORD;
 				break;
+				
+			case MS_Model_Event::TYPE_MS_VERIFYACCOUNT:
+				$process[] = MS_Model_Communication::COMM_TYPE_REGISTRATION_VERIFY;
+				break;
 
 			case MS_Model_Event::TYPE_MS_MOVED:
 				break;

@@ -63,6 +63,7 @@ class MS_Loader {
 			'MS_Model_Communication_Failed_Payment'         => 'communication/class-ms-model-communication-failed-payment.php',
 			'MS_Model_Communication_Info_Update'            => 'communication/class-ms-model-communication-info-update.php',
 			'MS_Model_Communication_Registration_Free'      => 'communication/class-ms-model-communication-registration-free.php',
+			'MS_Model_Communication_Registration_Verify'    => 'communication/class-ms-model-communication-registration-verify.php',
 		);
 
         foreach ( $core as $key => $path ) {
