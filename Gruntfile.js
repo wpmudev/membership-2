@@ -136,7 +136,7 @@ module.exports = function( grunt ) {
 				'!.git',
 				'!**/.svn/**',
 				'!.log',
-				'!docs/phpdoc-**',
+				'!docs/**',
 				'!bitbucket-pipelines.yml',
 				'!vendor/**',
 				'!composer**'
