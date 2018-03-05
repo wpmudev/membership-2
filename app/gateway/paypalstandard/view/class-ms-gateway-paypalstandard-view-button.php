@@ -81,7 +81,7 @@ class MS_Gateway_Paypalstandard_View_Button extends MS_View {
 		}
 
 		$gateway 			= $this->data['gateway'];
-		$invoice 			= $subscription->get_current_invoice();
+		$invoice 			= $subscription->get_next_billable_invoice();
 		$regular_invoice 	= null;
 		$settings 			= MS_Factory::load( 'MS_Model_Settings' );
 		$membership_price 	= $once_duration ? $invoice->amount : $invoice->total;

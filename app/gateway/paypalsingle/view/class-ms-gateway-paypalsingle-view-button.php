@@ -81,13 +81,8 @@ class MS_Gateway_Paypalsingle_View_Button extends MS_View {
 			return;
 		}
 
-		$gateway = $this->data['gateway'];
-		if( $subscription->is_expired() ){
-			$invoice = $subscription->get_next_invoice();
-		}
-		else{
-			$invoice = $subscription->get_current_invoice();
-		}
+		$gateway 	= $this->data['gateway'];
+		$invoice 	= $subscription->get_next_billable_invoice();
 
 		$fields = array(
 			'business' 		=> array(
