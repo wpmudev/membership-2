@@ -198,7 +198,8 @@ class MS_View_Shortcode_Login extends MS_View {
 			'show_remember' 	=> true,
 			'value_username' 	=> '',
 			'value_remember' 	=> false, // Set this to true to default the "Remember me" checkbox to checked
-			'error_message'		=> ''
+			'error_message'		=> '',
+			'nav_pos'			=> 'top'
 		);
 
 		/**

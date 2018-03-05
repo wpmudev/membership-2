@@ -934,7 +934,9 @@ class MS_Controller_Frontend extends MS_Controller {
 				$view 				= MS_Factory::create( 'MS_View_Shortcode_Login' );
 				$verification_key 	= wp_unslash( $_GET['key'] );
 				$message 			= MS_Model_Member::verify_activation_code( $verification_key  );
-				$view->data 		= array( 'error_message' => $message );
+				$redirect_to 		= MS_Model_Pages::get_page_url( MS_Model_Pages::MS_PAGE_ACCOUNT );
+				$redirect_to		= apply_filters( 'ms_front_after_login_redirect', $redirect_to );
+				$view->data 		= array( 'error_message' => $message, 'redirect_login' => $redirect_to );
 				$view->add_filter( 'the_content', 'to_html', 10 );
 				break;
 

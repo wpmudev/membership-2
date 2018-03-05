@@ -54,15 +54,8 @@ class MS_Auth {
 							if ( $settings->force_registration_verification ) {
 								$user_activation_status = get_user_meta( $user_signon->ID, '_ms_user_activation_status', true );
 								$user_activation_status = empty( $user_activation_status ) ? 0 : $user_activation_status;
-								$redirect = esc_url_raw(
-									add_query_arg(
-										array(
-											'step' => self::STEP_CHOOSE_MEMBERSHIP,
-										),
-										MS_Model_Pages::get_page_url( MS_Model_Pages::MS_PAGE_REGISTER )
-									)
-								);
-								$resp['redirect'] 		= $redirect;
+								$redirect_to 			= MS_Model_Pages::get_page_url( MS_Model_Pages::MS_PAGE_ACCOUNT );
+								$resp['redirect'] 		= $redirect_to;
 							} else {
 								$user_activation_status = 1;
 								update_user_meta( $user_signon->ID, '_ms_user_activation_status', $user_activation_status ); //Setting disabled so update
