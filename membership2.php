@@ -47,7 +47,7 @@
  * @since  1.0.0
  */
 
-function membership2_init_app() {
+function membership2_pro_init_app() {
 	if ( defined( 'MS_PLUGIN' ) ) {
 		$plugin_name = 'Membership 2 Pro';
 		if ( is_admin() ) {
@@ -227,4 +227,4 @@ if ( is_plugin_active( 'membership/membership.php' ) ) {
 	deactivate_plugins( array( 'membership/membership.php' ) );
 }
 
-membership2_init_app();
+membership2_pro_init_app();
