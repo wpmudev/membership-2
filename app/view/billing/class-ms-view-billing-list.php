@@ -188,12 +188,12 @@ class MS_View_Billing_List extends MS_View {
 			</div>
 			<?php
 			$listview->views();
-			add_action( 'ms_view_billing_list_before_search', $module, $this );
+			do_action( 'ms_view_billing_list_before_search', $module, $this );
 			$listview->search_box(
 				__( 'User', 'membership2' ),
 				'search'
 			);
-			add_action( 'ms_view_billing_list_after_search', $module, $this );
+			do_action( 'ms_view_billing_list_after_search', $module, $this );
 			?>
 			<form action="" method="post">
 				<?php $listview->display(); ?>
