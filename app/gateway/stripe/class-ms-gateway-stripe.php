@@ -150,7 +150,7 @@ class MS_Gateway_Stripe extends MS_Gateway {
 		$this->_api->set_gateway( $this );
 
 		$member 	= $subscription->get_member();
-		$invoice 	= $subscription->get_current_invoice();
+		$invoice 	= $subscription->get_next_billable_invoice();
 
 		$note = 'Stripe Processing';
 

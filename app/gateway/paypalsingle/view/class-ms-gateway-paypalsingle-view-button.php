@@ -4,9 +4,10 @@ class MS_Gateway_Paypalsingle_View_Button extends MS_View {
 
 	public function to_html() {
 		$fields 		= $this->prepare_fields();
-		$subscription 	= $this->data['ms_relationship'];
-		$invoice 		= $subscription->get_current_invoice();
+		$subscription 	= $this->data['ms_relationship'];		
 		$gateway 		= $this->data['gateway'];
+
+		$invoice 		= $subscription->get_next_billable_invoice();
 
 		$action_url 	= apply_filters(
 			'ms_gateway_paypalsingle_view_button_form_action_url',
@@ -80,8 +81,8 @@ class MS_Gateway_Paypalsingle_View_Button extends MS_View {
 			return;
 		}
 
-		$gateway = $this->data['gateway'];
-		$invoice = $subscription->get_current_invoice();
+		$gateway 	= $this->data['gateway'];
+		$invoice 	= $subscription->get_next_billable_invoice();
 
 		$fields = array(
 			'business' 		=> array(
