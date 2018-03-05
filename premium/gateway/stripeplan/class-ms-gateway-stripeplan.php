@@ -417,10 +417,13 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 													break;
 													case 'invoice.payment_succeeded' :
 														if ( $current_date != $subscription->start_date ) {
-															$invoice_id = $subscription->get_current_invoice();															
+															$invoice = $subscription->get_current_invoice();															
 
-															if ( $invoice_id ) {
-																$invoice 						= MS_Factory::load( 'MS_Model_Invoice', $invoice_id );
+															if ( $invoice ) {
+																if ( $invoice->status ==  MS_Model_Invoice::STATUS_PAID ) {
+																	$invoice = $subscription->get_next_invoice();	
+																}
+																
 																$invoice->ms_relationship_id 	= $subscription->id;
 																$invoice->membership_id 		= $membership->id;
 																

@@ -5,7 +5,7 @@ class MS_Gateway_Stripe_View_Button extends MS_View {
 	public function to_html() {
 		$fields 		= $this->prepare_fields();
 		$subscription 	= $this->data['ms_relationship'];
-		$invoice 		= $subscription->get_current_invoice();
+		$invoice 		= $subscription->get_next_billable_invoice();
 		$member 		= MS_Model_Member::get_current_member();
 		$gateway 		= $this->data['gateway'];
 

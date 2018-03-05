@@ -1672,6 +1672,21 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	}
 
 	/**
+	 * Get next billable invoice
+	 * 
+	 * @since 1.1.3
+	 * 
+	 * @return MS_Model_Invoice
+	 */
+	public function get_next_billable_invoice() {
+		if ( $this->is_expired() ) {
+			return $this->get_next_invoice();
+		} else {
+			return $this->get_current_invoice();
+		}
+	}
+
+	/**
 	 * Get a list of all invoices linked to this relationship
 	 *
 	 * @since  1.0.0
