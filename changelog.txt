@@ -6,6 +6,9 @@ Change Log:
 ----------------------------------------------------------------------
 1.1.3
 - Added: ms_auth_ajax_login_can_login filter to select usernames allowed to login
+- Added: When normal user is made to admin user , subscriptions are removed
+- Added: Account approval setting and email template
+- Added: Account approval user management
 - Improved: Check if membership is free on trial periods
 - Improved: Unique nonce field names for login and registration forms
 - Improved: Cache enabled by default on media protection

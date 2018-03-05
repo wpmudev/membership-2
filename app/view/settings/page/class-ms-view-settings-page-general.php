@@ -65,6 +65,18 @@ class MS_View_Settings_Page_General extends MS_View_Settings_Edit {
 					'setting' 	=> 'force_single_gateway',
 				),
 			),
+
+			'force_registration_verification' => array(
+				'id' 		=> 'force_registration_verification',
+				'type' 		=> MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
+				'title' 	=> __( 'Enable account verification', 'membership2' ),
+				'desc' 		=> __( 'This will force all registered accounts to first verify their emails before login', 'membership2' ),
+				'value' 	=> $settings->force_registration_verification,
+				'data_ms' 	=> array(
+					'action' 	=> MS_Controller_Settings::AJAX_ACTION_TOGGLE_SETTINGS,
+					'setting' 	=> 'force_registration_verification',
+				),
+			),
 			
 		);
 
@@ -103,6 +115,9 @@ class MS_View_Settings_Page_General extends MS_View_Settings_Edit {
 			<div class="cf">
 				<div class="ms-half">
 					<?php MS_Helper_Html::html_element( $fields['force_single_gateway'] ); ?>
+				</div>
+				<div class="ms-half">
+					<?php MS_Helper_Html::html_element( $fields['force_registration_verification'] ); ?>
 				</div>
 			</div>
 			<?php

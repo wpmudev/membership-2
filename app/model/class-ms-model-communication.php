@@ -51,6 +51,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	 */
 	const COMM_TYPE_REGISTRATION 			= 'type_registration';
 	const COMM_TYPE_REGISTRATION_FREE 		= 'type_registration_free';
+	const COMM_TYPE_REGISTRATION_VERIFY 	= 'type_registration_verify';
 	const COMM_TYPE_SIGNUP 					= 'type_signup';
 	const COMM_TYPE_RESETPASSWORD 			= 'type_resetpassword';
 	const COMM_TYPE_RENEWED 				= 'renewed';
@@ -92,6 +93,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	const COMM_VAR_BLOG_URL 				= '%blog-url%';
 	const COMM_VAR_NET_NAME 				= '%network-name%';
 	const COMM_VAR_NET_URL 					= '%network-url%';
+	const COMM_VAR_VERIFICATION_URL 		= '%verification-url%';
 
 	/**
 	 * Communication type.
@@ -290,6 +292,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 					self::COMM_TYPE_REGISTRATION,
 					self::COMM_TYPE_REGISTRATION_FREE,
 					self::COMM_TYPE_SIGNUP,
+					self::COMM_TYPE_REGISTRATION_VERIFY,
 					self::COMM_TYPE_RESETPASSWORD,
 					self::COMM_TYPE_RENEWED,
 					self::COMM_TYPE_INVOICE,
@@ -307,6 +310,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 			} else {
 				$Types = array(
 					self::COMM_TYPE_REGISTRATION,
+					self::COMM_TYPE_REGISTRATION_VERIFY,
 					self::COMM_TYPE_INVOICE,
 					self::COMM_TYPE_FINISHED,
 					self::COMM_TYPE_CANCELLED,
@@ -342,6 +346,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 			$type_classes = array(
 				self::COMM_TYPE_REGISTRATION 			=> 'MS_Model_Communication_Registration',
 				self::COMM_TYPE_REGISTRATION_FREE 		=> 'MS_Model_Communication_Registration_Free',
+				self::COMM_TYPE_REGISTRATION_VERIFY		=> 'MS_Model_Communication_Registration_Verify',
 				self::COMM_TYPE_SIGNUP 					=> 'MS_Model_Communication_Signup',
 				self::COMM_TYPE_RESETPASSWORD 			=> 'MS_Model_Communication_Resetpass',
 				self::COMM_TYPE_RENEWED 				=> 'MS_Model_Communication_Renewed',
@@ -385,6 +390,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 			self::COMM_TYPE_RESETPASSWORD 			=> __( 'Signup - Forgot Password', 'membership2' ),
 			self::COMM_TYPE_REGISTRATION 			=> __( 'Subscription - Completed with payment', 'membership2' ),
 			self::COMM_TYPE_REGISTRATION_FREE 		=> __( 'Subscription - Completed (free membership)', 'membership2' ),
+			self::COMM_TYPE_REGISTRATION_VERIFY 	=> __( 'Signup - Verify your email', 'membership2' ),
 			self::COMM_TYPE_RENEWED 				=> __( 'Subscription - Renewed', 'membership2' ),
 			self::COMM_TYPE_BEFORE_FINISHES 		=> __( 'Subscription - Before expires', 'membership2' ),
 			self::COMM_TYPE_FINISHED 				=> __( 'Subscription - Expired', 'membership2' ),
@@ -718,6 +724,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 			self::COMM_VAR_MS_ACCOUNT_PAGE_URL 		=> __( 'Site: User Account URL', 'membership2' ),
 			self::COMM_VAR_BLOG_NAME 				=> __( 'Site: Name', 'membership2' ),
 			self::COMM_VAR_BLOG_URL 				=> __( 'Site: URL', 'membership2' ),
+			self::COMM_VAR_VERIFICATION_URL			=> __( 'User: Account Verification URL', 'membership2' ),
 		);
 
 		$has_membership = true;
@@ -910,21 +917,30 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 					break;
 				}
 
-				$subscription = MS_Factory::load(
-					'MS_Model_Relationship',
-					$subscription_id
-				);
+				$subscription = MS_Factory::load( 'MS_Model_Relationship', $subscription_id );
+				if ( !$subscription ) {
+					//Could also just be a member
+					$subscription = MS_Factory::load( 'MS_Model_Member', $subscription_id );
+				}
 
 				$this->remove_from_queue( $subscription_id );
 				$was_sent = $this->send_message( $subscription );
 
 				if ( ! $was_sent ) {
-					$msg = sprintf(
-						'[error: Communication email failed] comm_type=%s, subscription_id=%s, user_id=%s',
-						$this->type,
-						$subscription->id,
-						$subscription->user_id
-					);
+					if ( $subscription instanceof MS_Model_Relationship ) {
+						$msg = sprintf(
+							'[error: Communication email failed] comm_type=%s, subscription_id=%s, user_id=%s',
+							$this->type,
+							$subscription->id,
+							$subscription->user_id
+						);
+					} elseif ( $subscription instanceof MS_Model_Member ) {
+						$msg = sprintf(
+							'[error: Communication email failed] comm_type=%s, user_id=%s',
+							$this->type,
+							$subscription->id
+						);
+					}
 					$this->log( $msg );
 				}
 			}
@@ -940,7 +956,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	 * Process Message directly without sending to queue
 	 *
 	 * @api
-	 * @param  MS_Model_Relationship $subscription The subscription to send message to.
+	 * @param  MS_Model_Relationship | MS_Model_Member - $subscription The subscription or member to send message to.
 	 */
 	public function process_message_direct( $subscription ){
 		if ( $this->enabled ) {
@@ -949,12 +965,20 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 				$was_sent = $this->send_message( $subscription );
 
 				if ( ! $was_sent ) {
-					$msg = sprintf(
-						'[error: Communication email failed] comm_type=%s, subscription_id=%s, user_id=%s',
-						$this->type,
-						$subscription->id,
-						$subscription->user_id
-					);
+					if ( $subscription instanceof MS_Model_Relationship ) {
+						$msg = sprintf(
+							'[error: Communication email failed] comm_type=%s, subscription_id=%s, user_id=%s',
+							$this->type,
+							$subscription->id,
+							$subscription->user_id
+						);
+					} elseif ( $subscription instanceof MS_Model_Member ) {
+						$msg = sprintf(
+							'[error: Communication email failed] comm_type=%s, user_id=%s',
+							$this->type,
+							$subscription->id
+						);
+					}
 					$this->log( $msg );
 				}
 			}
@@ -1019,6 +1043,11 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 			$subscription = MS_Factory::load( 'MS_Model_Relationship', $subscription_id );
 			if ( $subscription ) {
 				$this->process_message_direct( $subscription );
+			} else {
+				$member = MS_Factory::load( 'MS_Model_Member', $subscription_id );
+				if ( $member ) {
+					$this->process_message_direct( $member );
+				}
 			}
 		} else {
 			/**
@@ -1028,11 +1057,22 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 			*/
 			if ( MS_Plugin::get_modifier( 'MS_STOP_EMAILS' ) ) {
 				$subscription = MS_Factory::load( 'MS_Model_Relationship', $subscription_id );
-				$msg = sprintf(
-					'Following Email was not sent: "%s" to user "%s".',
-					$this->type,
-					$subscription->user_id
-				);
+				if ( $subscription ) {
+					$msg = sprintf(
+						'Following Email was not sent: "%s" to user "%s".',
+						$this->type,
+						$subscription->user_id
+					);
+				} else {
+					$member = MS_Factory::load( 'MS_Model_Member', $subscription_id );
+					if ( $member ) {
+						$msg = sprintf(
+							'Following Email was not sent: "%s" to user "%s".',
+							$this->type,
+							$member->id
+						);
+					}
+				}
 				$this->log( $msg );
 
 				return false;
@@ -1430,6 +1470,19 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 					if ( self::COMM_TYPE_RESETPASSWORD == $this->type ) {
 						$reset 		= $member->new_password_reset_key();
 						$var_value 	= $reset->url;
+					}
+					break;
+
+				case self::COMM_VAR_VERIFICATION_URL:
+
+					/**
+					 * The verification-URL is only available in the verification email
+					 *
+					 * @since 1.1.3
+					 */
+					if ( self::COMM_TYPE_REGISTRATION_VERIFY == $this->type ) {
+						$verify 	= $member->account_verification_key();
+						$var_value 	= $verify->url;
 					}
 					break;
 

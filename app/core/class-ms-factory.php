@@ -432,7 +432,7 @@ class MS_Factory {
 				);
 			}
 		}
-
+		
 		return apply_filters(
 			'ms_factory_load_from_wp_user',
 			$model,
