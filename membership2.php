@@ -21,7 +21,7 @@
  * @copyright Incsub (http://incsub.com/)
  *
  * Authors: Philipp Stracker, Fabio Jun Onishi, Victor Ivanov, Jack Kitterhing, Rheinard Korf, Ashok Kumar Nath, Paul Kevin
- * Contributors: Joji Mori, Patrick Cohen
+ * Contributors: Joji Mori, Patrick Cohen, Panos Lyrakis
  *
  * @license http://opensource.org/licenses/GPL-2.0 GNU General Public License, version 2 (GPL-2.0)
  *

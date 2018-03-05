@@ -110,6 +110,25 @@ We provide comprehensive and guaranteed support on the <a href='http://premium.w
 
 == Changelog ==
 
+= 4.1.3 =
+* Added: ms_auth_ajax_login_can_login filter to select usernames allowed to login
+* Added: When normal user is made to admin user , subscriptions are removed
+* Added: Account approval setting and email template
+* Added: Account approval user management
+* Improved: Check if membership is free on trial periods
+* Improved: Unique nonce field names for login and registration forms
+* Improved: Cache enabled by default on media protection
+* Improved: More filters
+* Fixed: Login page script loading
+* Fixed: Login page login_footer action to load in wp_footer
+* Fixed: Protection rule for All BuddyPress Pages is not protecting pages like activity, groups, members.
+* Fixed: Duplicate memberships when subscribed to a previous membership
+* Fixed: Category protection should not check for pages
+* Fixed: Category protection of post when individual post protection addon is enabled
+* Fixed: More tag protection when multi-membership add-on is active
+* Fixed: Bulk user import first and last name
+* Fixed: Minor UI fixes
+
 = 4.1.2 =
 * Added: Membership List Export to CSV
 * Added: Membership and Member XML import and export format
