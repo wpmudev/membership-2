@@ -69,8 +69,8 @@ class MS_Addon_Automessage extends MS_Addon {
 		$comm_types = MS_Model_Communication::get_communication_type_titles();
 
 		foreach ( $comm_types as $type => $desc ) {
-			$action = "ms_communications_process_$type";
-			$hooks[ $action ] = array( 'action_nicename' => $desc );
+			$action 			= "ms_communications_process_$type";
+			$hooks[ $action ] 	= array( 'action_nicename' => $desc );
 		}
 
 		return $hooks;

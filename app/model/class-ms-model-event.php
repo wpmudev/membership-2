@@ -32,10 +32,10 @@ class MS_Model_Event extends MS_Model_CustomPostType {
 	 *
 	 * @var string
 	 */
-	const TOPIC_MEMBERSHIP = 'membership';
-	const TOPIC_PAYMENT = 'payment';
-	const TOPIC_USER = 'user';
-	const TOPIC_WARNING = 'warning';
+	const TOPIC_MEMBERSHIP 	= 'membership';
+	const TOPIC_PAYMENT 	= 'payment';
+	const TOPIC_USER 		= 'user';
+	const TOPIC_WARNING 	= 'warning';
 
 	/**
 	 * Event type constants.
@@ -44,28 +44,29 @@ class MS_Model_Event extends MS_Model_CustomPostType {
 	 *
 	 * @var string
 	 */
-	const TYPE_UPDATED_INFO = 'updated_info';
-	const TYPE_MS_SIGNED_UP = 'signed_up';
-	const TYPE_MS_MOVED = 'moved';
-	const TYPE_MS_EXPIRED = 'expired';
-	const TYPE_MS_TRIAL_EXPIRED = 'trial_expired';
-	const TYPE_MS_DROPPED = 'dropped';
-	const TYPE_MS_RENEWED = 'renewed';
-	const TYPE_MS_DEACTIVATED = 'deactivated';
-	const TYPE_MS_CANCELED = 'canceled';
-	const TYPE_MS_REGISTERED = 'registered';
-	const TYPE_MS_RESETPASSWORD = 'resetpassword';
-	const TYPE_MS_BEFORE_FINISHES = 'before_finishes';
-	const TYPE_MS_AFTER_FINISHES = 'after_finishes';
+	const TYPE_UPDATED_INFO 			= 'updated_info';
+	const TYPE_MS_SIGNED_UP 			= 'signed_up';
+	const TYPE_MS_MOVED 				= 'moved';
+	const TYPE_MS_EXPIRED 				= 'expired';
+	const TYPE_MS_TRIAL_EXPIRED 		= 'trial_expired';
+	const TYPE_MS_DROPPED 				= 'dropped';
+	const TYPE_MS_RENEWED 				= 'renewed';
+	const TYPE_MS_DEACTIVATED 			= 'deactivated';
+	const TYPE_MS_CANCELED 				= 'canceled';
+	const TYPE_MS_REGISTERED 			= 'registered';
+	const TYPE_MS_RESETPASSWORD 		= 'resetpassword';
+	const TYPE_MS_VERIFYACCOUNT			= 'verifyaccount';
+	const TYPE_MS_BEFORE_FINISHES 		= 'before_finishes';
+	const TYPE_MS_AFTER_FINISHES 		= 'after_finishes';
 	const TYPE_MS_BEFORE_TRIAL_FINISHES = 'before_trial_finishes';
-	const TYPE_MS_TRIAL_FINISHED = 'trial_finished';
-	const TYPE_CREDIT_CARD_EXPIRE = 'credit_card_expire';
-	const TYPE_PAID = 'paid';
-	const TYPE_PAYMENT_FAILED = 'payment_failed';
-	const TYPE_PAYMENT_PENDING = 'payment_pending';
-	const TYPE_PAYMENT_DENIED = 'payment_denied';
-	const TYPE_PAYMENT_BEFORE_DUE = 'payment_before_due';
-	const TYPE_PAYMENT_AFTER_DUE = 'payment_after_made';
+	const TYPE_MS_TRIAL_FINISHED 		= 'trial_finished';
+	const TYPE_CREDIT_CARD_EXPIRE 		= 'credit_card_expire';
+	const TYPE_PAID 					= 'paid';
+	const TYPE_PAYMENT_FAILED 			= 'payment_failed';
+	const TYPE_PAYMENT_PENDING 			= 'payment_pending';
+	const TYPE_PAYMENT_DENIED 			= 'payment_denied';
+	const TYPE_PAYMENT_BEFORE_DUE 		= 'payment_before_due';
+	const TYPE_PAYMENT_AFTER_DUE 		= 'payment_after_made';
 
 	/**
 	 * Event's membership ID.
@@ -131,8 +132,8 @@ class MS_Model_Event extends MS_Model_CustomPostType {
 	 */
 	public static function get_register_post_type_args() {
 		$args = array(
-			'label' => __( 'Membership2 Events', 'membership2' ),
-                        'exclude_from_search' => true
+			'label' 				=> __( 'Membership2 Events', 'membership2' ),
+            'exclude_from_search' 	=> true
 		);
 
 		return apply_filters(
@@ -161,19 +162,23 @@ class MS_Model_Event extends MS_Model_CustomPostType {
 			 */
 			self::TYPE_MS_REGISTERED => array(
 				'topic' => self::TOPIC_USER,
-				'desc' => __( 'Has registered.', 'membership2' ),
+				'desc' 	=> __( 'Has registered.', 'membership2' ),
 			),
 			self::TYPE_MS_RESETPASSWORD => array(
 				'topic' => self::TOPIC_USER,
-				'desc' => __( 'Reset password.', 'membership2' ),
+				'desc' 	=> __( 'Reset password.', 'membership2' ),
+			),
+			self::TYPE_MS_VERIFYACCOUNT => array(
+				'topic' => self::TOPIC_USER,
+				'desc' 	=> __( 'Verify Account.', 'membership2' ),
 			),
 			self::TYPE_UPDATED_INFO => array(
 				'topic' => self::TOPIC_USER,
-				'desc' => __( 'Has updated billing information.', 'membership2' ),
+				'desc' 	=> __( 'Has updated billing information.', 'membership2' ),
 			),
 			self::TYPE_CREDIT_CARD_EXPIRE => array(
 				'topic' => self::TOPIC_USER,
-				'desc' => __( "Member's credit card expire warning date.", 'membership2' ),
+				'desc' 	=> __( "Member's credit card expire warning date.", 'membership2' ),
 			),
 
 			/*
@@ -181,31 +186,31 @@ class MS_Model_Event extends MS_Model_CustomPostType {
 			 */
 			self::TYPE_MS_SIGNED_UP => array(
 				'topic' => self::TOPIC_MEMBERSHIP,
-				'desc' => __( 'Has signed up to membership %s.', 'membership2' ),
+				'desc' 	=> __( 'Has signed up to membership %s.', 'membership2' ),
 			),
 			self::TYPE_MS_MOVED => array(
 				'topic' => self::TOPIC_MEMBERSHIP,
-				'desc' => __( 'Has moved to membership %s.', 'membership2' ),
+				'desc' 	=> __( 'Has moved to membership %s.', 'membership2' ),
 			),
 			self::TYPE_MS_EXPIRED => array(
 				'topic' => self::TOPIC_MEMBERSHIP,
-				'desc' => __( 'Membership %s has expired.', 'membership2' ),
+				'desc' 	=> __( 'Membership %s has expired.', 'membership2' ),
 			),
 			self::TYPE_MS_DROPPED => array(
 				'topic' => self::TOPIC_MEMBERSHIP,
-				'desc' => __( 'Membership %s dropped.', 'membership2' ),
+				'desc' 	=> __( 'Membership %s dropped.', 'membership2' ),
 			),
 			self::TYPE_MS_RENEWED => array(
 				'topic' => self::TOPIC_MEMBERSHIP,
-				'desc' => __( 'Membership %s renewed', 'membership2' ),
+				'desc' 	=> __( 'Membership %s renewed', 'membership2' ),
 			),
 			self::TYPE_MS_DEACTIVATED => array(
 				'topic' => self::TOPIC_MEMBERSHIP,
-				'desc' => __( 'Membership %s deactivated', 'membership2' ),
+				'desc' 	=> __( 'Membership %s deactivated', 'membership2' ),
 			),
 			self::TYPE_MS_CANCELED => array(
 				'topic' => self::TOPIC_MEMBERSHIP,
-				'desc' => __( 'Membership %s cancelled.', 'membership2' ),
+				'desc' 	=> __( 'Membership %s cancelled.', 'membership2' ),
 			),
 
 			/*
@@ -213,16 +218,16 @@ class MS_Model_Event extends MS_Model_CustomPostType {
 			 */
 			self::TYPE_MS_BEFORE_FINISHES => array(
 				'topic' => self::TOPIC_WARNING,
-				'desc' => __( 'Membership %s about to finish warning date.', 'membership2' ),
+				'desc' 	=> __( 'Membership %s about to finish warning date.', 'membership2' ),
 			),
 
 			self::TYPE_MS_AFTER_FINISHES => array(
 				'topic' => self::TOPIC_WARNING,
-				'desc' => __( 'Membership %s finished warning date.', 'membership2' ),
+				'desc' 	=> __( 'Membership %s finished warning date.', 'membership2' ),
 			),
 			self::TYPE_MS_BEFORE_TRIAL_FINISHES => array(
 				'topic' => self::TOPIC_WARNING,
-				'desc' => __( 'Membership % s trial about to finish warning date.', 'membership2' ),
+				'desc' 	=> __( 'Membership % s trial about to finish warning date.', 'membership2' ),
 			),
 
 			/*
@@ -230,27 +235,27 @@ class MS_Model_Event extends MS_Model_CustomPostType {
 			 */
 			self::TYPE_PAID => array(
 				'topic' => self::TOPIC_PAYMENT,
-				'desc' => __( 'Invoice #%2$s for membership %1$s - Paid.', 'membership2' ),
+				'desc' 	=> __( 'Invoice #%2$s for membership %1$s - Paid.', 'membership2' ),
 			),
 			self::TYPE_PAYMENT_FAILED => array(
 				'topic' => self::TOPIC_PAYMENT,
-				'desc' => __( 'Invoice #%2$s for membership %1$s - Payment Failed.', 'membership2' ),
+				'desc' 	=> __( 'Invoice #%2$s for membership %1$s - Payment Failed.', 'membership2' ),
 			),
 			self::TYPE_PAYMENT_PENDING => array(
 				'topic' => self::TOPIC_PAYMENT,
-				'desc' => __( 'Invoice #%2$s for membership %1$s - Payment Pending.', 'membership2' ),
+				'desc' 	=> __( 'Invoice #%2$s for membership %1$s - Payment Pending.', 'membership2' ),
 			),
 			self::TYPE_PAYMENT_DENIED => array(
 				'topic' => self::TOPIC_PAYMENT,
-				'desc' => __( 'Invoice #%2$s for membership %1$s - Payment Denied.', 'membership2' ),
+				'desc' 	=> __( 'Invoice #%2$s for membership %1$s - Payment Denied.', 'membership2' ),
 			),
 			self::TYPE_PAYMENT_BEFORE_DUE => array(
 				'topic' => self::TOPIC_PAYMENT,
-				'desc' => __( 'Invoice #%2$s before due date for membership %1$s warning.', 'membership2' ),
+				'desc' 	=> __( 'Invoice #%2$s before due date for membership %1$s warning.', 'membership2' ),
 			),
 			self::TYPE_PAYMENT_AFTER_DUE => array(
 				'topic' => self::TOPIC_PAYMENT,
-				'desc' => __( 'Invoice #%2$s after due date for membership %1$s warning.', 'membership2' ),
+				'desc' 	=> __( 'Invoice #%2$s after due date for membership %1$s warning.', 'membership2' ),
 			),
 		);
 
@@ -268,19 +273,19 @@ class MS_Model_Event extends MS_Model_CustomPostType {
 	public static function get_last_event_of_type( $event ) {
 		$found = null;
 
-		$args['posts_per_page'] = 1;
-		$args['meta_query']['type'] = array(
-			'key' => 'type',
+		$args['posts_per_page'] 		= 1;
+		$args['meta_query']['type'] 	= array(
+			'key' 	=> 'type',
 			'value' => $event->type,
 		);
-		$args['meta_query']['user_id'] = array(
-			'key' => 'user_id',
+		$args['meta_query']['user_id'] 	= array(
+			'key' 	=> 'user_id',
 			'value' => $event->user_id,
 		);
 
 		if ( ! empty( $event->ms_relationship_id ) ) {
 			$args['meta_query']['ms_relationship_id'] = array(
-				'key' => 'ms_relationship_id',
+				'key' 	=> 'ms_relationship_id',
 				'value' => $event->ms_relationship_id,
 			);
 		}
@@ -336,9 +341,8 @@ class MS_Model_Event extends MS_Model_CustomPostType {
 	 * @return string the event description.
 	 */
 	public static function get_description( $type ) {
-		$desc = '';
-
-		$types = self::get_event_types();
+		$desc 	= '';
+		$types 	= self::get_event_types();
 		if ( ! empty( $types[ $type ]['desc'] ) ) {
 			$desc = $types[ $type ]['desc'];
 		}
@@ -356,14 +360,27 @@ class MS_Model_Event extends MS_Model_CustomPostType {
 	 * @return int The total count.
 	 */
 	public static function get_event_count( $args = null ) {
+		$total_events = 0;
 		MS_Factory::select_blog();
-		$args = self::get_query_args( $args );
-		$query = new WP_Query( $args );
+		$cache_key = "ms_model_event_count";
+		if ( !is_null( $args ) && isset( $args['membership_id'] ) ) {
+			$cache_key .= "_" . $args['membership_id'];
+		}
+		$cache_key 	= MS_Helper_Cache::generate_cache_key( $cache_key, $args );
+		$results 	= MS_Helper_Cache::get_transient( $cache_key );
+		if ( $results ) {
+			$total_events = $results;
+		} else {
+			$args 			= self::get_query_args( $args );
+			$query 			= new WP_Query( $args );
+			$total_events 	= $query->found_posts;
+			MS_Helper_Cache::query_cache( $total_events, $cache_key );
+		}
 		MS_Factory::revert_blog();
 
 		return apply_filters(
 			'ms_model_event_get_event_count',
-			$query->found_posts,
+			$total_events,
 			$args
 		);
 	}
@@ -378,11 +395,22 @@ class MS_Model_Event extends MS_Model_CustomPostType {
 	 * @return MS_Model_Event[] The events found.
 	 */
 	public static function get_events( $args = null ) {
-		MS_Factory::select_blog();
-		$args = self::get_query_args( $args );
-		$query = new WP_Query( $args );
-		$items = $query->posts;
 		$events = array();
+		MS_Factory::select_blog();
+		$cache_key = "ms_model_event_list";
+		if ( !is_null( $args ) && isset( $args['membership_id'] ) ) {
+			$cache_key .= "_" . $args['membership_id'];
+		}
+		$cache_key 	= MS_Helper_Cache::generate_cache_key( $cache_key, $args );
+		$results 	= MS_Helper_Cache::get_transient( $cache_key );
+		if ( $results ) {
+			$items = $results;
+		} else {
+			$args 	= self::get_query_args( $args );
+			$query 	= new WP_Query( $args );
+			$items 	= $query->posts;
+			MS_Helper_Cache::query_cache( $items, $cache_key );
+		}
 		MS_Factory::revert_blog();
 
 		foreach ( $items as $item ) {
@@ -405,16 +433,16 @@ class MS_Model_Event extends MS_Model_CustomPostType {
 	 */
 	public static function get_query_args( $args ) {
 		$defaults = array(
-			'post_type' => self::get_post_type(),
-			'posts_per_page' => 10,
-			'fields' => 'ids',
-			'post_status' => 'any',
-			'order' => 'DESC',
+			'post_type' 		=> self::get_post_type(),
+			'posts_per_page' 	=> 10,
+			'fields' 			=> 'ids',
+			'post_status' 		=> 'any',
+			'order' 			=> 'DESC',
 		);
 
 		if ( ! empty( $args['topic'] ) ) {
 			$args['meta_query']['topic'] = array(
-				'key' => 'topic',
+				'key' 	=> 'topic',
 				'value' => $args['topic'],
 			);
 			unset( $args['topic'] );
@@ -422,7 +450,7 @@ class MS_Model_Event extends MS_Model_CustomPostType {
 
 		if ( ! empty( $args['membership_id'] ) ) {
 			$args['meta_query']['membership_id'] = array(
-				'key' => 'membership_id',
+				'key' 	=> 'membership_id',
 				'value' => $args['membership_id'],
 			);
 			unset( $args['membership_id'] );
@@ -430,7 +458,7 @@ class MS_Model_Event extends MS_Model_CustomPostType {
 
 		if ( ! empty( $args['relationship_id'] ) ) {
 			$args['meta_query']['relationship_id'] = array(
-				'key' => 'ms_relationship_id',
+				'key' 	=> 'ms_relationship_id',
 				'value' => $args['relationship_id'],
 			);
 			unset( $args['membership_id'] );
@@ -455,10 +483,10 @@ class MS_Model_Event extends MS_Model_CustomPostType {
 		$event = null;
 
 		if ( self::is_valid_type( $type ) ) {
-			$event = MS_Factory::create( 'MS_Model_Event' );
-			$event->type = $type;
-			$event->topic = self::get_topic( $type );
-			$description = '';
+			$event 			= MS_Factory::create( 'MS_Model_Event' );
+			$event->type 	= $type;
+			$event->topic 	= self::get_topic( $type );
+			$description 	= '';
 
 			switch ( $event->topic ) {
 				case self::TOPIC_PAYMENT:
@@ -467,13 +495,13 @@ class MS_Model_Event extends MS_Model_CustomPostType {
 					$subscription = $data;
 					if ( $subscription->id > 0 ) {
 						$membership = $subscription->get_membership();
-						$member = MS_Factory::load(
+						$member 	= MS_Factory::load(
 							'MS_Model_Member',
 							$subscription->user_id
 						);
-						$event->user_id = $subscription->user_id;
-						$event->membership_id = $subscription->membership_id;
-						$event->ms_relationship_id = $subscription->id;
+						$event->user_id 			= $subscription->user_id;
+						$event->membership_id 		= $subscription->membership_id;
+						$event->ms_relationship_id 	= $subscription->id;
 						$event->name = sprintf(
 							'user: %s, membership: %s, type: %s',
 							$member->name,
@@ -502,29 +530,29 @@ class MS_Model_Event extends MS_Model_CustomPostType {
 
 				case self::TOPIC_USER:
 					if ( $data instanceof MS_Model_Member ) {
-						$member = $data;
+						$member 		= $data;
 						$event->user_id = $member->id;
-						$event->name = sprintf(
+						$event->name 	= sprintf(
 							'user: %s, type: %s',
 							$member->name,
 							$type
 						);
 					} elseif ( $data instanceof MS_Model_Relationship ) {
-						$subscription = $data;
-						$membership = $subscription->get_membership();
-						$member = MS_Factory::load(
-							'MS_Model_Member',
-							$subscription->user_id
-						);
-						$event->user_id = $subscription->user_id;
-						$event->membership_id = $subscription->membership_id;
-						$event->ms_relationship_id = $subscription->id;
-						$event->name = sprintf(
-							'user: %s, membership: %s, type: %s',
-							$member->name,
-							$membership->name,
-							$type
-						);
+						$subscription 				= $data;
+						$membership 				= $subscription->get_membership();
+						$member 					= MS_Factory::load(
+														'MS_Model_Member',
+														$subscription->user_id
+													 );
+						$event->user_id 			= $subscription->user_id;
+						$event->membership_id 		= $subscription->membership_id;
+						$event->ms_relationship_id 	= $subscription->id;
+						$event->name 				= sprintf(
+														'user: %s, membership: %s, type: %s',
+														$member->name,
+														$membership->name,
+														$type
+													 );
 					}
 					$description = self::get_description( $type );
 					break;
@@ -535,8 +563,8 @@ class MS_Model_Event extends MS_Model_CustomPostType {
 			}
 
 			$event->description = apply_filters( 'ms_model_event_description', $description, $type, $data );
-			$event->date = MS_Helper_Period::current_date();
-			$event = apply_filters( 'ms_model_news_record_user_signup_object', $event );
+			$event->date 		= MS_Helper_Period::current_date();
+			$event 				= apply_filters( 'ms_model_news_record_user_signup_object', $event );
 
 			if ( ! self::is_duplicate( $event, $data ) ) {
 				$event->save();

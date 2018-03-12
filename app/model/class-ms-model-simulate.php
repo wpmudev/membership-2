@@ -130,8 +130,8 @@ class MS_Model_Simulate extends MS_Model_Transient {
 			$key = 'ms_model_relationship--1';
 			MS_Factory::set_singleton( $subscription, $key );
 
-			$this->_subscription = $subscription;
-			$subscriptions[ $this->membership_id ] = $subscription;
+			$this->_subscription 					= $subscription;
+			$subscriptions[ $this->membership_id ] 	= $subscription;
 		}
 
 		return $subscriptions;
@@ -203,9 +203,9 @@ class MS_Model_Simulate extends MS_Model_Transient {
 	public function reset_simulation() {
 		if ( null === $this->membership_id ) { return; }
 
-		$this->membership_id = null;
-		$this->date = null;
-		$this->subscription = null;
+		$this->membership_id 	= null;
+		$this->date 			= null;
+		$this->subscription 	= null;
 
 		$this->remove_filter(
 			'ms_helper_period_current_date',
@@ -228,10 +228,10 @@ class MS_Model_Simulate extends MS_Model_Transient {
 			$this->membership_id
 		);
 
-		$m_type = $membership->type;
-		$p_type = $membership->payment_type;
-		$rep_end = $membership->pay_cycle_repetitions > 0;
-		$date_specific = false;
+		$m_type 		= $membership->type;
+		$p_type 		= $membership->payment_type;
+		$rep_end 		= $membership->pay_cycle_repetitions > 0;
+		$date_specific 	= false;
 
 		if ( MS_Model_Membership::TYPE_DRIPPED === $m_type ) { $date_specific = true; }
 		elseif ( MS_Model_Membership::PAYMENT_TYPE_FINITE === $p_type ) { $date_specific = true; }
@@ -269,15 +269,15 @@ class MS_Model_Simulate extends MS_Model_Transient {
 		}
 
 		if ( $show_infos ) {
-			$data = array();
-			$data['membership_id'] = $this->membership_id;
-			$data['subscription'] = $this->_subscription;
-			$data['simulate_date'] = $this->date;
-			$data['datepicker'] = $this->datepicker;
+			$data 					= array();
+			$data['membership_id'] 	= $this->membership_id;
+			$data['subscription'] 	= $this->_subscription;
+			$data['simulate_date'] 	= $this->date;
+			$data['datepicker'] 	= $this->datepicker;
 
-			$view = MS_Factory::create( 'MS_View_Adminbar' );
-			$view->data = apply_filters( 'ms_view_admin_bar_data', $data );
-			$html = $view->to_html();
+			$view 					= MS_Factory::create( 'MS_View_Adminbar' );
+			$view->data 			= apply_filters( 'ms_view_admin_bar_data', $data );
+			$html 					= $view->to_html();
 
 			echo $html;
 		}

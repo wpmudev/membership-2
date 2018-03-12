@@ -64,14 +64,14 @@ class MS_Helper_ListTable_TransactionMatching extends MS_Helper_ListTable {
 		$columns = apply_filters(
 			'ms_helper_listtable_transactionmatching_columns',
 			array(
-				'id' => __( 'ID', 'membership2' ),
-				'date' => __( 'Time', 'membership2' ),
-				'status' => '',
-				'method' => '',
-				'gateway' => __( 'Gateway', 'membership2' ),
-				'amount' => __( 'Amount', 'membership2' ),
-				'invoice' => __( 'Invoice', 'membership2' ),
-				'note' => __( 'Details', 'membership2' ),
+				'id' 		=> __( 'ID', 'membership2' ),
+				'date' 		=> __( 'Time', 'membership2' ),
+				'status' 	=> '',
+				'method' 	=> '',
+				'gateway' 	=> __( 'Gateway', 'membership2' ),
+				'amount' 	=> __( 'Amount', 'membership2' ),
+				'invoice' 	=> __( 'Invoice', 'membership2' ),
+				'note' 		=> __( 'Details', 'membership2' ),
 			)
 		);
 
@@ -146,7 +146,7 @@ class MS_Helper_ListTable_TransactionMatching extends MS_Helper_ListTable {
 			$this->matching_type = $_GET['source'];
 			$this->matching_type_id = $_GET['source_id'];
 
-			$args['state'] = array( 'err', 'ignore' );
+			$args['state'] 	= array( 'err', 'ignore' );
 			$args['source'] = array( $this->matching_type_id, $this->matching_type );
 
 			$total_items = MS_Model_Transactionlog::get_item_count( $args );
@@ -239,12 +239,12 @@ class MS_Helper_ListTable_TransactionMatching extends MS_Helper_ListTable {
 
 			foreach ( $lst as $source => $ids ) {
 				foreach ( $ids as $source_id ) {
-					$key = $source . '_' . $source_id;
-					$label = $this->get_source_label( $source, $source_id );
+					$key 	= $source . '_' . $source_id;
+					$label 	= $this->get_source_label( $source, $source_id );
 
 					$views[$key] = array(
 						'label' => $label,
-						'url' => add_query_arg(
+						'url' 	=> add_query_arg(
 							array( 'source' => $source, 'source_id' => $source_id )
 						),
 					);
@@ -299,9 +299,9 @@ class MS_Helper_ListTable_TransactionMatching extends MS_Helper_ListTable {
 			return;
 		}
 
-		$settings = MS_Factory::load( 'MS_Model_Settings' );
-		$label = $this->get_source_label( $this->matching_type, $this->matching_type_id );
-		$memberships = MS_Model_Membership::get_memberships();
+		$settings 		= MS_Factory::load( 'MS_Model_Settings' );
+		$label 			= $this->get_source_label( $this->matching_type, $this->matching_type_id );
+		$memberships 	= MS_Model_Membership::get_memberships();
 
 		$options = array( '0' => '-----' );
 		foreach ( $memberships as $item ) {
@@ -326,42 +326,42 @@ class MS_Helper_ListTable_TransactionMatching extends MS_Helper_ListTable {
 		asort( $options );
 
 		$field_memberships = array(
-			'id' => 'match_with',
-			'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
-			'before' => sprintf(
+			'id' 		=> 'match_with',
+			'type' 		=> MS_Helper_Html::INPUT_TYPE_SELECT,
+			'before' 	=> sprintf(
 				__( '2. Link %s with', 'membership2' ),
 				'<b>' . $label . '</b>'
 			),
 			'field_options' => $options,
 		);
 		$field_action = array(
-			'id' => 'action',
-			'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+			'id' 	=> 'action',
+			'type' 	=> MS_Helper_Html::INPUT_TYPE_HIDDEN,
 			'value' => MS_Controller_Import::AJAX_ACTION_MATCH,
 		);
 		$field_source = array(
-			'id' => 'source',
-			'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+			'id' 	=> 'source',
+			'type' 	=> MS_Helper_Html::INPUT_TYPE_HIDDEN,
 			'value' => $this->matching_type,
 		);
 		$field_source_id = array(
-			'id' => 'source_id',
-			'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+			'id' 	=> 'source_id',
+			'type' 	=> MS_Helper_Html::INPUT_TYPE_HIDDEN,
 			'value' => $this->matching_type_id,
 		);
 		$field_save = array(
 			'class' => 'action-match',
-			'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
+			'type' 	=> MS_Helper_Html::INPUT_TYPE_SUBMIT,
 			'value' => __( 'Save', 'membership2' ),
 		);
 		$field_retry_action = array(
 			'class' => 'retry_action',
-			'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+			'type' 	=> MS_Helper_Html::INPUT_TYPE_HIDDEN,
 			'value' => MS_Controller_Import::AJAX_ACTION_RETRY,
 		);
 		$field_retry_nonce = array(
 			'class' => 'retry_nonce',
-			'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+			'type' 	=> MS_Helper_Html::INPUT_TYPE_HIDDEN,
 			'value' => wp_create_nonce( MS_Controller_Import::AJAX_ACTION_RETRY ),
 		);
 

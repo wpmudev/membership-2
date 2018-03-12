@@ -53,6 +53,7 @@ module.exports = function( grunt ) {
 				'{js}/src/ms-view-settings-automated-msg.js',
 				'{js}/src/ms-view-settings-import.js',
 				'{js}/src/ms-view-settings-mailchimp.js',
+				'{js}/src/ms-view-settings-media.js',
 				'{js}/src/ms-view-settings-payment.js',
 				'{js}/src/ms-view-settings-protection.js',
 				'{js}/src/ms-view-settings-setup.js'
@@ -65,6 +66,7 @@ module.exports = function( grunt ) {
 			],
 			'{js}/jquery.m2.plugins.js': [ '{js}/vendor/jquery.nearest.js' ],
 			'{js}/jquery.m2.validate.js': [ '{js}/vendor/jquery.validate.js' ],
+			'{js}/m2.wpmu-ui.3.js': [ '{js}/vendor/wpmu-ui.3.js' ],
 			'{js}/ms-public-ajax.js': ['{js}/src/ms-public-ajax.js']
 		},
 
@@ -78,6 +80,7 @@ module.exports = function( grunt ) {
 		plugin_branches: {
 			exclude_pro: [
 				'./app_old',
+				'./free',
 				'./README.MD',
 				'./readme.txt',
 				'./screenshot-*',
@@ -85,15 +88,23 @@ module.exports = function( grunt ) {
 				'./app/assets/js/src/**',
 				'./app/assets/js/vendor/**',
 				'./app/assets/img/src/**',
+				'./docs/phpdoc-**',
+				'bitbucket-pipelines.yml',
+				'./vendor',
 			],
 			exclude_free: [
 				'./README.MD',
+				'./changelog.txt',
 				'./premium',
+				'./membership2.php',
 				'./lib/wpmudev-dashboard',
 				'./app/assets/css/src/**',
 				'./app/assets/js/src/**',
 				'./app/assets/js/vendor/**',
 				'./app/assets/img/src/**',
+				'./docs/phpdoc-**',
+				'bitbucket-pipelines.yml',
+				'./vendor',
 			],
 			include_files: [
 				'**',
@@ -125,8 +136,10 @@ module.exports = function( grunt ) {
 				'!.git',
 				'!**/.svn/**',
 				'!.log',
-				'!docs/phpdoc-**',
-				'!bitbucket-pipelines.yml'
+				'!docs/**',
+				'!bitbucket-pipelines.yml',
+				'!vendor/**',
+				'!composer**'
 			],
 			main_pro: 'membership2.php',
 			main_free: 'membership.php',
@@ -184,9 +197,11 @@ module.exports = function( grunt ) {
 			pot_dir: 'languages/', // With trailing slash.
 			textdomain: 'membership2',
 		},
-
+		
 		plugin_dir: 'membership/',
-		plugin_file: 'membership2.php'
+		pro_plugin_dir: 'membership-pro/',
+		plugin_file: 'membership2.php',
+		free_plugin_file: './free/membership.php'
 	};
 	// -------------------------------------------------------------------------
 	var key, ind, newkey, newval;
@@ -397,8 +412,8 @@ module.exports = function( grunt ) {
 			},
 			release_free: {
 				src: [
-					'release/<%= pkg.version %>-free/',
-					'release/<%= pkg.name %>-free-<%= pkg.version %>.zip'
+					'release/<%= pkg.freeVersion %>-free/',
+					'release/<%= pkg.name %>-free-<%= pkg.freeVersion %>.zip'
 				]
 			},
 			pro: conf.plugin_branches.exclude_pro,
@@ -413,7 +428,7 @@ module.exports = function( grunt ) {
 			},
 			free: {
 				src: conf.plugin_branches.include_files,
-				dest: 'release/<%= pkg.version %>-free/'
+				dest: 'release/<%= pkg.freeVersion %>-free/'
 			},
 		},
 
@@ -427,15 +442,15 @@ module.exports = function( grunt ) {
 				expand: true,
 				cwd: 'release/<%= pkg.version %>-pro/',
 				src: [ '**/*' ],
-				dest: conf.plugin_dir
+				dest: conf.pro_plugin_dir
 			},
 			free: {
 				options: {
 					mode: 'zip',
-					archive: './release/<%= pkg.name %>-free-<%= pkg.version %>.zip'
+					archive: './release/<%= pkg.name %>-free-<%= pkg.freeVersion %>.zip'
 				},
 				expand: true,
-				cwd: 'release/<%= pkg.version %>-free/',
+				cwd: 'release/<%= pkg.freeVersion %>-free/',
 				src: [ '**/*' ],
 				dest: conf.plugin_dir
 			},
@@ -488,7 +503,7 @@ module.exports = function( grunt ) {
 			free: {
 				files: [
 					{
-						src: conf.plugin_file,
+						src: conf.free_plugin_file,
 						dest: conf.plugin_branches.main_free
 					}
 				],

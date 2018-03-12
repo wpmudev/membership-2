@@ -27,9 +27,9 @@ class MS_Widget_Login extends WP_Widget {
 	 * @param array $instance
 	 */
 	public function widget( $args, $instance ) {
-		$redirect_login = false;
-		$redirect_logout = false;
-		$shortcode_args = '';
+		$redirect_login 	= false;
+		$redirect_logout 	= false;
+		$shortcode_args 	= '';
 
 		if ( ! empty( $instance['redirect_login'] ) ) {
 			$redirect_login = lib3()->net->expand_url( $instance['redirect_login'] );
@@ -71,10 +71,10 @@ class MS_Widget_Login extends WP_Widget {
 	 * @param array $instance The widget options
 	 */
 	public function form( $instance ) {
-		$title = __( 'Login', 'membership2' );
-		$redirect_login = '';
-		$redirect_logout = '';
-		$shortcode_args = '';
+		$title 				= __( 'Login', 'membership2' );
+		$redirect_login 	= '';
+		$redirect_logout 	= '';
+		$shortcode_args 	= '';
 
 		if ( isset( $instance['title'] ) ) {
 			$title = $instance['title'];
@@ -104,40 +104,40 @@ class MS_Widget_Login extends WP_Widget {
 		}
 
 		$field_title = array(
-			'id' => $this->get_field_id( 'title' ),
-			'name' => $this->get_field_name( 'title' ),
-			'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
+			'id' 	=> $this->get_field_id( 'title' ),
+			'name' 	=> $this->get_field_name( 'title' ),
+			'type' 	=> MS_Helper_Html::INPUT_TYPE_TEXT,
 			'title' => __( 'Title:', 'membership2' ),
 			'value' => $title,
 			'class' => 'widefat',
 		);
 
 		$field_redirect_login = array(
-			'id' => $this->get_field_id( 'redirect_login' ),
-			'name' => $this->get_field_name( 'redirect_login' ),
-			'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-			'title' => __( 'Show this page after login:', 'membership2' ),
-			'value' => $redirect_login,
-			'placeholder' => $placeholder_login,
-			'class' => 'widefat',
+			'id' 			=> $this->get_field_id( 'redirect_login' ),
+			'name' 			=> $this->get_field_name( 'redirect_login' ),
+			'type' 			=> MS_Helper_Html::INPUT_TYPE_TEXT,
+			'title'			=> __( 'Show this page after login:', 'membership2' ),
+			'value' 		=> $redirect_login,
+			'placeholder' 	=> $placeholder_login,
+			'class' 		=> 'widefat',
 		);
 
 		$field_redirect_logout = array(
-			'id' => $this->get_field_id( 'redirect_logout' ),
-			'name' => $this->get_field_name( 'redirect_logout' ),
-			'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-			'title' => __( 'Show this page after logout:', 'membership2' ),
-			'value' => $redirect_logout,
-			'placeholder' => $placeholder_logout,
-			'class' => 'widefat',
+			'id' 			=> $this->get_field_id( 'redirect_logout' ),
+			'name' 			=> $this->get_field_name( 'redirect_logout' ),
+			'type' 			=> MS_Helper_Html::INPUT_TYPE_TEXT,
+			'title' 		=> __( 'Show this page after logout:', 'membership2' ),
+			'value' 		=> $redirect_logout,
+			'placeholder' 	=> $placeholder_logout,
+			'class' 		=> 'widefat',
 		);
 
 		$field_shortcode_args = array(
-			'id' => $this->get_field_id( 'shortcode_args' ),
-			'name' => $this->get_field_name( 'shortcode_args' ),
-			'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-			'title' => __( 'Shortcode Options:', 'membership2' ),
-			'desc' => sprintf(
+			'id' 			=> $this->get_field_id( 'shortcode_args' ),
+			'name' 			=> $this->get_field_name( 'shortcode_args' ),
+			'type' 			=> MS_Helper_Html::INPUT_TYPE_TEXT,
+			'title' 		=> __( 'Shortcode Options:', 'membership2' ),
+			'desc' 			=> sprintf(
 				__( 'Arguments to pass to the %slogin shortcode%s', 'membership2' ),
 				sprintf(
 					'<a href="%s#ms-membership-login" target="_blank">',
@@ -148,9 +148,9 @@ class MS_Widget_Login extends WP_Widget {
 				),
 				'</a>'
 			),
-			'value' => $shortcode_args,
-			'placeholder' => 'header="no"',
-			'class' => 'widefat',
+			'value' 		=> $shortcode_args,
+			'placeholder' 	=> 'header="no"',
+			'class' 		=> 'widefat',
 		);
 
 		MS_Helper_Html::html_element( $field_title );
@@ -169,11 +169,11 @@ class MS_Widget_Login extends WP_Widget {
 	 * @return array Updated safe values to be saved.
 	 */
 	public function update( $new_instance, $old_instance ) {
-		$instance = array();
-		$instance['title'] = '';
-		$instance['redirect_login'] = '';
-		$instance['redirect_logout'] = '';
-		$instance['shortcode_args'] = '';
+		$instance 						= array();
+		$instance['title'] 				= '';
+		$instance['redirect_login']		= '';
+		$instance['redirect_logout'] 	= '';
+		$instance['shortcode_args'] 	= '';
 
 		if ( isset( $new_instance['title'] ) ) {
 			$instance['title'] = strip_tags( $new_instance['title'] );

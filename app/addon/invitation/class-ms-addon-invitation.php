@@ -54,10 +54,10 @@ class MS_Addon_Invitation extends MS_Addon {
 	 */
 	public function register( $list ) {
 		$list[ self::ID ] = (object) array(
-			'name' => __( 'Invitation Codes', 'membership2' ),
-			'description' => __( 'Users need an invitation code to subscribe to a membership.', 'membership2' ),
-			'icon' => 'wpmui-fa wpmui-fa-unlock-alt',
-			'action' => array( __( 'Pro Version', 'membership2' ) ),
+			'name' 			=> __( 'Invitation Codes', 'membership2' ),
+			'description' 	=> __( 'Users need an invitation code to subscribe to a membership.', 'membership2' ),
+			'icon' 			=> 'wpmui-fa wpmui-fa-unlock-alt',
+			'action' 		=> array( __( 'Pro Version', 'membership2' ) ),
 		);
 
 		return $list;

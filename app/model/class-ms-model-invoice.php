@@ -31,22 +31,22 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	 * @var string
 	 */
 	// Invoice was created but user did not yet confirm that he wants to sign up/pay.
-	const STATUS_NEW = 'new';
+	const STATUS_NEW 		= 'new';
 
 	// Invoice was created but user did not make any attempt to pay.
-	const STATUS_BILLED = 'billed';
+	const STATUS_BILLED 	= 'billed';
 
 	// User confirmed payment and it was successful.
-	const STATUS_PAID = 'paid';
+	const STATUS_PAID 		= 'paid';
 
 	// User confirmed payment but gateway returned a "pending" notification.
-	const STATUS_PENDING = 'pending';
+	const STATUS_PENDING 	= 'pending';
 
 	// User confirmed payment but gateway returned some error (dispute, wrong amount, etc).
-	const STATUS_DENIED = 'denied';
+	const STATUS_DENIED 	= 'denied';
 
 	// Archived invoices are hidden from invoice lists, i.e. "deleted"
-	const STATUS_ARCHIVED = 'archived';
+	const STATUS_ARCHIVED 	= 'archived';
 
 	/**
 	 * External transaction ID.
@@ -141,12 +141,28 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	protected $amount = 0;
 
 	/**
+	 * Amount paid in gateway
+	 *
+	 * @since  1.0.0
+	 * @var float
+	 */
+	protected $amount_paid = 0;
+
+	/**
 	 * Discount value.
 	 *
 	 * @since  1.0.0
 	 * @var float
 	 */
 	protected $discount = 0;
+
+	/**
+	 * Duration coupon value.
+	 *
+	 * @since  1.2.3
+	 * @var string
+	 */
+	protected $duration = '';
 
 	/**
 	 * Pro rate value.
@@ -260,6 +276,15 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	protected $invoice_number = 0;
 
 	/**
+	 * Invoice id.
+	 * Incase custom invoice generation is set up
+	 *
+	 * @since  1.0.0
+	 * @var int
+	 */
+	protected $custom_invoice_id = 0;
+
+	/**
 	 * Tax rate value.
 	 *
 	 * @since  1.0.0
@@ -322,16 +347,16 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	 */
 	public static function get_register_post_type_args() {
 		$args = array(
-			'label' => __( 'Membership2 Invoices', 'membership2' ),
-			'description' => __( 'Member Invoices', 'membership2' ),
-			'public' => true,
-			'show_ui' => false,
-			'show_in_menu' => false,
-			'has_archive' => false,
-			'publicly_queryable' => true,
-			'supports' => false,
-			'hierarchical' => false,
-                        'exclude_from_search' => true
+			'label' 				=> __( 'Membership2 Invoices', 'membership2' ),
+			'description' 			=> __( 'Member Invoices', 'membership2' ),
+			'public' 				=> false,
+			'show_ui' 				=> false,
+			'show_in_menu' 			=> false,
+			'has_archive' 			=> false,
+			'publicly_queryable' 	=> true,
+			'supports' 				=> false,
+			'hierarchical' 			=> false,
+            'exclude_from_search' 	=> true
 		);
 
 		return apply_filters(
@@ -352,19 +377,19 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	public static function get_status_types( $extended = false ) {
 		if ( $extended ) {
 			$result = array(
-				self::STATUS_NEW => __( 'Draft - Invoice is prepared but user cannot see it yet', 'membership2' ),
-				self::STATUS_BILLED => __( 'Billed - User can see the invoice and needs to pay', 'membership2' ),
-				self::STATUS_PENDING => __( 'Pending - Waiting for confirmation from payment gateway', 'membership2' ),
-				self::STATUS_PAID => __( 'Paid - Payment arrived on our account!', 'membership2' ),
-				self::STATUS_DENIED => __( 'Denied - Payment was denied', 'membership2' ),
+				self::STATUS_NEW 		=> __( 'Draft - Invoice is prepared but user cannot see it yet', 'membership2' ),
+				self::STATUS_BILLED 	=> __( 'Billed - User can see the invoice and needs to pay', 'membership2' ),
+				self::STATUS_PENDING 	=> __( 'Pending - Waiting for confirmation from payment gateway', 'membership2' ),
+				self::STATUS_PAID 		=> __( 'Paid - Payment arrived on our account!', 'membership2' ),
+				self::STATUS_DENIED 	=> __( 'Denied - Payment was denied', 'membership2' ),
 			);
 		} else {
 			$result = array(
-				self::STATUS_NEW => __( 'Draft', 'membership2' ),
-				self::STATUS_BILLED => __( 'Billed', 'membership2' ),
-				self::STATUS_PENDING => __( 'Pending', 'membership2' ),
-				self::STATUS_PAID => __( 'Paid', 'membership2' ),
-				self::STATUS_DENIED => __( 'Denied', 'membership2' ),
+				self::STATUS_NEW 		=> __( 'Draft', 'membership2' ),
+				self::STATUS_BILLED 	=> __( 'Billed', 'membership2' ),
+				self::STATUS_PENDING 	=> __( 'Pending', 'membership2' ),
+				self::STATUS_PAID 		=> __( 'Paid', 'membership2' ),
+				self::STATUS_DENIED 	=> __( 'Denied', 'membership2' ),
 			);
 		}
 
@@ -385,11 +410,11 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 		$args = array();
 
 		if ( ! empty( $_REQUEST['orderby'] ) && ! empty( $_REQUEST['order'] ) ) {
-			$args['orderby'] = $_REQUEST['orderby'];
-			$args['order'] = $_REQUEST['order'];
+			$args['orderby'] 	= $_REQUEST['orderby'];
+			$args['order'] 		= $_REQUEST['order'];
 		} else {
-			$args['orderby'] = 'ID';
-			$args['order'] = 'DESC';
+			$args['orderby'] 	= 'ID';
+			$args['order'] 		= 'DESC';
 		}
 
 		// Prepare order by statement.
@@ -408,11 +433,11 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 
 		// Search string.
 		if ( ! empty( $_REQUEST['s'] ) ) {
-			$user_args = array(
+			$user_args 	= array(
 				'search' => '*' . $_REQUEST['s'] . '*',
 			);
-			$user_list = new WP_User_Query( $user_args );
-			$user_ids = array();
+			$user_list 	= new WP_User_Query( $user_args );
+			$user_ids 	= array();
 			foreach ( $user_list->results as $user ) {
 				$user_ids[] = $user->ID;
 			}
@@ -424,7 +449,7 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 		// Gateway filter.
 		if ( ! empty( $_REQUEST['gateway_id'] ) ) {
 			$args['meta_query']['gateway_id'] = array(
-				'key' => 'gateway_id',
+				'key' 	=> 'gateway_id',
 				'value' => $_REQUEST['gateway_id'],
 			);
 		}
@@ -433,7 +458,7 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 		if ( ! empty( $_REQUEST['status'] ) ) {
 			if ( 'default' === $_REQUEST['status'] ) {
 				$args['meta_query']['status'] = array(
-					'key' => 'status',
+					'key' 	=> 'status',
 					'value' => array(
 						self::STATUS_BILLED,
 						self::STATUS_PENDING,
@@ -444,7 +469,7 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 				);
 			} elseif ( 'open' === $_REQUEST['status'] ) {
 				$args['meta_query']['status'] = array(
-					'key' => 'status',
+					'key' 	=> 'status',
 					'value' => array(
 						self::STATUS_BILLED,
 						self::STATUS_PENDING,
@@ -453,13 +478,13 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 				);
 			} else {
 				$args['meta_query']['status'] = array(
-					'key' => 'status',
+					'key' 	=> 'status',
 					'value' => $_REQUEST['status'],
 				);
 			}
 		}
 
-		return $args;
+		return apply_filters( 'ms_model_invoice_get_query_args', $args );
 	}
 
 	/**
@@ -472,21 +497,38 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	 */
 	public static function get_invoice_count( $args = null ) {
 		$defaults = array(
-			'post_type' => self::get_post_type(),
-			'post_status' => 'any',
+			'post_type' 	=> self::get_post_type(),
+			'post_status' 	=> 'any',
 		);
 		$args = apply_filters(
 			'ms_model_invoice_get_invoice_count_args',
 			wp_parse_args( $args, $defaults )
 		);
-
+		$count 		= 0;
 		MS_Factory::select_blog();
-		$query = new WP_Query( $args );
+		$cache_key 	= 'ms_model_invoice_counts';
+		if ( !is_null( $args ) && isset ( $args['meta_query']['status']['value'] ) ) {
+			if ( is_array ( $args['meta_query']['status']['value'] ) ) {
+				$cache_key = $cache_key . '_' . implode ( "_", $args['meta_query']['status']['value'] );
+			} else {
+				$cache_key = $cache_key . '_' . $args['meta_query']['status']['value'];
+			}
+		}
+		$cache_key 	= MS_Helper_Cache::generate_cache_key( $cache_key, $args );
+		$results 	= MS_Helper_Cache::get_transient( $cache_key );
+		if ( $results ) {
+			$count = $results;
+		} else {
+			$query = new WP_Query( $args );
+			$count = $query->found_posts;
+			MS_Helper_Cache::query_cache( $count, $cache_key );
+		}
+		
 		MS_Factory::revert_blog();
 
 		return apply_filters(
 			'ms_model_invoice_get_invoice_count',
-			$query->found_posts,
+			$count,
 			$args
 		);
 	}
@@ -543,24 +585,49 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	 * @param mixed $args The arguments to select data.
 	 * @return array $invoices
 	 */
-	public static function get_invoices( $args = null ) {
+	public static function get_invoices( $args = null, $cache = true ) {
 		$defaults = array(
-			'post_type' => self::get_post_type(),
-			'posts_per_page' => 10,
-			'post_status' => 'any',
-			'fields' => 'ids',
-			'order' => 'DESC',
-			'orderby' => 'ID',
+			'post_type' 		=> self::get_post_type(),
+			'posts_per_page' 	=> 10,
+			'post_status' 		=> 'any',
+			'fields' 			=> 'ids',
+			'order' 			=> 'DESC',
+			'orderby' 			=> 'ID',
 		);
 		$args = apply_filters(
 			'ms_model_invoice_get_invoices_args',
 			wp_parse_args( $args, $defaults )
 		);
+		$invoices 	= array();
+		$items 		= array();
+
+		$cache_key 	= 'ms_model_invoice_list';
+		if ( !is_null( $args ) ) {
+			if ( isset ( $args['meta_query']['status']['value'] ) ) {
+				if ( is_array ( $args['meta_query']['status']['value'] ) ) {
+					$cache_key = $cache_key . '_' . implode ( "_", $args['meta_query']['status']['value'] );
+				} else {
+					$cache_key = $cache_key . '_' . $args['meta_query']['status']['value'];
+				}
+			} 
+			if ( isset ( $args['author'] ) ) {
+				$cache_key = $cache_key . '_author_' . $args['author']; 
+			}
+		}
 
 		MS_Factory::select_blog();
-		$query = new WP_Query( $args );
-		$items = $query->posts;
-		$invoices = array();
+		$cache_key 	= MS_Helper_Cache::generate_cache_key( $cache_key, $args );
+		$results 	= MS_Helper_Cache::get_transient( $cache_key );
+		if ( $results && $cache ) {
+			$items = $results;
+		} else {
+			$query 	= new WP_Query( $args );
+			$items 	= $query->posts;
+			if ( $cache ) {
+				MS_Helper_Cache::query_cache( $items, $cache_key );
+			}
+		}
+
 		MS_Factory::revert_blog();
 
 		foreach ( $items as $item ) {
@@ -588,21 +655,21 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	public static function get_public_invoices( $user_id, $limit = -1 ) {
 		$list = self::get_invoices(
 			array(
-				'author' => $user_id,
-				'posts_per_page' => $limit,
-				'meta_query' => array(
-					'relation' => 'AND',
+				'author' 			=> $user_id,
+				'posts_per_page' 	=> $limit,
+				'meta_query' 		=> array(
+					'relation' 			=> 'AND',
 					// Do not display invoices for free memberships.
 					array(
-						'key' => 'amount',
-						'value' => '0',
-						'compare' => '!=',
+						'key' 			=> 'amount',
+						'value' 		=> '0',
+						'compare' 		=> '!=',
 					),
 					// Do not display and Invoice with status "New".
 					array(
-						'key' => 'status',
-						'value' => MS_Model_Invoice::STATUS_NEW,
-						'compare' => '!=',
+						'key' 			=> 'status',
+						'value' 		=> MS_Model_Invoice::STATUS_NEW,
+						'compare' 		=> '!=',
 					),
 				)
 			)
@@ -625,10 +692,10 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	 */
 	public static function get_invoice( $subscription_id, $invoice_number = null, $status = null ) {
 		$args = array(
-			'post_type' => self::get_post_type(),
-			'post_status' => 'any',
-			'fields' => 'ids',
-			'order' => 'DESC',
+			'post_type' 	=> self::get_post_type(),
+			'post_status' 	=> 'any',
+			'fields' 		=> 'ids',
+			'order' 		=> 'DESC',
 		);
 
 		$args['meta_query']['ms_relationship_id'] = array(
@@ -636,10 +703,19 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 			'value'   => $subscription_id,
 		);
 		if ( ! empty( $status ) ) {
-			$args['meta_query']['status'] = array(
-				'key'     => 'status',
-				'value'   => $status,
-			);
+			if( is_array( $status ) ) {
+				$args['meta_query']['status'] = array(
+					'key'     => 'status',
+					'value'   => $status,
+					'compare' => 'IN'
+				);
+			}
+			else {
+				$args['meta_query']['status'] = array(
+					'key'     => 'status',
+					'value'   => $status,
+				);
+			}
 		}
 		if ( ! empty( $invoice_number ) ) {
 			$args['meta_query']['invoice_number'] = array(
@@ -649,9 +725,9 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 		}
 
 		MS_Factory::select_blog();
-		$args = apply_filters( 'ms_model_invoice_get_invoice_args', $args );
-		$query = new WP_Query( $args );
-		$item = $query->posts;
+		$args 	= apply_filters( 'ms_model_invoice_get_invoice_args', $args );
+		$query 	= new WP_Query( $args );
+		$item 	= $query->posts;
 		MS_Factory::revert_blog();
 
 		$invoice = null;
@@ -666,6 +742,34 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 			$invoice_number,
 			$status
 		);
+	}
+
+	/**
+	 * Get current invoice number of a subscription.
+	 *
+	 * @since  1.1.3
+	 *
+	 * @param  MS_Model_Relationship $subscription The membership relationship.
+	 * @return Integer The invoice number
+	 */
+	public static function get_current_invoice_number( $subscription ){
+
+		$current_invoice = $invoice = self::get_invoice(
+			$subscription->id,
+			null,
+			array( 
+				self::STATUS_PAID, 
+				self::STATUS_BILLED, 
+				self::STATUS_PENDING, 
+				self::STATUS_DENIED 
+			)
+		);
+
+		if( ! empty( $current_invoice ) ){
+			return $current_invoice->invoice_number;
+		}
+
+		return !is_null( $subscription->current_invoice_number ) ? $subscription->current_invoice_number : 1;
 	}
 
 	/**
@@ -684,14 +788,14 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	public static function get_current_invoice( $subscription, $create_missing = true ) {
 		$invoice = self::get_invoice(
 			$subscription->id,
-			$subscription->current_invoice_number
+			$subscription->get_current_invoice_number()
 		);
 
 		if ( ! $invoice && $create_missing ) {
 			// Create a new invoice.
 			$invoice = self::create_invoice(
 				$subscription,
-				$subscription->current_invoice_number 
+				$subscription->get_current_invoice_number() 
 			);
 		}
 
@@ -716,14 +820,14 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	public static function get_next_invoice( $subscription, $create_missing = true ) {
 		$invoice = self::get_invoice(
 			$subscription->id,
-			$subscription->current_invoice_number + 1
+			$subscription->get_current_invoice_number() + 1
 		);
 
 		if ( ! $invoice && $create_missing ) {
 			// Create a new invoice.
 			$invoice = self::create_invoice(
 				$subscription,
-				$subscription->current_invoice_number + 1
+				$subscription->get_current_invoice_number() + 1
 			);
 		}
 
@@ -731,9 +835,9 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 		 * Since only the *first* invoice can have discount/pro-rating we
 		 * manually set those values to 0.
 		 */
-		$invoice->discount = 0;
-		$invoice->pro_rate = 0;
-		$invoice->notes = array();
+		$invoice->discount 	= 0;
+		$invoice->pro_rate 	= 0;
+		$invoice->notes 	= array();
 
 		return apply_filters(
 			'ms_model_invoice_get_next_invoice',
@@ -755,7 +859,7 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	public static function get_previous_invoice( $subscription, $status = null ) {
 		$invoice = self::get_invoice(
 			$subscription->id,
-			$subscription->current_invoice_number - 1,
+			$subscription->get_current_invoice_number() - 1,
 			$status
 		);
 
@@ -765,6 +869,37 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 			$subscription,
 			$status
 		);
+	}
+
+	/**
+	 * Get the first paid invoice
+	 * 
+	 * @param MS_Model_Relationship $subscription The membership relationship.
+	 * 
+	 * @return bool|MS_Model_Invoice
+	 */
+	public static function get_first_paid_invoice( $subscription ) {
+		$args = array(
+			'posts_per_page'=> 1,
+			'order' 		=> 'ASC',
+			'meta_query' 	=> array(
+				array(
+					'key'   => 'ms_relationship_id',
+					'value' => $subscription->id,
+				),
+				array(
+					'key'   	=> 'status',
+					'value' 	=> self::STATUS_PAID,
+					'compare' 	=> '=',
+				)
+			),
+		);
+		$invoices = self::get_invoices( $args, true );
+		if ( $invoices && is_array( $invoices ) && count( $invoices ) > 0 ) {
+			return $invoices[0];
+		} else {
+			return self::get_previous_invoice( $subscription, self::STATUS_PAID );
+		}
 	}
 
 	/**
@@ -788,65 +923,70 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 
 		$invoice = null;
 		$member = MS_Factory::load( 'MS_Model_Member', $subscription->user_id );
-                
-		if( isset( $_SESSION['m2_status_check'] ) && $_SESSION['m2_status_check'] == 'inv' ){
+		
+		$status_check = MS_Factory::get_option( 'm2_status_check' );
+		if ( isset( $status_check ) && $status_check == 'inv' ) {
 			$invoice_status = self::STATUS_BILLED;
-		}else{
+		} else {
 			$invoice_status = self::STATUS_NEW;
 		}
-		unset( $_SESSION['m2_status_check'] );
+		MS_Factory::delete_option( 'm2_status_check' );
                 
 		$notes = array();
 
 		if ( empty( $invoice_number ) ) {
-			$invoice_number = $subscription->current_invoice_number;
+			$invoice_number = $subscription->get_current_invoice_number();
 		}
 
 		$invoice = self::get_invoice( $subscription->id, $invoice_number );
 
 		// No existing invoice, create a new one.
 		if ( ! $invoice || ! $invoice->id ) {
-			$invoice = MS_Factory::create( 'MS_Model_Invoice' );
-			$invoice = apply_filters( 'ms_model_invoice', $invoice );
+			$invoice 					= MS_Factory::create( 'MS_Model_Invoice' );
+			$invoice 					= apply_filters( 'ms_model_invoice', $invoice );
+		}
+
+		$previous_invoice 				= self::get_first_paid_invoice( $subscription );
+		if ( $previous_invoice ) {
+			$invoice->checkout_ip 		= $previous_invoice->checkout_ip;
+			$invoice->tax_rate 			= $previous_invoice->tax_rate;
 		}
 		// Update invoice info.
-		$invoice->ms_relationship_id = $subscription->id;
-
-		$invoice->gateway_id = $subscription->gateway_id;
-		$invoice->status = $invoice_status;
-		$invoice->invoice_date = MS_Helper_Period::current_date();
-		$invoice->membership_id = $membership->id;
-		$invoice->currency = MS_Plugin::instance()->settings->currency;
-		$invoice->user_id = $member->id;
-		$invoice->name = apply_filters(
-			'ms_model_invoice_name',
-			sprintf(
-				__( 'Invoice for %s - %s', 'membership2' ),
-				$membership->name,
-				$member->username
-			)
-		);
-		$invoice->invoice_number = $invoice_number;
-		$invoice->discount = 0;
-		$invoice->notes = $notes;
-		$invoice->amount = $membership->price; // Without taxes!
-
+		$invoice->ms_relationship_id 	= $subscription->id;
+		$invoice->gateway_id 			= $subscription->gateway_id;
+		$invoice->status 				= $invoice_status;
+		$invoice->invoice_date 			= MS_Helper_Period::current_date();
+		$invoice->membership_id 		= $membership->id;
+		$invoice->currency 				= MS_Plugin::instance()->settings->currency;
+		$invoice->user_id 				= $member->id;
+		$invoice->name 					= apply_filters(
+											'ms_model_invoice_name',
+											sprintf(
+												__( 'Invoice for %s - %s', 'membership2' ),
+												$membership->name,
+												$member->username
+											)
+										);
+		$invoice->invoice_number 		= $invoice_number;
+		$invoice->discount 				= 0;
+		$invoice->notes 				= $notes;
+		$invoice->amount 				= $membership->price; // Without taxes!
+		$total_invoices 				= self::get_invoice_count();
+		$invoice->custom_invoice_id		= $total_invoices + 1;
 		// Check for trial period in the first period.
 		if ( $subscription->is_trial_eligible()
-			&& $invoice_number === $subscription->current_invoice_number
+			&& $invoice_number === $subscription->get_current_invoice_number()
 		) {
-			$invoice->trial_price = $membership->trial_price; // Without taxes!
-			$invoice->uses_trial = true;
-			$invoice->trial_ends = $subscription->trial_expire_date;
+			$invoice->trial_price 		= $membership->trial_price; // Without taxes!
+			$invoice->uses_trial 		= true;
+			$invoice->trial_ends 		= $subscription->trial_expire_date;
 		}
+		
+		
 
 		$invoice->set_due_date();
 
-		$invoice = apply_filters(
-			'ms_model_invoice_create_before_save',
-			$invoice,
-			$subscription
-		);
+		$invoice = apply_filters( 'ms_model_invoice_create_before_save', $invoice, $subscription );
 		
 		// Refresh the tax-rate and payment description.
 		$invoice->total_amount_changed();
@@ -854,7 +994,7 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 		$invoice->save();
 	
 		//If gateway is admin then set the invoice as paid.
-		if ( 'admin' == $invoice->gateway_id) {
+		if ( 'admin' == $invoice->gateway_id ) {
 			$invoice->pay_it( $invoice->gateway_id );
 		}
 
@@ -951,10 +1091,10 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 		}
 
 		if ( $is_paid ) {
-			$this->status = self::STATUS_PAID;
+			$this->status 	= self::STATUS_PAID;
 			$this->pay_date = MS_Helper_Period::current_date();
 		} else {
-			$this->status = self::STATUS_BILLED;
+			$this->status 	= self::STATUS_BILLED;
 		}
 
 		// Manual gateway works differently. This conditon avoids infinite loop.
@@ -967,6 +1107,24 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 			 * All changes above are also saved at the end of changed()
 			 */
 			$this->changed();
+		}
+
+		//remove other memberships
+		//Safety ccheck incase other membership is not removed
+		if ( !MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MULTI_MEMBERSHIPS ) ) {
+			$member 				= $subscription->get_member();
+			$cur_membership 		= $subscription->get_membership();
+			$all_member_memberships = $member->get_membership_ids();
+
+			foreach ( $all_member_memberships as $member_membership_id ) {
+
+				if ( $member_membership_id == $cur_membership->id ) {
+					continue;
+				}
+
+				$member->cancel_membership( $member_membership_id );
+				$member->save();
+			}
 		}
 
 		/**
@@ -995,9 +1153,9 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	protected function validate_pay_date() {
 		if ( $this->is_paid() && $this->amount ) {
 			if ( ! $this->pay_date ) {
-				$subscription = $this->get_subscription();
-				$payments = $subscription->get_payments();
-				$last_payment = end( $payments );
+				$subscription 	= $this->get_subscription();
+				$payments 		= $subscription->get_payments();
+				$last_payment 	= end( $payments );
 				$this->pay_date = $last_payment['date'];
 				if ( ! $this->pay_date ) {
 					$this->pay_date = $this->due_date;
@@ -1027,9 +1185,10 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 		if ( ! $this->ms_relationship_id ) {
 			MS_Helper_Debug::debug_log( 'Cannot process transaction: No relationship defined (inv #' . $this->id  .')' );
 		} else {
-			$subscription = $this->get_subscription();
-			$member = MS_Factory::load( 'MS_Model_Member', $this->user_id );
-			$membership = $subscription->get_membership();
+			$force_admin 	= false;
+			$subscription 	= $this->get_subscription();
+			$member 		= MS_Factory::load( 'MS_Model_Member', $this->user_id );
+			$membership 	= $subscription->get_membership();
 
 			switch ( $this->status ) {
 				case self::STATUS_NEW:
@@ -1042,6 +1201,7 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 							MS_Model_Event::TYPE_PAID,
 							$subscription
 						);
+						$force_admin = true;
 					}
 
 					do_action(
@@ -1088,7 +1248,7 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 					if ( in_array( $membership->payment_type, $multi_invoice ) ) {
 						// Update the current_invoice_number counter.
 						$subscription->current_invoice_number = max(
-							$subscription->current_invoice_number,
+							$subscription->get_current_invoice_number(),
 							$this->invoice_number + 1
 						);
 					}
@@ -1111,12 +1271,20 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 					break;
 			}
 
+			
+
 			$member->save();
 			$this->save();
 
-			$subscription->set_gateway( $this->gateway_id );
+			$subscription->set_gateway( $this->gateway_id, $force_admin );
 			$subscription->save();
 		}
+
+		do_action(
+			'ms_model_invoice_changed_after',
+			$this,
+			$member
+		);
 		return apply_filters(
 			'ms_model_invoice_changed',
 			$this,
@@ -1129,13 +1297,13 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	 *
 	 * @since  1.0.0
 	 *
-	 * @param string $notes
+	 * @param string|array $notes
 	 */
 	public function add_notes( $notes ) {
-                if ( is_string( $this->notes ) ) {
-                    $this->notes = empty($this->notes) ? array() : (array)$this->notes;
-                }
-		$this->notes[] = apply_filters(
+		if ( is_string( $this->notes ) ) {
+			$this->notes 	= empty($this->notes) ? array() : (array)$this->notes;
+		}
+		$this->notes[] 		= apply_filters(
 			'ms_model_invoice_add_notes',
 			$notes,
 			$this
@@ -1254,8 +1422,8 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 
 		// Store the current timestamp, so we don't refresh the price until
 		// the timeout expires again.
-		$this->price_date = time();
-		$membership = $this->get_membership();
+		$this->price_date 	= time();
+		$membership 		= $this->get_membership();
 
 		// The invoice always has the real membership price as amount, never
 		// the trial amount.
@@ -1274,9 +1442,9 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 		// Never change due-date of paid invoices.
 		if ( $this->is_paid() ) { return; }
 
-		$subscription = $this->get_subscription();
+		$subscription 	= $this->get_subscription();
 
-		$due_date = false;
+		$due_date 		= false;
 
 		// Handle special cases in due date calculation.
 		switch ( $subscription->status ) {
@@ -1305,9 +1473,8 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 		}
 
 		// Update the trial expiration date.
-		$this->trial_ends = $subscription->trial_expire_date;
-
-		$this->due_date = $due_date;
+		$this->trial_ends 	= $subscription->trial_expire_date;
+		$this->due_date 	= $due_date;
 	}
 
 	/**
@@ -1393,8 +1560,8 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	 * @since  1.0.0
 	 */
 	private function get_total() {
-		$total = $this->get_net_amount(); // Net amount
-		$total += $this->get_tax(); // Tax-Rate was defined in `create_invoice()`
+		$total 	= $this->get_net_amount(); // Net amount
+		$total 	+= $this->get_tax(); // Tax-Rate was defined in `create_invoice()`
 
 		if ( $total < 0 ) {
 			$total = 0;
@@ -1418,16 +1585,16 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	 * @since  1.0.0
 	 */
 	private function get_trial_price() {
-		$membership = $this->get_membership();
-		$trial_price = $membership->trial_price; // Net amount
-		$trial_price += $this->get_trial_tax(); // Tax-Rate was defined in `create_invoice()`
+		$membership 	= $this->get_membership();
+		$trial_price 	= $membership->trial_price; // Net amount
+		$trial_price 	+= $this->get_trial_tax(); // Tax-Rate was defined in `create_invoice()`
 
 		if ( $trial_price < 0 ) {
 			$trial_price = 0;
 		}
 
 		// Set precission to 2 decimal points.
-		$trial_price = round( $trial_price, 2 );
+		$trial_price 	= round( $trial_price, 2 );
 
 		$this->trial_price = apply_filters(
 			'ms_model_invoice_get_trial_price',

@@ -13,7 +13,7 @@ class MS_Rule_Special_View extends MS_View {
 			'ms_view_membership_protectedcontent_header',
 			array(
 				'title' => __( 'Choose Special WordPress Pages you want to protect', 'membership2' ),
-				'desc' => '',
+				'desc' 	=> '',
 			),
 			MS_Rule_Special::RULE_ID,
 			$this

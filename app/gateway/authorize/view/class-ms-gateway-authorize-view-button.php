@@ -70,38 +70,38 @@ class MS_Gateway_Authorize_View_Button extends MS_View {
 
 		$fields = array(
 			'_wpnonce' => array(
-				'id' => '_wpnonce',
-				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+				'id' 	=> '_wpnonce',
+				'type' 	=> MS_Helper_Html::INPUT_TYPE_HIDDEN,
 				'value' => wp_create_nonce(
 					$this->data['gateway']->id . '_' . $subscription->id
 				),
 			),
 			'gateway' => array(
-				'id' => 'gateway',
-				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+				'id' 	=> 'gateway',
+				'type' 	=> MS_Helper_Html::INPUT_TYPE_HIDDEN,
 				'value' => $gateway->id,
 			),
 			'ms_relationship_id' => array(
-				'id' => 'ms_relationship_id',
-				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+				'id' 	=> 'ms_relationship_id',
+				'type' 	=> MS_Helper_Html::INPUT_TYPE_HIDDEN,
 				'value' => $subscription->id,
 			),
 			'step' => array(
-				'id' => 'step',
-				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+				'id' 	=> 'step',
+				'type' 	=> MS_Helper_Html::INPUT_TYPE_HIDDEN,
 				'value' => $this->data['step'],
 			),
 		);
 		if ( 0 === strpos( $gateway->pay_button_url, 'http' ) ) {
 			$fields['submit'] = array(
-				'id' => 'submit',
-				'type' => MS_Helper_Html::INPUT_TYPE_IMAGE,
+				'id' 	=> 'submit',
+				'type' 	=> MS_Helper_Html::INPUT_TYPE_IMAGE,
 				'value' => $gateway->pay_button_url,
 			);
 		} else {
 			$fields['submit'] = array(
-				'id' => 'submit',
-				'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
+				'id' 	=> 'submit',
+				'type' 	=> MS_Helper_Html::INPUT_TYPE_SUBMIT,
 				'value' => $gateway->pay_button_url ? $gateway->pay_button_url : __( 'Signup', 'membership2' ),
 			);
 		}

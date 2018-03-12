@@ -13,7 +13,7 @@ class MS_Rule_Shortcode_View extends MS_View {
 			'ms_view_membership_protectedcontent_header',
 			array(
 				'title' => __( 'Choose Shortcodes to protect', 'membership2' ),
-				'desc' => '',
+				'desc' 	=> '',
 			),
 			MS_Rule_Shortcode::RULE_ID,
 			$this

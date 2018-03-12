@@ -90,12 +90,12 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 			$this->save();
 		}
 
-		$this->id = self::ID;
-		$this->name = __( 'Stripe Subscriptions Gateway', 'membership2' );
-		$this->group = 'Stripe';
-		$this->manual_payment = false; // Recurring charged automatically
-		$this->pro_rate = true;
-		$this->unsupported_payment_types = array(
+		$this->id 							= self::ID;
+		$this->name 						= __( 'Stripe Subscriptions Gateway', 'membership2' );
+		$this->group 						= 'Stripe';
+		$this->manual_payment 				= false; // Recurring charged automatically
+		$this->pro_rate 					= true;
+		$this->unsupported_payment_types 	= array(
 			MS_Model_Membership::PAYMENT_TYPE_PERMANENT,
 			MS_Model_Membership::PAYMENT_TYPE_FINITE,
 			MS_Model_Membership::PAYMENT_TYPE_DATE_RANGE,
@@ -120,9 +120,9 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 		);
 
 		$this->add_filter(
-				'ms_model_pages_get_ms_page_url',
-				'ms_model_pages_get_ms_page_url_cb',
-				99, 4
+			'ms_model_pages_get_ms_page_url',
+			'ms_model_pages_get_ms_page_url_cb',
+			99, 4
 		);
 	}
 
@@ -139,23 +139,23 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 	 * @return String $url Modified or raw URL
 	 */
 	public function ms_model_pages_get_ms_page_url_cb( $url, $page_type, $ssl, $site_id ) {
-			/**
-			 * Constant M2_FORCE_NO_SSL
-			 *
-			 * It's needed, if :
-			 *      - the user has no SSL
-			 *      - the user has SSL but doesn't want to force
-			 *      - The user has multiple gateways like Paypal and Stripe and doesn't want to force
-			 *
-			 * If the user has SSL certificate, this rule won't work
-			 */
-			if( ! defined( 'M2_FORCE_NO_SSL' ) ){
-				if ( $this->active && $this->is_live_mode() ) {
-					if( $page_type == MS_Model_Pages::MS_PAGE_MEMBERSHIPS || $page_type == MS_Model_Pages::MS_PAGE_REGISTER ) {
-						$url = MS_Helper_Utility::get_ssl_url( $url );
-					}
+		/**
+		* Constant M2_FORCE_NO_SSL
+		*
+		* It's needed, if :
+		*      - the user has no SSL
+		*      - the user has SSL but doesn't want to force
+		*      - The user has multiple gateways like Paypal and Stripe and doesn't want to force
+		*
+		* If the user has SSL certificate, this rule won't work
+		*/
+		if( ! defined( 'M2_FORCE_NO_SSL' ) ){
+			if ( $this->active && $this->is_live_mode() ) {
+				if( $page_type == MS_Model_Pages::MS_PAGE_MEMBERSHIPS || $page_type == MS_Model_Pages::MS_PAGE_REGISTER ) {
+					$url = MS_Helper_Utility::get_ssl_url( $url );
 				}
 			}
+		}
 
 		return $url;
 	}
@@ -230,8 +230,8 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 		$this->_api->set_gateway( $this );
 
 		$plan_data = array(
-			'id' => self::get_the_id( $membership->id, 'plan' ),
-			'amount' => 0,
+			'id' 		=> self::get_the_id( $membership->id, 'plan' ),
+			'amount' 	=> 0,
 		);
 
 		if ( ! $membership->is_free()
@@ -250,18 +250,18 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 			$max_count = 365;
 			switch ( $membership->pay_cycle_period_type ) {
 				case MS_Helper_Period::PERIOD_TYPE_WEEKS:
-					$interval = 'week';
-					$max_count = 52;
+					$interval 	= 'week';
+					$max_count 	= 52;
 					break;
 
 				case MS_Helper_Period::PERIOD_TYPE_MONTHS:
-					$interval = 'month';
-					$max_count = 12;
+					$interval 	= 'month';
+					$max_count 	= 12;
 					break;
 
 				case MS_Helper_Period::PERIOD_TYPE_YEARS:
-					$interval = 'year';
-					$max_count = 1;
+					$interval 	= 'year';
+					$max_count 	= 1;
 					break;
 			}
 
@@ -270,18 +270,20 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 				$membership->pay_cycle_period_unit
 			);
 
-			$settings = MS_Plugin::instance()->settings;
-			$plan_data['amount'] = absint( $membership->price * 100 );
-			$plan_data['currency'] = $settings->currency;
-			$plan_data['name'] = $membership->name;
-			$plan_data['interval'] = $interval;
-			$plan_data['interval_count'] = $interval_count;
+			$settings 						= MS_Plugin::instance()->settings;
+			$plan_data['amount'] 			= absint( $membership->price * 100 );
+			$plan_data['currency'] 			= $settings->currency;
+			$plan_data['product'] 			= array(
+				"name" => $membership->name
+			);
+			$plan_data['interval'] 			= $interval;
+			$plan_data['interval_count'] 	= $interval_count;
 			$plan_data['trial_period_days'] = $trial_days;
 
 			// Check if the plan needs to be updated.
-			$serialized_data = json_encode( $plan_data );
-			$temp_key = substr( 'ms-stripe-' . $plan_data['id'], 0, 45 );
-			$temp_data = MS_Factory::get_transient( $temp_key );
+			$serialized_data 	= json_encode( $plan_data );
+			$temp_key 			= substr( 'ms-stripe-' . $plan_data['id'], 0, 45 );
+			$temp_data 			= MS_Factory::get_transient( $temp_key );
 
 			if ( $temp_data != $serialized_data ) {
 				MS_Factory::set_transient(
@@ -307,10 +309,10 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 		if ( ! $this->active ) { return false; }
 		$this->_api->set_gateway( $this );
 
-		$settings = MS_Plugin::instance()->settings;
-		$duration = 'forever';
-		$percent_off = null;
-		$amount_off = null;
+		$settings 		= MS_Plugin::instance()->settings;
+		$duration 		= MS_Addon_Coupon_Model::DURATION_ONCE === $coupon->duration ? 'once' : 'forever';
+		$percent_off 	= null;
+		$amount_off 	= null;
 
 		if ( MS_Addon_Coupon_Model::TYPE_VALUE == $coupon->discount_type ) {
 			$amount_off = absint( $coupon->discount * 100 );
@@ -319,17 +321,17 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 		}
 
 		$coupon_data = array(
-			'id' => self::get_the_id( $coupon->id, 'coupon' ),
-			'duration' => $duration,
-			'amount_off' => $amount_off,
-			'percent_off' => $percent_off,
-			'currency' => $settings->currency,
+			'id' 			=> self::get_the_id( $coupon->id, 'coupon' ),
+			'duration' 		=> $duration,
+			'amount_off' 	=> $amount_off,
+			'percent_off' 	=> $percent_off,
+			'currency' 		=> $settings->currency,
 		);
 
 		// Check if the plan needs to be updated.
-		$serialized_data = json_encode( $coupon_data );
-		$temp_key = substr( 'ms-stripe-' . $coupon_data['id'], 0, 45 );
-		$temp_data = MS_Factory::get_transient( $temp_key );
+		$serialized_data 	= json_encode( $coupon_data );
+		$temp_key 			= substr( 'ms-stripe-' . $coupon_data['id'], 0, 45 );
+		$temp_data 			= MS_Factory::get_transient( $temp_key );
 
 		if ( $temp_data != $serialized_data ) {
 			MS_Factory::set_transient(
@@ -340,6 +342,192 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 
 			$this->_api->create_or_update_coupon( $coupon_data );
 		}
+	}
+
+	/**
+	 * Process Stripe WebHook requests
+	 *
+	 * @since 1.0.4
+	 */
+	public function handle_webhook() {
+		do_action(
+			'ms_gateway_handle_stripe_webhook_before',
+			$this
+		);
+
+		$this->_api->set_gateway( $this );
+
+		$secret_key = $this->get_secret_key();
+		Stripe::setApiKey( $secret_key );
+
+		// retrieve the request's body and parse it as JSON
+		$body = @file_get_contents( 'php://input' );
+
+		$this->log( $body );
+		// grab the event information
+		$event_json = json_decode( $body );
+
+		if( isset( $event_json->id ) ) {
+			try {
+				$event_id 	= $event_json->id;
+				$event 		= Stripe_Event::retrieve( $event_id );
+				$log 		= false;
+				$invoice 	= false;
+				if ( $event && $this->valid_event( $event->type ) ) {
+					$stripe_invoice = $event->data->object;
+					if ( $stripe_invoice && isset( $stripe_invoice->id ) ) {
+						$stripe_invoice_amount 		= $stripe_invoice->total / 100.0;
+						$stripe_invoice_subtotal 	= $stripe_invoice->subtotal / 100.0;
+						$stripe_customer 		= Stripe_Customer::retrieve( $stripe_invoice->customer );
+						$current_date 			= MS_Helper_Period::current_date( null, true );
+						if ( $stripe_customer ) {
+							$email 	= $stripe_customer->email;
+							
+							if ( !function_exists( 'get_user_by' ) ) {
+								include_once( ABSPATH . 'wp-includes/pluggable.php' );
+							}
+	
+							$user 	= get_user_by( 'email', $email );
+							if ( $user && !is_wp_error( $user ) ) {
+								$member 	= MS_Factory::load( 'MS_Model_Member', $user->ID );
+								$success 	= false;
+								if ( $member ) {
+									
+									foreach ( $member->subscriptions as $subscription ) {
+										if ( $subscription ) {
+											if ( $subscription->is_system() ) { continue; }
+											$membership = $subscription->get_membership();
+											$stripe_sub = $this->_api->get_subscription_data(
+												$stripe_invoice->lines->data,
+												$membership
+											);
+											if ( $stripe_sub ) {
+												switch ( $event->type ){
+													case 'invoice.created' :
+														if ( $membership->has_trial() ) {
+															//$subscription->check_membership_status();                                                    
+															//if ( $subscription->trial_period_completed ) {
+															if( $subscription->status == MS_Model_Relationship::STATUS_TRIAL_EXPIRED &&
+																MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_TRIAL )){
+																
+																$subscription->status = MS_Model_Relationship::STATUS_PENDING;
+																$subscription->save();
+															}
+														}
+													break;
+													case 'invoice.payment_succeeded' :
+														if ( $current_date != $subscription->start_date ) {
+															$invoice = $subscription->get_current_invoice();															
+
+															if ( $invoice ) {
+																if ( $invoice->status ==  MS_Model_Invoice::STATUS_PAID ) {
+																	$invoice = $subscription->get_next_invoice();	
+																}
+																
+																$invoice->ms_relationship_id 	= $subscription->id;
+																$invoice->membership_id 		= $membership->id;
+																
+																if ( 0 == $invoice->total ) {
+																	// Free, just process.
+																	$invoice->changed();
+																	$success = true;
+																	$notes = __( 'No payment required for free membership', 'membership2' );
+																	$invoice->add_notes( $notes );
+																} else {
+																	if ( isset( $stripe_invoice->tax_percent ) ) {
+																		$invoice->tax_rate = $stripe_invoice->tax_percent;
+																		$invoice->save();
+																	}
+																	$notes = __( 'Payment successful', 'membership2' );
+																	$success = true;
+																	$invoice->status 		= MS_Model_Invoice::STATUS_PAID;
+																	$invoice->pay_it( self::ID, $stripe_invoice->id );
+																	$invoice->add_notes( $notes );
+																	if ( defined( 'MS_STRIPE_PLAN_RENEWAL_MAIL' ) &&  MS_STRIPE_PLAN_RENEWAL_MAIL ) {
+																		MS_Model_Event::save_event( MS_Model_Event::TYPE_MS_RENEWED, $subscription );
+																	}
+																	$log = true;
+																}
+																$invoice->save();
+															} else {
+																$this->log( 'Invoice not found' );
+															}
+														} else {
+															$this->log( 'Invoice already paid since its the first date' );
+														}
+														
+													break;
+													case 'customer.subscription.deleted' :
+													case 'invoice.payment_failed' :
+														$notes .= __( 'Membership cancelled or Payment failed via webhook', 'membership2' );
+														$success = false;
+														$member->cancel_membership( $membership->id );
+														$member->save();
+													break;
+													default : 
+														$notes = sprintf( __( 'Stripe webhook "%s" received', 'membership2' ), $event->type );
+													break;
+												}
+											} else {
+												$this->log( 'Invalid stripe sub' );
+											}
+										}
+										
+										
+										if ( $log && $invoice ) {
+											do_action(
+												'ms_gateway_transaction_log',
+												self::ID, // gateway ID
+												'handle', // request|process|handle
+												$success, // success flag
+												$subscription->id, // subscription ID
+												$invoice->id, // invoice ID
+												$invoice->total, // charged amount
+												$notes, // Descriptive text
+												$stripe_invoice->id // External ID
+											);
+										}
+									}
+								} else {
+									$this->log( 'Did not get member');
+								}
+							}
+						} else {
+							$this->log( 'Did not get customer');
+						}
+					} else {
+						$this->log( 'Did not find stripe invoice' );
+					}
+				}
+			} catch ( Exception $e ) {
+				$note = 'Stripe error webhook: '. $e->getMessage();
+				$this->log( $note );
+				$this->log( $e );
+				MS_Helper_Debug::debug_log( $note );
+				$error = $e;
+			}
+		}
+
+		do_action(
+			'ms_gateway_handle_stripe_webhook_after',
+			$this
+		);
+	}
+
+	/**
+	 * Valid Stripe events to check
+	 * 
+	 * @param string $event - the event
+	 * 
+	 * @return bool
+	 */
+	private function valid_event( $event ) {
+		$valid_events = array( 'invoice.created', 'invoice.payment_succeeded', 'customer.subscription.deleted', 'invoice.payment_failed' );
+		$valid_event  = in_array( $event, $valid_events );
+		return apply_filters(
+			'ms_gateway_stripeplan_valid_event',
+			$valid_event
+		);
 	}
 
 	/**
@@ -429,84 +617,98 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 
 	/**
 	 * Check if the subscription is still active.
+	 * Only used in tests
 	 *
 	 * @since  1.0.0
+	 * @since 1.0.4
 	 * @param MS_Model_Relationship $subscription The related membership relationship.
 	 * @return bool True on success.
 	 */
 	public function request_payment( $subscription ) {
-		$was_paid = false;
-		$note = '';
-		$external_id = '';
-
-		do_action(
-			'ms_gateway_stripeplan_request_payment_before',
-			$subscription,
-			$this
-		);
-		$this->_api->set_gateway( $this );
-
-		$member = $subscription->get_member();
-		$invoice = $subscription->get_current_invoice();
-
-		if ( ! $invoice->is_paid() ) {
-			try {
-				$customer = $this->_api->find_customer( $member );
-
-				if ( ! empty( $customer ) ) {
-					if ( 0 == $invoice->total ) {
-						$invoice->changed();
-						$success = true;
-						$note = __( 'No payment required for free membership', 'membership2' );
-					} else {
-						// Get or create the subscription.
-						$stripe_sub = $this->_api->subscribe(
-							$customer,
-							$invoice
-						);
-						$external_id = $stripe_sub->id;
-
-						$note = $this->get_description_for_sub( $stripe_sub );
-
-						if ( 'active' == $stripe_sub->status || 'trialing' == $stripe_sub->status ) {
-							$was_paid = true;
-							$invoice->pay_it( self::ID, $external_id );
-							$this->cancel_if_done( $subscription, $stripe_sub );
+		
+		if ( defined( 'IS_UNIT_TEST' ) && IS_UNIT_TEST ) {
+			$was_paid = false;
+			$note = '';
+			$external_id = '';
+	
+			do_action(
+				'ms_gateway_stripeplan_request_payment_before',
+				$subscription,
+				$this
+			);
+			$this->_api->set_gateway( $this );
+	
+			$member = $subscription->get_member();
+			$invoice = $subscription->get_current_invoice();
+	
+			if ( ! $invoice->is_paid() ) {
+				try {
+					$customer = $this->_api->find_customer( $member );
+	
+					if ( ! empty( $customer ) ) {
+						if ( 0 == $invoice->total ) {
+							$invoice->changed();
+							$success = true;
+							$note = __( 'No payment required for free membership', 'membership2' );
+						} else {
+							// Get or create the subscription.
+							$stripe_sub = $this->_api->subscribe(
+								$customer,
+								$invoice
+							);
+							$external_id = $stripe_sub->id;
+	
+							$note = $this->get_description_for_sub( $stripe_sub );
+	
+							if ( 'active' == $stripe_sub->status || 'trialing' == $stripe_sub->status ) {
+								$was_paid = true;
+								$invoice->pay_it( self::ID, $external_id );
+								$this->cancel_if_done( $subscription, $stripe_sub );
+							}
 						}
+					} else {
+						MS_Helper_Debug::debug_log( "Stripe customer is empty for user $member->username" );
 					}
-				} else {
-					MS_Helper_Debug::debug_log( "Stripe customer is empty for user $member->username" );
+				} catch ( Exception $e ) {
+					$note = 'Stripe error: '. $e->getMessage();
+					MS_Model_Event::save_event( MS_Model_Event::TYPE_PAYMENT_FAILED, $subscription );
+					MS_Helper_Debug::debug_log( $note );
 				}
-			} catch ( Exception $e ) {
-				$note = 'Stripe error: '. $e->getMessage();
-				MS_Model_Event::save_event( MS_Model_Event::TYPE_PAYMENT_FAILED, $subscription );
-				MS_Helper_Debug::debug_log( $note );
+			} else {
+				// Invoice was already paid earlier.
+				$was_paid = true;
 			}
+	
+			do_action(
+				'ms_gateway_stripeplan_request_payment_after',
+				$subscription,
+				$was_paid,
+				$this
+			);
+	
+			do_action(
+				'ms_gateway_transaction_log',
+				self::ID, // gateway ID
+				'request', // request|process|handle
+				$was_paid, // success flag
+				$subscription->id, // subscription ID
+				$invoice->id, // invoice ID
+				$invoice->total, // charged amount
+				$note, // Descriptive text
+				$external_id // External ID
+			);
+	
+			return $was_paid;
 		} else {
-			// Invoice was already paid earlier.
-			$was_paid = true;
+			do_action(
+				'ms_gateway_request_payment',
+				$subscription,
+				$this
+			);
+	
+			// Default to "Payment successful"
+			return true;
 		}
-
-		do_action(
-			'ms_gateway_stripeplan_request_payment_after',
-			$subscription,
-			$was_paid,
-			$this
-		);
-
-		do_action(
-			'ms_gateway_transaction_log',
-			self::ID, // gateway ID
-			'request', // request|process|handle
-			$was_paid, // success flag
-			$subscription->id, // subscription ID
-			$invoice->id, // invoice ID
-			$invoice->total, // charged amount
-			$note, // Descriptive text
-			$external_id // External ID
-		);
-
-		return $was_paid;
 	}
 
 	/**
@@ -598,7 +800,7 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 		parent::cancel_membership( $subscription );
 		$this->_api->set_gateway( $this );
 
-		$customer = $this->_api->find_customer( $subscription->get_member() );
+		$customer 	= $this->_api->find_customer( $subscription->get_member() );
 		$membership = $subscription->get_membership();
 		$stripe_sub = false;
 

@@ -34,7 +34,7 @@ class MS_Addon_Taxamo extends MS_Addon {
 	const ID = 'addon_taxamo';
 
 	// Ajax Actions
-	const AJAX_SAVE_SETTING = 'addon_taxamo_save';
+	const AJAX_SAVE_SETTING 	= 'addon_taxamo_save';
 	const AJAX_SAVE_USERPROFILE = 'addon_taxamo_profile';
 
 	/**
@@ -123,7 +123,7 @@ class MS_Addon_Taxamo extends MS_Addon {
 			// Add taxes to the price, based on users country.
 			$this->add_filter(
 				'ms_apply_taxes',
-				'apply_taxes'
+				'apply_taxes', 10, 2
 			);
 
 			// Set tax-details on a new invoice.
@@ -134,7 +134,7 @@ class MS_Addon_Taxamo extends MS_Addon {
 
 			$this->add_filter(
 				'ms_invoice_tax_name',
-				'invoice_tax_name'
+				'invoice_tax_name', 10, 2
 			);
 
 			$this->add_filter(
@@ -147,72 +147,72 @@ class MS_Addon_Taxamo extends MS_Addon {
 				'stripe_card_profile'
 			);
                         
-                        $this->add_filter(
-                                'ms_gateway_paypalsingle_view_prepare_fields',
-                                'apply_tax_on_pp_checkout_form',
-                                99, 2
-                        );
-                        
-                        // Standard gateway doesn't support sales tax for recurring payments
-                        /*$this->add_filter(
-                                'ms_gateway_paypalstandard_view_prepare_fields',
-                                'apply_tax_on_pp_checkout_form',
-                                99, 2
-                        );*/
-                        
-                        $this->add_filter(
-                                'ms_gateway_2checkout_view_prepare_fields',
-                                'apply_tax_on_2co_checkout_form',
-                                99, 2
-                        );
+			$this->add_filter(
+				'ms_gateway_paypalsingle_view_prepare_fields',
+				'apply_tax_on_pp_checkout_form',
+				99, 2
+			);
+			
+			// Standard gateway doesn't support sales tax for recurring payments
+			/*$this->add_filter(
+					'ms_gateway_paypalstandard_view_prepare_fields',
+					'apply_tax_on_pp_checkout_form',
+					99, 2
+			);*/
+			
+			$this->add_filter(
+				'ms_gateway_2checkout_view_prepare_fields',
+				'apply_tax_on_2co_checkout_form',
+				99, 2
+			);
                         
 		}
 	}
         
-        public function apply_tax_on_pp_checkout_form( $fields, $invoice ) {
-            // Setting tax info in pp form
-            $fields['tax_rate'] = array(
-				'id' => 'tax_rate',
-				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-				'value' => $invoice->tax_rate,
-			);
-            $fields['amount'] = array(
-				'id' => 'amount',
-				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-				'value' => number_format( ( float ) $invoice->amount, 2, '.', '' ),
-			);
-            
-            return $fields;
-        }
-        
-        public function apply_tax_on_2co_checkout_form( $fields, $invoice ) {
-            // Setting tax info in checkout form
-            $fields['type2'] = array(
-                    'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-                    'id' => 'li_1_type',
-                    'value' => 'tax',
-            );
-            $fields['name2'] = array(
-                    'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-                    'id' => 'li_1_name',
-                    'value' => 'Tax',
-            );
-            $fields['price2'] = array(
-                    'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-                    'id' => 'li_1_price',
-                    'value' => $invoice->amount / 100 * $invoice->tax_rate
-            );
-            
-            // Changing price with tax to price without tax,
-            // as we are applying tax in a separate field above.
-            $fields['price'] = array(
-                    'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-                    'id' => 'li_0_price',
-                    'value' => $invoice->amount,
-            );
-            
-            return $fields;
-        }
+	public function apply_tax_on_pp_checkout_form( $fields, $invoice ) {
+		// Setting tax info in pp form
+		$fields['tax_rate'] = array(
+			'id' 	=> 'tax_rate',
+			'type' 	=> MS_Helper_Html::INPUT_TYPE_HIDDEN,
+			'value' => $invoice->tax_rate,
+		);
+		$fields['amount'] = array(
+			'id' 	=> 'amount',
+			'type' 	=> MS_Helper_Html::INPUT_TYPE_HIDDEN,
+			'value' => number_format( ( float ) $invoice->amount, 2, '.', '' ),
+		);
+		
+		return $fields;
+	}
+	
+	public function apply_tax_on_2co_checkout_form( $fields, $invoice ) {
+		// Setting tax info in checkout form
+		$fields['type2'] = array(
+				'type' 	=> MS_Helper_Html::INPUT_TYPE_HIDDEN,
+				'id' 	=> 'li_1_type',
+				'value' => 'tax',
+		);
+		$fields['name2'] = array(
+				'type' 	=> MS_Helper_Html::INPUT_TYPE_HIDDEN,
+				'id' 	=> 'li_1_name',
+				'value' => 'Tax',
+		);
+		$fields['price2'] = array(
+				'type' 	=> MS_Helper_Html::INPUT_TYPE_HIDDEN,
+				'id' 	=> 'li_1_price',
+				'value' => $invoice->amount / 100 * $invoice->tax_rate
+		);
+		
+		// Changing price with tax to price without tax,
+		// as we are applying tax in a separate field above.
+		$fields['price'] = array(
+				'type' 	=> MS_Helper_Html::INPUT_TYPE_HIDDEN,
+				'id' 	=> 'li_0_price',
+				'value' => $invoice->amount,
+		);
+		
+		return $fields;
+	}
 
 	/**
 	 * Registers the Add-On
@@ -223,14 +223,14 @@ class MS_Addon_Taxamo extends MS_Addon {
 	 */
 	public function register( $list ) {
 		$list[ self::ID ] = (object) array(
-			'name' => __( 'Taxamo', 'membership2' ),
-			'description' => __( 'Addresses EU VAT regulations.', 'membership2' ),
-			'icon' => 'wpmui-fa wpmui-fa-euro',
-			'details' => array(
+			'name' 			=> __( 'Taxamo', 'membership2' ),
+			'description' 	=> __( 'Addresses EU VAT regulations.', 'membership2' ),
+			'icon' 			=> 'wpmui-fa wpmui-fa-euro',
+			'details' 		=> array(
 				array(
-					'type' => MS_Helper_Html::TYPE_HTML_TEXT,
+					'type' 	=> MS_Helper_Html::TYPE_HTML_TEXT,
 					'title' => __( 'Settings', 'membership2' ),
-					'desc' => __( 'When this Add-on is enabled you will see a new section in the "Settings" page with additional options.', 'membership2' ),
+					'desc' 	=> __( 'When this Add-on is enabled you will see a new section in the "Settings" page with additional options.', 'membership2' ),
 				),
 			),
 		);
@@ -265,7 +265,7 @@ class MS_Addon_Taxamo extends MS_Addon {
 	public function settings_tabs( $tabs ) {
 		$tabs[ self::ID ] = array(
 			'title' => __( 'Taxamo', 'membership2' ),
-			'url' => MS_Controller_Plugin::get_admin_url(
+			'url' 	=> MS_Controller_Plugin::get_admin_url(
 				'settings',
 				array( 'tab' => self::ID )
 			),
@@ -286,8 +286,8 @@ class MS_Addon_Taxamo extends MS_Addon {
 	 */
 	public function manage_render_callback( $callback, $tab, $data ) {
 		if ( self::ID == $tab ) {
-			$view = MS_Factory::load( 'MS_Addon_Taxamo_View' );
-			$callback = array( $view, 'render_tab' );
+			$view 		= MS_Factory::load( 'MS_Addon_Taxamo_View' );
+			$callback 	= array( $view, 'render_tab' );
 		}
 
 		return $callback;
@@ -324,12 +324,12 @@ class MS_Addon_Taxamo extends MS_Addon {
 	 * @param  numeric $net_value Net value
 	 * @return numeric Gross value
 	 */
-	public function apply_taxes( $net_value ) {
+	public function apply_taxes( $net_value, $membership ) {
 		$gross_value = 0;
 
 		if ( is_numeric( $net_value ) ) {
-			$tax = MS_Addon_Taxamo_Api::tax_info( $net_value );
-			$gross_value = $net_value + $tax->amount;
+			$tax 			= MS_Addon_Taxamo_Api::tax_info( $net_value );
+			$gross_value 	= $net_value + $tax->amount;
 		}
 
 		return $gross_value;
@@ -355,7 +355,7 @@ class MS_Addon_Taxamo extends MS_Addon {
 	 * @param  string $name Default name (empty string)
 	 * @return string Tax display-name (e.g. 'EU Standard Tax (20 %)')
 	 */
-	public function invoice_tax_name( $rate ) {
+	public function invoice_tax_name( $rate, $invoice ) {
 		$tax = MS_Addon_Taxamo_Api::tax_info();
 
 		return $tax->rate . '% ' . $tax->name;
@@ -403,7 +403,7 @@ class MS_Addon_Taxamo extends MS_Addon {
 		if ( 0 == $invoice->total ) { return; }
 
 		$membership = $invoice->get_membership();
-		$member = $invoice->get_member();
+		$member 	= $invoice->get_member();
 
 		MS_Addon_Taxamo_Api::register_payment(
 			$invoice->total,   // Transaction amount

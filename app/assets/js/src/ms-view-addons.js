@@ -56,4 +56,18 @@ window.ms_init.view_addons = function init () {
 	jQuery( '.list-card-top .wpmui-ajax-update-wrapper' ).each(function() {
 		jQuery( this ).trigger( 'ms-ajax-updated' );
 	});
+
+	jQuery( '#invoice_id_update' ).on( 'ms-ajax-updated', function(){
+		jQuery( '#invoice_id_update' ).hide();
+	} );
+
+	jQuery( '#invoice_sequence_type' ).on( 'ms-ajax-updated', function(){
+		var $selected = jQuery( '#invoice_sequence_type' ).val();
+		jQuery('.invoice-types').each(function(){
+			jQuery(this).hide();
+		});
+		if ( jQuery('#' + $selected).length ) {
+			jQuery('#' + $selected).show();
+		}
+	} );
 };

@@ -104,10 +104,10 @@ class MS_Helper_ListTable {
 		$args = wp_parse_args(
 			$args,
 			array(
-				'plural' => '',
-				'singular' => '',
-				'ajax' => false,
-				'screen' => null,
+				'plural' 	=> '',
+				'singular' 	=> '',
+				'ajax' 		=> false,
+				'screen' 	=> null,
 			)
 		);
 
@@ -119,8 +119,8 @@ class MS_Helper_ListTable {
 			$args['plural'] = $this->screen->base;
 		}
 
-		$args['plural'] = sanitize_key( $args['plural'] );
-		$args['singular'] = sanitize_key( $args['singular'] );
+		$args['plural'] 	= sanitize_key( $args['plural'] );
+		$args['singular'] 	= sanitize_key( $args['singular'] );
 
 		$this->_args = $args;
 
@@ -164,9 +164,9 @@ class MS_Helper_ListTable {
 		$args = wp_parse_args(
 			$args,
 			array(
-				'total_items' => 0,
-				'total_pages' => 0,
-				'per_page' => 0,
+				'total_items' 	=> 0,
+				'total_pages' 	=> 0,
+				'per_page' 		=> 0,
 			)
 		);
 
@@ -603,8 +603,8 @@ class MS_Helper_ListTable {
 		$out = '<div class="' . ( $always_visible ? 'row-actions visible' : 'row-actions' ) . '">';
 		foreach ( $actions as $action => $link ) {
 			++$i;
-			$sep = ( $i == $action_count ? '' : ' | ' );
-			$out .= "<span class='$action'>$link$sep</span>";
+			$sep 	= ( $i == $action_count ? '' : ' | ' );
+			$out 	.= "<span class='$action'>$link$sep</span>";
 		}
 		$out .= '</div>';
 
@@ -640,9 +640,9 @@ class MS_Helper_ListTable {
 		 * @param object $months    The months drop-down query results.
 		 * @param string $post_type The post type.
 		 */
-		$months = apply_filters( 'months_dropdown_results', $months, $post_type );
+		$months 		= apply_filters( 'months_dropdown_results', $months, $post_type );
 
-		$month_count = count( $months );
+		$month_count 	= count( $months );
 
 		if ( ! $month_count || ( 1 == $month_count && 0 == $months[0]->month ) ) {
 			return;
@@ -827,13 +827,13 @@ class MS_Helper_ListTable {
 	 * @return string
 	 */
 	public function display_search() {
-		$term = wp_unslash( $this->search_string );
-		$ext = '';
-		$max_len = 30;
+		$term 		= wp_unslash( $this->search_string );
+		$ext 		= '';
+		$max_len 	= 30;
 
 		if ( strlen( $term ) > $max_len ) {
-			$term = substr( $term, 0, $max_len );
-			$ext = '&hellip;';
+			$term 	= substr( $term, 0, $max_len );
+			$ext 	= '&hellip;';
 		}
 
 		return htmlspecialchars( $term ) . $ext;
@@ -881,21 +881,21 @@ class MS_Helper_ListTable {
 			'</span>';
 
 		if ( $this->need_pagination() && ! $this->is_search() ) {
-			$current = $this->get_pagenum();
+			$current 		= $this->get_pagenum();
 
-			$current_url = set_url_scheme(
+			$current_url 	= set_url_scheme(
 				'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']
 			);
-			$current_url = esc_url_raw(
+			$current_url 	= esc_url_raw(
 				remove_query_arg(
 					array( 'hotkeys_highlight_last', 'hotkeys_highlight_first' ),
 					$current_url
 				)
 			);
 
-			$page_links = array();
+			$page_links 	= array();
 
-			$disable_first = $disable_last = '';
+			$disable_first 	= $disable_last = '';
 			if ( 1 == $current ) {
 				$disable_first = ' disabled';
 			}
@@ -903,7 +903,7 @@ class MS_Helper_ListTable {
 				$disable_last = ' disabled';
 			}
 
-			$page_links[] = sprintf(
+			$page_links[] 	= sprintf(
 				'<a class="%s" title="%s" href="%s">%s</a>',
 				'first-page' . $disable_first,
 				esc_attr__( 'Go to the first page' ),
@@ -911,7 +911,7 @@ class MS_Helper_ListTable {
 				'&laquo;'
 			);
 
-			$page_links[] = sprintf(
+			$page_links[] 	= sprintf(
 				'<a class="%s" title="%s" href="%s">%s</a>',
 				'prev-page' . $disable_first,
 				esc_attr__( 'Go to the previous page' ),
@@ -930,10 +930,10 @@ class MS_Helper_ListTable {
 				);
 			}
 
-			$html_total_pages = sprintf( "<span class='total-pages'>%s</span>", number_format_i18n( $total_pages ) );
-			$page_links[] = '<span class="paging-input">' . sprintf( _x( '%1$s of %2$s', 'paging' ), $html_current_page, $html_total_pages ) . '</span>';
+			$html_total_pages 	= sprintf( "<span class='total-pages'>%s</span>", number_format_i18n( $total_pages ) );
+			$page_links[] 		= '<span class="paging-input">' . sprintf( _x( '%1$s of %2$s', 'paging' ), $html_current_page, $html_total_pages ) . '</span>';
 
-			$page_links[] = sprintf(
+			$page_links[] 		= sprintf(
 				'<a class="%s" title="%s" href="%s">%s</a>',
 				'next-page' . $disable_last,
 				esc_attr__( 'Go to the next page' ),
@@ -941,7 +941,7 @@ class MS_Helper_ListTable {
 				'&rsaquo;'
 			);
 
-			$page_links[] = sprintf(
+			$page_links[] 		= sprintf(
 				'<a class="%s" title="%s" href="%s">%s</a>',
 				'last-page' . $disable_last,
 				esc_attr__( 'Go to the last page' ),
@@ -1015,8 +1015,8 @@ class MS_Helper_ListTable {
 			return $this->_column_headers;
 		}
 
-		$columns = get_column_headers( $this->screen );
-		$hidden = get_hidden_columns( $this->screen );
+		$columns 	= get_column_headers( $this->screen );
+		$hidden 	= get_hidden_columns( $this->screen );
 
 		$sortable_columns = $this->get_sortable_columns();
 		/**
@@ -1029,15 +1029,15 @@ class MS_Helper_ListTable {
 		 *
 		 * @param array $sortable_columns An array of sortable columns.
 		 */
-		$_sortable = apply_filters( "manage_{$this->screen->id}_sortable_columns", $sortable_columns );
+		$_sortable 	= apply_filters( "manage_{$this->screen->id}_sortable_columns", $sortable_columns );
 
-		$sortable = array();
+		$sortable 	= array();
 		foreach ( $_sortable as $id => $data ) {
 			if ( empty( $data ) ) {
 				continue;
 			}
 
-			$data = (array) $data;
+			$data 	= (array) $data;
 			if ( ! isset( $data[1] ) ) {
 				$data[1] = false;
 			}
@@ -1130,13 +1130,13 @@ class MS_Helper_ListTable {
 					
 
 				if ( $current_orderby == $orderby ) {
-					$order = 'asc' == $current_order ? 'desc' : 'asc';
-					$class[] = 'sorted';
-					$class[] = $current_order;
+					$order 		= 'asc' == $current_order ? 'desc' : 'asc';
+					$class[] 	= 'sorted';
+					$class[] 	= $current_order;
 				} else {
-					$order = $desc_first ? 'desc' : 'asc';
-					$class[] = 'sortable';
-					$class[] = $desc_first ? 'asc' : 'desc';
+					$order 		= $desc_first ? 'desc' : 'asc';
+					$class[] 	= 'sortable';
+					$class[] 	= $desc_first ? 'asc' : 'desc';
 				}
 
 				$column_display_name = sprintf(
@@ -1225,9 +1225,9 @@ class MS_Helper_ListTable {
 			wp_nonce_field( 'bulk' );
 		}
 
-		$bulk_actions = $this->bulk_actions( false );
-		$extra = $this->extra_tablenav( $which, false );
-		$pagination = $this->pagination( $which, false );
+		$bulk_actions 	= $this->bulk_actions( false );
+		$extra 			= $this->extra_tablenav( $which, false );
+		$pagination 	= $this->pagination( $which, false );
 
 		// Don't display empty tablenav elements.
 		if ( ! $bulk_actions && ! $extra && ! $pagination ) {
@@ -1239,6 +1239,7 @@ class MS_Helper_ListTable {
 
 			<div class="alignleft actions bulkactions">
 				<?php echo '' . $bulk_actions; ?>
+				<?php do_action( 'ms_bulk_actions_table_nav_' . $this->_args['plural'] ); ?>
 			</div>
 			<?php
 			echo '' . $extra . $pagination;
@@ -1317,12 +1318,12 @@ class MS_Helper_ListTable {
 	 * @param object $item The current item.
 	 */
 	protected function single_row( $item ) {
-		static $Row_Class = '';
-		static $Row_Num = 0;
+		static $Row_Class 	= '';
+		static $Row_Num 	= 0;
 
-		$Row_Class = ( $Row_Class === '' ? ' alternate' : '' );
-		$Row_Num += 1;
-		$row_id = 'item-' . $item->id;
+		$Row_Class 	= ( $Row_Class === '' ? ' alternate' : '' );
+		$Row_Num 	+= 1;
+		$row_id 	= 'item-' . $item->id;
 
 		$class_list = trim(
 			'row-' . $Row_Num . ' ' .
@@ -1424,17 +1425,16 @@ class MS_Helper_ListTable {
 			$this->display_rows_or_placeholder();
 		}
 
-		$rows = ob_get_clean();
-
-		$response = array( 'rows' => $rows );
+		$rows 		= ob_get_clean();
+		$response 	= array( 'rows' => $rows );
 
 		if ( isset( $total_items ) ) {
-			$response['total_items_i18n'] = sprintf( _n( '1 item', '%s items', $total_items ), number_format_i18n( $total_items ) );
+			$response['total_items_i18n'] 	= sprintf( _n( '1 item', '%s items', $total_items ), number_format_i18n( $total_items ) );
 		}
 
 		if ( isset( $total_pages ) ) {
-			$response['total_pages'] = $total_pages;
-			$response['total_pages_i18n'] = number_format_i18n( $total_pages );
+			$response['total_pages'] 		= $total_pages;
+			$response['total_pages_i18n'] 	= number_format_i18n( $total_pages );
 		}
 
 		die( json_encode( $response ) );

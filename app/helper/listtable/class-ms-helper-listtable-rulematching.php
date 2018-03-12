@@ -42,7 +42,7 @@ class MS_Helper_ListTable_RuleMatching extends MS_Helper_ListTable_Rule {
 	 */
 	public function get_columns() {
 		$columns = array(
-			'item' => $this->get_column_label( 'item' ),
+			'item' 	=> $this->get_column_label( 'item' ),
 			'match' => $this->get_column_label( 'match' ),
 		);
 
@@ -63,8 +63,8 @@ class MS_Helper_ListTable_RuleMatching extends MS_Helper_ListTable_Rule {
 		$label = '';
 
 		switch ( $col ) {
-			case 'item': $label = __( 'Item', 'membership2' ); break;
-			case 'match': $label = __( 'Matching', 'membership2' ); break;
+			case 'item': $label 	= __( 'Item', 'membership2' ); break;
+			case 'match': $label 	= __( 'Matching', 'membership2' ); break;
 		}
 
 		return $label;
@@ -136,14 +136,14 @@ class MS_Helper_ListTable_RuleMatching extends MS_Helper_ListTable_Rule {
 	public function column_match( $item ) {
 		if ( $this->editable ) {
 			$list = array(
-				'id' => 'ms-list-' . $item->id,
-				'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
-				'value' => $item->value,
+				'id' 			=> 'ms-list-' . $item->id,
+				'type' 			=> MS_Helper_Html::INPUT_TYPE_SELECT,
+				'value' 		=> $item->value,
 				'field_options' => $this->matching_options,
-				'ajax_data' => array(
-					'action' => MS_Controller_Rule::AJAX_ACTION_UPDATE_MATCHING,
-					'rule_type' => $item->type,
-					'item' => $item->id,
+				'ajax_data' 	=> array(
+					'action' 		=> MS_Controller_Rule::AJAX_ACTION_UPDATE_MATCHING,
+					'rule_type' 	=> $item->type,
+					'item' 			=> $item->id,
 				),
 			);
 			$html = MS_Helper_Html::html_element( $list, true );

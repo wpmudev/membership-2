@@ -25,20 +25,20 @@ class MS_Model_Addon extends MS_Model_Option {
 	 *
 	 * @var string
 	 */
-	const ADDON_MULTI_MEMBERSHIPS = 'multi_memberships';
-	const ADDON_POST_BY_POST = 'post_by_post';
-	const ADDON_HIDE_PAGES_FROM_SEARCH = 'hide_pages_from_search';
-	const ADDON_URL_GROUPS = 'url_groups';
-	const ADDON_CPT_POST_BY_POST = 'cpt_post_by_post';
-	const ADDON_TRIAL = 'trial';
-	const ADDON_MEDIA = 'media';
-	const ADDON_SHORTCODE = 'shortcode';
-	const ADDON_AUTO_MSGS_PLUS = 'auto_msgs_plus';
-	const ADDON_SPECIAL_PAGES = 'special_pages';
-	const ADDON_ADV_MENUS = 'adv_menus';
-	const ADDON_ADMINSIDE = 'adminside';
-	const ADDON_MEMBERCAPS = 'membercaps';
-	const ADDON_MEMBERCAPS_ADV = 'membercaps_advanced';
+	const ADDON_MULTI_MEMBERSHIPS 		= 'multi_memberships';
+	const ADDON_POST_BY_POST 			= 'post_by_post';
+	const ADDON_HIDE_PAGES_FROM_SEARCH 	= 'hide_pages_from_search';
+	const ADDON_URL_GROUPS 				= 'url_groups';
+	const ADDON_CPT_POST_BY_POST 		= 'cpt_post_by_post';
+	const ADDON_TRIAL 					= 'trial';
+	const ADDON_MEDIA 					= 'media';
+	const ADDON_SHORTCODE 				= 'shortcode';
+	const ADDON_AUTO_MSGS_PLUS 			= 'auto_msgs_plus';
+	const ADDON_SPECIAL_PAGES 			= 'special_pages';
+	const ADDON_ADV_MENUS 				= 'adv_menus';
+	const ADDON_ADMINSIDE 				= 'adminside';
+	const ADDON_MEMBERCAPS 				= 'membercaps';
+	const ADDON_MEMBERCAPS_ADV 			= 'membercaps_advanced';
 
 	/**
 	 * List of all registered Add-ons
@@ -116,7 +116,7 @@ class MS_Model_Addon extends MS_Model_Option {
 		if ( ! $Done || self::$_reload_files ) {
 			self::$_registered = array();
 			$addons = array();
-			$Done = true;
+			$Done 	= true;
 			self::load_core_addons();
 
 			// Register core add-ons
@@ -134,11 +134,11 @@ class MS_Model_Addon extends MS_Model_Option {
 
 			// Sanitation and populate default fields.
 			foreach ( $addons as $key => $data ) {
-				self::$_registered[ $key ] = $data->name;
+				self::$_registered[ $key ] 	= $data->name;
 
-				$addons[ $key ]->id = $key;
-				$addons[ $key ]->active = self::is_enabled( $key );
-				$addons[ $key ]->title = $data->name;
+				$addons[ $key ]->id 		= $key;
+				$addons[ $key ]->active 	= self::is_enabled( $key );
+				$addons[ $key ]->title 		= $data->name;
 
 				if ( isset( $addons[ $key ]->icon ) ) {
 					$addons[ $key ]->icon = '<i class="' . $addons[ $key ]->icon . '"></i>';
@@ -149,14 +149,14 @@ class MS_Model_Addon extends MS_Model_Option {
 				if ( empty( $addons[ $key ]->action ) ) {
 					$addons[ $key ]->action = array();
 					$addons[ $key ]->action[] = array(
-						'id' => 'ms-toggle-' . $key,
-						'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
-						'value' => self::is_enabled( $key ),
-						'class' => 'toggle-plugin',
+						'id' 		=> 'ms-toggle-' . $key,
+						'type' 		=> MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
+						'value' 	=> self::is_enabled( $key ),
+						'class' 	=> 'toggle-plugin',
 						'ajax_data' => array(
-							'action' => MS_Controller_Addon::AJAX_ACTION_TOGGLE_ADDON,
-							'field' => 'active',
-							'addon' => $key,
+							'action' 	=> MS_Controller_Addon::AJAX_ACTION_TOGGLE_ADDON,
+							'field' 	=> 'active',
+							'addon'		 => $key,
 						),
 					);
 					$addons[ $key ]->action[] = MS_Helper_Html::save_text( null, false, true );
@@ -210,17 +210,16 @@ class MS_Model_Addon extends MS_Model_Option {
 	 * @since  1.0.0
 	 */
 	static protected function load_core_addons() {
-		$model = MS_Factory::load( 'MS_Model_Addon' );
-		$content_dir = trailingslashit( dirname( dirname( MS_Plugin::instance()->dir ) ) );
-		$plugin_dir = substr( MS_Plugin::instance()->dir, strlen( $content_dir ) );
+		$model 			= MS_Factory::load( 'MS_Model_Addon' );
+		$content_dir 	= trailingslashit( dirname( dirname( MS_Plugin::instance()->dir ) ) );
+		$plugin_dir 	= substr( MS_Plugin::instance()->dir, strlen( $content_dir ) );
 
-		$addon_dirs = array();
-		/* start:pro */
-		// Sequence is important: First Premium!
-		$addon_dirs[] = $plugin_dir . 'premium/addon/';
-		/* end:pro */
-
-		$addon_dirs[] = $plugin_dir . 'app/addon/';
+		$addon_dirs 	= array();
+		$paths 			= MS_Loader::load_paths();
+				
+		foreach( $paths as $path ) {
+			$addon_dirs[] = $plugin_dir . $path . '/addon/';
+		}
 
 		if ( empty( $model->addon_files ) || self::$_reload_files ) {
 			// In Admin dashboard we always refresh the addon-list...
@@ -296,8 +295,8 @@ class MS_Model_Addon extends MS_Model_Option {
 	 * @return boolean True if enabled.
 	 */
 	static public function is_enabled( $addon ) {
-		$model = MS_Factory::load( 'MS_Model_Addon' );
-		$enabled = ! empty( $model->active[ $addon ] );
+		$model 		= MS_Factory::load( 'MS_Model_Addon' );
+		$enabled 	= ! empty( $model->active[ $addon ] );
 
 		if ( $enabled ) {
 			// Sub-addons are considered enabled only when the parent add-on is enabled also.
@@ -414,73 +413,85 @@ class MS_Model_Addon extends MS_Model_Option {
 		);
 
 		$list[ self::ADDON_MULTI_MEMBERSHIPS ] = (object) array(
-			'name' => __( 'Multiple Memberships', 'membership2' ),
-			'description' => __( 'Your members can join more than one membership at the same time.', 'membership2' ),
-			'icon' => 'dashicons dashicons-forms',
+			'name' 			=> __( 'Multiple Memberships', 'membership2' ),
+			'description' 	=> __( 'Your members can join more than one membership at the same time.', 'membership2' ),
+			'icon' 			=> 'dashicons dashicons-forms',
 		);
 
 		$list[ self::ADDON_TRIAL ] = (object) array(
-			'name' => __( 'Trial Period', 'membership2' ),
-			'description' => __( 'Allow your members to sign up for a free membership trial. Trial details can be configured separately for each membership.', 'membership2' ),
+			'name' 			=> __( 'Trial Period', 'membership2' ),
+			'description'	=> __( 'Allow your members to sign up for a free membership trial. Trial details can be configured separately for each membership.', 'membership2' ),
 		);
 
 		$list[ self::ADDON_POST_BY_POST ] = (object) array(
-			'name' => __( 'Individual Posts', 'membership2' ),
-			'description' => __( 'Protect individual Posts instead of Categories.', 'membership2' ),
+			'name'			=> __( 'Individual Posts', 'membership2' ),
+			'description' 	=> __( 'Protect individual Posts instead of Categories.', 'membership2' ),
 		);
 
 		$list[ self::ADDON_HIDE_PAGES_FROM_SEARCH ] = (object) array(
-			'name' => __( 'Hide Pages From Search', 'membership2' ),
-			'description' => __( 'Exclude protected pages from site search.', 'membership2' ),
+			'name' 			=> __( 'Hide Pages From Search', 'membership2' ),
+			'description' 	=> __( 'Exclude protected pages from site search.', 'membership2' ),
 		);
 
 		$list[ self::ADDON_CPT_POST_BY_POST ] = (object) array(
-			'name' => __( 'Individual Custom Posts', 'membership2' ),
-			'description' => __( 'Protect individual Posts of a Custom Post Type.', 'membership2' ),
+			'name' 			=> __( 'Individual Custom Posts', 'membership2' ),
+			'description' 	=> __( 'Protect individual Posts of a Custom Post Type.', 'membership2' ),
 		);
 
 		$list[ self::ADDON_MEDIA ] = (object) array(
-			'name' => __( 'Media Protection', 'membership2' ),
-			'description' => __( 'Protect Images and other Media-Library content.', 'membership2' ),
-			'footer' => $options_text,
-			'icon' => 'dashicons dashicons-admin-media',
-			'class' => 'ms-options',
-			'details' => array(
+			'name' 			=> __( 'Media Protection', 'membership2' ),
+			'description' 	=> __( 'Protect Images and other Media-Library content.', 'membership2' ),
+			'footer' 		=> $options_text,
+			'icon' 			=> 'dashicons dashicons-admin-media',
+			'class' 		=> 'ms-options',
+			'details' 		=> array(
 				array(
-					'id' => 'masked_url',
-					'before' => esc_html( trailingslashit( get_option( 'home' ) ) ),
-					'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-					'title' => __( 'Mask download URL:', 'membership2' ),
-					'value' => $settings->downloads['masked_url'],
-					'data_ms' => array(
-						'field' => 'masked_url',
-						'action' => MS_Controller_Settings::AJAX_ACTION_UPDATE_SETTING,
-						'_wpnonce' => true, // Nonce will be generated from 'action'
+					'id' 		=> 'masked_url',
+					'before' 	=> esc_html( trailingslashit( get_option( 'home' ) ) ),
+					'type' 		=> MS_Helper_Html::INPUT_TYPE_TEXT,
+					'title' 	=> __( 'Mask download URL:', 'membership2' ),
+					'value' 	=> $settings->downloads['masked_url'],
+					'data_ms' 	=> array(
+						'field' 	=> 'masked_url',
+						'action' 	=> MS_Controller_Settings::AJAX_ACTION_UPDATE_SETTING,
+						'_wpnonce' 	=> true, // Nonce will be generated from 'action'
 					),
 				),
 				array(
-					'id' => 'protection_type',
-					'type' => MS_Helper_Html::INPUT_TYPE_RADIO,
-					'title' => __( 'Protection method', 'membership2' ),
-					'desc' => __( 'You can change the way that Membership2 changes the default URL to your WordPress media library files.<br>This is done for increased protection by hiding the real filename and path.', 'membership2' ),
-					'value' => $settings->downloads['protection_type'],
+					'id' 		=> 'protection_type',
+					'type' 		=> MS_Helper_Html::INPUT_TYPE_RADIO,
+					'title' 	=> __( 'Protection method', 'membership2' ),
+					'desc' 		=> __( 'You can change the way that Membership2 changes the default URL to your WordPress media library files.<br>This is done for increased protection by hiding the real filename and path.', 'membership2' ),
+					'value' 	=> $settings->downloads['protection_type'],
 					'field_options' => MS_Rule_Media_Model::get_protection_types(),
-					'data_ms' => array(
-						'field' => 'protection_type',
-						'action' => MS_Controller_Settings::AJAX_ACTION_UPDATE_SETTING,
-						'_wpnonce' => true, // Nonce will be generated from 'action'
+					'data_ms' 	=> array(
+						'field' 	=> 'protection_type',
+						'action' 	=> MS_Controller_Settings::AJAX_ACTION_UPDATE_SETTING,
+						'_wpnonce' 	=> true, // Nonce will be generated from 'action'
 					),
 				),
 				array(
-					'id' => 'advanced',
-					'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
-					'title' => __( 'Protect Individual Media files', 'membership2' ),
-					'desc' => __( 'Enable this to display a new tab in "Membership2" where you can manually modify access to each media library item.<br>Default: When this option is disabled then the parent-post controls the access to the media file.', 'membership2' ),
-					'value' => self::is_enabled( MS_Addon_Mediafiles::ID ),
-					'data_ms' => array(
-						'action' => MS_Controller_Addon::AJAX_ACTION_TOGGLE_ADDON,
-						'field' => 'active',
-						'addon' => MS_Addon_Mediafiles::ID,
+					'id' 		=> 'advanced_protection',
+					'type' 		=> MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
+					'title' 	=> __( 'Advanced Media Protection', 'membership2' ),
+					'desc' 		=> __( 'Enable this to add a new tab in "Membership2" settings page where you can manually set advanced media protection for all your uploaded files', 'membership2' ),
+					'value' 	=> $settings->is_advanced_media_protection,
+					'data_ms' 	=> array(
+						'field' 	=> 'advanced_media_protection',
+						'action' 	=> MS_Controller_Settings::AJAX_ACTION_UPDATE_SETTING,
+						'_wpnonce' 	=> true, // Nonce will be generated from 'action'
+					),
+				),
+				array(
+					'id' 		=> 'advanced',
+					'type' 		=> MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
+					'title' 	=> __( 'Protect Individual Media files', 'membership2' ),
+					'desc' 		=> __( 'Enable this to display a new tab in "Membership2" where you can manually modify access to each media library item.<br>Default: When this option is disabled then the parent-post controls the access to the media file.', 'membership2' ),
+					'value' 	=> self::is_enabled( MS_Addon_Mediafiles::ID ),
+					'data_ms' 	=> array(
+						'action' 	=> MS_Controller_Addon::AJAX_ACTION_TOGGLE_ADDON,
+						'field' 	=> 'active',
+						'addon' 	=> MS_Addon_Mediafiles::ID,
 						'_wpnonce' => true, // Nonce will be generated from 'action'
 					),
 				),
@@ -488,83 +499,113 @@ class MS_Model_Addon extends MS_Model_Option {
 		);
 
 		$list[ self::ADDON_SHORTCODE ] = (object) array(
-			'name' => __( 'Shortcode Protection', 'membership2' ),
-			'description' => __( 'Protect Shortcode-Output via Memberships.', 'membership2' ),
-			'icon' => 'dashicons dashicons-editor-code',
+			'name' 			=> __( 'Shortcode Protection', 'membership2' ),
+			'description' 	=> __( 'Protect Shortcode-Output via Memberships.', 'membership2' ),
+			'icon' 			=> 'dashicons dashicons-editor-code',
 		);
 
 		$list[ self::ADDON_URL_GROUPS ] = (object) array(
-			'name' => __( 'URL Protection', 'membership2' ),
-			'description' => __( 'URL Protection will protect pages by the URL. This rule overrides all other rules, so use it carefully.', 'membership2' ),
-			'icon' => 'dashicons dashicons-admin-links',
+			'name' 			=> __( 'URL Protection', 'membership2' ),
+			'description' 	=> __( 'URL Protection will protect pages by the URL. This rule overrides all other rules, so use it carefully.', 'membership2' ),
+			'icon' 			=> 'dashicons dashicons-admin-links',
 		);
 
 		$list[ self::ADDON_AUTO_MSGS_PLUS ] = (object) array(
-			'name' => __( 'Additional Automated Messages', 'membership2' ),
-			'description' => __( 'Send your members automated Email responses for various additional events.', 'membership2' ),
-			'icon' => 'dashicons dashicons-email',
+			'name' 			=> __( 'Additional Automated Messages', 'membership2' ),
+			'description' 	=> __( 'Send your members automated Email responses for various additional events.', 'membership2' ),
+			'icon' 			=> 'dashicons dashicons-email',
 		);
 
 		$list[ self::ADDON_SPECIAL_PAGES ] = (object) array(
-			'name' => __( 'Protect Special Pages', 'membership2' ),
-			'description' => __( 'Change protection of special pages such as the search results.', 'membership2' ),
-			'icon' => 'dashicons dashicons-admin-home',
+			'name' 			=> __( 'Protect Special Pages', 'membership2' ),
+			'description' 	=> __( 'Change protection of special pages such as the search results.', 'membership2' ),
+			'icon' 			=> 'dashicons dashicons-admin-home',
 		);
 
 		$list[ self::ADDON_ADV_MENUS ] = (object) array(
-			'name' => __( 'Advanced menu protection', 'membership2' ),
-			'description' => __( 'Adds a new option to the General Settings that controls how WordPress menus are protected.<br />Protect individual Menu-Items, replace the contents of WordPress Menu-Locations or replace each Menu individually.', 'membership2' ),
-			'footer' => $options_text,
-			'class' => 'ms-options',
-			'details' => array(
+			'name' 			=> __( 'Advanced menu protection', 'membership2' ),
+			'description' 	=> __( 'Adds a new option to the General Settings that controls how WordPress menus are protected.<br />Protect individual Menu-Items, replace the contents of WordPress Menu-Locations or replace each Menu individually.', 'membership2' ),
+			'footer' 		=> $options_text,
+			'class' 		=> 'ms-options',
+			'details' 		=> array(
 				array(
-					'id' => 'menu_protection',
-					'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
-					'title' => __( 'Choose how you want to protect your WordPress menus.', 'membership2' ),
-					'value' => $settings->menu_protection,
+					'id' 			=> 'menu_protection',
+					'type' 			=> MS_Helper_Html::INPUT_TYPE_SELECT,
+					'title' 		=> __( 'Choose how you want to protect your WordPress menus.', 'membership2' ),
+					'value' 		=> $settings->menu_protection,
 					'field_options' => array(
-						'item' => __( 'Protect single Menu Items (Default)', 'membership2' ),
-						'menu' => __( 'Replace individual Menus', 'membership2' ),
-						'location' => __( 'Overwrite contents of Menu Locations', 'membership2' ),
+						'item' 			=> __( 'Protect single Menu Items (Default)', 'membership2' ),
+						'menu' 			=> __( 'Replace individual Menus', 'membership2' ),
+						'location' 		=> __( 'Overwrite contents of Menu Locations', 'membership2' ),
 					),
-					'data_ms' => array(
-						'action' => MS_Controller_Settings::AJAX_ACTION_UPDATE_SETTING,
-						'field' => 'menu_protection',
+					'data_ms'		 => array(
+						'action'		=> MS_Controller_Settings::AJAX_ACTION_UPDATE_SETTING,
+						'field' 		=> 'menu_protection',
 					),
 				),
 			),
 		);
 
-		// New since 1.1
+		/* start:pro */
 		$list[ self::ADDON_ADMINSIDE ] = (object) array(
-			'name' => __( 'Admin Side Protection', 'membership2' ),
-			'description' => __( 'Control the pages and even Meta boxes that members can access on the admin side.', 'membership2' ),
-			'icon' => 'dashicons dashicons-admin-network',
+			'name' 			=> __( 'Admin Side Protection', 'membership2' ),
+			'description' 	=> __( 'Control the pages and even Meta boxes that members can access on the admin side.', 'membership2' ),
+			'icon' 			=> 'dashicons dashicons-admin-network',
 		);
+		/* end:pro */
 
 		$list[ self::ADDON_MEMBERCAPS ] = (object) array(
-			'name' => __( 'Member Capabilities', 'membership2' ),
-			'description' => __( 'Manage user-capabilities on membership level.', 'membership2' ),
-			'footer' => $options_text,
-			'class' => 'ms-options',
-			'icon' => 'dashicons dashicons-admin-users',
-			'details' => array(
+			'name' 			=> __( 'Member Capabilities', 'membership2' ),
+			'description' 	=> __( 'Manage user-capabilities on membership level.', 'membership2' ),
+			'footer' 		=> $options_text,
+			'class' 		=> 'ms-options',
+			'icon' 			=> 'dashicons dashicons-admin-users',
+			'details' 		=> array(
 				array(
-					'id' => 'ms-toggle-' . self::ADDON_MEMBERCAPS_ADV,
-					'title' => __( 'Advanced Capability protection', 'membership2' ),
-					'desc' => __( 'Allows you to protect individual WordPress Capabilities. When activated then the "User Roles" tab is replaced by a "Member Capabilities" tab where you can protect and assign individual WordPress Capabilities instead of roles.', 'membership2' ),
-					'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
-					'value' => self::is_enabled( self::ADDON_MEMBERCAPS_ADV ),
-					'class' => 'toggle-plugin',
+					'id' 		=> 'ms-toggle-' . self::ADDON_MEMBERCAPS_ADV,
+					'title' 	=> __( 'Advanced Capability protection', 'membership2' ),
+					'desc' 		=> __( 'Allows you to protect individual WordPress Capabilities. When activated then the "User Roles" tab is replaced by a "Member Capabilities" tab where you can protect and assign individual WordPress Capabilities instead of roles.', 'membership2' ),
+					'type' 		=> MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
+					'value'	 	=> self::is_enabled( self::ADDON_MEMBERCAPS_ADV ),
+					'class' 	=> 'toggle-plugin',
 					'ajax_data' => array(
-						'action' => MS_Controller_Addon::AJAX_ACTION_TOGGLE_ADDON,
-						'field' => 'active',
-						'addon' => self::ADDON_MEMBERCAPS_ADV,
+						'action' 	=> MS_Controller_Addon::AJAX_ACTION_TOGGLE_ADDON,
+						'field' 	=> 'active',
+						'addon' 	=> self::ADDON_MEMBERCAPS_ADV,
 					),
 				),
 			),
 		);
+		
 
 		return $list;
+	}
+
+
+	/**
+	 * Toggle Media htaccess creation
+	 *
+	 * @since 1.0.4
+	 */
+	public static function toggle_media_htaccess( $settings = false ) {
+		if ( MS_Helper_Media::get_server() === 'apache' ) {
+			if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MEDIA ) ) {
+				if ( !$settings ) {
+					$settings 	= MS_Factory::load( 'MS_Model_Settings' );
+				}
+				if ( $settings->is_advanced_media_protection ) {
+					$direct_access 	= array( 'jpg', 'jpeg', 'png', 'gif', 'mp3', 'ogg' );
+					if ( isset( $settings->downloads['direct_access'] ) ) {
+						$direct_access = $settings->downloads['direct_access'];
+					}
+					MS_Helper_Media::write_htaccess_rule( $direct_access );
+				} else {
+					MS_Helper_Media::clear_htaccess();
+				}
+			} else {
+				MS_Helper_Media::clear_htaccess();
+			}
+		}
+		
 	}
 }

@@ -19,17 +19,17 @@ class MS_Rule_ReplaceMenu_ListTable extends MS_Helper_ListTable_RuleMatching {
 	public function __construct( $model ) {
 		parent::__construct( $model );
 		$this->name['singular'] = __( 'Menu', 'membership2' );
-		$this->name['plural'] = __( 'Menus', 'membership2' );
+		$this->name['plural'] 	= __( 'Menus', 'membership2' );
 
 		add_filter(
 			'ms_helper_listtable_' . $this->id . '_columns',
 			array( $this, 'customize_columns' )
 		);
                 
-                add_filter(
-                    'bulk_actions-membership-2_page_membership2-protection',
-                    array( $this, 'replace_menu_disable_bulk_action' )
-                );
+		add_filter(
+			'bulk_actions-membership-2_page_membership2-protection',
+			array( $this, 'replace_menu_disable_bulk_action' )
+		);
 
 		$this->editable = self::list_shows_base_items();
 	}
@@ -67,8 +67,8 @@ class MS_Rule_ReplaceMenu_ListTable extends MS_Helper_ListTable_RuleMatching {
 		$label = '';
 
 		switch ( $col ) {
-			case 'item': $label = __( 'Menu', 'membership2' ); break;
-			case 'match': $label = __( 'Replace with this Menu', 'membership2' ); break;
+			case 'item': $label 	= __( 'Menu', 'membership2' ); break;
+			case 'match': $label 	= __( 'Replace with this Menu', 'membership2' ); break;
 		}
 
 		return $label;

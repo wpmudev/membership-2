@@ -3,8 +3,8 @@
 class MS_Gateway_Paypalsingle_View_Settings extends MS_View {
 
 	public function to_html() {
-		$fields = $this->prepare_fields();
-		$gateway = $this->data['model'];
+		$fields 	= $this->prepare_fields();
+		$gateway 	= $this->data['model'];
 
 		ob_start();
 		/** Render tabbed interface. */
@@ -35,56 +35,56 @@ class MS_Gateway_Paypalsingle_View_Settings extends MS_View {
 		$nonce = wp_create_nonce( $action );
 
 		$fields = array(
-			'merchant_id' => array(
-				'id' => 'paypal_email',
-				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-				'title' => __( 'PayPal Email', 'membership2' ),
-				'value' => $gateway->paypal_email,
-				'class' => 'ms-text-large',
-				'ajax_data' => array( 1 ),
+			'merchant_id' 	=> array(
+				'id' 			=> 'paypal_email',
+				'type' 			=> MS_Helper_Html::INPUT_TYPE_TEXT,
+				'title' 		=> __( 'PayPal Email', 'membership2' ),
+				'value' 		=> $gateway->paypal_email,
+				'class' 		=> 'ms-text-large',
+				'ajax_data' 	=> array( 1 ),
 			),
 
-			'paypal_site' => array(
-				'id' => 'paypal_site',
-				'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
-				'title' => __( 'PayPal Site', 'membership2' ),
+			'paypal_site' 	=> array(
+				'id' 			=> 'paypal_site',
+				'type' 			=> MS_Helper_Html::INPUT_TYPE_SELECT,
+				'title' 		=> __( 'PayPal Site', 'membership2' ),
 				'field_options' => $gateway->get_paypal_sites(),
-				'value' => $gateway->paypal_site,
-				'class' => 'ms-text-large',
-				'ajax_data' => array( 1 ),
+				'value' 		=> $gateway->paypal_site,
+				'class' 		=> 'ms-text-large',
+				'ajax_data' 	=> array( 1 ),
 			),
 
-			'mode' => array(
-				'id' => 'mode',
-				'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
-				'title' => __( 'PayPal Mode', 'membership2' ),
-				'value' => $gateway->mode,
+			'mode' 			=> array(
+				'id' 			=> 'mode',
+				'type' 			=> MS_Helper_Html::INPUT_TYPE_SELECT,
+				'title' 		=> __( 'PayPal Mode', 'membership2' ),
+				'value' 		=> $gateway->mode,
 				'field_options' => $gateway->get_mode_types(),
-				'class' => 'ms-text-large',
-				'ajax_data' => array( 1 ),
+				'class' 		=> 'ms-text-large',
+				'ajax_data' 	=> array( 1 ),
 			),
 
 			'pay_button_url' => array(
-				'id' => 'pay_button_url',
-				'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-				'title' => apply_filters(
+				'id' 			=> 'pay_button_url',
+				'type'			=> MS_Helper_Html::INPUT_TYPE_TEXT,
+				'title' 		=> apply_filters(
 					'ms_translation_flag',
 					__( 'Payment button label or URL', 'membership2' ),
 					'gateway-button' . $gateway->id
 				),
-				'value' => $gateway->pay_button_url,
-				'class' => 'ms-text-large',
-				'ajax_data' => array( 1 ),
+				'value' 		=> $gateway->pay_button_url,
+				'class' 		=> 'ms-text-large',
+				'ajax_data' 	=> array( 1 ),
 			),
 		);
 
 		// Process the fields and add missing default attributes.
 		foreach ( $fields as $key => $field ) {
 			if ( ! empty( $field['ajax_data'] ) ) {
-				$fields[ $key ]['ajax_data']['field'] = $fields[ $key ]['id'];
-				$fields[ $key ]['ajax_data']['_wpnonce'] = $nonce;
-				$fields[ $key ]['ajax_data']['action'] = $action;
-				$fields[ $key ]['ajax_data']['gateway_id'] = $gateway->id;
+				$fields[ $key ]['ajax_data']['field'] 		= $fields[ $key ]['id'];
+				$fields[ $key ]['ajax_data']['_wpnonce'] 	= $nonce;
+				$fields[ $key ]['ajax_data']['action'] 		= $action;
+				$fields[ $key ]['ajax_data']['gateway_id'] 	= $gateway->id;
 			}
 		}
 

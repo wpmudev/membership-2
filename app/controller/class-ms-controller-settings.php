@@ -18,11 +18,13 @@ class MS_Controller_Settings extends MS_Controller {
 	 *
 	 * @var string
 	 */
-	const AJAX_ACTION_TOGGLE_SETTINGS = 'toggle_settings';
-	const AJAX_ACTION_UPDATE_SETTING = 'update_setting';
-	const AJAX_ACTION_UPDATE_CUSTOM_SETTING = 'update_custom_setting';
-	const AJAX_ACTION_UPDATE_PROTECTION_MSG = 'update_protection_msg';
-	const AJAX_ACTION_TOGGLE_CRON = 'toggle_cron';
+	const AJAX_ACTION_TOGGLE_SETTINGS 			= 'toggle_settings';
+	const AJAX_ACTION_UPDATE_SETTING 			= 'update_setting';
+	const AJAX_ACTION_UPDATE_CUSTOM_SETTING 	= 'update_custom_setting';
+	const AJAX_ACTION_UPDATE_PROTECTION_MSG 	= 'update_protection_msg';
+	const AJAX_ACTION_TOGGLE_CRON 				= 'toggle_cron';
+	const AJAX_ACTION_TOGGLE_PROTECTION_FILE 	= 'toggle_protection_file';
+	const AJAX_ACTION_GENERATE_INVOICE_ID 		= 'generate_invoice_id';
 
 	/**
 	 * Settings tabs.
@@ -31,11 +33,12 @@ class MS_Controller_Settings extends MS_Controller {
 	 *
 	 * @var   string
 	 */
-	const TAB_GENERAL = 'general';
-	const TAB_PAYMENT = 'payment';
-	const TAB_MESSAGES = 'messages';
-	const TAB_EMAILS = 'emails';
-	const TAB_IMPORT = 'import';
+	const TAB_GENERAL 	= 'general';
+	const TAB_PAYMENT 	= 'payment';
+	const TAB_MESSAGES 	= 'messages';
+	const TAB_EMAILS 	= 'emails';
+	const TAB_MEDIA 	= 'media';
+	const TAB_IMPORT 	= 'import';
 
 	/**
 	 * The current active tab in the vertical navigation.
@@ -73,11 +76,18 @@ class MS_Controller_Settings extends MS_Controller {
 			'auto_setup_settings'
 		);
 
+		$this->add_action(
+			'admin_action_membership_user_sample_csv',
+			'membership_user_sample_csv'
+		);
+
 		$this->add_ajax_action( self::AJAX_ACTION_TOGGLE_SETTINGS, 'ajax_action_toggle_settings' );
 		$this->add_ajax_action( self::AJAX_ACTION_UPDATE_SETTING, 'ajax_action_update_setting' );
 		$this->add_ajax_action( self::AJAX_ACTION_UPDATE_CUSTOM_SETTING, 'ajax_action_update_custom_setting' );
 		$this->add_ajax_action( self::AJAX_ACTION_UPDATE_PROTECTION_MSG, 'ajax_action_update_protection_msg' );
 		$this->add_ajax_action( self::AJAX_ACTION_TOGGLE_CRON, 'ajax_action_toggle_cron' );
+		$this->add_ajax_action( self::AJAX_ACTION_TOGGLE_PROTECTION_FILE, 'ajax_action_toggle_protection_file' );
+		$this->add_ajax_action( self::AJAX_ACTION_GENERATE_INVOICE_ID, 'ajax_action_generate_invoice_id' );
 
 	}
 
@@ -91,6 +101,7 @@ class MS_Controller_Settings extends MS_Controller {
 
 		$this->run_action( 'load-' . $hook, 'admin_settings_manager' );
 		$this->run_action( 'admin_print_scripts-' . $hook, 'enqueue_scripts' );
+		$this->run_action( 'admin_print_styles-' . $hook, 'enqueue_styles' );
 	}
 
 	/**
@@ -178,13 +189,13 @@ class MS_Controller_Settings extends MS_Controller {
 			$settings = $this->get_model();
 			lib3()->array->strip_slashes( $_POST, 'value' );
 
-			$settings->set_custom_setting(
-				$_POST['group'],
-				$_POST['field'],
-				$_POST['value']
-			);
+			$group = $_POST['group'];
+			$field = $_POST['field'];
+			$value = $_POST['value'];
+			$settings->set_custom_setting( $group, $field, $value );
 			$settings->save();
 			$msg = MS_Helper_Settings::SETTINGS_MSG_UPDATED;
+
 		}
 
 		wp_die( $msg );
@@ -273,11 +284,11 @@ class MS_Controller_Settings extends MS_Controller {
 		// Create special pages.
 		MS_Model_Pages::create_missing_pages();
 
-		$pg_prot_cont = MS_Model_Pages::get_page( MS_Model_Pages::MS_PAGE_PROTECTED_CONTENT );
-		$pg_acco = MS_Model_Pages::get_page( MS_Model_Pages::MS_PAGE_ACCOUNT );
-		$pg_regi = MS_Model_Pages::get_page( MS_Model_Pages::MS_PAGE_REGISTER );
-		$pg_regi_comp = MS_Model_Pages::get_page( MS_Model_Pages::MS_PAGE_REG_COMPLETE );
-		$pg_memb = MS_Model_Pages::get_page( MS_Model_Pages::MS_PAGE_MEMBERSHIPS );
+		$pg_prot_cont 	= MS_Model_Pages::get_page( MS_Model_Pages::MS_PAGE_PROTECTED_CONTENT );
+		$pg_acco 		= MS_Model_Pages::get_page( MS_Model_Pages::MS_PAGE_ACCOUNT );
+		$pg_regi 		= MS_Model_Pages::get_page( MS_Model_Pages::MS_PAGE_REGISTER );
+		$pg_regi_comp 	= MS_Model_Pages::get_page( MS_Model_Pages::MS_PAGE_REG_COMPLETE );
+		$pg_memb 		= MS_Model_Pages::get_page( MS_Model_Pages::MS_PAGE_MEMBERSHIPS );
 
 		// Publish special pages.
 		// Tip: Only pages must be published that are added to the menu.
@@ -323,10 +334,17 @@ class MS_Controller_Settings extends MS_Controller {
 			self::TAB_EMAILS => array(
 				'title' => __( 'Automated Email Responses', 'membership2' ),
 			),
+			self::TAB_MEDIA => array(
+				'title' => __( 'Advanced Media Protection', 'membership2' ),
+			),
 			self::TAB_IMPORT => array(
 				'title' => __( 'Import Tool', 'membership2' ),
-			),
+			)
 		);
+		$settings = $this->get_model();
+		if ( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MEDIA ) || !$settings->is_advanced_media_protection ) {
+			unset( $tabs[self::TAB_MEDIA] );
+		}
 
 		$def_key = MS_Controller_Plugin::MENU_SLUG . '-settings';
 		lib3()->array->equip_get( 'page' );
@@ -394,8 +412,8 @@ class MS_Controller_Settings extends MS_Controller {
 	public function admin_settings_manager() {
 		MS_Helper_Settings::print_admin_message();
 		$this->get_active_tab();
-		$msg = 0;
-		$redirect = false;
+		$msg 		= 0;
+		$redirect 	= false;
 
 		if ( $this->is_admin_user() ) {
 			if ( $this->verify_nonce() || $this->verify_nonce( null, 'GET' ) ) {
@@ -474,14 +492,14 @@ class MS_Controller_Settings extends MS_Controller {
 
 		do_action( $hook );
 
-		$view = MS_Factory::create( 'MS_View_Settings_Edit' );
-		$view = apply_filters( $hook . '_view', $view );
+		$view 				= MS_Factory::create( 'MS_View_Settings_Edit' );
+		$view 				= apply_filters( $hook . '_view', $view );
 
-		$data = array();
-		$data['tabs'] = $this->get_tabs();
-		$data['settings'] = $this->get_model();
+		$data 				= array();
+		$data['tabs'] 		= $this->get_tabs();
+		$data['settings'] 	= $this->get_model();
 
-		$data['message'] = self::_message();
+		$data['message'] 	= self::_message();
 
 		if ( isset( $data['message']['error'] ) ) {
 			lib3()->ui->admin_message( $data['message']['error'], 'err' );
@@ -500,12 +518,35 @@ class MS_Controller_Settings extends MS_Controller {
 
 				$data['comm'] = $comm;
 				break;
+
+			case self::TAB_IMPORT:
+				$url 				= wp_nonce_url( admin_url( 'admin.php?action=membership_user_sample_csv' ), 'sample_users_csv' );
+				$data['types'] 		= MS_Model_Export::export_types();
+				$data['formats'] 	= MS_Model_Export::export_formats();
+				$data['sample'] 	= $url;
+				break;
 		}
 
-		$data = array_merge( $data, $view->data );
-		$view->data = apply_filters( $hook . '_data', $data );
-		$view->model = $this->get_model();
+		$data 			= array_merge( $data, $view->data );
+		$view->data 	= apply_filters( $hook . '_data', $data );
+		$view->model 	= $this->get_model();
 		$view->render();
+	}
+
+	/**
+	 * Sample CSV file for user import
+	 *
+	 * @return csv file
+	 */
+	public function membership_user_sample_csv() {
+		if ( empty( $_REQUEST['_wpnonce'] ) ) { return; }
+		
+		if ( ! wp_verify_nonce( $_REQUEST['_wpnonce'], 'sample_users_csv' ) ) { return; }
+		
+		$contents = "username,email,firstname,lastname,membershipid" . "\r\n";
+		$contents .= "user1,user1@email.com,John,Doe,1" . "\r\n";
+		$contents .= "user2,user2@email.com,Jane,Doe,2";
+		lib3()->net->file_download( $contents, 'ms_sample_user_export.csv' );
 	}
 
 	/**
@@ -566,13 +607,13 @@ class MS_Controller_Settings extends MS_Controller {
 		$active_tab = $this->get_active_tab();
 		do_action( 'ms_controller_settings_enqueue_scripts_' . $active_tab );
 
-		$plugin_url = MS_Plugin::instance()->url;
-		$version = MS_Plugin::instance()->version;
-		$initial_url = MS_Controller_Plugin::get_admin_url();
+		$plugin_url 	= MS_Plugin::instance()->url;
+		$version 		= MS_Plugin::instance()->version;
+		$initial_url 	= MS_Controller_Plugin::get_admin_url();
 
 		$data = array(
-			'ms_init' => array(),
-			'initial_url' => $initial_url,
+			'ms_init' 		=> array(),
+			'initial_url' 	=> $initial_url,
 		);
 
 		$data['ms_init'][] = 'view_settings';
@@ -594,10 +635,23 @@ class MS_Controller_Settings extends MS_Controller {
 			case self::TAB_GENERAL:
 				$data['ms_init'][] = 'view_settings_setup';
 				break;
-		}
 
+			case self::TAB_MEDIA:
+				$data['ms_init'][] = 'view_settings_media';
+				break;
+		}
+		wp_enqueue_script( 'jquery-ui-datepicker' );
 		lib3()->ui->data( 'ms_data', $data );
 		wp_enqueue_script( 'ms-admin' );
+	}
+
+	/**
+	 * Load Member manager specific styles.
+	 *
+	 * @since  1.1.2
+	 */
+	public function enqueue_styles() {
+		lib3()->ui->add( 'jquery-ui' );
 	}
 	
 	/**
@@ -617,5 +671,41 @@ class MS_Controller_Settings extends MS_Controller {
 		}
 		wp_send_json_error();
 		
+	}
+
+	/**
+	 * Toggle protection file creation or update
+	 * This creates or modifies the .htaccess file in the uploads directory
+	 *
+	 * @since 1.0.4
+	 */
+	public function ajax_action_toggle_protection_file() {
+		$msg = MS_Helper_Settings::SETTINGS_MSG_NOT_UPDATED;
+		if ( $this->verify_nonce( 'toggle_protection_file' )
+			&& $this->is_admin_user()
+		) {
+			$response = MS_Helper_Media::clear_htaccess();
+			if ( !is_wp_error( $response ) ) {
+				MS_Model_Addon::toggle_media_htaccess();
+				$msg = MS_Helper_Settings::SETTINGS_MSG_UPDATED;
+			}
+		}
+		wp_die( $msg );
+	}
+
+
+	/**
+	 * Generate Invoice Ids
+	 * Ajax action to udate ids of past invoices
+	 * 
+	 * @since 1.1.3
+	 */
+	public function ajax_action_generate_invoice_id() {
+		$msg = MS_Helper_Settings::SETTINGS_MSG_NOT_UPDATED;
+		if ( $this->verify_nonce() && $this->is_admin_user() ) {
+			MS_Addon_Invoice::set_invoice_numeric_id();
+			$msg = MS_Helper_Settings::SETTINGS_MSG_UPDATED;
+		}
+		wp_die( $msg );
 	}
 }

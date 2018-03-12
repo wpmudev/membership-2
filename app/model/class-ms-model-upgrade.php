@@ -70,11 +70,11 @@ class MS_Model_Upgrade extends MS_Model {
 		// Check for correct network-wide protection setup.
 		self::check_settings();
 
-		$settings = MS_Factory::load( 'MS_Model_Settings' );
-		$old_version = $settings->version; // Old: The version in DB.
-		$new_version = MS_Plugin::instance()->version; // New: Version in file.
+		$settings 		= MS_Factory::load( 'MS_Model_Settings' );
+		$old_version 	= $settings->version; // Old: The version in DB.
+		$new_version 	= MS_Plugin::instance()->version; // New: Version in file.
 
-		$is_new_setup = empty( $old_version );
+		$is_new_setup 	= empty( $old_version );
 
 		// Compare current src version to DB version:
 		// We only do UP-grades but no DOWN-grades!
@@ -371,8 +371,8 @@ class MS_Model_Upgrade extends MS_Model {
 				);
 
 				if ( ! isset( $data['m1'] ) ) { $data['m1'] = array(); }
-				$data['m1'] = lib3()->array->get( $data['m1'] );
-				$data['m1'][] = $source_id;
+				$data['m1'] 	= lib3()->array->get( $data['m1'] );
+				$data['m1'][] 	= $source_id;
 				$membership->set_custom_data( 'matching', $data );
 				$membership->save();
 			}
@@ -563,13 +563,13 @@ class MS_Model_Upgrade extends MS_Model {
         $paid_memberships = MS_Model_Membership::get_memberships( array(
             'meta_query' => array(
                 array(
-                    'key' => 'price',
-                    'value' => 0,
-                    'compare' => '>',
+                    'key' 		=> 'price',
+                    'value' 	=> 0,
+                    'compare' 	=> '>',
                 ),
                 array(
-                    'key' => 'payment_type',
-                    'value' => 'recurring',
+                    'key' 		=> 'payment_type',
+                    'value' 	=> 'recurring',
                 ),
             ),
         ) );
@@ -637,7 +637,7 @@ class MS_Model_Upgrade extends MS_Model {
 			}
 
 			// B) Check the Permalink settings.
-			if ( false === strpos( get_option( 'permalink_structure' ), '%postname%' ) ) {
+			/*if ( false === strpos( get_option( 'permalink_structure' ), '%postname%' ) ) {
 				lib3()->ui->admin_message(
 					sprintf(
 						__( 'Your %sPermalink structure%s should include the %sPost name%s to ensure Membership 2 is working correctly.', 'membership2' ),
@@ -645,6 +645,20 @@ class MS_Model_Upgrade extends MS_Model {
 						'</a>',
 						'<strong>',
 						'</strong>'
+					),
+					'err'
+				);
+			}*/
+
+			if ( false === ( get_option('permalink_structure') ) ) {
+				lib3()->ui->admin_message(
+					sprintf(
+						__( 'You need to enable %sPretty Permalinks%s in your %sPermalink structure%s to ensure Membership 2 is working correctly.', 'membership2' ),
+						'<strong>',
+						'</strong>',
+						'<a href="' . admin_url( 'options-permalink.php' ) . '">',
+						'</a>'
+						
 					),
 					'err'
 				);
@@ -661,17 +675,17 @@ class MS_Model_Upgrade extends MS_Model {
 	 * @since  1.0.0
 	 */
 	static private function check_migration_handler() {
-		$migrate = '';
-		$settings = MS_Factory::load( 'MS_Model_Settings' );
+		$migrate 		= '';
+		$settings 		= MS_Factory::load( 'MS_Model_Settings' );
 
 		// Check Migration from old Membership plugin.
-		$option_m1 = '_wpmudev_update_to_m2';
+		$option_m1 		= '_wpmudev_update_to_m2';
 		$option_m1_free = '_wporg_update_to_m2';
-		$from_m1 = get_site_option( $option_m1 );
-		$from_m1_free = get_site_option( $option_m1_free );
+		$from_m1 		= get_site_option( $option_m1 );
+		$from_m1_free 	= get_site_option( $option_m1_free );
 
 		if ( $from_m1 || $from_m1_free ) {
-			$migrate = 'm1';
+			$migrate 	= 'm1';
 
 			delete_site_option( $option_m1 );
 			delete_site_option( $option_m1_free );
@@ -781,14 +795,13 @@ class MS_Model_Upgrade extends MS_Model {
 		if ( ! is_admin() ) { return false; }
 		if ( defined( 'DOING_AJAX' ) && DOING_AJAX ) { return false; }
 		if ( defined( 'DOING_CRON' ) && DOING_CRON ) { return false; }
-                /**
-                 * BuddyPress notices hack
-                 */
-                $bp = function_exists( 'buddypress' ) ? buddypress() : null;
-                if( null != $bp )
-                {
-                        if ( ! did_action( 'init' ) ) { return false; }
-                }
+		/**
+		 * BuddyPress notices hack
+		 */
+		$bp = function_exists( 'buddypress' ) ? buddypress() : null;
+		if( null != $bp ) {
+			if ( ! did_action( 'init' ) ) { return false; }
+		}
 		if ( ! current_user_can( 'manage_options' ) ) { return false; }
 
 		return true;

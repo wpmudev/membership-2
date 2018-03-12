@@ -2,22 +2,22 @@
 class MS_Helper_Settings extends MS_Helper {
 
 	// Success response codes
-	const SETTINGS_MSG_ADDED = 1;
-	const SETTINGS_MSG_DELETED = 2;
-	const SETTINGS_MSG_UPDATED = 3;
-	const SETTINGS_MSG_ACTIVATION_TOGGLED = 4;
-	const SETTINGS_MSG_STATUS_TOGGLED = 5;
-	const SETTINGS_MSG_BULK_UPDATED = 6;
-	const SETTINGS_MSG_SITE_UPDATED = 7;
+	const SETTINGS_MSG_ADDED 					= 1;
+	const SETTINGS_MSG_DELETED 					= 2;
+	const SETTINGS_MSG_UPDATED 					= 3;
+	const SETTINGS_MSG_ACTIVATION_TOGGLED 		= 4;
+	const SETTINGS_MSG_STATUS_TOGGLED 			= 5;
+	const SETTINGS_MSG_BULK_UPDATED 			= 6;
+	const SETTINGS_MSG_SITE_UPDATED 			= 7;
 
 	// Error response codes
-	const SETTINGS_MSG_NOT_ADDED = -1;
-	const SETTINGS_MSG_NOT_DELETED = -2;
-	const SETTINGS_MSG_NOT_UPDATED = -3;
-	const SETTINGS_MSG_ACTIVATION_NOT_TOGGLED = -4;
-	const SETTINGS_MSG_STATUS_NOT_TOGGLED = -5;
-	const SETTINGS_MSG_BULK_NOT_UPDATED = -6;
-	const SETTINGS_MSG_UNCONFIGURED = -7;
+	const SETTINGS_MSG_NOT_ADDED 				= -1;
+	const SETTINGS_MSG_NOT_DELETED 				= -2;
+	const SETTINGS_MSG_NOT_UPDATED 				= -3;
+	const SETTINGS_MSG_ACTIVATION_NOT_TOGGLED 	= -4;
+	const SETTINGS_MSG_STATUS_NOT_TOGGLED 		= -5;
+	const SETTINGS_MSG_BULK_NOT_UPDATED 		= -6;
+	const SETTINGS_MSG_UNCONFIGURED 			= -7;
 
 	/**
 	 * Returns the status messages for a given status code
@@ -34,21 +34,21 @@ class MS_Helper_Settings extends MS_Helper {
 				'ms_helper_membership_get_admin_messages',
 				array(
 					// Success response codes
-					self::SETTINGS_MSG_ADDED => __( 'Setting added.', 'membership2' ),
-					self::SETTINGS_MSG_DELETED => __( 'Setting deleted.', 'membership2' ),
-					self::SETTINGS_MSG_UPDATED => __( 'Setting updated.', 'membership2' ),
-					self::SETTINGS_MSG_ACTIVATION_TOGGLED => __( 'Setting activation toggled.', 'membership2' ),
-					self::SETTINGS_MSG_STATUS_TOGGLED => __( 'Setting status toggled.', 'membership2' ),
-					self::SETTINGS_MSG_BULK_UPDATED => __( 'Bulk settings updated.', 'membership2' ),
-					self::SETTINGS_MSG_SITE_UPDATED => __( 'Changed the network site that hosts Membership pages. Remember to check your Pages and change them if needed!', 'membership2' ),
+					self::SETTINGS_MSG_ADDED 					=> __( 'Setting added.', 'membership2' ),
+					self::SETTINGS_MSG_DELETED 					=> __( 'Setting deleted.', 'membership2' ),
+					self::SETTINGS_MSG_UPDATED 					=> __( 'Setting updated.', 'membership2' ),
+					self::SETTINGS_MSG_ACTIVATION_TOGGLED 		=> __( 'Setting activation toggled.', 'membership2' ),
+					self::SETTINGS_MSG_STATUS_TOGGLED 			=> __( 'Setting status toggled.', 'membership2' ),
+					self::SETTINGS_MSG_BULK_UPDATED 			=> __( 'Bulk settings updated.', 'membership2' ),
+					self::SETTINGS_MSG_SITE_UPDATED 			=> __( 'Changed the network site that hosts Membership pages. Remember to check your Pages and change them if needed!', 'membership2' ),
 
 					// Error response messages
-					self::SETTINGS_MSG_NOT_ADDED => __( 'Setting not added.', 'membership2' ),
-					self::SETTINGS_MSG_NOT_DELETED => __( 'Setting not deleted.', 'membership2' ),
-					self::SETTINGS_MSG_NOT_UPDATED => __( 'Setting not updated.', 'membership2' ),
-					self::SETTINGS_MSG_ACTIVATION_NOT_TOGGLED => __( 'Setting activation not toggled.', 'membership2' ),
-					self::SETTINGS_MSG_STATUS_NOT_TOGGLED => __( 'Setting status not toggled.', 'membership2' ),
-					self::SETTINGS_MSG_BULK_NOT_UPDATED => __( 'Bulk settings not updated.', 'membership2' ),
+					self::SETTINGS_MSG_NOT_ADDED 				=> __( 'Setting not added.', 'membership2' ),
+					self::SETTINGS_MSG_NOT_DELETED 				=> __( 'Setting not deleted.', 'membership2' ),
+					self::SETTINGS_MSG_NOT_UPDATED 				=> __( 'Setting not updated.', 'membership2' ),
+					self::SETTINGS_MSG_ACTIVATION_NOT_TOGGLED 	=> __( 'Setting activation not toggled.', 'membership2' ),
+					self::SETTINGS_MSG_STATUS_NOT_TOGGLED 		=> __( 'Setting status not toggled.', 'membership2' ),
+					self::SETTINGS_MSG_BULK_NOT_UPDATED 		=> __( 'Bulk settings not updated.', 'membership2' ),
 				)
 			);
 		}
@@ -68,9 +68,9 @@ class MS_Helper_Settings extends MS_Helper {
 	 * @since  1.0.0
 	 */
 	public static function print_admin_message() {
-		$msg = ! empty( $_GET['msg'] ) ? (int) $_GET['msg'] : 0;
-		$class = ( $msg > 0 ) ? 'updated' : 'error';
-		$contents = self::get_admin_message( $msg );
+		$msg 		= ! empty( $_GET['msg'] ) ? (int) $_GET['msg'] : 0;
+		$class 		= ( $msg > 0 ) ? 'updated' : 'error';
+		$contents 	= self::get_admin_message( $msg );
 
 		if ( $contents ) {
 			lib3()->ui->admin_message( $contents, $class );
@@ -86,9 +86,8 @@ class MS_Helper_Settings extends MS_Helper {
 	 * @return array
 	 */
 	public static function get_blogs( $only_public = true ) {
-		static $List = array();
-		
-                $key = $only_public ? 'public' : 'all';
+		static $List 	= array();
+        $key 			= $only_public ? 'public' : 'all';
                 
 		if ( ! isset( $List['_cache'] ) ) {
 			$List['_cache'] = array();
@@ -96,35 +95,31 @@ class MS_Helper_Settings extends MS_Helper {
 
 		if ( ! isset( $List[$key] ) ) {
 			$args = array(
-				'limit' => 0,
-				'public'     => true,
-				'spam'       => false,
-				'deleted'    => false,
+				'limit' 	=> 0,
+				'public'    => true,
+				'spam'      => false,
+				'deleted'   => false,
 			);
                         
-                        $args = apply_filters(
-                            'ms_get_blog_list_args',
-                            $args
-                        );
+			$args = apply_filters(
+				'ms_get_blog_list_args',
+				$args
+			);
                         
 			if ( $only_public ) {
-				$args['archived'] = false;
-				$args['mature'] = false;
+				$args['archived'] 	= false;
+				$args['mature'] 	= false;
 			}
 			
 			global $wp_version;
-			$version_safe = false;
-			if ( version_compare( $wp_version, '4.6.0', '>=' ) )
-			{
-				$version_safe = true;
+			$version_safe 		= false;
+			if ( version_compare( $wp_version, '4.6.0', '>=' ) ) {
+				$version_safe 	= true;
 			}
 			
-			if( $version_safe )
-			{
+			if ( $version_safe ) {
 				$sites = get_sites( $args );
-			}
-			else
-			{
+			} else {
 				$sites = wp_get_sites( $args );
 			}
 			

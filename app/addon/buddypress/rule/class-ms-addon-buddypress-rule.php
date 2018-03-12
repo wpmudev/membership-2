@@ -9,11 +9,11 @@ class MS_Addon_BuddyPress_Rule extends MS_Controller {
 	 */
 	const RULE_ID = 'buddypress';
 
-	const PROTECT_ALL = 'buddypress_all';
-	const PROTECT_FRIENDSHIP = 'buddypress_friendship';
-	const PROTECT_GROUP_CREATION = 'buddypress_add_group';
-	const PROTECT_PRIVATE_MSG = 'buddypress_priv_msg';
-	const PROTECT_MEMBERS = 'buddypress_members';
+	const PROTECT_ALL 				= 'buddypress_all';
+	const PROTECT_FRIENDSHIP 		= 'buddypress_friendship';
+	const PROTECT_GROUP_CREATION 	= 'buddypress_add_group';
+	const PROTECT_PRIVATE_MSG 		= 'buddypress_priv_msg';
+	const PROTECT_MEMBERS 			= 'buddypress_members';
 
 
 	/**

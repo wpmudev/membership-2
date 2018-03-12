@@ -1,8 +1,8 @@
 <?php
-/* start:pro *//**
+/**
  * Plugin Name: Membership 2 Pro
  * Plugin URI:  https://premium.wpmudev.org/project/membership/
- * Version:     1.0.3.5
+ * Version:     1.1.3
  * Build Stamp: BUILDTIME
  * Description: The most powerful, easy to use and flexible membership plugin for WordPress sites available.
  * Author:      WPMU DEV
@@ -13,29 +13,15 @@
  * Text Domain: membership2
  *
  * @package Membership2
- *//* end:pro *//* start:free *//**
- * Plugin Name: Membership 2
- * Plugin URI:  https://wordpress.org/plugins/membership
- * Version:     4.0.1.3
- * Build Stamp: BUILDTIME
- * Description: The most powerful, easy to use and flexible membership plugin for WordPress sites available.
- * Author:      WPMU DEV
- * Author URI:  http://premium.wpmudev.org/
- * WDP ID:      1003656
- * License:     GPL2
- * License URI: http://opensource.org/licenses/GPL-2.0
- * Text Domain: membership2
- *
- * @package Membership2
- *//* end:free */
+ */
 
 /**
  * Copyright notice
  *
  * @copyright Incsub (http://incsub.com/)
  *
- * Authors: Philipp Stracker, Fabio Jun Onishi, Victor Ivanov, Jack Kitterhing, Rheinard Korf, Ashok Kumar Nath
- * Contributors: Joji Mori, Patrick Cohen
+ * Authors: Philipp Stracker, Fabio Jun Onishi, Victor Ivanov, Jack Kitterhing, Rheinard Korf, Ashok Kumar Nath, Paul Kevin
+ * Contributors: Joji Mori, Patrick Cohen, Panos Lyrakis
  *
  * @license http://opensource.org/licenses/GPL-2.0 GNU General Public License, version 2 (GPL-2.0)
  *
@@ -61,10 +47,9 @@
  * @since  1.0.0
  */
 
-function membership2_init_app() {
+function membership2_pro_init_app() {
 	if ( defined( 'MS_PLUGIN' ) ) {
-		/* start:free */$plugin_name = 'Membership 2 (Free)';/* end:free */
-		/* start:pro */$plugin_name = 'Membership 2 Pro';/* end:pro */
+		$plugin_name = 'Membership 2 Pro';
 		if ( is_admin() ) {
 			// Can happen in Multisite installs where a sub-site has activated the
 			// plugin and then the plugin is also activated in network-admin.
@@ -85,11 +70,7 @@ function membership2_init_app() {
 	 *
 	 * @since  1.0.0
 	 */
-	define(
-		'MS_PLUGIN_VERSION'
-		/* start:pro */, '1.0.3.5'/* end:pro */
-		/* start:free */, '4.0.1.3'/* end:free */
-	);
+	define( 'MS_PLUGIN_VERSION', '1.1.3' );
 
 	/**
 	 * Free or pro plugin?
@@ -98,11 +79,7 @@ function membership2_init_app() {
 	 *
 	 * @since  1.0.3.2
 	 */
-	define(
-		'MS_IS_PRO'
-		/* start:pro */,true/* end:pro */
-		/* start:free */,false/* end:free */
-	);
+	define( 'MS_IS_PRO', true );
 
 	/**
 	 * Plugin main-file.
@@ -132,22 +109,19 @@ function membership2_init_app() {
 	 */
 	define( 'MS_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 
+	/**
+	 * Plugin base dir
+	 */
+	define( 'MS_PLUGIN_BASE_DIR', dirname( __FILE__ ) );
+
 	$externals = array(
 		dirname( __FILE__ ) . '/lib/wpmu-lib/core.php',
 		dirname( __FILE__ ) . '/lib/wdev-frash/module.php',
+		dirname( __FILE__ ) . '/lib/wpmudev-dashboard/wpmudev-dash-notification.php'
 	);
 
-	/* start:free */
-	// Free-version configuration
-	$cta_label = __( 'Get Members!', 'membership2' );
-	$drip_param = 'Membership';
-	/* end:free */
-
-	/* start:pro */
-	// Pro-Only configuration.
-	$cta_label = false;
+	$cta_label 	= false;
 	$drip_param = false;
-	$externals[] = dirname( __FILE__ ) . '/lib/wpmudev-dashboard/wpmudev-dash-notification.php';
 
 	// WPMUDEV Dashboard.
 	global $wpmudev_notices;
@@ -164,7 +138,6 @@ function membership2_init_app() {
 			'membership-2_page_membership2-settings',
 		),
 	);
-	/* end:pro */
 
 	foreach ( $externals as $path ) {
 		if ( file_exists( $path ) ) { require_once $path; }
@@ -217,9 +190,17 @@ function membership2_init_app() {
 		if ( file_exists( $testfile ) ) { include $testfile; }
 	}
 
+
+	include MS_PLUGIN_BASE_DIR . '/app/ms-loader.php';
+
+	if ( is_dir( MS_PLUGIN_BASE_DIR . '/premium' ) ) {
+		include MS_PLUGIN_BASE_DIR . '/premium/ms-premium-loader.php';
+
+		MS_Premium_Loader::instance();
+	}
+
 	// Initialize the M2 class loader.
 	$loader = new MS_Loader();
-
 	/**
 	 * Create an instance of the plugin object.
 	 *
@@ -228,257 +209,22 @@ function membership2_init_app() {
 	 * @since  1.0.0
 	 */
 	MS_Plugin::instance();
-}
-
-/**
- * Class-Loader code.
- * Initialises the autoloader and required plugin hooks.
- *
- * @since  1.0.0
- */
-class MS_Loader {
 
 	/**
-	 * Plugin constructor.
+	 * Ajax Logins
 	 *
-	 * @since  1.0.0
+	 * @since 1.0.4
 	 */
-	public function __construct() {
-		add_filter(
-			'ms_class_path_overrides',
-			array( $this, 'ms_class_path_overrides' )
-		);
-
-		// Creates the class autoloader.
-		// Special: Method `class_loader` can be private and it will work here!
-		spl_autoload_register( array( $this, 'class_loader' ) );
-	}
-
-	/**
-	 * Hooks 'ms_class_path_overrides'.
-	 *
-	 * Overrides plugin class paths to adhere to naming conventions
-	 * where object names are separated by underscores or for special cases.
-	 *
-	 * @since  1.0.0
-	 *
-	 * @param  array $overrides Array passed in by filter.
-	 * @return array(class=>path) Classes with new file paths.
-	 */
-	public function ms_class_path_overrides( $overrides ) {
-		$models_base = 'app/model/';
-		$models = array(
-			'MS_Model_Communication_After_Finishes' => 'communication/class-ms-model-communication-after-finishes.php',
-			'MS_Model_Communication_After_Payment_Due' => 'communication/class-ms-model-communication-after-payment-due.php',
-			'MS_Model_Communication_Before_Finishes' => 'communication/class-ms-model-communication-before-finishes.php',
-			'MS_Model_Communication_Before_Payment_Due' => 'communication/class-ms-model-communication-before-payment-due.php',
-			'MS_Model_Communication_Before_Trial_Finishes' => 'communication/class-ms-model-communication-before-trial-finishes.php',
-			'MS_Model_Communication_Credit_Card_Expire' => 'communication/class-ms-model-communication-credit-card-expire.php',
-			'MS_Model_Communication_Failed_Payment' => 'communication/class-ms-model-communication-failed-payment.php',
-			'MS_Model_Communication_Info_Update' => 'communication/class-ms-model-communication-info-update.php',
-			'MS_Model_Communication_Registration_Free' => 'communication/class-ms-model-communication-registration-free.php',
-		);
-
-		foreach ( $models as $key => $path ) {
-			$overrides[ $key ] = $models_base . $path;
-		}
-
-		return $overrides;
-	}
-
-	/**
-	 * Class autoloading callback function.
-	 *
-	 * Uses the **MS_** namespace to autoload classes when called.
-	 * Avoids creating include functions for each file in the MVC structure.
-	 * **MS_** namespace ONLY will be based on folder structure in /app/
-	 *
-	 * @since  1.0.0
-	 *
-	 * @param  string $class Uses PHP autoloader function.
-	 * @return boolean
-	 */
-	private function class_loader( $class ) {
-		static $Path_overrides = null;
-
-		/**
-		 * Actions to execute before the autoloader loads a class.
-		 *
-		 * @since  1.0.0
-		 * @param object $this The MS_Plugin object.
-		 */
-		do_action( 'ms_plugin_class_loader_pre_processing', $this );
-
-		$basedir = dirname( __FILE__ );
-		$class = trim( $class );
-
-		if ( null === $Path_overrides ) {
-			/**
-			 * Adds and Filters class path overrides.
-			 *
-			 * @since  1.0.0
-			 * @param object $this The MS_Plugin object.
-			 */
-			$Path_overrides = apply_filters( 'ms_class_path_overrides', array(), $this );
-		}
-
-		if ( array_key_exists( $class, $Path_overrides ) ) {
-			/**
-			 * Case 1: The class-path is explicitly defined in $Path_overrides.
-			 * Simply use the defined path to load the class.
-			 */
-			$file_path = $basedir . '/' . $Path_overrides[ $class ];
-
-			/**
-			 * Overrides the filename and path.
-			 *
-			 * @since  1.0.0
-			 * @param object $this The MS_Plugin object.
-			 */
-			$file_path = apply_filters( 'ms_class_file_override', $file_path, $this );
-
-			if ( is_file( $file_path ) ) {
-				include_once $file_path;
-			}
-
-			return true;
-		} elseif ( 'MS_' == substr( $class, 0, 3 ) ) {
-			/**
-			 * Case 2: The class-path is not explicitely defined in $Path_overrides.
-			 * Use /app/ path and class-name to build the file-name.
-			 */
-
-			$path_array = explode( '_', $class );
-			array_shift( $path_array ); // Remove the 'MS' prefix from path.
-			$alt_dir = array_pop( $path_array );
-			$sub_path = implode( '/', $path_array );
-
-			$filename = str_replace( '_', '-', 'class-' . $class . '.php' );
-			$file_path = trim( strtolower( $sub_path . '/' . $filename ), '/' );
-			$file_path_alt = trim( strtolower( $sub_path . '/' . $alt_dir . '/' . $filename ), '/' );
-			$candidates = array();
-
-			/* start:pro */
-			// First check if we have a premium version of the class.
-			$candidates[] = $basedir . '/premium/' . $file_path;
-			$candidates[] = $basedir . '/premium/' . $file_path_alt;
-			/* end:pro */
-
-			// If no premium class is found check for default app class.
-			$candidates[] = $basedir . '/app/' . $file_path;
-			$candidates[] = $basedir . '/app/' . $file_path_alt;
-
-			foreach ( $candidates as $path ) {
-				if ( is_file( $path ) ) {
-					include_once $path;
-					return true;
-				}
-			}
-		}
-
-		return false;
-	}
-};
-
-
-/**
- * This is a hack to prevent cookie issue in IE11 and EDGE
- * Need to refactor in later
- *
- * @since 1.0.2.8
- * @todo Move this code into a different class. Simply call here via MS_TheClass::check_ms_ajax()
- */
-if ( isset( $_REQUEST['ms_ajax'] ) ) {
-	if ( 1 == $_REQUEST['ms_ajax'] ) {
-		add_action( 'wp_ajax_ms_login', 'ms_ajax_login' );
-		add_action( 'wp_ajax_nopriv_ms_login', 'ms_ajax_login' );
-
-		function ms_ajax_login() {
-			$resp = array();
-			check_ajax_referer( 'ms-ajax-login' );
-
-			if ( empty( $_POST['username'] ) && ! empty( $_POST['log'] ) ) {
-				$_POST['username'] = $_POST['log'];
-			}
-			if ( empty( $_POST['password'] ) && ! empty( $_POST['pwd'] ) ) {
-				$_POST['password'] = $_POST['pwd'];
-			}
-			if ( empty( $_POST['remember'] ) && ! empty( $_POST['rememberme'] ) ) {
-				$_POST['remember'] = $_POST['rememberme'];
-			}
-
-			// Nonce is checked, get the POST data and sign user on
-			$info = array(
-				'user_login' 	=> $_POST['username'],
-				'user_password' => $_POST['password'],
-				'remember' 		=> (bool) isset( $_POST['remember'] ) ? $_POST['remember'] : false,
-			);
-
-			$user_signon = wp_signon( $info, false );
-
-			if ( is_wp_error( $user_signon ) ) {
-				$resp['error'] = __( 'Wrong username or password', 'membership2' );
-			} else {
-				$resp['loggedin'] = true;
-				$resp['success'] = __( 'Logging in...', 'membership2' );
-
-				/**
-				 * Allows a custom redirection after login.
-				 * Empty value will use the default redirect option of the login form.
-				 */
-
-				// TODO: These filters are never called!
-				//       This code is too early to allow any other plugin to register a filter handler...
-				$enforce = false;
-				if ( isset( $_POST['redirect_to'] ) ) {
-					$resp['redirect'] = apply_filters(
-						'ms-ajax-login-redirect',
-						$_POST['redirect_to'],
-						$user_signon->ID
-					);
-				} else {
-					$resp['redirect'] = apply_filters(
-						'ms_url_after_login',
-						$_POST['redirect_to'],
-						$enforce
-					);
-				}
-
-				//checking domains
-				if ( is_plugin_active_for_network( 'domain-mapping/domain-mapping.php' ) ) {
-					$url1 = parse_url( home_url() );
-					$url2 = parse_url( $resp['redirect'] );
-					if (strpos($url2['host'], $url1['host']) === false) {
-						//add 'auth' param for set cookie when mapped domains
-						$resp['redirect'] = add_query_arg( array('auth' => wp_generate_auth_cookie( $user_signon->ID, time() + MINUTE_IN_SECONDS )), $resp['redirect']);
-					}
-				}
-			}
-
-			echo json_encode( $resp );
-			exit();
-		}
-	}
+	MS_Auth::check_ms_ajax();
 }
 
-
-/* start:free */
-function membership2_init_old_app() {
-	require_once 'app_old/membership.php';
+if ( ! function_exists( 'is_plugin_active' ) ) {
+	include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
 }
 
-function membership2_is_old_app() {
-	return true != get_option( 'm2_use_new_version' );
+//Deactivate free
+if ( is_plugin_active( 'membership/membership.php' ) ) {
+	deactivate_plugins( array( 'membership/membership.php' ) );
 }
 
-function membership2_use_m2() {
-	update_option( 'm2_use_new_version', true );
-}
-
-if ( ! defined( 'IS_UNIT_TEST' ) && membership2_is_old_app() ) {
-	membership2_init_old_app();
-	return;
-}
-/* end:free */
-
-membership2_init_app();
+membership2_pro_init_app();

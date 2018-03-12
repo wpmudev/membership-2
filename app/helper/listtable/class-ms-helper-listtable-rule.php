@@ -71,20 +71,20 @@ class MS_Helper_ListTable_Rule extends MS_Helper_ListTable {
 			)
 		);
 
-		$this->name['singular'] = __( 'Item', 'membership2' );
-		$this->name['plural'] = __( 'Items', 'membership2' );
-		$this->name['default_access'] = __( 'Everyone', 'membership2' );
+		$this->name['singular'] 		= __( 'Item', 'membership2' );
+		$this->name['plural'] 			= __( 'Items', 'membership2' );
+		$this->name['default_access'] 	= __( 'Everyone', 'membership2' );
 
-		$this->model = $model;
-		$this->membership = MS_Model_Membership::get_base();
+		$this->model 		= $model;
+		$this->membership 	= MS_Model_Membership::get_base();
 
-		$memberships = MS_Model_Membership::get_memberships();
-		self::$memberships = array();
+		$memberships 		= MS_Model_Membership::get_memberships();
+		self::$memberships 	= array();
 
 		foreach ( $memberships as $item ) {
 			self::$memberships[$item->id] = (object) array(
 				'label' => $item->name,
-				'attr' => sprintf( 'data-color="%1$s"', $item->get_color() ),
+				'attr' 	=> sprintf( 'data-color="%1$s"', $item->get_color() ),
 			);
 		}
 
@@ -109,10 +109,10 @@ class MS_Helper_ListTable_Rule extends MS_Helper_ListTable {
 		return apply_filters(
 			'ms_helper_listtable_' . $this->id . '_columns',
 			array(
-				'cb' => '<input type="checkbox" />',
-				'content' => __( 'Content', 'membership2' ),
+				'cb' 		=> '<input type="checkbox" />',
+				'content' 	=> __( 'Content', 'membership2' ),
 				'rule_type' => __( 'Rule type', 'membership2' ),
-				'dripped' => __( 'Dripped Content', 'membership2' ),
+				'dripped' 	=> __( 'Dripped Content', 'membership2' ),
 			)
 		);
 	}
@@ -138,19 +138,19 @@ class MS_Helper_ListTable_Rule extends MS_Helper_ListTable {
 	 * @return array
 	 */
 	public function get_bulk_actions() {
-		$protect_key = __( 'Add Membership', 'membership2' );
-		$unprotect_key = __( 'Drop Membership', 'membership2' );
-		$bulk_actions = array(
-			'rem-all' => __( 'Drop all Memberships', 'membership2' ),
-			$protect_key => array(),
-			$unprotect_key => array(),
+		$protect_key 	= __( 'Add Membership', 'membership2' );
+		$unprotect_key 	= __( 'Drop Membership', 'membership2' );
+		$bulk_actions 	= array(
+			'rem-all' 		=> __( 'Drop all Memberships', 'membership2' ),
+			$protect_key 	=> array(),
+			$unprotect_key 	=> array(),
 		);
 
 		$memberships = MS_Model_Membership::get_membership_names();
 		$txt_add = __( 'Add: %s', 'membership2' );
 		$txt_rem = __( 'Drop: %s', 'membership2' );
 		foreach ( $memberships as $id => $name ) {
-			$bulk_actions[$protect_key]['add-' . $id] = sprintf( $txt_add, $name );
+			$bulk_actions[$protect_key]['add-' . $id] 	= sprintf( $txt_add, $name );
 			$bulk_actions[$unprotect_key]['rem-' . $id] = sprintf( $txt_rem, $name );
 		}
 
@@ -169,8 +169,8 @@ class MS_Helper_ListTable_Rule extends MS_Helper_ListTable {
 	public function add_rule_type() {
 		MS_Helper_Html::html_element(
 			array(
-				'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-				'name' => 'rule_type',
+				'type' 	=> MS_Helper_Html::INPUT_TYPE_HIDDEN,
+				'name' 	=> 'rule_type',
 				'value' => $this->id, // $this->id is always identical to RULE_ID
 			)
 		);
@@ -242,16 +242,16 @@ class MS_Helper_ListTable_Rule extends MS_Helper_ListTable {
 		// Search string.
 		if ( ! empty( $_REQUEST['s'] ) ) {
 			$this->search_string = $_REQUEST['s'];
-			$args['s'] = $_REQUEST['s'];
+			$args['s'] 				= $_REQUEST['s'];
 			$args['posts_per_page'] = -1;
-			$args['number'] = false;
-			$args['offset'] = 0;
+			$args['number'] 		= false;
+			$args['offset'] 		= 0;
 		}
 
 		// Month filter.
 		if ( ! empty( $_REQUEST['m'] ) && 6 == strlen( $_REQUEST['m'] ) ) {
-			$args['year'] = substr( $_REQUEST['m'], 0 , 4 );
-			$args['monthnum'] = substr( $_REQUEST['m'], 5 , 2 );
+			$args['year'] 		= substr( $_REQUEST['m'], 0 , 4 );
+			$args['monthnum'] 	= substr( $_REQUEST['m'], 5 , 2 );
 		}
 
 		// If a membership is filtered then only show protected items
@@ -277,8 +277,8 @@ class MS_Helper_ListTable_Rule extends MS_Helper_ListTable {
 		// Prepare the table pagination
 		$this->set_pagination_args(
 			array(
-				'total_items' => $total_items,
-				'per_page' => $per_page,
+				'total_items' 	=> $total_items,
+				'per_page' 		=> $per_page,
 			)
 		);
 	}
@@ -353,24 +353,27 @@ class MS_Helper_ListTable_Rule extends MS_Helper_ListTable {
 		$memberships = $rule->get_memberships( $item->id );
 
 		$public = array(
-			'id' => 'ms-empty-' . $item->id,
-			'type' => MS_Helper_Html::TYPE_HTML_TEXT,
+			'id' 	=> 'ms-empty-' . $item->id,
+			'type' 	=> MS_Helper_Html::TYPE_HTML_TEXT,
 			'value' => $this->name['default_access'],
-			'after' => 'Modify Access',
+			'after' => __( 'Modify Access' , 'membership2' ),
 			'class' => 'ms-empty-note',
 		);
+		if ( !empty( $rule->rule_value ) && array_key_exists( $item->id, $rule->rule_value ) ) {
+			$public['value'] = __( 'None (assigned Membership was deleted)', 'membership2' );
+		}
 
 		$list = array(
-			'id' => 'ms-memberships-' . $item->id,
-			'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
-			'value' => array_keys( $memberships ),
+			'id' 			=> 'ms-memberships-' . $item->id,
+			'type' 			=> MS_Helper_Html::INPUT_TYPE_SELECT,
+			'value' 		=> array_keys( $memberships ),
 			'field_options' => self::$memberships,
-			'multiple' => true,
-			'class' => 'ms-memberships',
-			'ajax_data' => array(
-				'action' => MS_Controller_Rule::AJAX_ACTION_CHANGE_MEMBERSHIPS,
-				'rule' => $item->type,
-				'item' => $item->id,
+			'multiple' 		=> true,
+			'class' 		=> 'ms-memberships',
+			'ajax_data' 	=> array(
+				'action' 		=> MS_Controller_Rule::AJAX_ACTION_CHANGE_MEMBERSHIPS,
+				'rule' 			=> $item->type,
+				'item' 			=> $item->id,
 			),
 		);
 
@@ -481,10 +484,9 @@ class MS_Helper_ListTable_Rule extends MS_Helper_ListTable {
 	 * @param  object $item
 	 */
 	protected function single_row_class( $item ) {
-		$rule = $this->model;
-		$memberships = $rule->get_memberships( $item->id );
-
-		$class = empty( $memberships ) ? 'ms-empty' : 'ms-assigned';
+		$rule 			= $this->model;
+		$memberships 	= $rule->get_memberships( $item->id );
+		$class 			= empty( $memberships ) ? 'ms-empty' : 'ms-assigned';
 		return $class;
 	}
 
@@ -494,72 +496,72 @@ class MS_Helper_ListTable_Rule extends MS_Helper_ListTable {
 	 * @since  1.0.0
 	 */
 	protected function inline_edit() {
-		$rule = $this->model;
+		$rule 		= $this->model;
 		$membership = $this->membership;
 
-		$field_action = array(
-			'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-			'name' => 'action',
+		$field_action 	= array(
+			'type' 	=> MS_Helper_Html::INPUT_TYPE_HIDDEN,
+			'name' 	=> 'action',
 			'value' => MS_Controller_Rule::AJAX_ACTION_UPDATE_DRIPPED,
 		);
 
-		$field_rule = array(
-			'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-			'name' => 'rule_type',
+		$field_rule 	= array(
+			'type' 	=> MS_Helper_Html::INPUT_TYPE_HIDDEN,
+			'name' 	=> 'rule_type',
 			'value' => $this->model->rule_type,
 		);
 
-		$field_item = array(
+		$field_item 	= array(
 			'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 			'name' => 'item_id',
 		);
 
-		$field_offset = array(
+		$field_offset 	= array(
 			'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 			'name' => 'offset',
 		);
 
-		$field_number = array(
+		$field_number 	= array(
 			'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 			'name' => 'number',
 		);
 
-		$field_filter = array(
-			'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
-			'name' => 'membership_id',
+		$field_filter 	= array(
+			'type' 	=> MS_Helper_Html::INPUT_TYPE_HIDDEN,
+			'name' 	=> 'membership_id',
 			'value' => isset( $_REQUEST['membership_id'] ) ? $_REQUEST['membership_id'] : '',
 		);
 
-		$field_id = array(
+		$field_id 		= array(
 			'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
 			'name' => 'membership_ids',
 		);
 
-		$field_type = array(
-			'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
-			'name' => 'dripped_type',
-			'class' => 'dripped_type',
+		$field_type 	= array(
+			'type' 			=> MS_Helper_Html::INPUT_TYPE_SELECT,
+			'name' 			=> 'dripped_type',
+			'class' 		=> 'dripped_type',
 			'field_options' => MS_Model_Rule::get_dripped_types(),
 		);
 
-		$field_date = array(
-			'type' => MS_Helper_Html::INPUT_TYPE_DATEPICKER,
-			'name' => 'date',
-			'placeholder' => __( 'Date', 'membership2' ) . '...',
+		$field_date 	= array(
+			'type' 			=> MS_Helper_Html::INPUT_TYPE_DATEPICKER,
+			'name' 			=> 'date',
+			'placeholder' 	=> __( 'Date', 'membership2' ) . '...',
 		);
 
 		$field_delay_unit = array(
-			'type' => MS_Helper_Html::INPUT_TYPE_TEXT,
-			'name' => 'delay_unit',
-			'class' => 'ms-text-small',
-			'placeholder' => '0',
+			'type' 			=> MS_Helper_Html::INPUT_TYPE_TEXT,
+			'name'		 	=> 'delay_unit',
+			'class' 		=> 'ms-text-small',
+			'placeholder' 	=> '0',
 		);
 
 		$field_delay_type = array(
-			'type' => MS_Helper_Html::INPUT_TYPE_SELECT,
-			'name' => 'delay_type',
+			'type' 			=> MS_Helper_Html::INPUT_TYPE_SELECT,
+			'name' 			=> 'delay_type',
 			'field_options' => MS_Helper_Period::get_period_types( 'plural' ),
-			'after' => __( 'after subscription', 'membership2' ),
+			'after' 		=> __( 'after subscription', 'membership2' ),
 		);
 
 		?>
@@ -619,9 +621,9 @@ class MS_Helper_ListTable_Rule extends MS_Helper_ListTable {
 	 * @since  1.0.0
 	 */
 	public function list_head() {
-		$type_name = $this->name['plural'];
-		$membership_name = '';
-		$membership_color = '';
+		$type_name 			= $this->name['plural'];
+		$membership_name 	= '';
+		$membership_color 	= '';
 
 		/*
 		 * We don't build the title dynamically to make sure translations are
@@ -650,8 +652,8 @@ class MS_Helper_ListTable_Rule extends MS_Helper_ListTable {
 				$title = __( 'Showing All %1$s that are <b>protected</b> by %2$s', 'membership2' );
 			}
 
-			$membership_name = $membership->name;
-			$membership_color = $membership->get_color();
+			$membership_name 	= $membership->name;
+			$membership_color 	= $membership->get_color();
 		}
 
 		$title = sprintf(
@@ -703,7 +705,7 @@ class MS_Helper_ListTable_Rule extends MS_Helper_ListTable {
 			)
 		);
 		$views['public'] = array(
-			'url' => $public_url,
+			'url' 	=> $public_url,
 			'label' => __( 'Unprotected', 'membership2' ),
 			//'count' => $count['restricted'],
 		);
@@ -715,7 +717,7 @@ class MS_Helper_ListTable_Rule extends MS_Helper_ListTable {
 			)
 		);
 		$views['protected'] = array(
-			'url' => $protected_url,
+			'url' 	=> $protected_url,
 			'label' => __( 'Protected', 'membership2' ),
 			//'count' => $count['accessible'],
 		);

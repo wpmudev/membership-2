@@ -31,11 +31,11 @@ class MS_Gateway_Free extends MS_Gateway {
 	public function after_load() {
 		parent::after_load();
 
-		$this->id = self::ID;
-		$this->name = __( 'Free Gateway', 'membership2' );
-		$this->group = '';
-		$this->active = true;
-		$this->manual_payment = true; // Recurring billed/paid manually
+		$this->id 				= self::ID;
+		$this->name 			= __( 'Free Gateway', 'membership2' );
+		$this->group 			= '';
+		$this->active 			= true;
+		$this->manual_payment 	= true; // Recurring billed/paid manually
 		/**
 		 * No sandbox option for manual payment gateway
 		 * The mode is always set to live

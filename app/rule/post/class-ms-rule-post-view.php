@@ -12,7 +12,7 @@ class MS_Rule_Post_View extends MS_View {
 			'ms_view_membership_protectedcontent_header',
 			array(
 				'title' => __( 'Choose Posts you want to protect', 'membership2' ),
-				'desc' => '',
+				'desc' 	=> '',
 			),
 			MS_Rule_Post::RULE_ID,
 			$this

@@ -60,14 +60,14 @@ class MS_Addon_Bbpress_Rule_Model extends MS_Rule {
 
 						case self::CPT_BB_TOPIC:
 							if ( function_exists( 'bbp_get_topic_forum_id' ) ) {
-								$forum_id = bbp_get_topic_forum_id( $id );
+								$forum_id 	= bbp_get_topic_forum_id( $id );
 								$has_access = parent::has_access( $forum_id, $admin_has_access );
 							}
 							break;
 
 						case self::CPT_BB_REPLY:
 							if ( function_exists( 'bbp_get_reply_forum_id' ) ) {
-								$forum_id = bbp_get_reply_forum_id( $id );
+								$forum_id 	= bbp_get_reply_forum_id( $id );
 								$has_access = parent::has_access( $forum_id, $admin_has_access );
 							}
 							break;
@@ -159,8 +159,8 @@ class MS_Addon_Bbpress_Rule_Model extends MS_Rule {
 	 * @return int The post id, or null if it is not a post.
 	 */
 	private function get_current_post_id() {
-		$post_id = null;
-		$post = get_queried_object();
+		$post_id 	= null;
+		$post 		= get_queried_object();
 
 		if ( is_a( $post, 'WP_Post' ) )  {
 			$post_id = $post->ID;
@@ -184,9 +184,9 @@ class MS_Addon_Bbpress_Rule_Model extends MS_Rule {
 	 */
 	public function get_content_count( $args = null ) {
 		$defaults = array(
-			'posts_per_page' => -1,
-			'post_type' => self::CPT_BB_FORUM,
-			'post_status' => 'publish',
+			'posts_per_page' 	=> -1,
+			'post_type' 		=> self::CPT_BB_FORUM,
+			'post_status' 		=> 'publish',
 		);
 		$args = wp_parse_args( $args, $defaults );
 
@@ -208,17 +208,17 @@ class MS_Addon_Bbpress_Rule_Model extends MS_Rule {
 	 * @return array The content.
 	 */
 	public function get_contents( $args = null ) {
-		$args = self::get_query_args( $args );
+		$args 	= self::get_query_args( $args );
 
-		$query = new WP_Query( $args );
-		$posts = $query->posts;
+		$query 	= new WP_Query( $args );
+		$posts 	= $query->posts;
 
 		$contents = array();
 		foreach ( $posts as $content ) {
-			$content->id = $content->ID;
-			$content->name = $content->post_title;
-			$content->type = $this->rule_type;
-			$content->access = $this->get_rule_value( $content->id );
+			$content->id 		= $content->ID;
+			$content->name 		= $content->post_title;
+			$content->type 		= $this->rule_type;
+			$content->access 	= $this->get_rule_value( $content->id );
 
 			$contents[ $content->id ] = $content;
 		}
@@ -246,12 +246,12 @@ class MS_Addon_Bbpress_Rule_Model extends MS_Rule {
 	 */
 	public function get_query_args( $args = null ) {
 		$defaults = array(
-			'posts_per_page' => -1,
-			'offset' => 0,
-			'orderby' => 'ID',
-			'order' => 'DESC',
-			'post_type' => self::CPT_BB_FORUM,
-			'post_status' => 'publish',
+			'posts_per_page' 	=> -1,
+			'offset' 			=> 0,
+			'orderby' 			=> 'ID',
+			'order' 			=> 'DESC',
+			'post_type' 		=> self::CPT_BB_FORUM,
+			'post_status' 		=> 'publish',
 		);
 
 		$args = wp_parse_args( $args, $defaults );

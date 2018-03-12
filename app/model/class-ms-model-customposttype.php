@@ -146,16 +146,16 @@ class MS_Model_CustomPostType extends MS_Model {
 		$data = MS_Factory::serialize_model( $this );
 
 		$post = array(
-			'comment_status' => 'closed',
-			'ping_status' => 'closed',
-			'post_author' => $this->user_id,
-			'post_content' => $this->description,
-			'post_excerpt' => $this->description,
-			'post_name' => sanitize_text_field( $this->name ),
-			'post_status' => 'private',
-			'post_title' => sanitize_title( ! empty( $this->title ) ? $this->title : $this->name ),
-			'post_type' => $this->get_post_type(),
-			'post_modified' => $this->post_modified,
+			'comment_status' 	=> 'closed',
+			'ping_status' 		=> 'closed',
+			'post_author' 		=> $this->user_id,
+			'post_content' 		=> $this->description,
+			'post_excerpt' 		=> $this->description,
+			'post_name' 		=> sanitize_text_field( $this->name ),
+			'post_status' 		=> 'private',
+			'post_title' 		=> sanitize_title( ! empty( $this->title ) ? $this->title : $this->name ),
+			'post_type' 		=> $this->get_post_type(),
+			'post_modified' 	=> $this->post_modified,
 		);
 
 		/**
@@ -274,8 +274,8 @@ class MS_Model_CustomPostType extends MS_Model {
 	private function clean_metadata( $data_to_keep ) {
 		global $wpdb;
 
-		$sql = "SELECT meta_key FROM {$wpdb->postmeta} WHERE post_id = %s;";
-		$sql = $wpdb->prepare( $sql, $this->id );
+		$sql 		= "SELECT meta_key FROM {$wpdb->postmeta} WHERE post_id = %s;";
+		$sql 		= $wpdb->prepare( $sql, $this->id );
 		$all_fields = $wpdb->get_col( $sql );
 
 		$remove = array_diff( $all_fields, $data_to_keep );
@@ -321,8 +321,8 @@ class MS_Model_CustomPostType extends MS_Model {
 		if ( $this->is_valid()
 			&& $lock = get_post_meta( $this->id, '_ms_edit_lock', true )
 		) {
-			$time = $lock;
-			$time_window = apply_filters(
+			$time 			= $lock;
+			$time_window 	= apply_filters(
 				'MS_Model_CustomPostType_check_object_lock_window',
 				150
 			);

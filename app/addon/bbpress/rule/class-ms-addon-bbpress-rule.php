@@ -26,6 +26,11 @@ class MS_Addon_Bbpress_Rule extends MS_Controller {
 			'ms_view_protectedcontent_define-' . self::RULE_ID,
 			'handle_render_callback', 10, 2
 		);
+
+		$this->add_filter(
+			'ms_rule_listtable-' . self::RULE_ID,
+			'return_listtable'
+		);
 	}
 
 	/**
@@ -41,9 +46,22 @@ class MS_Addon_Bbpress_Rule extends MS_Controller {
 		$view = MS_Factory::load( 'MS_Addon_Bbpress_Rule_View' );
 
 		$view->data = $data;
-		$callback = array( $view, 'to_html' );
+		$callback 	= array( $view, 'to_html' );
 
 		return $callback;
+	}
+
+	/**
+	 * Returns the ListTable object for this rule.
+	 *
+	 * @since  1.0.4
+	 *
+	 * @return MS_Helper_ListTable
+	 */
+	 public function return_listtable( $empty ) {
+		$base = MS_Model_Membership::get_base();
+		$rule = $base->get_rule( self::RULE_ID );
+		return new MS_Addon_Bbpress_Rule_Listtable( $rule );
 	}
 
 }

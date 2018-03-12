@@ -2,8 +2,8 @@
 Contributors: WPMUDEV
 Tags: Content Protection, Control Access, Membership, Membership 2, Multisite Membership, Paid Membership, Pay Wall, Paying Users, Registration, Restrict Content, Subscription, WordPress Membership, WPMU DEV
 Requires at least: 3.7
-Tested up to: 4.5.3
-Stable tag: trunk
+Tested up to: 4.9.1
+Stable tag: 4.1.2
 
 Membership 2 transforms your WordPress website into a fully functional membership site.
 
@@ -109,6 +109,109 @@ We provide comprehensive and guaranteed support on the <a href='http://premium.w
 11. Convince your users with a modern, clean and professional checkout form
 
 == Changelog ==
+
+= 4.1.3 =
+* Added: ms_auth_ajax_login_can_login filter to select usernames allowed to login
+* Added: When normal user is made to admin user , subscriptions are removed
+* Added: Account approval setting and email template
+* Added: Account approval user management
+* Improved: Check if membership is free on trial periods
+* Improved: Unique nonce field names for login and registration forms
+* Improved: Cache enabled by default on media protection
+* Improved: More filters
+* Fixed: Login page script loading
+* Fixed: Login page login_footer action to load in wp_footer
+* Fixed: Protection rule for All BuddyPress Pages is not protecting pages like activity, groups, members.
+* Fixed: Duplicate memberships when subscribed to a previous membership
+* Fixed: Category protection should not check for pages
+* Fixed: Category protection of post when individual post protection addon is enabled
+* Fixed: More tag protection when multi-membership add-on is active
+* Fixed: Bulk user import first and last name
+* Fixed: Minor UI fixes
+
+= 4.1.2 =
+* Added: Membership List Export to CSV
+* Added: Membership and Member XML import and export format
+* Added: Bulk import of users in CSV as members to a membership
+* Added: Cache membership setting to allow 12 hour cache of data. This speeds up loading of pages
+* Added: constant MS_QUERY_CACHE_DURATION to define custom cache duration
+* Added: Menu protection for parent menu items now extends to submenu items
+* Added: Advanced media protection support for more server types
+* Added: Setting to set the default active gateway for manually added users
+* Fixed: MailChimp Addon list function
+* Fixed: Dripped Membership Url protection and menu protection
+* Fixed: Buddypress media protection conflict
+* Fixed: Update Member status for manually created members
+* Fixed: Mail sending cron fix
+* Fixed: Category Protection
+* Fixed: Auth Net Payment Gateway
+* Fixed: Profile Fields add-on readonly option was not working
+* Fixed: Custom Post type protection rule to exclude private post types
+* Fixed: Conflict with Yoast WordPress SEO when registering for a membership
+* Fixed: Email notification for paid manual payment gateway
+* Fixed: Creating a new membership setting the visibility to private will hide the membership from the list
+* Fixed: Manual Gatewey not setting the gateway name in the invoice
+* Fixed: End date on expired membership mail
+* Fixed: Wording in help page activity section
+* Fixed: Creating a new membership setting the visibility to private will hide the membership from the list
+* Fixed: User with admin roles cannot be assigned for a membership from backend (admin and editors)
+
+= 4.1.1 =
+* Fixed: Menu Protection items not showing to all users except admin
+
+= 4.1 =
+* Added: Advanced media protection settings
+* Added: New filter ms_frontend_controller_change_signup_url to allow disabling Membership login
+* Added: Column on admin user list with Membership name
+* Added: Added setting to enable or disable cron usage for email sending
+* Added: Emails can now be sent directly or using the WordPress cron
+* Added: Integration with new reCaptcha plugin to the reCaptcha Addon
+* Added: Option for Admin created members to generate an invoice to the membership
+* Added: Option for manual invoice created to keep the expire date of the membership the same
+* Added: Addon to hide protected pages from visitor search
+* Added: Plugin deactivation hook to clear Membership Crons
+* Fixed: Upgraded Mailchimp API to 3.0
+* Fixed: Multiple Invoice creation
+* Fixed: Default gateway on invoice
+* Fixed: Invoice status not changing for free payments
+* Fixed: Protection with many addons enabled
+* Fixed: Mailchimp list for deactivated users with drop down memberships
+* Fixed: Membership Script and Style conflict on other admin pages
+* Fixed: URL Protection Addon on https
+* Fixed: Media Protection Addon
+* Fixed: Editing Subscription details for administrators.
+* Fixed: Stripe API lib upgraded
+* Fixed: Login and reset password form header texts on switching
+* Fixed: bbPress dripped membership protection rules
+* Fixed: Custom Post Types
+* Fixed: Manually changing status of membership to pending
+* Fixed: Membership Admin edit page Payment options ajax animation
+* Fixed: Javascript web browser console error
+* Fixed: CSS interfering with WP media library
+* Fixed: Authorize.net integration
+* Fixed: PayPal integration with recurring payments
+* Fixed: PayPal invoice creation
+* Fixed: Posts from a protected category from being displayed in the search
+* Fixed: Finite Memberships not expired after the expiration date 
+* Fixed: Translation of some hardcoded Strings
+
+= 4.0.1.3 =
+* Added: Added a filter "ms_rule_url_model_exception_rule" to set exception for URL restriction addon
+* Improved: Remove Paypal "Ship to my billing address" option from express gateway as this is digital product
+* Improved: wp_get_sites() deprecated function is replaced with get_sites()
+* Fixed: Protection rule could not be access from subsites when network protection was enabled
+* Fixed: Fatal error * Uncaught Error: [] operator not supported for strings
+* Fixed: Post protection option could not be changed from post edit screen
+* Fixed: Issue with MS_PAYPAL_TRIAL_SUBSCRIPTION when trial is enabled, members account was not activated
+* Fixed: Selection sliders were not working in some cases
+* Fixed: Second attribute could not be created
+* Fixed: New members not being added by M2 2Checkout Gateway
+* Fixed: Duplicate Content Protection Message when custom message is enabled
+* Fixed: Images are not getting load if media protection is enabled
+* Fixed: Applying Membership 2 Coupon is giving fatal error in PHP 7.1.3
+* Fixed: Membership was not showing in account page
+* Fixed: Resolved some notices
+
 
 = 4.0.1.2 =
 * Fixed a minor issue in Help page.

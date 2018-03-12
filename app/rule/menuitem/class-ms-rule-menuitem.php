@@ -20,7 +20,8 @@ class MS_Rule_MenuItem extends MS_Controller {
 				self::RULE_ID,
 				__CLASS__,
 				__( 'Menu Items', 'membership2' ),
-				60
+				60,
+				true
 			);
 		}
 
@@ -48,7 +49,7 @@ class MS_Rule_MenuItem extends MS_Controller {
 		$view = MS_Factory::load( 'MS_Rule_MenuItem_View' );
 
 		$view->data = $data;
-		$callback = array( $view, 'to_html' );
+		$callback 	= array( $view, 'to_html' );
 
 		return $callback;
 	}

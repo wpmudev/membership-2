@@ -222,10 +222,10 @@ class MS_Rule_Page_Model extends MS_Rule {
 	 */
 	public function get_content_count( $args = null ) {
 		unset( $args['number'] );
-		$args = $this->get_query_args( $args );
-		$posts = get_pages( $args );
+		$args 	= $this->get_query_args( $args );
+		$posts 	= get_pages( $args );
 
-		$count = count( $posts );
+		$count 	= count( $posts );
 
 		return apply_filters(
 			'ms_rule_page_model_get_content_count',
@@ -250,7 +250,7 @@ class MS_Rule_Page_Model extends MS_Rule {
 		 * manually...
 		 */
 		$offset = absint( $args['offset'] );
-		$limit = $offset + absint( $args['number'] );
+		$limit 	= $offset + absint( $args['number'] );
 		$args['offset'] = 0;
 		$args['number'] = 0;
 
@@ -268,13 +268,13 @@ class MS_Rule_Page_Model extends MS_Rule {
 
 			$parent = get_post( $content->post_parent );
 			for ( $level = 0; $level < 5 && $parent; $level += 1 ) {
-				$name = '&mdash; ' . $name;
+				$name 	= '&mdash; ' . $name;
 				$parent = get_post( $parent->post_parent );
 			}
 
-			$content->id = $content->ID;
-			$content->type = MS_Rule_Page::RULE_ID;
-			$content->name = $name;
+			$content->id 	= $content->ID;
+			$content->type 	= MS_Rule_Page::RULE_ID;
+			$content->name 	= $name;
 			$content->access = $this->get_rule_value( $content->id );
 
 			$contents[ $content->id ] = $content;

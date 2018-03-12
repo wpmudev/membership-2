@@ -57,6 +57,8 @@ window.ms_functions = {
 				anim = anim.parents( '.wpmui-radio-slider-wrapper' ).first();
 			} else if ( anim.parents( '.wpmui-input-wrapper' ).length ) {
 				anim = anim.parents( '.wpmui-input-wrapper' ).first();
+			} else if ( anim.parents( '.wpmui-select-wrapper' ).length ) {
+				anim = anim.parents( '.wpmui-select-wrapper' ).first();
 			} else if ( anim.parents( 'label' ).length ) {
 				anim = anim.parents( 'label' ).first();
 			}

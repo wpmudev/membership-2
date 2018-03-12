@@ -10,7 +10,7 @@ class MS_Rule_Url extends MS_Controller {
 	const RULE_ID = 'url';
 
 	// Form actions
-	const ACTION_ADD = 'rule_url_add';
+	const ACTION_ADD 	= 'rule_url_add';
 	const ACTION_DELETE = 'rule_url_delete';
 
 	/**
@@ -24,7 +24,8 @@ class MS_Rule_Url extends MS_Controller {
 				self::RULE_ID,
 				__CLASS__,
 				__( 'URL Restrictions', 'membership2' ),
-				0
+				0,
+				true
 			);
 		}
 
@@ -101,9 +102,9 @@ class MS_Rule_Url extends MS_Controller {
 			case self::ACTION_ADD:
 				lib3()->array->strip_slashes( $_POST, 'url_value' );
 
-				$url = $_POST['url_value'];
-				$base = MS_Model_Membership::get_base();
-				$rule = $base->get_rule( self::RULE_ID );
+				$url 	= $_POST['url_value'];
+				$base 	= MS_Model_Membership::get_base();
+				$rule 	= $base->get_rule( self::RULE_ID );
 				$rule->add_url( $url );
 				$base->set_rule( self::RULE_ID, $rule );
 				$base->save();
@@ -112,9 +113,9 @@ class MS_Rule_Url extends MS_Controller {
 				break;
 
 			case self::ACTION_DELETE:
-				$id = $_REQUEST['item'];
-				$base = MS_Model_Membership::get_base();
-				$rule = $base->get_rule( self::RULE_ID );
+				$id 	= $_REQUEST['item'];
+				$base 	= MS_Model_Membership::get_base();
+				$rule 	= $base->get_rule( self::RULE_ID );
 				$rule->delete_url( $id );
 				$base->set_rule( self::RULE_ID, $rule );
 				$base->save();

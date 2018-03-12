@@ -108,16 +108,16 @@ class MS_Controller_Billing extends MS_Controller {
 	 */
 	public function admin_billing_manager() {
 		$this->print_admin_message();
-		$msg = 0;
-		$redirect = false;
+		$msg 		= 0;
+		$redirect 	= false;
 
 		if ( ! $this->is_admin_user() ) {
 			return;
 		}
 
-		$fields_edit = array( 'user_id', 'membership_id' );
-		$fields_pay = array( 'invoice_id' );
-		$fields_bulk = array( 'action', 'action2', 'invoice_id' );
+		$fields_edit 	= array( 'user_id', 'membership_id' );
+		$fields_pay 	= array( 'invoice_id' );
+		$fields_bulk 	= array( 'action', 'action2', 'invoice_id' );
 
 		// Save details of a single invoice.
 		if ( $this->verify_nonce( self::ACTION_EDIT )
@@ -174,15 +174,15 @@ class MS_Controller_Billing extends MS_Controller {
 		$this->print_admin_message();
 
 		// Action view page request
-		$isset = array( 'action', 'invoice_id' );
-		if ( self::validate_required( $isset, 'GET', false ) && 'edit' == $_GET['action'] ) {
-			$invoice_id = ! empty( $_GET['invoice_id'] ) ? $_GET['invoice_id'] : 0;
-			$data['invoice'] = MS_Factory::load( 'MS_Model_Invoice', $_GET['invoice_id'] );
-			$data['action'] = $_GET['action'];
-			$data['memberships'] = MS_Model_Membership::get_membership_names(
+		$valid_actions = array( 'action', 'invoice_id' );
+		if ( self::validate_required( $valid_actions, 'GET', false ) && 'edit' == $_GET['action'] ) {
+			$invoice_id 			= ! empty( $_GET['invoice_id'] ) ? $_GET['invoice_id'] : 0;
+			$data['invoice'] 		= MS_Factory::load( 'MS_Model_Invoice', $_GET['invoice_id'] );
+			$data['action'] 		= $_GET['action'];
+			$data['memberships'] 	= MS_Model_Membership::get_membership_names(
 				array( 'include_guest' => 0 )
 			);
-			$view = MS_Factory::create( 'MS_View_Billing_Edit' );
+			$view 		= MS_Factory::create( 'MS_View_Billing_Edit' );
 			$view->data = apply_filters( 'ms_view_billing_edit_data',  $data );
 			$view->render();
 		} else {
@@ -216,10 +216,10 @@ class MS_Controller_Billing extends MS_Controller {
 					$res = MS_Helper_Billing::BILLING_MSG_UPDATED;
 				}
 			} elseif ( self::validate_required( $fields_link ) ) {
-				$id = intval( $_POST['id'] );
-				$link = intval( $_POST['link'] );
+				$id 	= intval( $_POST['id'] );
+				$link 	= intval( $_POST['link'] );
 
-				$log = MS_Factory::load( 'MS_Model_Transactionlog', $id );
+				$log 	= MS_Factory::load( 'MS_Model_Transactionlog', $id );
 
 				$log->invoice_id = $link;
 				if ( $log->manual_state( 'ok' ) ) {
@@ -246,8 +246,8 @@ class MS_Controller_Billing extends MS_Controller {
 	 * @since  1.0.1.0
 	 */
 	public function ajax_link_transaction() {
-		$data = array();
-		$resp = '';
+		$data 	= array();
+		$resp 	= '';
 		$fields = array( 'id' );
 
 		if ( self::validate_required( $fields ) && $this->verify_nonce() ) {
@@ -279,20 +279,20 @@ class MS_Controller_Billing extends MS_Controller {
 	 * @since  1.0.1.0
 	 */
 	public function ajax_link_data_transaction() {
-		$resp = array();
+		$resp 	= array();
 		$fields = array( 'get', 'for' );
 
 		if ( self::validate_required( $fields ) && $this->verify_nonce() ) {
-			$type = $_POST['get'];
-			$id = intval( $_POST['for'] );
-			$settings = MS_Plugin::instance()->settings;
+			$type 		= $_POST['get'];
+			$id 		= intval( $_POST['for'] );
+			$settings 	= MS_Plugin::instance()->settings;
 
 			if ( 'subscriptions' == $type ) {
 				$member = MS_Factory::load( 'MS_Model_Member', $id );
 
-				$resp[0] = __( 'Select a subscription', 'membership2' );
-				$active = array();
-				$inactive = array();
+				$resp[0] 	= __( 'Select a subscription', 'membership2' );
+				$active 	= array();
+				$inactive 	= array();
 				foreach ( $member->subscriptions as $subscription ) {
 					if ( $subscription->is_system() ) { continue; }
 
@@ -329,11 +329,11 @@ class MS_Controller_Billing extends MS_Controller {
 				}
 			} elseif ( 'invoices' == $type ) {
 				$subscription = MS_Factory::load( 'MS_Model_Relationship', $id );
-				$invoices = $subscription->get_invoices();
+				$invoices 	= $subscription->get_invoices();
 
-				$resp[0] = __( 'Select an invoice', 'membership2' );
-				$unpaid = array();
-				$paid = array();
+				$resp[0] 	= __( 'Select an invoice', 'membership2' );
+				$unpaid 	= array();
+				$paid 		= array();
 				foreach ( $invoices as $invoice ) {
 					$line = sprintf(
 						__( 'Invoice: %s from %s (%s)', 'membership2' ),

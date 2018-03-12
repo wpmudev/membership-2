@@ -29,7 +29,7 @@ class MS_View_Membership_List extends MS_View {
 			'class' => 'button',
 		);
                 
-                $delete_button = array(
+        $delete_button = array(
 			'id' => 'delete_ms_button',
 			'type' => MS_Helper_Html::TYPE_HTML_LINK,
 			'url' => $this->data['delete_url'],
@@ -56,10 +56,10 @@ class MS_View_Membership_List extends MS_View {
 				<div class="ms-list-table-wrapper ms-membership-list">
 					<?php
 					MS_Helper_Html::html_element( $create_new_button );
-                                        MS_Helper_Html::html_element( $delete_button );
+                    MS_Helper_Html::html_element( $delete_button );
 					$membership_list->display();
 					MS_Helper_Html::html_element( $create_new_button );
-                                        MS_Helper_Html::html_element( $delete_button );
+                    MS_Helper_Html::html_element( $delete_button );
 					?>
 				</div>
 			</form>

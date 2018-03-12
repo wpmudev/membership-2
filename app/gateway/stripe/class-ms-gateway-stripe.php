@@ -78,13 +78,13 @@ class MS_Gateway_Stripe extends MS_Gateway {
 	 */
 	public function after_load() {
 		parent::after_load();
-		$this->_api = MS_Factory::load( 'MS_Gateway_Stripe_Api' );
+		$this->_api 			= MS_Factory::load( 'MS_Gateway_Stripe_Api' );
 
-		$this->id = self::ID;
-		$this->name = __( 'Stripe Single Gateway', 'membership2' );
-		$this->group = 'Stripe';
-		$this->manual_payment = true; // Recurring billed/paid manually
-		$this->pro_rate = true;
+		$this->id 				= self::ID;
+		$this->name 			= __( 'Stripe Single Gateway', 'membership2' );
+		$this->group 			= 'Stripe';
+		$this->manual_payment 	= true; // Recurring billed/paid manually
+		$this->pro_rate 		= true;
 
 		$this->add_filter(
 				'ms_model_pages_get_ms_page_url',
@@ -106,23 +106,23 @@ class MS_Gateway_Stripe extends MS_Gateway {
 	 * @return String $url Modified or raw URL
 	 */
     public function ms_model_pages_get_ms_page_url_cb( $url, $page_type, $ssl, $site_id ) {
-            /**
-             * Constant M2_FORCE_NO_SSL
-             *
-             * It's needed, if :
-             *      - the user has no SSL
-             *      - the user has SSL but doesn't want to force
-             *      - The user has multiple gateways like Paypal and Stripe and doesn't want to force
-             *
-             * If the user has SSL certificate, this rule won't work
-             */
-            if( ! defined( 'M2_FORCE_NO_SSL' ) ){
-                if ( $this->active && $this->is_live_mode() ) {
-                    if( $page_type == MS_Model_Pages::MS_PAGE_MEMBERSHIPS || $page_type == MS_Model_Pages::MS_PAGE_REGISTER ) {
-                        $url = MS_Helper_Utility::get_ssl_url( $url );
-                    }
-                }
-            }
+		/**
+		 * Constant M2_FORCE_NO_SSL
+		 *
+		 * It's needed, if :
+		 *      - the user has no SSL
+		 *      - the user has SSL but doesn't want to force
+		 *      - The user has multiple gateways like Paypal and Stripe and doesn't want to force
+		 *
+		 * If the user has SSL certificate, this rule won't work
+		 */
+		if( ! defined( 'M2_FORCE_NO_SSL' ) ){
+			if ( $this->active && $this->is_live_mode() ) {
+				if( $page_type == MS_Model_Pages::MS_PAGE_MEMBERSHIPS || $page_type == MS_Model_Pages::MS_PAGE_REGISTER ) {
+					$url = MS_Helper_Utility::get_ssl_url( $url );
+				}
+			}
+		}
 
 	    return $url;
     }
@@ -136,11 +136,11 @@ class MS_Gateway_Stripe extends MS_Gateway {
 	 * @param MS_Model_Relationship $subscription The related membership relationship.
 	 */
 	public function process_purchase( $subscription ) {
-		$success = false;
-		$note = '';
-		$token = '';
-		$external_id = '';
-		$error = false;
+		$success 		= false;
+		$note 			= '';
+		$token 			= '';
+		$external_id 	= '';
+		$error 			= false;
 
 		do_action(
 			'ms_gateway_stripe_process_purchase_before',
@@ -149,8 +149,8 @@ class MS_Gateway_Stripe extends MS_Gateway {
 		);
 		$this->_api->set_gateway( $this );
 
-		$member = $subscription->get_member();
-		$invoice = $subscription->get_current_invoice();
+		$member 	= $subscription->get_member();
+		$invoice 	= $subscription->get_next_billable_invoice();
 
 		$note = 'Stripe Processing';
 
@@ -158,15 +158,15 @@ class MS_Gateway_Stripe extends MS_Gateway {
 			lib3()->array->strip_slashes( $_POST, 'stripeToken' );
 
 			$token = $_POST['stripeToken'];
-			$external_id = $token;
+			$external_id 	= $token;
 			try {
-				$customer = $this->_api->get_stripe_customer( $member, $token );
+				$customer 	= $this->_api->get_stripe_customer( $member, $token );
 
 				if ( 0 == $invoice->total ) {
 					// Free, just process.
 					$invoice->changed();
-					$success = true;
-					$note = __( 'No payment for free membership', 'membership2' );
+					$success 	= true;
+					$note 		= __( 'No payment for free membership', 'membership2' );
 				} else {
 					// Send request to gateway.
 					$charge = $this->_api->charge(
@@ -178,9 +178,9 @@ class MS_Gateway_Stripe extends MS_Gateway {
 
 					if ( true == $charge->paid ) {
 						$invoice->pay_it( self::ID, $charge->id );
-						$note = __( 'Payment successful', 'membership2' );
-						$note .= ' - Token: ' . $token;
-						$success = true;
+						$note 		= __( 'Payment successful', 'membership2' );
+						$note 		.= ' - Token: ' . $token;
+						$success 	= true;
 					} else {
 						$note = __( 'Stripe payment failed', 'membership2' );
 					}
@@ -230,9 +230,9 @@ class MS_Gateway_Stripe extends MS_Gateway {
 	 * @return bool True on success.
 	 */
 	public function request_payment( $subscription ) {
-		$was_paid = false;
-		$note = '';
-		$external_id = '';
+		$was_paid 		= false;
+		$note 			= '';
+		$external_id 	= '';
 
 		do_action(
 			'ms_gateway_stripe_request_payment_before',
@@ -241,8 +241,8 @@ class MS_Gateway_Stripe extends MS_Gateway {
 		);
 		$this->_api->set_gateway( $this );
 
-		$member = $subscription->get_member();
-		$invoice = $subscription->get_current_invoice();
+		$member 	= $subscription->get_member();
+		$invoice 	= $subscription->get_current_invoice();
 
 		if ( ! $invoice->is_paid() ) {
 			try {
@@ -251,8 +251,8 @@ class MS_Gateway_Stripe extends MS_Gateway {
 				if ( ! empty( $customer ) ) {
 					if ( 0 == $invoice->total ) {
 						$invoice->changed();
-						$success = true;
-						$note = __( 'No payment for free membership', 'membership2' );
+						$success 	= true;
+						$note 		= __( 'No payment for free membership', 'membership2' );
 					} else {
 						$charge = $this->_api->charge(
 							$customer,
@@ -281,8 +281,8 @@ class MS_Gateway_Stripe extends MS_Gateway {
 			}
 		} else {
 			// Invoice was already paid earlier.
-			$was_paid = true;
-			$note = __( 'Invoice already paid', 'membership2' );
+			$was_paid 	= true;
+			$note 		= __( 'Invoice already paid', 'membership2' );
 		}
 
 		$invoice->gateway_id = self::ID;

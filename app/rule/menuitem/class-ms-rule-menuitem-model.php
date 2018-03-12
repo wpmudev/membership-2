@@ -71,9 +71,9 @@ class MS_Rule_MenuItem_Model extends MS_Rule {
 	 */
 	public function protect_content() {
 		parent::protect_content();
-
 		$this->add_filter( 'wp_setup_nav_menu_item', 'prepare_menuitem', 10, 3 );
 		$this->add_filter( 'wp_get_nav_menu_items', 'protect_menuitems', 10, 3 );
+		
 	}
 
 	/**
@@ -154,6 +154,10 @@ class MS_Rule_MenuItem_Model extends MS_Rule {
 			foreach ( $items as $key => $item ) {
 				if ( ! isset( self::$allowed_items[ $item->ID ] ) ) {
 					unset( $items[ $key ] );
+				} else if ( $item->menu_item_parent > 0 ) {
+					if ( ! isset( self::$allowed_items[ $item->menu_item_parent ] ) ) {
+						unset( $items[ $key ] );
+					}
 				}
 			}
 		}
@@ -232,14 +236,14 @@ class MS_Rule_MenuItem_Model extends MS_Rule {
 
 			if ( ! empty( $items ) ) {
 				foreach ( $items as $item ) {
-					$item_id = $item->ID;
-					$contents[ $item_id ] = $item;
-					$contents[ $item_id ]->id = $item_id;
-					$contents[ $item_id ]->title = esc_html( $item->title );
-					$contents[ $item_id ]->name = esc_html( $item->title );
-					$contents[ $item_id ]->parent_id = $menu_id;
-					$contents[ $item_id ]->type = MS_Rule_MenuItem::RULE_ID;
-					$contents[ $item_id ]->access = $this->get_rule_value( $contents[ $item_id ]->id );
+					$item_id 							= $item->ID;
+					$contents[ $item_id ] 				= $item;
+					$contents[ $item_id ]->id 			= $item_id;
+					$contents[ $item_id ]->title 		= esc_html( $item->title );
+					$contents[ $item_id ]->name 		= esc_html( $item->title );
+					$contents[ $item_id ]->parent_id 	= $menu_id;
+					$contents[ $item_id ]->type 		= MS_Rule_MenuItem::RULE_ID;
+					$contents[ $item_id ]->access 		= $this->get_rule_value( $contents[ $item_id ]->id );
 				}
 			}
 		}
@@ -310,7 +314,7 @@ class MS_Rule_MenuItem_Model extends MS_Rule {
 
 				$contents[ $nav->term_id ] = array(
 					'label' => $nav->name,
-					'url' => $menu_url,
+					'url' 	=> $menu_url,
 					'count' => $total,
 				);
 			}

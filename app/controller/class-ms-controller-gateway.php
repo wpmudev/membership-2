@@ -49,6 +49,7 @@ class MS_Controller_Gateway extends MS_Controller {
 
 		$this->add_action( 'ms_view_shortcode_account_card_info', 'card_info' );
 
+		$this->add_action( 'pre_get_posts', 'handle_webhook', 1 );
 		$this->add_action( 'pre_get_posts', 'handle_payment_return', 1 );
 		$this->add_action( 'ms_gateway_transaction_log', 'log_transaction', 10, 8 );
 
@@ -181,8 +182,8 @@ class MS_Controller_Gateway extends MS_Controller {
 			}
 
 			$data = array(
-				'model' => MS_Model_Gateway::factory( $gateway_id ),
-				'action' => 'edit',
+				'model' 	=> MS_Model_Gateway::factory( $gateway_id ),
+				'action' 	=> 'edit',
 			);
 
 			$view->data = apply_filters(
@@ -309,8 +310,8 @@ class MS_Controller_Gateway extends MS_Controller {
 			if ( ! $membership->can_use_gateway( $gateway->id ) ) { continue; }
 
 			$data['ms_relationship'] = $subscription;
-			$data['gateway'] = $gateway;
-			$data['step'] = MS_Controller_Frontend::STEP_PROCESS_PURCHASE;
+			$data['gateway'] 	= $gateway;
+			$data['step'] 		= MS_Controller_Frontend::STEP_PROCESS_PURCHASE;
 
 			// Free membership, show only free gateway
 			if ( $is_free ) {
@@ -371,12 +372,12 @@ class MS_Controller_Gateway extends MS_Controller {
 	 */
 	public function invoice_purchase_button( $subscription, $invoice ) {
 		// Get only active gateways
-		$gateways = MS_Model_Gateway::get_gateways( true );
-		$data = array();
+		$gateways 	= MS_Model_Gateway::get_gateways( true );
+		$data 		= array();
 
 		$membership = $subscription->get_membership();
-		$is_free = false;
-		$is_trial = false;
+		$is_free 	= false;
+		$is_trial 	= false;
 
 		if ( $membership->is_free() ) {
 			$is_free = true;
@@ -384,10 +385,10 @@ class MS_Controller_Gateway extends MS_Controller {
 			$is_free = true;
 		} elseif ( $invoice->uses_trial ) {
 			if ( defined( 'MS_PAYPAL_TRIAL_SUBSCRIPTION' ) && MS_PAYPAL_TRIAL_SUBSCRIPTION ) {
-				$is_free = false;
+				$is_free 	= false;
 			} else {
-				$is_free = true;
-				$is_trial = true;
+				$is_free 	= true;
+				$is_trial 	= true;
 			}
 		}
 
@@ -399,9 +400,9 @@ class MS_Controller_Gateway extends MS_Controller {
 			if ( ! $gateway->is_configured() ) { continue; }
 			if ( ! $membership->can_use_gateway( $gateway->id ) ) { continue; }
 
-			$data['ms_relationship'] = $subscription;
-			$data['gateway'] = $gateway;
-			$data['step'] = MS_Controller_Frontend::STEP_PROCESS_PURCHASE;
+			$data['ms_relationship'] 	= $subscription;
+			$data['gateway'] 			= $gateway;
+			$data['step'] 				= MS_Controller_Frontend::STEP_PROCESS_PURCHASE;
 
 			// Free membership, show only free gateway
 			if ( $is_free && ! $is_trial ) {
@@ -459,10 +460,10 @@ class MS_Controller_Gateway extends MS_Controller {
 	 * @since  1.0.0
 	 */
 	public function cancel_button( $button, $subscription ) {
-		$view = null;
-		$data = array();
-		$data['ms_relationship'] = $subscription;
-		$new_button = null;
+		$view 						= null;
+		$data 						= array();
+		$data['ms_relationship'] 	= $subscription;
+		$new_button 				= null;
 
 		switch ( $subscription->gateway_id ) {
 			case MS_Gateway_Paypalstandard::ID:
@@ -542,9 +543,9 @@ class MS_Controller_Gateway extends MS_Controller {
 		if ( self::validate_required( $fields )
 			&& MS_Model_Gateway::is_valid_gateway( $_POST['gateway'] )
 		) {
-			$data['gateway'] = $_POST['gateway'];
+			$data['gateway'] 			= $_POST['gateway'];
 			$data['ms_relationship_id'] = $_POST['ms_relationship_id'];
-			$view = null;
+			$view 						= null;
 
 			$subscription = MS_Factory::load(
 				'MS_Model_Relationship',
@@ -553,12 +554,12 @@ class MS_Controller_Gateway extends MS_Controller {
 
 			switch ( $_POST['gateway'] ) {
 				case MS_Gateway_Authorize::ID:
-					$member = $subscription->get_member();
-					$view = MS_Factory::create( 'MS_Gateway_Authorize_View_Form' );
-					$gateway = MS_Model_Gateway::factory( MS_Gateway_Authorize::ID );
-					$data['countries'] = $gateway->get_country_codes();
+					$member 			= $subscription->get_member();
+					$view 				= MS_Factory::create( 'MS_Gateway_Authorize_View_Form' );
+					$gateway 			= MS_Model_Gateway::factory( MS_Gateway_Authorize::ID );
+					$data['countries'] 	= $gateway->get_country_codes();
 
-					$data['action'] = $this->get_action();
+					$data['action'] 	= $this->get_action();
 
 					if ( 'update_card' == $this->get_action() ) {
 						// Only new card option available on update card action.
@@ -619,14 +620,14 @@ class MS_Controller_Gateway extends MS_Controller {
 		$nonce_name = $_REQUEST['gateway'] . '_' . $_REQUEST['ms_relationship_id'];
 
 		if ( ! self::validate_required( $fields, 'any' ) ) {
-			$valid = false;
-			$err = 'GAT-01 (invalid fields)';
+			$valid 	= false;
+			$err 	= 'GAT-01 (invalid fields)';
 		} elseif ( ! MS_Model_Gateway::is_valid_gateway( $_REQUEST['gateway'] ) ) {
-			$valid = false;
-			$err = 'GAT-02 (invalid gateway)';
+			$valid 	= false;
+			$err 	= 'GAT-02 (invalid gateway)';
 		} elseif ( ! $this->verify_nonce( $nonce_name, 'any' ) ) {
-			$valid = false;
-			$err = 'GAT-03 (invalid nonce)';
+			$valid 	= false;
+			$err 	= 'GAT-03 (invalid nonce)';
 		}
 
 		if ( $valid ) {
@@ -641,6 +642,8 @@ class MS_Controller_Gateway extends MS_Controller {
 			try {
 				$invoice = $gateway->process_purchase( $subscription );
 
+				$this->check_future_subscription_date( $invoice, $subscription );
+				
 				// If invoice is successfully paid, redirect to welcome page.
 				if ( $invoice->is_paid()
 					|| ( $invoice->uses_trial
@@ -706,14 +709,41 @@ class MS_Controller_Gateway extends MS_Controller {
 		if ( $ms_page ) {
 			// During unit-testing the $ms_page object might be empty.
 			global $wp_query;
-			$wp_query->query_vars['page_id'] = $ms_page->ID;
-			$wp_query->query_vars['post_type'] = 'page';
+			$wp_query->query_vars['page_id'] 	= $ms_page->ID;
+			$wp_query->query_vars['post_type'] 	= 'page';
 		}
 
 		do_action(
 			'ms_controller_gateway_process_purchase_after',
 			$this
 		);
+	}
+
+	/**
+	 * Check if a subscription set for a future date is being paid for now
+	 * If payment is being done before the due date, we have to adjust the 
+	 * subscription date to match the payment gateway
+	 *
+	 * @since 1.0.4
+	 *
+	 * @param MS_Model_Invoice $invoice - the current invoice
+	 * @param MS_Model_Relationship $subscription - the subscription being paid for
+	 */
+	private function check_future_subscription_date( $invoice, $subscription ) {
+		//Incase they are paying for a subscription before the start date, we adjust the dates
+		$current_date = MS_Helper_Period::current_date( null, true );
+		
+		$valid_date = MS_Helper_Period::is_after(
+			$subscription->start_date,
+			$current_date
+		);
+
+		if ( $valid_date ) {
+			$expire_date 				= $subscription->calc_expire_date( $current_date, $invoice->is_paid() );
+			$subscription->start_date 	= $current_date;
+			$subscription->expire_date 	= $expire_date;
+			$subscription->save();
+		}
 	}
 
 	/**
@@ -781,6 +811,7 @@ class MS_Controller_Gateway extends MS_Controller {
 		);
 	}
 
+
 	/**
 	 * Handle payment gateway return IPNs.
 	 *
@@ -811,12 +842,12 @@ class MS_Controller_Gateway extends MS_Controller {
 			 * gateway-names.
 			 */
 			switch ( $gateway ) {
-				case 'paypal_single': $gateway = 'paypalsingle'; break;
+				case 'paypal_single': 	$gateway = 'paypalsingle'; break;
 				case 'paypal_standard': $gateway = 'paypalstandard'; break;
-				case 'paypal-single': $gateway = 'paypalsingle'; break;
+				case 'paypal-single': 	$gateway = 'paypalsingle'; break;
 				case 'paypal-standard': $gateway = 'paypalstandard'; break;
-				case 'paypalsolo': $gateway = 'paypalsingle'; break; // M1
-				case 'paypalexpress': $gateway = 'paypalstandard'; break; //M1
+				case 'paypalsolo': 		$gateway = 'paypalsingle'; break; // M1
+				case 'paypalexpress': 	$gateway = 'paypalstandard'; break; //M1
 			}
 
 			if ( MS_Model_Gateway::is_active( $gateway ) ) {
@@ -843,6 +874,65 @@ class MS_Controller_Gateway extends MS_Controller {
 					0, // charged amount
 					$note, // Descriptive text
 					'' // External ID
+				);
+			}
+		}
+	}
+
+
+	/**
+	 * Handle Web Hook
+	 * Use by gateways that have webhooks 
+	 * /ms-web-hook/XYZ becomes index.php?mswebhook=XYZ
+	 *
+	 * @since  1.0.4
+	 *
+	 * @param WP_Query $wp_query The WordPress query object
+	 */
+	public function handle_webhook( $wp_query ) {
+		// Do not check custom loops.
+		if ( ! $wp_query->is_main_query() ) { return; }
+
+		if ( ! empty( $wp_query->query_vars['mswebhook'] ) ) {
+			$gateway = $wp_query->query_vars['mswebhook'];
+
+			switch ( $gateway ) {
+				case 'stripe': 		$gateway = 'stripeplan'; break;
+				case 'stripe_plan': $gateway = 'stripeplan'; break;
+				case 'stripeplan': 	$gateway = 'stripeplan'; break;
+			}
+
+			if ( MS_Model_Gateway::is_active( $gateway ) ) {
+				$action = 'ms_gateway_handle_webhook_' . $gateway;
+				do_action( $action );
+				wp_send_json_success();
+			} else {
+				// Log the payment attempt when the gateway is not active.
+				if ( MS_Model_Gateway::is_valid_gateway( $gateway ) ) {
+					$note = __( 'WebHook : Gateway is inactive', 'membership2' );
+				} else {
+					$note = sprintf(
+						__( 'WebHook : Unknown Gateway: %s', 'membership2' ),
+						$gateway
+					);
+				}
+
+				do_action(
+					'ms_gateway_transaction_log',
+					$gateway, // gateway ID
+					'handle', // request|process|handle
+					false, // success flag
+					0, // subscription ID
+					0, // invoice ID
+					0, // charged amount
+					$note, // Descriptive text
+					'' // External ID
+				);
+
+				wp_send_json_error(
+					array(
+						'message' => $note
+					)
 				);
 			}
 		}
@@ -885,15 +975,15 @@ class MS_Controller_Gateway extends MS_Controller {
 						}
 
 						$view = MS_Factory::create( 'MS_Gateway_Stripe_View_Card' );
-						$data['member'] = $member;
-						$data['publishable_key'] = $gateway->get_publishable_key();
+						$data['member'] 			= $member;
+						$data['publishable_key'] 	= $gateway->get_publishable_key();
 						$data['ms_relationship_id'] = $ms_relationship_id;
-						$data['gateway'] = $gateway;
+						$data['gateway'] 			= $gateway;
 						break;
 
 					case MS_Gateway_Authorize::ID:
-						$member = MS_Model_Member::get_current_member();
-						$data['authorize'] = $member->get_gateway_profile(
+						$member 			= MS_Model_Member::get_current_member();
+						$data['authorize'] 	= $member->get_gateway_profile(
 							$gateway->id
 						);
 
@@ -902,9 +992,9 @@ class MS_Controller_Gateway extends MS_Controller {
 						}
 
 						$view = MS_Factory::create( 'MS_Gateway_Authorize_View_Card' );
-						$data['member'] = $member;
+						$data['member'] 			= $member;
 						$data['ms_relationship_id'] = $ms_relationship_id;
-						$data['gateway'] = $gateway;
+						$data['gateway'] 			= $gateway;
 						break;
 
 					default:
@@ -1032,15 +1122,15 @@ class MS_Controller_Gateway extends MS_Controller {
 	 * @param string $external_id The gateways transaction ID.
 	 */
 	public function log_transaction( $gateway_id, $method, $success, $subscription_id, $invoice_id, $amount, $notes, $external_id ) {
-		$log = MS_Factory::create( 'MS_Model_Transactionlog' );
-		$log->description = $notes;
-		$log->gateway_id = $gateway_id;
-		$log->method = $method;
-		$log->success = $success;
-		$log->subscription_id = $subscription_id;
-		$log->invoice_id = $invoice_id;
-		$log->amount = $amount;
-		$log->external_id = $external_id;
+		$log 					= MS_Factory::create( 'MS_Model_Transactionlog' );
+		$log->description 		= $notes;
+		$log->gateway_id 		= $gateway_id;
+		$log->method 			= $method;
+		$log->success 			= $success;
+		$log->subscription_id 	= $subscription_id;
+		$log->invoice_id 		= $invoice_id;
+		$log->amount 			= $amount;
+		$log->external_id 		= $external_id;
 		$log->save();
 	}
 
@@ -1054,8 +1144,7 @@ class MS_Controller_Gateway extends MS_Controller {
 			$step = $_POST['step'];
 		}
 
-		lib3()->array->equip_post( 'gateway' );
-		$gateway_id = $_POST['gateway'];
+		$gateway_id = isset( $_POST['gateway'] ) ? $_POST['gateway'] : 0 ;
 
 		switch ( $step ) {
 			case MS_Controller_Frontend::STEP_GATEWAY_FORM:

@@ -4,10 +4,10 @@ class MS_Rule_MenuItem_View extends MS_View {
 
 	public function to_html() {
 		$membership = MS_Model_Membership::get_base();
-		$menus = $membership->get_rule( MS_Rule_MenuItem::RULE_ID )->get_menu_array();
+		$menus 		= $membership->get_rule( MS_Rule_MenuItem::RULE_ID )->get_menu_array();
 
-		$menu_ids = array_keys( $menus );
-		$menu_id = reset( $menu_ids );
+		$menu_ids 	= array_keys( $menus );
+		$menu_id 	= reset( $menu_ids );
 		if ( isset( $_REQUEST['menu_id'] ) ) {
 			$menu_id = $_REQUEST['menu_id'];
 		}
@@ -23,10 +23,10 @@ class MS_Rule_MenuItem_View extends MS_View {
 		);
 
 		$fields['rule_menu'] = array(
-			'id' => 'rule_menu',
-			'name' => 'rule',
+			'id' 	=> 'rule_menu',
+			'name' 	=> 'rule',
 			'value' => 'menu',
-			'type' => MS_Helper_Html::INPUT_TYPE_HIDDEN,
+			'type' 	=> MS_Helper_Html::INPUT_TYPE_HIDDEN,
 		);
 
 		$menu_url = esc_url_raw(
@@ -38,7 +38,7 @@ class MS_Rule_MenuItem_View extends MS_View {
 			'ms_view_membership_protectedcontent_header',
 			array(
 				'title' => __( 'Menu Items', 'membership2' ),
-				'desc' => __( 'Protect individual menu items.', 'membership2' ),
+				'desc' 	=> __( 'Protect individual menu items.', 'membership2' ),
 			),
 			MS_Rule_MenuItem::RULE_ID,
 			$this

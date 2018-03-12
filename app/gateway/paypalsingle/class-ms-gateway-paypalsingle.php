@@ -51,11 +51,11 @@ class MS_Gateway_Paypalsingle extends MS_Gateway {
 	public function after_load() {
 		parent::after_load();
 
-		$this->id = self::ID;
-		$this->name = __( 'PayPal Single Gateway', 'membership2' );
-		$this->group = 'PayPal';
-		$this->manual_payment = true; // Recurring billed/paid manually
-		$this->pro_rate = true;
+		$this->id 				= self::ID;
+		$this->name 			= __( 'PayPal Single Gateway', 'membership2' );
+		$this->group 			= 'PayPal';
+		$this->manual_payment 	= true; // Recurring billed/paid manually
+		$this->pro_rate 		= true;
 	}
 
 	/**
@@ -66,14 +66,14 @@ class MS_Gateway_Paypalsingle extends MS_Gateway {
 	 *         that will be updated instead of creating a new log entry.
 	 */
 	public function handle_return( $log = false ) {
-		$success = false;
-		$exit = false;
-		$redirect = false;
-		$notes = '';
-		$status = null;
-		$invoice_id = 0;
-		$subscription_id = 0;
-		$amount = 0;
+		$success 			= false;
+		$exit 				= false;
+		$redirect 			= false;
+		$notes 				= '';
+		$status 			= null;
+		$invoice_id 		= 0;
+		$subscription_id 	= 0;
+		$amount 			= 0;
 
 		do_action(
 			'ms_gateway_paypalsingle_handle_return_before',
@@ -86,29 +86,28 @@ class MS_Gateway_Paypalsingle extends MS_Gateway {
 			&& ! empty( $_POST['invoice'] )
 		) {
 			if ( $this->is_live_mode() ) {
-				$domain = 'https://www.paypal.com';
+				$domain = 'https://ipnpb.paypal.com';
 			} else {
-				$domain = 'https://www.sandbox.paypal.com';
+				$domain = 'https://ipnpb.sandbox.paypal.com';
 			}
-
 			// Ask PayPal to validate our $_POST data.
-			$ipn_data = (array) stripslashes_deep( $_POST );
-			$ipn_data['cmd'] = '_notify-validate';
-			$response = wp_remote_post(
+			$ipn_data 			= (array) stripslashes_deep( $_POST );
+			$ipn_data['cmd'] 	= '_notify-validate';
+			$response 			= wp_remote_post(
 				$domain . '/cgi-bin/webscr',
 				array(
-					'timeout' => 60,
-					'sslverify' => false,
-					'httpversion' => '1.1',
-					'body' => $ipn_data,
+					'timeout' 		=> 60,
+					'sslverify' 	=> false,
+					'httpversion' 	=> '1.1',
+					'body' 			=> $ipn_data,
 				)
 			);
 
-			$invoice_id = intval( $_POST['invoice'] );
-			$external_id = $_POST['txn_id'];
-			$amount = (float) $_POST['mc_gross'];
-			$currency = $_POST['mc_currency'];
-			$invoice = MS_Factory::load( 'MS_Model_Invoice', $invoice_id );
+			$invoice_id 	= intval( $_POST['invoice'] );
+			$external_id 	= $_POST['txn_id'];
+			$amount 		= (float) $_POST['mc_gross'];
+			$currency 		= $_POST['mc_currency'];
+			$invoice 		= MS_Factory::load( 'MS_Model_Invoice', $invoice_id );
 
 			if ( ! is_wp_error( $response )
 				&& ! MS_Model_Transactionlog::was_processed( self::ID, $external_id )
@@ -117,18 +116,18 @@ class MS_Gateway_Paypalsingle extends MS_Gateway {
 				&& 'VERIFIED' == $response['body']
 				&& $invoice->id == $invoice_id
 			) {
-				$new_status = false;
-				$subscription = $invoice->get_subscription();
-				$membership = $subscription->get_membership();
-				$member = $subscription->get_member();
-				$subscription_id = $subscription->id;
+				$new_status 		= false;
+				$subscription 		= $invoice->get_subscription();
+				$membership 		= $subscription->get_membership();
+				$member 			= $subscription->get_member();
+				$subscription_id 	= $subscription->id;
 
 				// Process PayPal response
 				switch ( $_POST['payment_status'] ) {
 					// Successful payment
 					case 'Completed':
 					case 'Processed':
-						$success = true;
+						$success 	= true;
 						if ( $amount == $invoice->total ) {
 							$notes .= __( 'Payment successful', 'membership2' );
 						} else {
@@ -137,36 +136,36 @@ class MS_Gateway_Paypalsingle extends MS_Gateway {
 						break;
 
 					case 'Reversed':
-						$notes = __( 'Last transaction has been reversed. Reason: Payment has been reversed (charge back). ', 'membership2' );
+						$notes 	= __( 'Last transaction has been reversed. Reason: Payment has been reversed (charge back). ', 'membership2' );
 						$status = MS_Model_Invoice::STATUS_DENIED;
 						break;
 
 					case 'Refunded':
-						$notes = __( 'Last transaction has been reversed. Reason: Payment has been refunded', 'membership2' );
+						$notes 	= __( 'Last transaction has been reversed. Reason: Payment has been refunded', 'membership2' );
 						$status = MS_Model_Invoice::STATUS_DENIED;
 						break;
 
 					case 'Denied':
-						$notes = __( 'Last transaction has been reversed. Reason: Payment Denied', 'membership2' );
+						$notes 	= __( 'Last transaction has been reversed. Reason: Payment Denied', 'membership2' );
 						$status = MS_Model_Invoice::STATUS_DENIED;
 						break;
 
 					case 'Pending':
 						$pending_str = array(
-							'address' => __( 'Customer did not include a confirmed shipping address', 'membership2' ),
-							'authorization' => __( 'Funds not captured yet', 'membership2' ),
-							'echeck' => __( 'eCheck that has not cleared yet', 'membership2' ),
-							'intl' => __( 'Payment waiting for aproval by service provider', 'membership2' ),
-							'multi-currency' => __( 'Payment waiting for service provider to handle multi-currency process', 'membership2' ),
-							'unilateral' => __( 'Customer did not register or confirm his/her email yet', 'membership2' ),
-							'upgrade' => __( 'Waiting for service provider to upgrade the PayPal account', 'membership2' ),
-							'verify' => __( 'Waiting for service provider to verify his/her PayPal account', 'membership2' ),
-							'*' => '',
+							'address' 			=> __( 'Customer did not include a confirmed shipping address', 'membership2' ),
+							'authorization' 	=> __( 'Funds not captured yet', 'membership2' ),
+							'echeck' 			=> __( 'eCheck that has not cleared yet', 'membership2' ),
+							'intl' 				=> __( 'Payment waiting for aproval by service provider', 'membership2' ),
+							'multi-currency' 	=> __( 'Payment waiting for service provider to handle multi-currency process', 'membership2' ),
+							'unilateral' 		=> __( 'Customer did not register or confirm his/her email yet', 'membership2' ),
+							'upgrade' 			=> __( 'Waiting for service provider to upgrade the PayPal account', 'membership2' ),
+							'verify' 			=> __( 'Waiting for service provider to verify his/her PayPal account', 'membership2' ),
+							'*' 				=> '',
 						);
 
 						$reason = $_POST['pending_reason'];
-						$notes = __( 'Last transaction is pending. Reason: ', 'membership2' ) .
-							( isset($pending_str[$reason] ) ? $pending_str[$reason] : $pending_str['*'] );
+						$notes 	= __( 'Last transaction is pending. Reason: ', 'membership2' ) .
+									( isset($pending_str[$reason] ) ? $pending_str[$reason] : $pending_str['*'] );
 						$status = MS_Model_Invoice::STATUS_PENDING;
 						break;
 
@@ -182,7 +181,7 @@ class MS_Gateway_Paypalsingle extends MS_Gateway {
 				) {
 					// Status: Dispute
 					$status = MS_Model_Invoice::STATUS_DENIED;
-					$notes = __( 'Dispute about this payment', 'membership2' );
+					$notes 	= __( 'Dispute about this payment', 'membership2' );
 				}
 
 				if ( ! empty( $notes ) ) { $invoice->add_notes( $notes ); }
@@ -247,8 +246,8 @@ class MS_Gateway_Paypalsingle extends MS_Gateway {
 			$u_agent = $_SERVER['HTTP_USER_AGENT'];
 			if ( false === strpos( $u_agent, 'PayPal' ) ) {
 				// Very likely someone tried to open the URL manually. Redirect to home page
-				$notes = 'Error: Missing POST variables. Redirect user to Home-URL.';
-				$redirect = MS_Helper_Utility::home_url( '/' );
+				$notes 		= 'Error: Missing POST variables. Redirect user to Home-URL.';
+				$redirect 	= MS_Helper_Utility::home_url( '/' );
 			} else {
 				$notes = 'Error: Missing POST variables. Identification is not possible.';
 			}
@@ -276,11 +275,11 @@ class MS_Gateway_Paypalsingle extends MS_Gateway {
 				exit;
 			}
 		} else {
-			$log->invoice_id = $invoice_id;
-			$log->subscription_id = $subscription_id;
-			$log->amount = $amount;
-			$log->description = $notes;
-			$log->external_id = $external_id;
+			$log->invoice_id 		= $invoice_id;
+			$log->subscription_id 	= $subscription_id;
+			$log->amount 			= $amount;
+			$log->description 		= $notes;
+			$log->external_id 		= $external_id;
 			if ( $success ) {
 				$log->manual_state( 'ok' );
 			}
@@ -320,8 +319,8 @@ class MS_Gateway_Paypalsingle extends MS_Gateway {
 	 * @return boolean
 	 */
 	public function is_configured() {
-		$is_configured = true;
-		$required = array( 'paypal_email', 'paypal_site' );
+		$is_configured 	= true;
+		$required 		= array( 'paypal_email', 'paypal_site' );
 
 		foreach ( $required as $field ) {
 			$value = $this->$field;

@@ -1,6 +1,6 @@
-/*! Membership 2 Pro - v1.0.32
+/*! Membership 2 Pro - v1.1.2
  * https://premium.wpmudev.org/project/membership/
- * Copyright (c) 2016; * Licensed GPLv2+ */
+ * Copyright (c) 2017; * Licensed GPLv2+ */
 /*global window:false */
 /*global document:false */
 /*global ms_data:false */
@@ -97,6 +97,8 @@ window.ms_functions = {
 				anim = anim.parents( '.wpmui-radio-slider-wrapper' ).first();
 			} else if ( anim.parents( '.wpmui-input-wrapper' ).length ) {
 				anim = anim.parents( '.wpmui-input-wrapper' ).first();
+			} else if ( anim.parents( '.wpmui-select-wrapper' ).length ) {
+				anim = anim.parents( '.wpmui-select-wrapper' ).first();
 			} else if ( anim.parents( 'label' ).length ) {
 				anim = anim.parents( 'label' ).first();
 			}
@@ -226,7 +228,7 @@ window.ms_functions = {
 			if ( undefined === data[field_key] ) {
 				data[field_key] = field_value;
 			} else {
-				if ( ! data[field_key] instanceof Array ) {
+				if ( ! ( data[field_key] instanceof Array ) ) {
 					data[field_key] = [ data[field_key] ];
 				}
 				data[field_key].push( field_value );
@@ -1077,7 +1079,8 @@ window.ms_init.view_billing_transactions = function init() {
 		btn_ignore = table.find( '.action-ignore' ),
 		btn_link = table.find( '.action-link' ),
 		btn_retry = table.find( '.action-retry' ),
-		btn_match = frm_match.find( '.action-match' );
+		btn_match = frm_match.find( '.action-match' ),
+		retry_transactions, show_link_dialog, append_option;
 
 	// Handle the "Save Matching" action.
 	function save_matching( ev ) {
@@ -1105,7 +1108,7 @@ window.ms_init.view_billing_transactions = function init() {
 	}
 
 	// Retry to process all displayed transactions.
-	function retry_transactions() {
+	retry_transactions = function() {
 		var rows = table.find( '.item' ),
 			nonce = frm_match.find( '.retry_nonce' ).val(),
 			progress = wpmUi.progressbar(),
@@ -1164,7 +1167,7 @@ window.ms_init.view_billing_transactions = function init() {
 		}
 
 		process_queue();
-	}
+	};
 
 	// Handle the "Reset" action.
 	function clear_line( ev ) {
@@ -1288,7 +1291,7 @@ window.ms_init.view_billing_transactions = function init() {
 	}
 
 	// Display the Transaction-Link popup.
-	function show_link_dialog( row, data ) {
+	show_link_dialog = function( row, data ) {
 		var sel_user, sel_subscription, sel_invoice, nonce_data, nonce_update,
 			row_user, row_subscription, row_invoice, btn_submit, log_id,
 			popup = wpmUi.popup(),
@@ -1438,9 +1441,9 @@ window.ms_init.view_billing_transactions = function init() {
 		if ( ! isNaN( sel_user.val() ) && sel_user.val() > 0 ) {
 			load_subscriptions();
 		}
-	}
+	};
 
-	function append_option( container, val, label ) {
+	append_option = function( container, val, label ) {
 		if ( typeof label === 'object' ) {
 			var group = jQuery( '<optgroup></optgroup>' );
 			group.attr( 'label', val );
@@ -1455,7 +1458,7 @@ window.ms_init.view_billing_transactions = function init() {
 				.html( label )
 			);
 		}
-	}
+	};
 
 	btn_clear.click(clear_line);
 	btn_ignore.click(ignore_line);
@@ -1484,7 +1487,8 @@ window.ms_init.view_member_editor = function init () {
 		sel_user = jQuery( '.ms-group-select #user_id' ),
 		btn_add = jQuery( '#btn_create' ),
 		btn_select = jQuery( '#btn_select' ),
-		chosen_options = {};
+		chosen_options = {},
+		validate_buttons;
 
 	function validate_field( fieldname, field ) {
 		var value = field.val(),
@@ -1519,7 +1523,7 @@ window.ms_init.view_member_editor = function init () {
 		);
 	}
 
-	function validate_buttons() {
+	validate_buttons = function() {
 		if ( txt_username.hasClass( 'valid' ) && txt_email.hasClass( 'valid' ) ) {
 			btn_add.prop( 'disabled', false );
 			btn_add.removeClass( 'disabled' );
@@ -1535,7 +1539,7 @@ window.ms_init.view_member_editor = function init () {
 			btn_select.prop( 'disabled', true );
 			btn_select.addClass( 'disabled' );
 		}
-	}
+	};
 
 	txt_username.change(function() {
 		validate_field( 'username', txt_username );
@@ -1962,7 +1966,8 @@ window.ms_init.view_membership_payment = function init () {
 
 window.ms_init.view_protected_content = function init () {
 	var table = jQuery( '.wp-list-table' ),
-		sel_network_site = jQuery( '#select-site' );
+		sel_network_site = jQuery( '#select-site' ),
+		setup_editor;
 
 	window.ms_init.memberships_column( '.column-access' );
 
@@ -2056,7 +2061,7 @@ window.ms_init.view_protected_content = function init () {
 	}
 
 	// Set up the event-handlers of the inline editor.
-	function setup_editor( form ) {
+	setup_editor = function( form ) {
 		var sel_type = form.find( 'select.dripped_type' ),
 			inp_date = form.find( '.wpmui-datepicker' );
 
@@ -2072,7 +2077,7 @@ window.ms_init.view_protected_content = function init () {
 
 		// Datepicker
 		inp_date.ms_datepicker();
-	}
+	};
 
 	// The table was updated, at least one row needs to be re-initalized.
 	function update_table( ev, row ) {
@@ -2272,6 +2277,20 @@ window.ms_init.view_addons = function init () {
 	jQuery( '.list-card-top .wpmui-ajax-update-wrapper' ).each(function() {
 		jQuery( this ).trigger( 'ms-ajax-updated' );
 	});
+
+	jQuery( '#invoice_id_update' ).on( 'ms-ajax-updated', function(){
+		jQuery( '#invoice_id_update' ).hide();
+	} );
+
+	jQuery( '#invoice_sequence_type' ).on( 'ms-ajax-updated', function(){
+		var $selected = jQuery( '#invoice_sequence_type' ).val();
+		jQuery('.invoice-types').each(function(){
+			jQuery(this).hide();
+		});
+		if ( jQuery('#' + $selected).length ) {
+			jQuery('#' + $selected).show();
+		}
+	} );
 };
 
 /*global window:false */
@@ -2340,7 +2359,7 @@ window.ms_init.view_settings = function init () {
 			jQuery( '#wp-admin-bar-ms-test-memberships' ).hide();
 		}
 	}
-	
+
 	function hide_footer( ev, data ) {
 		// Show/Hide the footer for Membership2.
 		if ( !data.value ) {
@@ -2466,6 +2485,7 @@ window.ms_init.view_settings_import = function init() {
 	var form_import = jQuery( '.ms-settings-import' ),
 		btn_download = form_import.find( '#btn-download' ),
 		btn_import = form_import.find( '#btn-import' ),
+		btn_user_import = form_import.find( '#btn-user-import' ),
 		chk_clear = form_import.find( '#clear_all' ),
 		sel_batchsize = form_import.find( '#batchsize' ),
 		the_popup = null,
@@ -2562,6 +2582,18 @@ window.ms_init.view_settings_import = function init() {
 		batch.item_count = 0;
 		batch.label = '';
 		batch.source = window._ms_import_obj.source_key;
+		if(typeof window._ms_import_obj.membership !== 'undefined'){
+			batch.membership = window._ms_import_obj.membership;
+		}
+		if(typeof window._ms_import_obj.status !== 'undefined'){
+			batch.status = window._ms_import_obj.status;
+		}
+		if(typeof window._ms_import_obj.start !== 'undefined'){
+			batch.start = window._ms_import_obj.start;
+		}
+		if(typeof window._ms_import_obj.expire !== 'undefined'){
+			batch.expire = window._ms_import_obj.expire;
+		}
 
 		for ( count = 0; count < max_items; count += 1 ) {
 			item = queue.shift();
@@ -2602,6 +2634,34 @@ window.ms_init.view_settings_import = function init() {
 
 		// Prepare the ajax payload.
 		batch.action = btn_import.val();
+		delete batch.label;
+
+		// Send the ajax request and call this function again when done.
+		jQuery.post(
+			window.ajaxurl,
+			batch,
+			process_queue
+		);
+	}
+
+	function process_user_queue() {
+		var icon ='<i class="wpmui-loading-icon"></i> ',
+		batchsize = sel_batchsize.val(),
+		batch = get_next_batch( batchsize );
+
+		if ( ! batch.item_count ) {
+			// All items were sent - hide the progress bar and show close button.
+			allow_hide_popup();
+			return;
+		}
+
+		// Update the progress bar.
+		the_progress
+			.value( queue_count - queue.length )
+			.label( icon + '<span>' + batch.label + '</span>' );
+
+		// Prepare the ajax payload.
+		batch.action = btn_user_import.val();
 		delete batch.label;
 
 		// Send the ajax request and call this function again when done.
@@ -2677,6 +2737,54 @@ window.ms_init.view_settings_import = function init() {
 		process_queue();
 	}
 
+	function start_user_import() {
+		var k, data, count, membership, status, start, expire,
+			lang = ms_data.lang;
+
+		queue = [];
+
+		// This will prepare the import process
+		queue.push({
+			'task': 'start',
+			'clear': chk_clear.is(':checked'),
+			'label': lang.task_start
+		});
+
+	
+		count = 0;
+		for ( k in window._ms_import_obj.users ) {
+			data = window._ms_import_obj.users[k];
+			membership = window._ms_import_obj.membership;
+			status = window._ms_import_obj.status;
+			start = window._ms_import_obj.start;
+			expire = window._ms_import_obj.expire;
+			count += 1;
+			queue.push({
+				'task': 'import-member',
+				'data': data,
+				'membership': membership,
+				'status': status,
+				'start': start,
+				'expire': expire,
+				'label': lang.task_import_member +  ': ' + count + '...'
+			});
+		}
+
+		// Finally clean up after the import
+		queue.push({
+			'task': 'done',
+			'label': lang.task_done
+		});
+
+		// Display the import progress bar
+		show_popup();
+		queue_count = queue.length;
+		the_progress.max( queue_count );
+
+		// Start to process the import queue
+		process_user_queue();
+	}
+
 	if ( support_download() ) {
 		btn_download.click( download_import_data );
 	} else {
@@ -2684,7 +2792,22 @@ window.ms_init.view_settings_import = function init() {
 	}
 
 	btn_import.click( start_import );
+	btn_user_import.click( start_user_import );
 
+	/**
+	 * Hide format on settings select
+	 */
+	jQuery(document).on('change', 'select.ms-select-type', function(){
+		if (!jQuery('.ms-select-format-wrapper').is(":visible")) {
+			jQuery('.ms-select-format-wrapper').show();
+		}
+		if(jQuery(this).val() === 'plugin'){
+			jQuery('.ms-select-format-wrapper').hide();
+		}
+	});
+
+	//hide by default
+	jQuery('.ms-select-format-wrapper').hide();
 };
 /*global window:false */
 /*global document:false */
@@ -2695,6 +2818,35 @@ window.ms_init.view_settings_mailchimp = function init() {
 	jQuery( '#mailchimp_api_key' ).on( 'ms-ajax-updated', ms_functions.reload );
 };
 
+/*global window:false */
+/*global document:false */
+/*global ms_data:false */
+/*global ms_functions:false */
+
+window.ms_init.view_settings_media = function init () {
+	jQuery( '#direct_access' ).on( 'ms-ajax-updated', function(){
+		//update nginx rules
+		var excludedFiles = jQuery( '#direct_access' ).val();
+		if(excludedFiles){
+			var array = excludedFiles.split(',');
+			var $wp_content = jQuery('#wp_content_dir').val();
+			var $extensions = array.join("|");
+			var newRule = "location ~* ^"+$wp_content+"/.*&#92;.("+$extensions+")$ {"+
+					" \n  allow all;"+
+					"\n}";
+			jQuery('.application-servers-nginx-extra-instructions').html(newRule);
+		}
+	} );
+
+	jQuery( '#application_server' ).on( 'ms-ajax-updated', function(){
+		//show server div
+		var $selected = jQuery( '#application_server' ).val();
+		jQuery('.application-servers').each(function(){
+			jQuery(this).hide();
+		});
+		jQuery('.application-server-' + $selected).show();
+	} );
+};
 /*global window:false */
 /*global document:false */
 /*global ms_data:false */

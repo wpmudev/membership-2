@@ -22,12 +22,12 @@ class MS_Addon_Invitation_Helper_Listtable extends MS_Helper_ListTable {
 		return apply_filters(
 			'ms_addon_invitation_helper_listtable_invitation_columns',
 			array(
-				'cb' => '<input type="checkbox" />',
-				'icode' => __( 'Invitation Code', 'membership2' ),
-				'start_date' => __( 'Start date', 'membership2' ),
-				'expire_date' => __( 'Expire date', 'membership2' ),
-				'membership' => __( 'Membership', 'membership2' ),
-				'used' => __( 'Used', 'membership2' ),
+				'cb' 			=> '<input type="checkbox" />',
+				'icode' 		=> __( 'Invitation Code', 'membership2' ),
+				'start_date' 	=> __( 'Start date', 'membership2' ),
+				'expire_date' 	=> __( 'Expire date', 'membership2' ),
+				'membership' 	=> __( 'Membership', 'membership2' ),
+				'used' 			=> __( 'Used', 'membership2' ),
 				'remaining_uses' => __( 'Remaining uses', 'membership2' ),
 			)
 		);

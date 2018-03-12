@@ -150,12 +150,12 @@ class MS_Addon_Invitation_Model extends MS_Model_CustomPostType {
 	 */
 	public static function get_invitation_count( $args = null ) {
 		$defaults = array(
-			'post_type' => self::get_post_type(),
-			'post_status' => 'any',
+			'post_type' 	=> self::get_post_type(),
+			'post_status' 	=> 'any',
 		);
 
-		$args = wp_parse_args( $args, $defaults );
-		$query = new WP_Query( $args );
+		$args 	= wp_parse_args( $args, $defaults );
+		$query 	= new WP_Query( $args );
 
 		return apply_filters(
 			'ms_addon_invitation_model_get_invitation_count',
@@ -175,10 +175,10 @@ class MS_Addon_Invitation_Model extends MS_Model_CustomPostType {
 	 */
 	public static function get_invitations( $args = null ) {
 		$defaults = array(
-			'post_type' => self::get_post_type(),
-			'posts_per_page' => 10,
-			'post_status' => 'any',
-			'order' => 'DESC',
+			'post_type' 		=> self::get_post_type(),
+			'posts_per_page' 	=> 10,
+			'post_status' 		=> 'any',
+			'order' 			=> 'DESC',
 		);
 		$args = wp_parse_args( $args, $defaults );
 
@@ -212,11 +212,11 @@ class MS_Addon_Invitation_Model extends MS_Model_CustomPostType {
 		$code = sanitize_text_field( $code );
 
 		$args = array(
-			'post_type' => self::get_post_type(),
-			'posts_per_page' => 1,
-			'post_status' => 'any',
-			'fields' => 'ids',
-			'meta_query' => array(
+			'post_type' 		=> self::get_post_type(),
+			'posts_per_page' 	=> 1,
+			'post_status' 		=> 'any',
+			'fields' 			=> 'ids',
+			'meta_query' 		=> array(
 				array(
 					'key'   => 'code',
 					'value' => $code,
@@ -362,7 +362,7 @@ class MS_Addon_Invitation_Model extends MS_Model_CustomPostType {
 
 		MS_Factory::delete_transient( $key );
                 
-                $this->remove_invitation_check();
+        $this->remove_invitation_check();
 
 		do_action(
 			'ms_addon_invitation_model_remove_application',
@@ -428,8 +428,8 @@ class MS_Addon_Invitation_Model extends MS_Model_CustomPostType {
 				$this->invitation_message = __( 'This Invitation is not valid for this membership.', 'membership2' );
 				$valid = false;
 			}else{
-                                $this->add_invitation_check();
-                        }  
+				$this->add_invitation_check( $membership_id );
+			}  
 		}
 
 		return apply_filters(
@@ -451,11 +451,11 @@ class MS_Addon_Invitation_Model extends MS_Model_CustomPostType {
                 
 		if ( $user->is_member ) {
 			if( in_array( $this->id, $code ) ) {
-                            return true;
-                        }
+				return true;
+			}
 		}
                 
-                return false;
+        return false;
 	}
         
         /**
@@ -488,11 +488,11 @@ class MS_Addon_Invitation_Model extends MS_Model_CustomPostType {
                 
 		if ( $user->is_member ) {
 			if( in_array( $this->id, $code ) ) {
-				$code = get_user_meta( $user_id, 'invitation_code_used', true );
+				$code = get_user_meta( $user->id, 'invitation_code_used', true );
 				$code = ! isset( $code ) || ! is_array( $code ) ? array() : $code;
 				//$code = array_filter( $code, function( $v ) { return $v != $this->id; } );
 				if( ( $key = array_search( $this->id, $code ) ) !== false ) {
-					unset( $code[$code] );
+					unset( $code[$key] );
 				}
 				update_user_meta( $user->id, 'invitation_code_used', $code );
 			}
@@ -541,7 +541,7 @@ class MS_Addon_Invitation_Model extends MS_Model_CustomPostType {
 	 *
 	 * @since  1.0.0
 	 */
-	public function add_invitation_check() {
+	public function add_invitation_check( $membership_id ) {
 		// get the user ID
 		$user_id = $this->get_invitation_user_id();
 
@@ -553,7 +553,7 @@ class MS_Addon_Invitation_Model extends MS_Model_CustomPostType {
 		}
 
 		// save the user ID to the usage field
-		$user = array( $user_id . '_' . $_POST['membership_id'] );
+		$user = array( $user_id . '_' . $membership_id );
 		$this->use_details = array_merge( $this->use_details, $user );
 		if( ! empty( $this->id ) ) {
 			$this->save();
@@ -574,7 +574,7 @@ class MS_Addon_Invitation_Model extends MS_Model_CustomPostType {
 			$this->used -= 1;
 			$key = array_search( $user_id . '_' . $_POST['membership_id'], $this->use_details );
 			unset( $this->use_details[$key] );
-                        $this->remove_used_code_from_user();
+            $this->remove_used_code_from_user();
 			$this->save();
 		}
 	}
@@ -686,6 +686,6 @@ class MS_Addon_Invitation_Model extends MS_Model_CustomPostType {
 	 * @return mixed Returns true/false.
 	 */
 	public function __isset( $property ) {
-		return isset($this->$property);
+		return isset( $this->$property );
 	}		
 }

@@ -79,16 +79,22 @@ class MS_Helper_Utility extends MS_Helper {
 		if ( null === $Url ) {
 			$Url = 'http://';
 
+			if ( is_ssl() ) {
+				$force_ssl = true;
+			}
+
 			if ( $force_ssl ) {
 				$Url = 'https://';
 			} elseif ( isset( $_SERVER['HTTPS'] ) && 'on' == $_SERVER['HTTPS'] ) {
 				$Url = 'https://';
+				$force_ssl = true;
 			}
 
 			$Url .= $_SERVER['SERVER_NAME'];
-			if ( $_SERVER['SERVER_PORT'] != '80' ) {
+			if ( $_SERVER['SERVER_PORT'] != '80' && !$force_ssl ) {
 				$Url .= ':' . $_SERVER['SERVER_PORT'];
 			}
+			
 			$Url .= $_SERVER['REQUEST_URI'];
 
 			$Url = apply_filters(
@@ -164,11 +170,11 @@ class MS_Helper_Utility extends MS_Helper {
 	 */
 	public static function register_post_type( $post_type, $args = null ) {
 		$defaults = array(
-			'public' => false,
-			'has_archive' => false,
-			'publicly_queryable' => false,
-			'supports' => false,
-			'hierarchical' => false,
+			'public' 				=> false,
+			'has_archive' 			=> false,
+			'publicly_queryable' 	=> false,
+			'supports' 				=> false,
+			'hierarchical' 			=> false,
 		);
 
 		$args = wp_parse_args( $args, $defaults );
@@ -202,11 +208,7 @@ class MS_Helper_Utility extends MS_Helper {
 			$Colors[$key] = self::hsl2web( $h, $s / 100, $l / 100 );
 		}
 
-		return apply_filters(
-                            'ms_helper_color_index',
-                            $Colors[$key],
-                            $key
-                        );
+		return apply_filters( 'ms_helper_color_index', $Colors[$key], $key );
 	}
 
 	/**
@@ -299,7 +301,7 @@ class MS_Helper_Utility extends MS_Helper {
 	 */
 	static public function get_home_url( $blog_id = null, $path = '' ) {
 		$schema = is_ssl() ? 'https' : 'http';
-		$url = get_home_url( $blog_id, $path, $schema );
+		$url 	= get_home_url( $blog_id, $path, $schema );
 
 		return apply_filters(
 			'ms_helper_home_url',
@@ -333,6 +335,53 @@ class MS_Helper_Utility extends MS_Helper {
 				( isset($parts['query'] ) ? "?{$parts['query']}" : '' ) . 
 				( isset($parts['fragment'] ) ? "#{$parts['fragment']}" : '' );
 	}
+
+	/**
+	 * Object to array
+	 *
+	 * @param $object Object - the object
+	 *
+	 * @return Array
+	 */
+	static function object_to_array( $object ) {
+		return json_decode( json_encode( $object ), true );
+	}
+
+	/**
+	 * Convert XML to array
+	 *
+	 * @param Object $xml - the xml object
+	 * @param  Array $out - the output
+	 *
+	 * @return Array
+	 */
+	static function xml2array ( $xml ) {
+		$out = array();
+		foreach ( $xml->children() as $r ) {
+			$t 	= array();
+			if ( count( $r->children() ) == 0) {
+				$out[ $r->getName() ] = strval( $r );
+			} else{
+				$out[ $r->getName() ][] = self::xml2array( $r );
+			}
+		}
+	
+		return $out;
+	}
+
+	/**
+	 * Convert Array to object
+	 *
+	 * @param Array $array
+	 *
+	 * @return object
+	 */
+	static function array_to_object( $array, $type ) {
+		if ( is_array( $array ) ) {
+			return ( object ) $array;
+		}
+		return $array;
+	}
 }
 
 if ( ! function_exists( 'array_unshift_assoc' ) ) {
@@ -347,8 +396,8 @@ if ( ! function_exists( 'array_unshift_assoc' ) ) {
 	 * @return array
 	 */
 	function array_unshift_assoc( &$arr, $key, $val ) {
-		$arr = array_reverse( $arr, true );
-		$arr[$key] = $val;
+		$arr 		= array_reverse( $arr, true );
+		$arr[$key] 	= $val;
 		return array_reverse( $arr, true );
 	}
 }

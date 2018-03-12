@@ -122,10 +122,10 @@ class MS_Controller_Membership extends MS_Controller {
 			}
 		}
                 
-                $this->add_action(
-                        'admin_action_membership_bulk_delete',
-                        'membership_bulk_delete'
-                );
+		$this->add_action(
+			'admin_action_membership_bulk_delete',
+			'membership_bulk_delete'
+		);
 	}
 
 	/**
@@ -160,37 +160,38 @@ class MS_Controller_Membership extends MS_Controller {
 		wp_die( $msg );
 	}
         
-        /**
-         * Bulk delete memberships
-         *
-         * @since 1.0.2.7
-         */
-        public function membership_bulk_delete() {
-            
-            if ( empty( $_REQUEST['_wpnonce'] ) ) { return; }
-            if ( ! wp_verify_nonce( $_REQUEST['_wpnonce'], 'bulk_delete' ) ) { return; }
-            
-            if( ! isset( $_REQUEST['membership_ids'] ) ) {
-                wp_redirect( MS_Controller_Plugin::get_admin_url() );
-                exit;
-            }
-            
-            $membership_ids = explode( '-', $_REQUEST['membership_ids'] );
-            
-            foreach( $membership_ids as $membership_id ) {
-                $membership = MS_Factory::load( 'MS_Model_Membership', $membership_id );
-                try {
-                    $membership->delete();
-                }
-                catch( Exception $e ) {
-                    
-                }
-            }
-            
-            wp_redirect( MS_Controller_Plugin::get_admin_url() );
-            exit;
-            
-        }
+	/**
+	 * Bulk delete memberships
+	 *
+	 * @since 1.0.2.7
+	 */
+	public function membership_bulk_delete() {
+		
+		if ( empty( $_REQUEST['_wpnonce'] ) ) { return; }
+
+		if ( ! wp_verify_nonce( $_REQUEST['_wpnonce'], 'bulk_delete' ) ) { return; }
+		
+		if( ! isset( $_REQUEST['membership_ids'] ) ) {
+			wp_redirect( MS_Controller_Plugin::get_admin_url() );
+			exit;
+		}
+		
+		$membership_ids = explode( '-', $_REQUEST['membership_ids'] );
+		
+		foreach( $membership_ids as $membership_id ) {
+			$membership = MS_Factory::load( 'MS_Model_Membership', $membership_id );
+			try {
+				$membership->delete();
+			}
+			catch( Exception $e ) {
+				
+			}
+		}
+		
+		wp_redirect( MS_Controller_Plugin::get_admin_url() );
+		exit;
+		
+	}
 
 	/**
 	 * Handle Ajax toggle action.
@@ -337,53 +338,53 @@ class MS_Controller_Membership extends MS_Controller {
 		if ( ! $membership_id ) {
 			if ( ! $membership_id ) {
 				if ( isset( $_REQUEST['membership_id'] ) ) {
-					$membership_id = $_REQUEST['membership_id'];
+					$membership_id 	= $_REQUEST['membership_id'];
 				} elseif ( isset( $_REQUEST['subscription_id'] ) ) {
-					$sub_id = $_REQUEST['subscription_id'];
-					$subscription = MS_Factory::load( 'MS_Model_Relationship', $sub_id );
-					$membership_id = $subscription->membership_id;
+					$sub_id 		= $_REQUEST['subscription_id'];
+					$subscription 	= MS_Factory::load( 'MS_Model_Relationship', $sub_id );
+					$membership_id 	= $subscription->membership_id;
 				} elseif ( isset( $_REQUEST['ms_relationship_id'] ) ) {
-					$sub_id = $_REQUEST['ms_relationship_id'];
-					$subscription = MS_Factory::load( 'MS_Model_Relationship', $sub_id );
-					$membership_id = $subscription->membership_id;
+					$sub_id 		= $_REQUEST['ms_relationship_id'];
+					$subscription 	= MS_Factory::load( 'MS_Model_Relationship', $sub_id );
+					$membership_id 	= $subscription->membership_id;
 				} elseif ( isset( $_REQUEST['invoice_id'] ) ) {
-					$inv_id = $_REQUEST['invoice_id'];
-					$invoice = MS_Factory::load( 'MS_Model_Invoice', $inv_id );
-					$membership_id = $invoice->membership_id;
+					$inv_id 		= $_REQUEST['invoice_id'];
+					$invoice 		= MS_Factory::load( 'MS_Model_Invoice', $inv_id );
+					$membership_id 	= $invoice->membership_id;
 				}
-				$membership_id = intval( $membership_id );
+				$membership_id 		= intval( $membership_id );
 			}
 
 			// Reset the membership_id if it's invalid or filtered by ignore_system.
 			if ( $membership_id ) {
-				$membership = MS_Factory::load( 'MS_Model_Membership', $membership_id );
+				$membership 		= MS_Factory::load( 'MS_Model_Membership', $membership_id );
 				if ( ! $membership->is_valid() ) {
-					$membership_id = 0;
+					$membership_id 	= 0;
 				} elseif ( $membership->id != $membership_id ) {
-					$membership_id = 0;
+					$membership_id 	= 0;
 				} elseif ( $ignore_system && $membership->is_system ) {
-					$membership_id = 0;
+					$membership_id 	= 0;
 				}
 			}
 		}
 
 		// Check 3: Check subscriptions of the current user.
 		if ( ! $no_member_check && ! $membership_id && is_user_logged_in() ) {
-			$member = MS_Model_Member::get_current_member();
-			$subscription = $member->get_subscription( 'priority' );
+			$member 				= MS_Model_Member::get_current_member();
+			$subscription 			= $member->get_subscription( 'priority' );
 			if ( $subscription ) {
-				$membership_id = $subscription->membership_id;
+				$membership_id 		= $subscription->membership_id;
 			}
 
 			// Reset the membership_id if it's invalid or filtered by ignore_system.
 			if ( $membership_id ) {
-				$membership = MS_Factory::load( 'MS_Model_Membership', $membership_id );
+				$membership 		= MS_Factory::load( 'MS_Model_Membership', $membership_id );
 				if ( ! $membership->is_valid() ) {
-					$membership_id = 0;
+					$membership_id 	= 0;
 				} elseif ( $membership->id != $membership_id ) {
-					$membership_id = 0;
+					$membership_id 	= 0;
 				} elseif ( $ignore_system && $membership->is_system ) {
-					$membership_id = 0;
+					$membership_id 	= 0;
 				}
 			}
 		}
@@ -405,24 +406,24 @@ class MS_Controller_Membership extends MS_Controller {
 	 * @since  1.0.0
 	 */
 	public function process_admin_page() {
-		$msg = 0;
-		$next_step = null;
-		$step = $this->get_step();
-		$goto_url = null;
-		$membership = $this->load_membership();
-		$membership_id = $membership->id;
-		$completed = false;
-		$is_wizard = MS_Plugin::is_wizard();
-		$save_data = array();
+		$msg 			= 0;
+		$next_step 		= null;
+		$step 			= $this->get_step();
+		$goto_url 		= null;
+		$membership 	= $this->load_membership();
+		$membership_id 	= $membership->id;
+		$completed 		= false;
+		$is_wizard 		= MS_Plugin::is_wizard();
+		$save_data 		= array();
 
 		// Check if user came from WPMU Dashboard plugin
 		if ( ! $is_wizard && isset( $_SERVER['HTTP_REFERER'] ) ) {
-			$referer = $_SERVER['HTTP_REFERER'];
-			$params = parse_url( $referer, PHP_URL_QUERY );
-			$fields = array();
+			$referer 	= $_SERVER['HTTP_REFERER'];
+			$params 	= parse_url( $referer, PHP_URL_QUERY );
+			$fields 	= array();
 			parse_str( $params, $fields );
 			if ( isset( $fields['page'] ) && 'wpmudev-plugins' == $fields['page'] ) {
-				$url = MS_Controller_Plugin::get_admin_url( 'settings' );
+				$url 	= MS_Controller_Plugin::get_admin_url( 'settings' );
 
 				wp_safe_redirect( $url );
 				exit;
@@ -447,9 +448,13 @@ class MS_Controller_Membership extends MS_Controller {
 				unset( $save_data['_wpnonce'] );
 				unset( $save_data['action'] );
 
-				if ( isset( $_POST['set_private_flag'] ) ) {
-					lib3()->array->equip_post( 'public' );
-					$save_data['public'] = ! lib3()->is_true( $_POST['public'] );
+				if ( isset( $_POST['set_public_flag'] ) ) {
+					//lib3()->array->equip_post( 'public' );
+					if ( isset( $_POST['public'] ) ) {
+						$save_data['private'] = false;
+					} else {
+						$save_data['private'] = true;
+					}
 				}
 				if ( isset( $_POST['set_paid_flag'] ) ) {
 					lib3()->array->equip_post( 'paid' );
@@ -459,8 +464,8 @@ class MS_Controller_Membership extends MS_Controller {
 				$msg = $this->save_membership( $save_data );
 
 				// Refresh the $membership variable.
-				$membership = $this->load_membership();
-				$membership_id = $membership->id;
+				$membership 	= $this->load_membership();
+				$membership_id 	= $membership->id;
 			}
 
 			switch ( $step ) {
@@ -485,18 +490,18 @@ class MS_Controller_Membership extends MS_Controller {
 						&& lib3()->is_true( $_POST['paid'] );
 
 					if ( $paid ) {
-						$next_step = self::STEP_PAYMENT;
+						$next_step 	= self::STEP_PAYMENT;
 					} else {
-						$next_step = self::STEP_MS_LIST;
+						$next_step 	= self::STEP_MS_LIST;
 					}
 					$msg = $this->mark_setup_completed();
-					$completed = true;
+					$completed 		= true;
 					break;
 
 				case self::STEP_PAYMENT:
 					// Setup payment options
 
-					$next_step = self::STEP_MS_LIST;
+					$next_step 		= self::STEP_MS_LIST;
 					break;
 
 				case self::STEP_EDIT:
@@ -506,7 +511,7 @@ class MS_Controller_Membership extends MS_Controller {
 
 			if ( ! empty( $next_step ) ) {
 				$args = array(
-					'step' => $next_step,
+					'step' 			=> $next_step,
 					'membership_id' => $membership_id,
 				);
 
@@ -627,7 +632,7 @@ class MS_Controller_Membership extends MS_Controller {
 	 * @return int $msg The action status message code.
 	 */
 	private function mark_setup_completed() {
-		$msg = 0;
+		$msg 		= 0;
 		$membership = $this->load_membership();
 
 		if ( $membership->setup_completed() ) {
@@ -681,9 +686,9 @@ class MS_Controller_Membership extends MS_Controller {
 	 * @since  1.0.0
 	 */
 	public function page_add() {
-		$data = array();
-		$data['step'] = $this->get_step();
-		$data['action'] = self::ACTION_SAVE;
+		$data 				= array();
+		$data['step'] 		= $this->get_step();
+		$data['action'] 	= self::ACTION_SAVE;
 		$data['membership'] = $this->load_membership();
 
 		$view = MS_Factory::create( 'MS_View_Membership_Add' );
@@ -697,17 +702,16 @@ class MS_Controller_Membership extends MS_Controller {
 	 * @since  1.0.0
 	 */
 	public function page_list() {
-		$membership = $this->load_membership();
+		$membership 			= $this->load_membership();
 
-		$data = array();
-		$data['step'] = $this->get_step();
-		$data['action'] = self::ACTION_SAVE;
-		$data['membership'] = $membership;
+		$data 					= array();
+		$data['step'] 			= $this->get_step();
+		$data['action'] 		= self::ACTION_SAVE;
+		$data['membership'] 	= $membership;
 		$data['create_new_url'] = MS_Controller_Plugin::get_admin_url(
-			false,
-			array( 'step' => self::STEP_ADD_NEW )
+			false, array( 'step' => self::STEP_ADD_NEW )
 		);
-                $data['delete_url'] = wp_nonce_url( admin_url( 'admin.php?action=membership_bulk_delete' ), 'bulk_delete' );
+        $data['delete_url'] 	= wp_nonce_url( admin_url( 'admin.php?action=membership_bulk_delete' ), 'bulk_delete' );
 
 		$view = MS_Factory::create( 'MS_View_Membership_List' );
 		$view->data = apply_filters( 'ms_view_membership_list_data', $data, $this );
@@ -722,29 +726,29 @@ class MS_Controller_Membership extends MS_Controller {
 	public function page_edit() {
 		$membership = $this->load_membership();
 
-		$data = array();
-		$data['tabs'] = $this->get_edit_tabs();
-		$data['settings'] = MS_Plugin::instance()->settings;
+		$data 				= array();
+		$data['tabs'] 		= $this->get_edit_tabs();
+		$data['settings'] 	= MS_Plugin::instance()->settings;
 		$data['membership'] = $membership;
 
 		switch ( $this->get_active_edit_tab() ) {
 			case self::TAB_EMAILS:
-				$default_type = MS_Model_Communication::COMM_TYPE_REGISTRATION;
+				$default_type 		= MS_Model_Communication::COMM_TYPE_REGISTRATION;
 				if ( ! empty( $_REQUEST['membership_id'] ) ) {
-					$membership_id = intval( $_REQUEST['membership_id'] );
-					$comm_types = array_keys(
+					$membership_id 	= intval( $_REQUEST['membership_id'] );
+					$comm_types 	= array_keys(
 						MS_Model_Communication::get_communication_type_titles(
 							$membership_id
 						)
 					);
-					$default_type = reset( $comm_types );
+					$default_type 	= reset( $comm_types );
 				}
 
-				$temp_type = isset( $_GET['comm_type'] ) ? $_GET['comm_type'] : '';
+				$temp_type 			= isset( $_GET['comm_type'] ) ? $_GET['comm_type'] : '';
 				if ( MS_Model_Communication::is_valid_communication_type( $temp_type ) ) {
-					$type = $temp_type;
+					$type 			= $temp_type;
 				} else {
-					$type = $default_type;
+					$type 			= $default_type;
 				}
 
 				$comm = MS_Model_Communication::get_communication(
@@ -757,7 +761,7 @@ class MS_Controller_Membership extends MS_Controller {
 				break;
 		}
 
-		$view = MS_Factory::create( 'MS_View_Membership_Edit' );
+		$view 		= MS_Factory::create( 'MS_View_Membership_Edit' );
 		$view->data = apply_filters( 'ms_view_membership_edit_data', $data, $this );
 		$view->render();
 	}
@@ -770,12 +774,12 @@ class MS_Controller_Membership extends MS_Controller {
 	public function page_payment() {
 		$membership = $this->load_membership();
 
-		$data = array();
-		$data['step'] = $this->get_step();
-		$data['action'] = 'save_payment_settings';
-		$data['membership'] = $membership;
+		$data 							= array();
+		$data['step'] 					= $this->get_step();
+		$data['action'] 				= 'save_payment_settings';
+		$data['membership'] 			= $membership;
 		$data['is_global_payments_set'] = MS_Plugin::instance()->settings->is_global_payments_set;
-		$data['bread_crumbs'] = $this->get_bread_crumbs();
+		$data['bread_crumbs'] 			= $this->get_bread_crumbs();
 
 		if ( isset( $_GET['edit'] ) ) {
 			$data['show_next_button'] = false;
@@ -801,11 +805,11 @@ class MS_Controller_Membership extends MS_Controller {
 		$membership = $this->load_membership();
 		$membership_id = $membership->id;
 
-		$data = array();
-		$data['step'] = $this->get_step();
-		$data['action'] = self::ACTION_SAVE;
-		$data['membership'] = $membership;
-		$data['bread_crumbs'] = $this->get_bread_crumbs();
+		$data 					= array();
+		$data['step'] 			= $this->get_step();
+		$data['action'] 		= self::ACTION_SAVE;
+		$data['membership'] 	= $membership;
+		$data['bread_crumbs'] 	= $this->get_bread_crumbs();
 
 		$data['members'] = array();
 		$subscriptions = MS_Model_Relationship::get_subscriptions(
@@ -847,9 +851,9 @@ class MS_Controller_Membership extends MS_Controller {
 	 * @since  1.0.0
 	 */
 	public function page_news() {
-		$data = array();
-		$data['step'] = $this->get_step();
-		$data['action'] = '';
+		$data 				= array();
+		$data['step'] 		= $this->get_step();
+		$data['action'] 	= '';
 		$data['membership'] = $this->load_membership();
 
 		$args = apply_filters(
@@ -869,8 +873,8 @@ class MS_Controller_Membership extends MS_Controller {
 	 * @since  1.0.0
 	 */
 	public function page_welcome() {
-		$data = array();
-		$data['step'] = $this->get_step();
+		$data 			= array();
+		$data['step'] 	= $this->get_step();
 		$data['action'] = 'start';
 
 		$view = MS_Factory::create( 'MS_View_Welcome' );
@@ -944,8 +948,8 @@ class MS_Controller_Membership extends MS_Controller {
 	 */
 	public function get_step() {
 		// Initial step
-		$step = self::STEP_MS_LIST;
-		$settings = MS_Factory::load( 'MS_Model_Settings' );
+		$step 		= self::STEP_MS_LIST;
+		$settings 	= MS_Factory::load( 'MS_Model_Settings' );
 		$membership = $this->load_membership();
 
 		// Get current step from request
@@ -997,10 +1001,10 @@ class MS_Controller_Membership extends MS_Controller {
 		if ( null === $Tabs ) {
 			$membership = $this->load_membership();
 
-			$args = array( 'include_guest' => false );
-			$count = MS_Model_Membership::get_membership_count( $args );
+			$args 	= array( 'include_guest' => false );
+			$count 	= MS_Model_Membership::get_membership_count( $args );
 
-			$Tabs = array(
+			$Tabs 	= array(
 				self::TAB_DETAILS => array(
 					'title' => __( 'Details', 'membership2' ),
 				),
@@ -1327,11 +1331,11 @@ class MS_Controller_Membership extends MS_Controller {
 		$data = array(
 			'ms_init' => array(),
 			'lang' => array(
-				'msg_delete' => __( 'Do you want to completely delete the membership <strong>%s</strong> including all subscriptions?', 'membership2' ),
-                                'msg_bulk_delete' => __( 'Do you want to completely delete all selected memberships including all subscriptions?', 'membership2' ),
-				'btn_delete' => __( 'Delete', 'membership2' ),
-				'btn_cancel' => __( 'Cancel', 'membership2' ),
-				'quickedit_error' => __( 'Error while saving changes.', 'membership2' ),
+				'msg_delete' 		=> __( 'Do you want to completely delete the membership <strong>%s</strong> including all subscriptions?', 'membership2' ),
+                'msg_bulk_delete' 	=> __( 'Do you want to completely delete all selected memberships including all subscriptions?', 'membership2' ),
+				'btn_delete' 		=> __( 'Delete', 'membership2' ),
+				'btn_cancel' 		=> __( 'Cancel', 'membership2' ),
+				'quickedit_error' 	=> __( 'Error while saving changes.', 'membership2' ),
 			),
 		);
 
@@ -1387,7 +1391,7 @@ class MS_Controller_Membership extends MS_Controller {
 			case self::STEP_MS_LIST:
 				$data['ms_init'][] = 'view_membership_list';
 				$data['ms_init'][] = 'view_settings_setup';
-                                $data['ms_init'][] = 'bulk_delete_membership';
+                $data['ms_init'][] = 'bulk_delete_membership';
 				break;
 		}
 

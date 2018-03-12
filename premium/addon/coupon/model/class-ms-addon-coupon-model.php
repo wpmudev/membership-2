@@ -54,8 +54,6 @@ class MS_Addon_Coupon_Model extends MS_Model_CustomPostType {
 	/**
 	 * Coupon duration constant: Coupon is only applied to all invoice.
 	 *
-	 * Note: NOT IMPLEMENTED YET
-	 *
 	 * @since  1.0.0
 	 *
 	 * @see $duration
@@ -120,13 +118,11 @@ class MS_Addon_Coupon_Model extends MS_Model_CustomPostType {
 	 * Duration is relevant for recurring payments. It defines if the coupon is
 	 * applied to one invoice or to all invoices.
 	 *
-	 * Note: THIS IS NOT IMPLEMENTED YET. CURRENTLY ALL COUPONS ARE 'once'
-	 *
 	 * @since  1.0.0
 	 *
 	 * @var string
 	 */
-	protected $duration = self::DURATION_ONCE;
+	protected $duration = self::DURATION_ALWAYS;
 
 	/**
 	 * Defines the earliest date when a coupon code can be used.
@@ -306,6 +302,48 @@ class MS_Addon_Coupon_Model extends MS_Model_CustomPostType {
 	}
 
 	/**
+	 * Defines and return discount duration.
+	 *
+	 * @since  1.2.3
+	 *
+	 * @return array
+	 */
+	public static function get_discount_duration() {
+		static $durations;
+
+		if ( empty( $durations ) ) {
+			$durations = array(
+				self::DURATION_ONCE => __( 'the first invoice', 'membership2' ),
+				self::DURATION_ALWAYS => __( 'to all invoices', 'membership2' ),
+			);
+		}
+
+		return apply_filters(
+			'ms_addon_coupon_model_get_discount_duration',
+			$durations
+		);
+	}
+
+	/**
+	 * Verify if is a valid coupon duration
+	 *
+	 * @since  1.2.3
+	 *
+	 * @param string $type The discount duration to validate.
+	 *
+	 * @return boolean True if valid.
+	 */
+	public static function is_valid_discount_duration( $type ) {
+		$valid = false;
+
+		if ( array_key_exists( $type, self::get_discount_duration() ) ) {
+			$valid = true;
+		}
+
+		return apply_filters( 'ms_addon_coupon_model_is_valid_discount_duration', $valid, $type );
+	}
+
+	/**
 	 * Defines and return discount types descriptions.
 	 *
 	 * @since  1.0.0
@@ -337,8 +375,8 @@ class MS_Addon_Coupon_Model extends MS_Model_CustomPostType {
 	 */
 	public static function get_coupon_count( $args = null ) {
 		$defaults = array(
-			'post_type' => self::get_post_type(),
-			'post_status' => 'any',
+			'post_type' 	=> self::get_post_type(),
+			'post_status' 	=> 'any',
 		);
 
 		MS_Factory::select_blog();
@@ -368,10 +406,10 @@ class MS_Addon_Coupon_Model extends MS_Model_CustomPostType {
 	 */
 	public static function get_coupons( $args = null ) {
 		$defaults = array(
-			'post_type' => self::get_post_type(),
-			'posts_per_page' => 10,
-			'post_status' => 'any',
-			'order' => 'DESC',
+			'post_type' 		=> self::get_post_type(),
+			'posts_per_page' 	=> 10,
+			'post_status' 		=> 'any',
+			'order' 			=> 'DESC',
 		);
 		$args = wp_parse_args( $args, $defaults );
 
@@ -405,11 +443,11 @@ class MS_Addon_Coupon_Model extends MS_Model_CustomPostType {
 		$code = sanitize_text_field( $code );
 
 		$args = array(
-			'post_type' => self::get_post_type(),
-			'posts_per_page' => 1,
-			'post_status' => 'any',
-			'fields' => 'ids',
-			'meta_query' => array(
+			'post_type' 		=> self::get_post_type(),
+			'posts_per_page' 	=> 1,
+			'post_status' 		=> 'any',
+			'fields' 			=> 'ids',
+			'meta_query' 		=> array(
 				array(
 					'key'     => 'code',
 					'value'   => $code,
@@ -473,7 +511,7 @@ class MS_Addon_Coupon_Model extends MS_Model_CustomPostType {
 		if ( empty( $this->code ) ) { return false; }
 
 		$membership = $subscription->get_membership();
-		$discount = $this->get_discount_value( $subscription );
+		$discount 	= $this->get_discount_value( $subscription );
 
 		$time = apply_filters(
 			'ms_addon_coupon_model_save_application_redemption_time',
@@ -481,18 +519,17 @@ class MS_Addon_Coupon_Model extends MS_Model_CustomPostType {
 		);
 
 		// Grab the user account as we should be logged in by now.
-		$user = MS_Model_Member::get_current_member();
-
-		$key = self::get_transient_name( $user->id, $membership->id );
+		$user 	= MS_Model_Member::get_current_member();
+		$key 	= self::get_transient_name( $user->id, $membership->id );
 
 		$transient = apply_filters(
 			'ms_addon_coupon_model_transient_value',
 			array(
-				'id' => $this->id,
-				'user_id' => $user->id,
+				'id' 			=> $this->id,
+				'user_id' 		=> $user->id,
 				'membership_id'	=> $membership->id,
-				'discount' => $discount,
-				'message' => $this->coupon_message,
+				'discount' 		=> $discount,
+				'message' 		=> $this->coupon_message,
 			)
 		);
 
@@ -762,6 +799,12 @@ class MS_Addon_Coupon_Model extends MS_Model_CustomPostType {
 
 				case 'discount_type':
 					if ( self::is_valid_discount_type( $value ) ) {
+						$this->$property = $value;
+					}
+					break;
+
+				case 'discount_recurring_type':
+					if ( self::is_valid_discount_recurring_type( $value ) ) {
 						$this->$property = $value;
 					}
 					break;

@@ -27,7 +27,7 @@ class MS_Model_Communication_After_Finishes extends MS_Model_Communication {
 	 */
 	public function set_period_name( $field ) {
 		$field['title'] = __( 'Message Delay', 'membership2' );
-		$field['desc'] = __( 'Use "0" to send instantly, or another value to delay the message.', 'membership2' );
+		$field['desc'] 	= __( 'Use "0" to send instantly, or another value to delay the message.', 'membership2' );
 
 		return $field;
 	}
@@ -52,13 +52,13 @@ class MS_Model_Communication_After_Finishes extends MS_Model_Communication {
 	public function reset_to_default() {
 		parent::reset_to_default();
 
-		$this->subject = sprintf(
+		$this->subject 			= sprintf(
 			__( 'Reminder: your %s membership has ended', 'membership2' ),
 			self::COMM_VAR_MS_NAME
 		);
-		$this->message = self::get_default_message();
-		$this->enabled = false;
-		$this->period_enabled = true;
+		$this->message 			= self::get_default_message();
+		$this->enabled 			= false;
+		$this->period_enabled 	= true;
 
 		do_action(
 			'ms_model_communication_reset_to_default_after',
@@ -74,22 +74,22 @@ class MS_Model_Communication_After_Finishes extends MS_Model_Communication {
 	 * @return string The email message.
 	 */
 	public static function get_default_message() {
-		$subject = sprintf(
+		$subject 		= sprintf(
 			__( 'Hi %1$s,', 'membership2' ),
 			self::COMM_VAR_USERNAME
 		);
-		$body_notice = sprintf(
+		$body_notice 	= sprintf(
 			__( 'This is a reminder that your %1$s membership at %2$s has ended on %3$s.', 'membership2' ),
 			self::COMM_VAR_MS_NAME,
 			self::COMM_VAR_BLOG_NAME,
 			self::COMM_VAR_MS_EXPIRY_DATE
 		);
-		$body_renew = sprintf(
+		$body_renew 	= sprintf(
 			__( 'You can renew your membership here: %1$s', 'membership2' ),
 			self::COMM_VAR_MS_ACCOUNT_PAGE_URL
 		);
 
-		$html = sprintf(
+		$html 			= sprintf(
 			'<h2>%1$s</h2><br /><br />%2$s<br /><br />%3$s',
 			$subject,
 			$body_notice,

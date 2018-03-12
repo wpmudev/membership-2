@@ -20,17 +20,17 @@ class MS_Helper_ListTable_Membership extends MS_Helper_ListTable {
 
 	public function get_columns() {
 		$columns = array(
-                        'cb'        => '<input type="checkbox" />',
-			'priority' => sprintf(
+            'cb'        		=> '<input type="checkbox" />',
+			'priority' 			=> sprintf(
 				'<span title="%s">#</span>',
 				__( 'Membership Order', 'membership2' )
 			),
-			'name' => __( 'Membership Name', 'membership2' ),
-			'active' => __( 'Active', 'membership2' ),
-			'type_description' => __( 'Type of Membership', 'membership2' ),
-			'members' => __( 'Members', 'membership2' ),
-			'price' => __( 'Payment', 'membership2' ),
-			'shortcode' => __( 'Shortcodes', 'membership2' ),
+			'name' 				=> __( 'Membership Name', 'membership2' ),
+			'active' 			=> __( 'Active', 'membership2' ),
+			'type_description' 	=> __( 'Type of Membership', 'membership2' ),
+			'members' 			=> __( 'Members', 'membership2' ),
+			'price' 			=> __( 'Payment', 'membership2' ),
+			'shortcode' 		=> __( 'Shortcodes', 'membership2' ),
 		);
 
 		return apply_filters(
@@ -39,11 +39,11 @@ class MS_Helper_ListTable_Membership extends MS_Helper_ListTable {
 		);
 	}
         
-        public function column_cb( $item ) {
-            return sprintf(
-                '<input class="del_membership_ids" type="checkbox" name="memberships[]" value="%s" />', $item->id
-            );    
-        }
+	public function column_cb( $item ) {
+		return sprintf(
+			'<input class="del_membership_ids" type="checkbox" name="memberships[]" value="%s" />', $item->id
+		);    
+	}
 
 	public function get_hidden_columns() {
 		return apply_filters(
@@ -56,10 +56,10 @@ class MS_Helper_ListTable_Membership extends MS_Helper_ListTable {
 		return apply_filters(
 			'membership_helper_listtable_membership_sortable_columns',
 			array(
-				'priority' => array( 'menu_order', true ),
-				'name' => array( 'name', true ),
-				'type_description' => array( 'type', true ),
-				'active' => array( 'active', true ),
+				'priority' 			=> array( 'menu_order', true ),
+				'name' 				=> array( 'name', true ),
+				'type_description' 	=> array( 'type', true ),
+				'active' 			=> array( 'active', true ),
 			)
 		);
 	}
@@ -74,16 +74,16 @@ class MS_Helper_ListTable_Membership extends MS_Helper_ListTable {
 		$args = array();
 
 		if ( ! empty( $_REQUEST['orderby'] ) && ! empty( $_REQUEST['order'] ) ) {
-			$args['orderby'] = $_REQUEST['orderby'];
-			$args['order'] = $_REQUEST['order'];
+			$args['orderby'] 	= $_REQUEST['orderby'];
+			$args['order'] 		= $_REQUEST['order'];
 		}
 
 		// Prepare order by statement.
 		if ( ! empty( $args['orderby'] )
 			&& property_exists( 'MS_Model_Membership', $args['orderby'] )
 		) {
-			$args['meta_key'] = $args['orderby'];
-			$args['orderby'] = 'meta_value';
+			$args['meta_key'] 	= $args['orderby'];
+			$args['orderby'] 	= 'meta_value';
 		}
 
 		$this->items = apply_filters(
@@ -184,12 +184,12 @@ class MS_Helper_ListTable_Membership extends MS_Helper_ListTable {
 
 	public function column_active( $item ) {
 		$toggle = array(
-			'id' => 'ms-toggle-' . $item->id,
-			'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
-			'value' => $item->active,
-			'data_ms' => array(
-				'action' => MS_Controller_Membership::AJAX_ACTION_TOGGLE_MEMBERSHIP,
-				'field' => 'active',
+			'id' 		=> 'ms-toggle-' . $item->id,
+			'type' 		=> MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
+			'value' 	=> $item->active,
+			'data_ms' 	=> array(
+				'action' 		=> MS_Controller_Membership::AJAX_ACTION_TOGGLE_MEMBERSHIP,
+				'field' 		=> 'active',
 				'membership_id' => $item->id,
 			),
 		);
@@ -286,27 +286,27 @@ class MS_Helper_ListTable_Membership extends MS_Helper_ListTable {
 	public function column_shortcode( $item, $column_name ) {
 		$shortcodes = array(
 			MS_Rule_Shortcode_Model::PROTECT_CONTENT_SHORTCODE => array(
-				'tag' => '[%1$s id="%2$s"][/%1$s]',
+				'tag' 	=> '[%1$s id="%2$s"][/%1$s]',
 				'label' => __( 'Protect content', 'membership2' ),
 			),
 			MS_Helper_Shortcode::SCODE_MS_TITLE => array(
-				'tag' => '[%1$s id="%2$s"]',
+				'tag' 	=> '[%1$s id="%2$s"]',
 				'label' => __( 'Membership Title', 'membership2' ),
 			),
 			MS_Helper_Shortcode::SCODE_MS_DETAILS => array(
-				'tag' => '[%1$s id="%2$s"]',
+				'tag' 	=> '[%1$s id="%2$s"]',
 				'label' => __( 'Membership Description', 'membership2' ),
 			),
 			MS_Helper_Shortcode::SCODE_MS_PRICE => array(
-				'tag' => '[%1$s id="%2$s"]',
+				'tag' 	=> '[%1$s id="%2$s"]',
 				'label' => __( 'Membership Price', 'membership2' ),
 			),
 			MS_Helper_Shortcode::SCODE_MS_BUY => array(
-				'tag' => '[%1$s id="%2$s"]',
+				'tag' 	=> '[%1$s id="%2$s"]',
 				'label' => __( 'Subscribe Button', 'membership2' ),
 			),
 			MS_Helper_Shortcode::SCODE_REGISTER_USER => array(
-				'tag' => '[%1$s membership_id="%2$s"]',
+				'tag' 	=> '[%1$s membership_id="%2$s"]',
 				'label' => __( 'Registration form', 'membership2' ),
 			),
 		);

@@ -54,7 +54,7 @@ class MS_Addon_BuddyPress_Rule_Model extends MS_Rule {
 		// General BuddyPress access is either *allowed* or *not denied*
 		$component = bp_current_component();
 
-		if ( ! empty( $component ) || is_buddypress() ) {
+		if ( $component || is_buddypress() ) {
 			if ( 'members' == $component || bp_is_user() ) {
 				// Member listing or member profile access.
 				$has_access = parent::has_access(
@@ -145,7 +145,12 @@ class MS_Addon_BuddyPress_Rule_Model extends MS_Rule {
 
 		$this->add_filter(
 			'bp_user_can_create_groups',
-			'protect_create_bp_group'
+			'protect_create_bp_group', 10, 2
+		);
+		//Added in 1.1.3
+		$this->add_filter(
+			'ms_rule_page_model_has_access',
+			'override_ms_rule_page_model_has_access', 10, 3
 		);
 		$this->protect_friendship_request();
 		$this->protect_private_messaging();
@@ -262,7 +267,7 @@ class MS_Addon_BuddyPress_Rule_Model extends MS_Rule {
 	 * @param string $can_create The initial access.
 	 * @return string The initial template if current user can create groups, otherwise blocking message.
 	 */
-	public function protect_create_bp_group( $can_create ) {
+	public function protect_create_bp_group( $can_create, $restricted ) {
 		$can_create = false;
 
 		if ( parent::has_access( MS_Addon_BuddyPress_Rule::PROTECT_GROUP_CREATION ) ) {
@@ -288,43 +293,43 @@ class MS_Addon_BuddyPress_Rule_Model extends MS_Rule {
 		$contents = array();
 
 		$contents[ MS_Addon_BuddyPress_Rule::PROTECT_ALL ] = (object) array(
-			'id' => MS_Addon_BuddyPress_Rule::PROTECT_ALL,
-			'name' => __( 'All BuddyPress Pages', 'membership2' ),
-			'type' => $this->rule_type,
-			'description' => __( 'Protect all BuddyPress pages. This rule can be combined with any of the other rules.', 'membership2' ),
-			'access' => $this->get_rule_value( MS_Addon_BuddyPress_Rule::PROTECT_ALL ),
+			'id' 			=> MS_Addon_BuddyPress_Rule::PROTECT_ALL,
+			'name' 			=> __( 'All BuddyPress Pages', 'membership2' ),
+			'type' 			=> $this->rule_type,
+			'description' 	=> __( 'Protect all BuddyPress pages. This rule can be combined with any of the other rules.', 'membership2' ),
+			'access' 		=> $this->get_rule_value( MS_Addon_BuddyPress_Rule::PROTECT_ALL ),
 		);
 
 		$contents[ MS_Addon_BuddyPress_Rule::PROTECT_GROUP_CREATION ] = (object) array(
-			'id' => MS_Addon_BuddyPress_Rule::PROTECT_GROUP_CREATION,
-			'name' => __( 'Group creation', 'membership2' ),
-			'type' => $this->rule_type,
-			'description' => __( 'Only members can create new groups.', 'membership2' ),
-			'access' => $this->get_rule_value( MS_Addon_BuddyPress_Rule::PROTECT_GROUP_CREATION ),
+			'id' 			=> MS_Addon_BuddyPress_Rule::PROTECT_GROUP_CREATION,
+			'name' 			=> __( 'Group creation', 'membership2' ),
+			'type' 			=> $this->rule_type,
+			'description' 	=> __( 'Only members can create new groups.', 'membership2' ),
+			'access' 		=> $this->get_rule_value( MS_Addon_BuddyPress_Rule::PROTECT_GROUP_CREATION ),
 		);
 
 		$contents[ MS_Addon_BuddyPress_Rule::PROTECT_FRIENDSHIP ] = (object) array(
-			'id' => MS_Addon_BuddyPress_Rule::PROTECT_FRIENDSHIP,
-			'name' => __( 'Friendship request', 'membership2' ),
-			'type' => $this->rule_type,
-			'description' => __( 'Only allow members to send friendship requests.', 'membership2' ),
-			'access' => $this->get_rule_value( MS_Addon_BuddyPress_Rule::PROTECT_FRIENDSHIP ),
+			'id' 			=> MS_Addon_BuddyPress_Rule::PROTECT_FRIENDSHIP,
+			'name' 			=> __( 'Friendship request', 'membership2' ),
+			'type' 			=> $this->rule_type,
+			'description' 	=> __( 'Only allow members to send friendship requests.', 'membership2' ),
+			'access' 		=> $this->get_rule_value( MS_Addon_BuddyPress_Rule::PROTECT_FRIENDSHIP ),
 		);
 
 		$contents[ MS_Addon_BuddyPress_Rule::PROTECT_PRIVATE_MSG ] = (object) array(
-			'id' => MS_Addon_BuddyPress_Rule::PROTECT_PRIVATE_MSG,
-			'name' => __( 'Private messaging', 'membership2' ),
-			'type' => $this->rule_type,
-			'description' => __( 'Only allow members to send private messages.', 'membership2' ),
-			'access' => $this->get_rule_value( MS_Addon_BuddyPress_Rule::PROTECT_PRIVATE_MSG ),
+			'id' 			=> MS_Addon_BuddyPress_Rule::PROTECT_PRIVATE_MSG,
+			'name' 			=> __( 'Private messaging', 'membership2' ),
+			'type' 			=> $this->rule_type,
+			'description' 	=> __( 'Only allow members to send private messages.', 'membership2' ),
+			'access' 		=> $this->get_rule_value( MS_Addon_BuddyPress_Rule::PROTECT_PRIVATE_MSG ),
 		);
 
 		$contents[ MS_Addon_BuddyPress_Rule::PROTECT_MEMBERS ] = (object) array(
-			'id' => MS_Addon_BuddyPress_Rule::PROTECT_MEMBERS,
-			'name' => __( 'Member listing', 'membership2' ),
-			'type' => $this->rule_type,
-			'description' => __( 'Only members can see the BuddyPress Member Directory and Member Profiles.', 'membership2' ),
-			'access' => $this->get_rule_value( MS_Addon_BuddyPress_Rule::PROTECT_MEMBERS ),
+			'id' 			=> MS_Addon_BuddyPress_Rule::PROTECT_MEMBERS,
+			'name' 			=> __( 'Member listing', 'membership2' ),
+			'type' 			=> $this->rule_type,
+			'description' 	=> __( 'Only members can see the BuddyPress Member Directory and Member Profiles.', 'membership2' ),
+			'access' 		=> $this->get_rule_value( MS_Addon_BuddyPress_Rule::PROTECT_MEMBERS ),
 		);
 
 		return apply_filters(

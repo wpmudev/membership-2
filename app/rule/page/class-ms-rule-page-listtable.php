@@ -11,15 +11,15 @@ class MS_Rule_Page_ListTable extends MS_Helper_ListTable_Rule {
 	public function __construct( $model ) {
 		parent::__construct( $model );
 		$this->name['singular'] = __( 'Page', 'membership2' );
-		$this->name['plural'] = __( 'Pages', 'membership2' );
+		$this->name['plural'] 	= __( 'Pages', 'membership2' );
 	}
 
 	public function get_columns() {
 		$columns = array(
-			'cb' => true,
-			'name' => __( 'Page title', 'membership2' ),
-			'access' => true,
-			'dripped' => true,
+			'cb' 		=> true,
+			'name' 		=> __( 'Page title', 'membership2' ),
+			'access' 	=> true,
+			'dripped' 	=> true,
 		);
 
 		return apply_filters(
@@ -71,10 +71,10 @@ class MS_Rule_Page_ListTable extends MS_Helper_ListTable_Rule {
 		}
 
 		$filter_button = array(
-			'id' => 'filter_button',
-			'type' => MS_Helper_Html::INPUT_TYPE_SUBMIT,
-			'value' => __( 'Filter', 'membership2' ),
-			'button_type' => 'button',
+			'id' 			=> 'filter_button',
+			'type' 			=> MS_Helper_Html::INPUT_TYPE_SUBMIT,
+			'value' 		=> __( 'Filter', 'membership2' ),
+			'button_type' 	=> 'button',
 		);
 
 		if ( ! $echo ) { ob_start(); }

@@ -11,16 +11,16 @@ class MS_Rule_Shortcode_ListTable extends MS_Helper_ListTable_Rule {
 	public function __construct( $model ) {
 		parent::__construct( $model );
 		$this->name['singular'] = __( 'Shortcode', 'membership2' );
-		$this->name['plural'] = __( 'Shortcodes', 'membership2' );
+		$this->name['plural'] 	= __( 'Shortcodes', 'membership2' );
 	}
 
 	public function get_columns() {
 		return apply_filters(
 			'membership_helper_listtable_' . $this->id . '_columns',
 			array(
-				'cb' => true,
-				'name' => __( 'Shortcode', 'membership2' ),
-				'access' => true,
+				'cb' 		=> true,
+				'name' 		=> __( 'Shortcode', 'membership2' ),
+				'access' 	=> true,
 			)
 		);
 	}

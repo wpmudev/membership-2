@@ -31,7 +31,7 @@ class MS_Model_Member extends MS_Model {
 	 * @since  1.0.0
 	 * @internal
 	 */
-	const SEARCH_ALL_USERS = 'all_users';
+	const SEARCH_ALL_USERS 	= 'all_users';
 
 	/**
 	 * Cache for function is_admin_user()
@@ -305,14 +305,24 @@ class MS_Model_Member extends MS_Model {
 	 * @return int The count.
 	 */
 	public static function get_members_count( $args = null ) {
-		$args = self::get_query_args( $args, self::SEARCH_ALL_USERS );
-		$args['number'] = 0;
-		$args['count_total'] = true;
-		$wp_user_search = new WP_User_Query( $args );
+		
+		$total 		= 0;
+		$cache_key 	= MS_Helper_Cache::generate_cache_key( 'ms_model_members_total', $args );
+		$results 	= MS_Helper_Cache::get_transient( $cache_key );
+		if ( $results ) {
+			$total = $results;
+		} else {
+			$args 					= self::get_query_args( $args, self::SEARCH_ALL_USERS );
+			$args['number'] 		= 0;
+			$args['count_total'] 	= true;
+			$wp_user_search 		= new WP_User_Query( $args );
+			$total 					= $wp_user_search->get_total();
+			MS_Helper_Cache::query_cache( $total, $cache_key );
+		}
 
 		return apply_filters(
 			'ms_model_member_get_members_count',
-			$wp_user_search->get_total()
+			$total
 		);
 	}
 
@@ -336,16 +346,23 @@ class MS_Model_Member extends MS_Model {
 		$key = json_encode( $args );
 
 		if ( ! isset( $Members[$key] ) ) {
-			$args = self::get_query_args( $args, $search_option );
-			$wp_user_search = new WP_User_Query( $args );
-			$users = $wp_user_search->get_results();
-			$members = array();
+			$cache_key 	= MS_Helper_Cache::generate_cache_key( 'ms_model_members_ids', $args );
+			$results 	= MS_Helper_Cache::get_transient( $cache_key );
+			$members	= array();
+			if ( $results ) {
+				$members = $results;
+			} else {
+				$args 			= self::get_query_args( $args, $search_option );
+				$wp_user_search = new WP_User_Query( $args );
+				$users 			= $wp_user_search->get_results();
 
-			foreach ( $users as $user_id ) {
-				$members[] = $user_id;
+				foreach ( $users as $user_id ) {
+					$members[] 	= $user_id;
+				}
+				MS_Helper_Cache::query_cache( $members, $cache_key );
 			}
 
-			$Members[$key] = apply_filters(
+			$Members[$key] 	= apply_filters(
 				'ms_model_member_get_member_ids',
 				$members,
 				$args
@@ -366,11 +383,18 @@ class MS_Model_Member extends MS_Model {
 	 * @return MS_Model_Member[] The selected members.
 	 */
 	public static function get_members( $args = null, $search_option = self::SEARCH_ALL_USERS ) {
-		$members = array();
-		$ids = self::get_member_ids( $args, $search_option );
-
-		foreach ( $ids as $user_id ) {
-			$members[] = MS_Factory::load( 'MS_Model_Member', $user_id );
+		$members 	= array();
+		$cache_key 	= MS_Helper_Cache::generate_cache_key( 'ms_model_members_' . $search_option, $args );
+		$results 	= MS_Helper_Cache::get_transient( $cache_key );
+		$ids 		= self::get_member_ids( $args, $search_option );
+		if ( $results ) {
+			$members = $results;
+		} else {
+			
+			foreach ( $ids as $user_id ) {
+				$members[] = MS_Factory::load( 'MS_Model_Member', $user_id );
+			}
+			MS_Helper_Cache::query_cache( $members, $cache_key );
 		}
 
 		return apply_filters(
@@ -402,25 +426,33 @@ class MS_Model_Member extends MS_Model {
 			$members[0] = __( 'Select a user', 'membership2' );
 		}
 
-		$args['fields'] = array( 'ID', 'user_login' );
-		$args['number'] = 0;
-		$args = self::get_query_args( $args, $search_option );
-		$wp_user_search = new WP_User_Query( $args );
-		$users = $wp_user_search->get_results();
+		$cache_key 	= MS_Helper_Cache::generate_cache_key( 'ms_model_member_get_usernames', $args );
+		$results 	= MS_Helper_Cache::get_transient( $cache_key );
+		if ( $results ) {
+			$members = $results;
+		} else {
 
-		foreach ( $users as $user ) {
-			if ( ! self::is_admin_user( $user->ID ) ) {
-				if ( $return_array ) {
-					$members[ $user->ID ] = $user->user_login;
-				} else {
-					$members[] = array(
-						'id' => $user->ID,
-						'text' => $user->user_login,
-					);
+			$args['fields'] = array( 'ID', 'user_login' );
+			$args['number'] = 0;
+			$args 			= self::get_query_args( $args, $search_option );
+			$wp_user_search = new WP_User_Query( $args );
+			$users 			= $wp_user_search->get_results();
+
+			foreach ( $users as $user ) {
+				if ( ! self::is_admin_user( $user->ID ) ) {
+					if ( $return_array ) {
+						$members[ $user->ID ] = $user->user_login;
+					} else {
+						$members[] = array(
+							'id' 	=> $user->ID,
+							'text' 	=> $user->user_login,
+						);
+					}
 				}
 			}
-		}
 
+			MS_Helper_Cache::query_cache( $members, $cache_key );
+		}
 		return apply_filters(
 			'ms_model_member_get_members_usernames',
 			$members,
@@ -443,15 +475,16 @@ class MS_Model_Member extends MS_Model {
 	 */
 	public static function get_query_args( $args = null, $search_option = self::SEARCH_ONLY_MEMBERS ) {
 		global $wpdb;
+		
 
 		$defaults = apply_filters(
 			'ms_model_member_get_query_args_defaults',
 			array(
-				'order' => 'DESC',
-				'orderby' => 'ID',
-				'number' => 20,
-				'offset' => 0,
-				'fields' => 'ID',
+				'order' 	=> 'DESC',
+				'orderby' 	=> 'ID',
+				'number' 	=> 20,
+				'offset' 	=> 0,
+				'fields' 	=> 'ID',
 			)
 		);
 
@@ -486,42 +519,49 @@ class MS_Model_Member extends MS_Model {
 		) {
 			$membership_id = intval( $args['membership_id'] );
 			$status = $args['subscription_status'];
+			$ids		= false;
+			$cache_key 	= MS_Helper_Cache::generate_cache_key( 'ms_model_member_' . $membership_id . '_' . $status, $args );
+			$results 	= MS_Helper_Cache::get_transient( $cache_key );
+			if ( $results ) {
+				$ids = $results;
+			} else {
+				switch ( $status ) {
+					case 'expired':
+						$status_val = implode(
+							',',
+							array(
+								"'" . MS_Model_Relationship::STATUS_TRIAL_EXPIRED . "'",
+								"'" . MS_Model_Relationship::STATUS_EXPIRED . "'",
+							)
+						);
+						break;
 
-			switch ( $status ) {
-				case 'expired':
-					$status_val = implode(
-						',',
-						array(
-							"'" . MS_Model_Relationship::STATUS_TRIAL_EXPIRED . "'",
-							"'" . MS_Model_Relationship::STATUS_EXPIRED . "'",
-						)
-					);
-					break;
+					default:
+						$status_val = $wpdb->prepare( " '%s' ", $status );
+						break;
+				}
 
-				default:
-					$status_val = $wpdb->prepare( " '%s' ", $status );
-					break;
+				$sql = "
+				SELECT DISTINCT usr.meta_value
+				FROM {$wpdb->posts} p
+				INNER JOIN {$wpdb->postmeta} mem ON mem.post_id=p.ID AND mem.meta_key='membership_id'
+				INNER JOIN {$wpdb->postmeta} sta ON sta.post_id=p.ID AND sta.meta_key='status'
+				INNER JOIN {$wpdb->postmeta} usr ON usr.post_id=p.ID AND usr.meta_key='user_id'
+				WHERE
+					p.post_type = %s
+					AND ('0' = %s OR mem.meta_value = %s)
+					AND ('' = %s OR sta.meta_value IN ({$status_val}))
+				";
+				$sql = $wpdb->prepare(
+					$sql,
+					MS_Model_Relationship::get_post_type(),
+					$membership_id,
+					$membership_id,
+					$status
+				);
+				$ids = $wpdb->get_col( $sql );
+				MS_Helper_Cache::query_cache( $ids, $cache_key );
 			}
-
-			$sql = "
-			SELECT DISTINCT usr.meta_value
-			FROM {$wpdb->posts} p
-			INNER JOIN {$wpdb->postmeta} mem ON mem.post_id=p.ID AND mem.meta_key='membership_id'
-			INNER JOIN {$wpdb->postmeta} sta ON sta.post_id=p.ID AND sta.meta_key='status'
-			INNER JOIN {$wpdb->postmeta} usr ON usr.post_id=p.ID AND usr.meta_key='user_id'
-			WHERE
-				p.post_type = %s
-				AND ('0' = %s OR mem.meta_value = %s)
-				AND ('' = %s OR sta.meta_value IN ({$status_val}))
-			";
-			$sql = $wpdb->prepare(
-				$sql,
-				MS_Model_Relationship::get_post_type(),
-				$membership_id,
-				$membership_id,
-				$status
-			);
-			$ids = $wpdb->get_col( $sql );
 			if ( empty( $ids ) || ! is_array( $ids ) ) { $ids = array( 0 ); }
 			$args['include'] = $ids;
 		}
@@ -569,23 +609,23 @@ class MS_Model_Member extends MS_Model {
 			return 0;
 		}
 
-		$scheme = $cookie['scheme'];
-		$username = $cookie['username'];
-		$hmac = $cookie['hmac'];
-		$token = $cookie['token'];
+		$scheme 	= $cookie['scheme'];
+		$username 	= $cookie['username'];
+		$hmac 		= $cookie['hmac'];
+		$token 		= $cookie['token'];
 		$expiration = $cookie['expiration'];
 
-		$user = get_user_by( 'login', $username );
+		$user 		= get_user_by( 'login', $username );
 
 		if ( ! $user ) {
 			// Invalid username.
 			return 0;
 		}
 
-		$pass_frag = substr( $user->user_pass, 8, 4 );
-		$key = wp_hash( $username . '|' . $pass_frag . '|' . $expiration . '|' . $token, $scheme );
-		$algo = function_exists( 'hash' ) ? 'sha256' : 'sha1';
-		$hash = hash_hmac( $algo, $username . '|' . $expiration . '|' . $token, $key );
+		$pass_frag 	= substr( $user->user_pass, 8, 4 );
+		$key 		= wp_hash( $username . '|' . $pass_frag . '|' . $expiration . '|' . $token, $scheme );
+		$algo 		= function_exists( 'hash' ) ? 'sha256' : 'sha1';
+		$hash 		= hash_hmac( $algo, $username . '|' . $expiration . '|' . $token, $key );
 
 		if ( ! hash_equals( $hash, $hmac ) ) {
 			// Forged/expired cookie value.
@@ -626,12 +666,12 @@ class MS_Model_Member extends MS_Model {
 		$cache_result = true;
 
 		if ( ! isset( self::$_is_admin_user[ $user_id ] ) ) {
-			$is_admin = false;
-			$default_user_id = null;
+			$is_admin 			= false;
+			$default_user_id 	= null;
 
 			if ( empty( $user_id ) ) {
-				$default_user_id = $user_id;
-				$user_id = self::get_user_id();
+				$default_user_id 	= $user_id;
+				$user_id 			= self::get_user_id();
 			}
 
 			if ( is_super_admin( $user_id ) ) {
@@ -652,11 +692,11 @@ class MS_Model_Member extends MS_Model {
 				 */
 				$controller = MS_Plugin::instance()->controller;
 				if ( $controller ) {
-					$capability = $controller->capability;
+					$capability 	= $controller->capability;
 				} else {
 					// This is used in case the function is called too early.
-					$capability = 'manage_options';
-					$cache_result = false;
+					$capability 	= 'manage_options';
+					$cache_result 	= false;
 				}
 
 				if ( ! empty( $capability ) ) {
@@ -769,17 +809,24 @@ class MS_Model_Member extends MS_Model {
 	public static function get_admin_user_emails() {
 		$admins = array();
 
-		$args = array(
-			'role' => 'administrator',
-			'fields' => array( 'ID', 'user_email' ),
+		$args 	= array(
+			'role' 		=> 'administrator',
+			'fields' 	=> array( 'ID', 'user_email' ),
 		);
 
 		$wp_user_search = new WP_User_Query( $args );
-		$users = $wp_user_search->get_results();
+		$users 			= $wp_user_search->get_results();
 
 		if ( ! empty ($users ) ) {
 			foreach ( $users as $user ) {
 				$admins[ $user->user_email ] = $user->user_email;
+			}
+		}
+
+		$site_email = get_bloginfo( 'admin_email' );
+		if ( $site_email ) {
+			if ( !isset( $admins[ $site_email ] ) ) {
+				$admins[ $site_email ] = $site_email;
 			}
 		}
 
@@ -828,8 +875,8 @@ class MS_Model_Member extends MS_Model {
 	 * @internal
 	 */
 	static public function clean_db() {
-		$timestamp = absint( MS_Factory::get_transient( 'ms_member_clean_db' ) );
-		$elapsed = time() - $timestamp;
+		$timestamp 	= absint( MS_Factory::get_transient( 'ms_member_clean_db' ) );
+		$elapsed 	= time() - $timestamp;
 
 		if ( $elapsed > 3600 ) {
 			// Last check is longer than 1 hour ago. Check again.
@@ -940,13 +987,13 @@ class MS_Model_Member extends MS_Model {
 		}
 
 		if ( isset( $this->username ) ) {
-			$wp_user = new stdClass();
-			$wp_user->ID = $this->id;
-			$wp_user->nickname = $this->username;
+			$wp_user 				= new stdClass();
+			$wp_user->ID 			= $this->id;
+			$wp_user->nickname 		= $this->username;
 			$wp_user->user_nicename = $this->username;
-			$wp_user->first_name = $this->first_name;
-			$wp_user->last_name = $this->last_name;
-			$wp_user->user_email = $this->email;
+			$wp_user->first_name 	= $this->first_name;
+			$wp_user->last_name 	= $this->last_name;
+			$wp_user->user_email 	= $this->email;
 
 			if ( ! empty( $this->password )
 				&& $this->password == $this->password2
@@ -994,10 +1041,10 @@ class MS_Model_Member extends MS_Model {
 		$validation_errors = new WP_Error();
 
 		$required = array(
-			'username' => __( 'Username', 'membership2' ),
-			'email' => __( 'Email address', 'membership2' ),
-			'password'   => __( 'Password', 'membership2' ),
-			'password2'  => __( 'Password confirmation', 'membership2' ),
+			'username' 		=> __( 'Username', 'membership2' ),
+			'email' 		=> __( 'Email address', 'membership2' ),
+			'password'   	=> __( 'Password', 'membership2' ),
+			'password2'  	=> __( 'Password confirmation', 'membership2' ),
 		);
 
 		/**
@@ -1061,10 +1108,10 @@ class MS_Model_Member extends MS_Model {
 
 		// Check the multisite Email-Domain limitation for new registrations.
 		if ( is_multisite() ) {
-			$illegal_names = get_site_option( 'illegal_names' );
-			$limited_domains = get_site_option( 'limited_email_domains' );
-			$banned_domains = get_site_option( 'banned_email_domains' );
-			$email_domain = substr( strrchr( $this->email, '@' ), 1 );
+			$illegal_names 		= get_site_option( 'illegal_names' );
+			$limited_domains 	= get_site_option( 'limited_email_domains' );
+			$banned_domains 	= get_site_option( 'banned_email_domains' );
+			$email_domain 		= substr( strrchr( $this->email, '@' ), 1 );
 
 			if ( $illegal_names && is_array( $illegal_names ) ) {
 				if ( in_array( $this->username, $illegal_names ) ) {
@@ -1094,38 +1141,37 @@ class MS_Model_Member extends MS_Model {
 			}
 		}
 
-		$validation_errors = apply_filters(
+		$validation_errors 		= apply_filters(
 			'ms_model_membership_create_new_user_validation_errors',
-			$validation_errors,
-                        $this
+			$validation_errors, $this
 		);
 
 		// Compatibility with WangGuard
-		$_POST['user_email'] = $this->email;
+		$_POST['user_email'] 	= $this->email;
 
-		$user_data = array(
-			'user_name' => $this->username,
-			'orig_username' => $this->username,
-			'user_email' => $this->email,
-			'errors' => $validation_errors,
+		$user_data 				= array(
+			'user_name' 			=> $this->username,
+			'orig_username' 		=> $this->username,
+			'user_email' 			=> $this->email,
+			'errors' 				=> $validation_errors,
 		);
 
-		$user_data = apply_filters(
-			'wpmu_validate_user_signup',
-			$user_data
-		);
+		$user_data 				= apply_filters(
+									'wpmu_validate_user_signup',
+									$user_data
+								  );
 
 		if ( is_wp_error( $user_data ) ) {
 			/*
 			 * Some plugins incorrectly return a WP_Error object as result of
 			 * the wpmu_validate_user_signup filter.
 			 */
-			$validation_errors = $user_data;
+			$validation_errors 	= $user_data;
 		} else {
-			$validation_errors = $user_data['errors'];
+			$validation_errors 	= $user_data['errors'];
 		}
 
-		$errors = $validation_errors->get_error_messages();
+		$errors 				= $validation_errors->get_error_messages();
 
 		if ( ! empty( $errors ) ) {
 			throw new Exception( implode( '<br/>', $errors ) );
@@ -1141,8 +1187,8 @@ class MS_Model_Member extends MS_Model {
 				 * Important: This password should be sent to the user via the
 				 * Email template "User Account Created"
 				 */
-				$this->password = wp_generate_password( 24 );
-				$this->password2 = $this->password;
+				$this->password 	= wp_generate_password( 24 );
+				$this->password2 	= $this->password;
 			}
                         
 			$user_id = wp_create_user(
@@ -1339,10 +1385,10 @@ class MS_Model_Member extends MS_Model {
 
 			// Reset the status and start/expire dates when added by admin.
 			if ( 'admin' == $gateway_id ) {
-				$subscription->start_date = null; // Will calculate correct date.
-				$subscription->trial_expire_date = null;
-				$subscription->expire_date = null;
-				$subscription->status = MS_Model_Relationship::STATUS_ACTIVE;
+				$subscription->start_date 			= null; // Will calculate correct date.
+				$subscription->trial_expire_date 	= null;
+				$subscription->expire_date 			= null;
+				$subscription->status 				= MS_Model_Relationship::STATUS_ACTIVE;
 				$subscription->save();
 
 				$this->is_member = true;
@@ -1498,7 +1544,7 @@ class MS_Model_Member extends MS_Model {
 		}
 
 		if ( ! empty( $membership_id ) ) {
-			$subscription = $this->get_subscription( $membership_id );
+			$subscription 		= $this->get_subscription( $membership_id );
 			// Membership-ID specified: Check if user has this membership
 			if ( $subscription
 				&& in_array( $subscription->get_status(), $allowed_status )
@@ -1540,22 +1586,22 @@ class MS_Model_Member extends MS_Model {
 
 		if ( 'priority' == $membership_id ) {
 			// Find subscription with the lowest priority.
-			$cur_priority = -1;
+			$cur_priority 			= -1;
 			foreach ( $this->subscriptions as $ind => $item ) {
-				$membership = $item->get_membership();
+				$membership 		= $item->get_membership();
 				if ( ! $membership->active ) { continue; }
 				if ( $cur_priority < 0 || $membership->priority < $cur_priority ) {
-					$subscription = $item;
-					$cur_priority = $membership->priority;
-					$key = $ind;
+					$subscription 	= $item;
+					$cur_priority 	= $membership->priority;
+					$key 			= $ind;
 				}
 			}
 		} elseif ( ! empty( $membership_id ) ) {
 			// Membership-ID specified: Check if user has this membership
 			foreach ( $this->subscriptions as $ind => $item ) {
 				if ( $item->membership_id == $membership_id ) {
-					$subscription = $item;
-					$key = $ind;
+					$subscription 	= $item;
+					$key 			= $ind;
 					break;
 				}
 			}
@@ -1578,7 +1624,7 @@ class MS_Model_Member extends MS_Model {
 	protected function get_active_memberships() {
 		$active_memberships = array();
 
-		$active_status = array(
+		$active_status 		= array(
 			MS_Model_Relationship::STATUS_ACTIVE,
 			MS_Model_Relationship::STATUS_TRIAL,
 			MS_Model_Relationship::STATUS_CANCELED,
@@ -1588,8 +1634,8 @@ class MS_Model_Member extends MS_Model {
 			if ( $sub->is_base() ) { continue; }
 			if ( ! in_array( $sub->status, $active_status ) ) { continue; }
 
-			$membership = $sub->get_membership();
-			$active_memberships[$membership->id] = $membership;
+			$membership 							= $sub->get_membership();
+			$active_memberships[$membership->id] 	= $membership;
 		}
 
 		return $active_memberships;
@@ -1608,9 +1654,9 @@ class MS_Model_Member extends MS_Model {
 		static $Access_Flags = null;
 
 		if ( null === $Access_Flags ) {
-			$Access_Flags = array();
+			$Access_Flags 		= array();
 			$active_memberships = $this->get_active_memberships();
-			$all_memberships = MS_Model_Membership::get_memberships();
+			$all_memberships 	= MS_Model_Membership::get_memberships();
 
 			/**
 			 * Controls how to handle conflicts in upgrade path settings when a
@@ -1625,7 +1671,7 @@ class MS_Model_Member extends MS_Model {
 			 * @since 1.0.1.0
 			 * @var   bool
 			 */
-			$prefer_forbidden = apply_filters(
+			$prefer_forbidden 	= apply_filters(
 				'ms_model_member_can_subscribe_to_prefer_forbidden',
 				true
 			);
@@ -1633,7 +1679,7 @@ class MS_Model_Member extends MS_Model {
 			foreach ( $active_memberships as $membership ) {
 				$base_id = $membership->id;
 				if ( $membership->is_guest() || $membership->is_user() ) {
-					$base_id = 'guest';
+					$base_id 	= 'guest';
 				}
 
 				foreach ( $all_memberships as $ms ) {
@@ -1675,14 +1721,13 @@ class MS_Model_Member extends MS_Model {
 	 * @return array Might be an empty array or a list of membership IDs.
 	 */
 	public function cancel_ids_on_subscription( $membership_id ) {
-		$result = array();
-
-		$membership = MS_Factory::load( 'MS_Model_Membership', $membership_id );
+		$result 			= array();
+		$membership 		= MS_Factory::load( 'MS_Model_Membership', $membership_id );
 		$active_memberships = $this->get_active_memberships();
 
 		foreach ( $active_memberships as $ms ) {
 			if ( $membership->update_replaces( $ms->id ) ) {
-				$result[] = $ms->id;
+				$result[] 	= $ms->id;
 			}
 		}
 
@@ -1698,9 +1743,9 @@ class MS_Model_Member extends MS_Model {
 	 * @internal
 	 */
 	public function delete_all_membership_usermeta() {
-		$this->subscriptions = array();
+		$this->subscriptions 	= array();
 		$this->gateway_profiles = array();
-		$this->is_member = false;
+		$this->is_member 		= false;
 
 		do_action(
 			'ms_model_membership_delete_all_membership_usermeta',
@@ -1894,9 +1939,9 @@ class MS_Model_Member extends MS_Model {
 		$reset_url = esc_url_raw(
 			add_query_arg(
 				array(
-					'action' => MS_Controller_Frontend::ACTION_VIEW_RESETPASS,
-					'key' => $key,
-					'login' => rawurlencode( $this->username ),
+					'action' 	=> MS_Controller_Frontend::ACTION_VIEW_RESETPASS,
+					'key' 		=> $key,
+					'login' 	=> rawurlencode( $this->username ),
 				),
 				$reset_url
 			)
@@ -1906,6 +1951,66 @@ class MS_Model_Member extends MS_Model {
 			'key' => $key,
 			'url' => $reset_url,
 		);
+	}
+
+	/**
+	 * Generate the account verification url
+	 * 
+	 * @since 1.0.0
+	 */
+	public function account_verification_key() {
+		global $wpdb, $wp_hasher;
+
+		// Generate something random for a password reset key.
+		$key = wp_generate_password( 20, false );
+
+		do_action( 'ms_account_verification_key', $this->username, $key );
+
+		update_user_meta( $this->id, '_ms_user_activation_key', $key ); 
+		update_user_meta( $this->id, '_ms_user_activation_status', 0 );
+
+		MS_Model_Pages::create_missing_pages();
+		$verify_url = MS_Model_Pages::get_page_url( MS_Model_Pages::MS_PAGE_ACCOUNT );
+		$verify_url = esc_url_raw(
+			add_query_arg(
+				array(
+					'action' 	=> MS_Controller_Frontend::ACTION_VIEW_ACTIVATEACCOUNT,
+					'key' 		=> $key
+				),
+				$verify_url
+			)
+		);
+
+		return (object) array(
+			'key' => $key,
+			'url' => $verify_url,
+		);
+	}
+
+	/**
+	 * Verify activation code
+	 * 
+	 * @since 1.1.3
+	 * 
+	 * @param string $code - the verifiication code
+	 * 
+	 * @return string
+	 */
+	public static function verify_activation_code( $code ) {
+		global $wpdb;
+		$user_id = $wpdb->get_var( $wpdb->prepare( "SELECT user_id FROM {$wpdb->usermeta} WHERE meta_value = %s AND meta_key = %s", $code, '_ms_user_activation_key' ) );
+		if ( $user_id ) {
+			$user_activation_status = get_user_meta( $user_id, '_ms_user_activation_status', true );
+			if ( $user_activation_status != 1 ) {
+				update_user_meta( $user_id, '_ms_user_activation_status', 1 );
+				return __( 'Account verified. Proceed to login', 'membership' );
+			} else {
+				return __( 'Account already verified', 'membership' );
+			}
+			
+		} else {
+			return __( 'Invalid code. Please check your email or try again', 'membership' );
+		}
 	}
 
 	/**
@@ -1934,10 +2039,10 @@ class MS_Model_Member extends MS_Model {
 					}
 					break;
                                     
-                                case 'display_name':
-                                        $user = get_userdata( $this->id );
-                                        $value = $user->display_name;
-                                        break;
+				case 'display_name':
+					$user 	= get_userdata( $this->id );
+					$value 	= $user->display_name;
+					break;
 			}
 		}
 
@@ -1977,12 +2082,11 @@ class MS_Model_Member extends MS_Model {
 					break;
 			}
 		}else{
-                    if( $property == 'display_name' )
-                    {
-                        wp_update_user( array( 'ID' => $this->id, 'display_name' => $value ) );
-                    }
-                    
-                }
+			if( $property == 'display_name' ) {
+				wp_update_user( array( 'ID' => $this->id, 'display_name' => $value ) );
+			}
+			
+		}
 	}
 	
 	/**

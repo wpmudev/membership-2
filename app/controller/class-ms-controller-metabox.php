@@ -79,11 +79,7 @@ class MS_Controller_Metabox extends MS_Controller {
 
 		$extra = array();
 
-		/* start:pro */
-		if ( class_exists( 'MS_Rule_CptGroup_Model' ) ) {
-			$extra = MS_Rule_CptGroup_Model::get_custom_post_types();
-		}
-		/* end:pro */
+		$extra = MS_Rule_CptGroup_Model::get_custom_post_types();
 
 		$post_types = array_merge(
 			array( 'page', 'post', 'attachment' ),
@@ -167,15 +163,13 @@ class MS_Controller_Metabox extends MS_Controller {
 	public function add_meta_boxes() {
                 
                 // Disable meta box for non-M2 admin
-                $user_id = get_current_user_id();
-                if( ! MS_Model_Member::is_admin_user( $user_id ) ) return;
+        $user_id = get_current_user_id();
+        if( ! MS_Model_Member::is_admin_user( $user_id ) ) return;
             
 		if ( defined( 'MS_CPT_ENABLE_ACCESS_BOX' ) && MS_CPT_ENABLE_ACCESS_BOX ) {
 			$extra = array();
 
-			/* start:pro */
 			$extra = MS_Rule_CptGroup_Model::get_custom_post_types();
-			/* end:pro */
 
 			$post_types = array_merge(
 				array( 'page', 'post', 'attachment' ),
@@ -234,16 +228,16 @@ class MS_Controller_Metabox extends MS_Controller {
 
 			// Get the base protection rule and check if post is protected.
 			$rule = $this->get_rule( $base, $post_type );
-			$data['is_protected'] = ! $rule->has_access( $post->ID, false );
-			$data['rule_type'] = $rule->rule_type;
+			$data['is_protected'] 	= ! $rule->has_access( $post->ID, false );
+			$data['rule_type'] 		= $rule->rule_type;
 
 			// Check each membership to see if the post is protected.
 			foreach ( $all_memberships as $membership ) {
 				if ( $membership->is_base ) { continue; }
 
 				$rule = $this->get_rule( $membership, $post_type );
-				$data['access'][ $membership->id ]['has_access'] = $rule->get_rule_value( $post->ID );
-				$data['access'][ $membership->id ]['name'] = $membership->name;
+				$data['access'][ $membership->id ]['has_access'] 	= $rule->get_rule_value( $post->ID );
+				$data['access'][ $membership->id ]['name'] 			= $membership->name;
 			}
 		}
 		$data['post_id'] = $post->ID;
@@ -285,8 +279,6 @@ class MS_Controller_Metabox extends MS_Controller {
 
 			default:
 				$rule = $membership->get_rule( $post_type );
-
-				/* start:pro */
 				if ( in_array( $post_type, MS_Rule_CptGroup_Model::get_custom_post_types() ) ) {
 					if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_CPT_POST_BY_POST ) ) {
 						$rule = $membership->get_rule( MS_Rule_CptItem::RULE_ID );
@@ -294,7 +286,6 @@ class MS_Controller_Metabox extends MS_Controller {
 						$rule = $membership->get_rule( MS_Rule_CptGroup::RULE_ID );
 					}
 				}
-				/* end:pro */
 				break;
 		}
 
@@ -319,8 +310,8 @@ class MS_Controller_Metabox extends MS_Controller {
 	public function toggle_membership_access( $post_id, $rule_type, $membership_id ) {
 		if ( $this->is_admin_user() ) {
 			$membership = MS_Factory::load( 'MS_Model_Membership', $membership_id );
-			$rule = $membership->get_rule( $rule_type );
-			$protected = ! $rule->get_rule_value( $post_id );
+			$rule 		= $membership->get_rule( $rule_type );
+			$protected 	= ! $rule->get_rule_value( $post_id );
 
 			if ( $membership->is_base() ) {
 				/*
@@ -380,14 +371,12 @@ class MS_Controller_Metabox extends MS_Controller {
 			$read_only = true;
 		} elseif ( 'attachment' == $post_type ) {
 			$read_only = true;
-			/* start:pro */
 		} elseif ( in_array( $post_type, MS_Rule_CptGroup_Model::get_custom_post_types() ) ) {
 			if ( MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_CPT_POST_BY_POST ) ) {
 				$read_only = false;
 			} else {
 				$read_only = true;
 			}
-			/* end:pro */
 		} else {
 			$read_only = false;
 		}

@@ -21,9 +21,9 @@ class MS_Helper_ListTable_Event extends MS_Helper_ListTable {
 	public function get_columns() {
 		$columns = array(
 			'post_modified' => __( 'Date', 'membership2' ),
-			'user_id' => __( 'Member', 'membership2' ),
+			'user_id' 		=> __( 'Member', 'membership2' ),
 			'membership_id' => __( 'Membership', 'membership2' ),
-			'description' => __( 'Event', 'membership2' ),
+			'description' 	=> __( 'Event', 'membership2' ),
 		);
 
 		if ( isset( $_REQUEST['membership_id'] ) ) {
@@ -41,7 +41,7 @@ class MS_Helper_ListTable_Event extends MS_Helper_ListTable {
 			'membership_helper_listtable_event_sortable_columns',
 			array(
 				'post_modified' => array( 'post_modified', false ),
-				'user_id' => array( 'user_id', false ),
+				'user_id' 		=> array( 'user_id', false ),
 				'membership_id' => array( 'membership_id', false ),
 			)
 		);
@@ -66,8 +66,8 @@ class MS_Helper_ListTable_Event extends MS_Helper_ListTable {
 		$current_page = $this->get_pagenum();
 
 		$args = array(
-			'posts_per_page' => $per_page,
-			'offset' => ( $current_page - 1 ) * $per_page,
+			'posts_per_page' 	=> $per_page,
+			'offset' 			=> ( $current_page - 1 ) * $per_page,
 		);
 
 		if ( isset( $_REQUEST['membership_id'] ) ) {
@@ -75,17 +75,17 @@ class MS_Helper_ListTable_Event extends MS_Helper_ListTable {
 		}
 
 		if ( ! empty( $_REQUEST['s'] ) ) {
-			$args['s'] = $_REQUEST['s'];
-			$this->search_string = $args['s'];
+			$args['s'] 				= $_REQUEST['s'];
+			$this->search_string 	= $args['s'];
 			$args['posts_per_page'] = -1;
-			$args['number'] = false;
-			$args['offset'] = 0;
+			$args['number'] 		= false;
+			$args['offset'] 		= 0;
 		}
 
 		// Prepare order by statement.
 		if ( ! empty( $_REQUEST['orderby'] ) && ! empty( $_REQUEST['order'] ) ) {
-			$args['orderby'] = $_REQUEST['orderby'];
-			$args['order'] = $_REQUEST['order'];
+			$args['orderby'] 	= $_REQUEST['orderby'];
+			$args['order'] 		= $_REQUEST['order'];
 		}
 
 		$total_items = MS_Model_Event::get_event_count( $args );
@@ -93,8 +93,8 @@ class MS_Helper_ListTable_Event extends MS_Helper_ListTable {
 
 		$this->set_pagination_args(
 			array(
-				'total_items' => $total_items,
-				'per_page' => $per_page,
+				'total_items' 	=> $total_items,
+				'per_page' 		=> $per_page,
 			)
 		);
 

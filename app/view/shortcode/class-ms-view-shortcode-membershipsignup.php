@@ -26,9 +26,9 @@ class MS_View_Shortcode_MembershipSignup extends MS_View {
 						$subscription->membership_id
 					);
                                         
-                                        $membership->_move_from = $member->cancel_ids_on_subscription(
-                                                $membership->id
-                                        );
+					$membership->_move_from = $member->cancel_ids_on_subscription(
+							$membership->id
+					);
                                         
 					switch ( $subscription->status ) {
 						case MS_Model_Relationship::STATUS_CANCELED:
@@ -51,7 +51,6 @@ class MS_View_Shortcode_MembershipSignup extends MS_View {
 
 						case MS_Model_Relationship::STATUS_TRIAL:
 						case MS_Model_Relationship::STATUS_ACTIVE:
-						case MS_Model_Relationship::STATUS_WAITING:
 							$this->membership_box_html(
 								$membership,
 								MS_Helper_Membership::MEMBERSHIP_ACTION_CANCEL,
@@ -60,6 +59,7 @@ class MS_View_Shortcode_MembershipSignup extends MS_View {
 							);
 							break;
 
+						case MS_Model_Relationship::STATUS_WAITING:
 						case MS_Model_Relationship::STATUS_PENDING:
 							if ( $membership->is_free() ) {
 								$memberships[] = $membership;

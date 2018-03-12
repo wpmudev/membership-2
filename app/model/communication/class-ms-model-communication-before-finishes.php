@@ -27,7 +27,7 @@ class MS_Model_Communication_Before_Finishes extends MS_Model_Communication {
 	 */
 	public function set_period_name( $field ) {
 		$field['title'] = __( 'Notice Period', 'membership2' );
-		$field['desc'] = __( 'Define, how many days in advance the user should be notified.', 'membership2' );
+		$field['desc'] 	= __( 'Define, how many days in advance the user should be notified.', 'membership2' );
 
 		return $field;
 	}

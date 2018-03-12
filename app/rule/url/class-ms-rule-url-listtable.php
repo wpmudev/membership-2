@@ -10,18 +10,19 @@ class MS_Rule_Url_ListTable extends MS_Helper_ListTable_Rule {
 
 	public function __construct( $model ) {
 		parent::__construct( $model );
-		$this->name['singular'] = __( 'URL', 'membership2' );
-		$this->name['plural'] = __( 'URLs', 'membership2' );
-		$this->name['default_access'] = __( 'Nobody', 'membership2' );
+		$this->name['singular'] 		= __( 'URL', 'membership2' );
+		$this->name['plural'] 			= __( 'URLs', 'membership2' );
+		$this->name['default_access'] 	= __( 'Nobody', 'membership2' );
 	}
 
 	public function get_columns() {
 		return apply_filters(
 			'membership_helper_listtable_' . $this->id . '_columns',
 			array(
-				'cb' => true,
-				'url' => __( 'Page URL', 'membership2' ),
-				'access' => true,
+				'cb' 		=> true,
+				'url' 		=> __( 'Page URL', 'membership2' ),
+				'access' 	=> true,
+				'dripped' 	=> true,
 			)
 		);
 	}
@@ -37,8 +38,8 @@ class MS_Rule_Url_ListTable extends MS_Helper_ListTable_Rule {
 			$trash_url = esc_url_raw(
 				add_query_arg(
 					array(
-						'rule_action' => MS_Rule_Url::ACTION_DELETE,
-						'_wpnonce' => wp_create_nonce( MS_Rule_Url::ACTION_DELETE ),
+						'rule_action' 	=> MS_Rule_Url::ACTION_DELETE,
+						'_wpnonce' 		=> wp_create_nonce( MS_Rule_Url::ACTION_DELETE ),
 					),
 					$rule_url
 				)
@@ -56,6 +57,7 @@ class MS_Rule_Url_ListTable extends MS_Helper_ListTable_Rule {
 			$actions,
 			$item
 		);
+
 
 		return sprintf(
 			'%1$s %2$s',
