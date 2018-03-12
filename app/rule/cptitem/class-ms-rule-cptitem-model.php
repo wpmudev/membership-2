@@ -121,10 +121,13 @@ class MS_Rule_CptItem_Model extends MS_Rule {
 				 */
 				if ( ! in_array( $post_type, $excluded ) ) {
 					foreach ( $this->rule_value as $id => $value ) {
-						if ( $this->has_access( $id ) ) {
-							self::$allowed_ids[] = $id;
-						} else {
-							self::$denied_ids[] = $id;
+						$has_access = $this->has_access( $id );
+						if ( $has_access !== null ) {
+							if ( $has_access ) {
+								self::$allowed_ids[] = $id;
+							} else {
+								self::$denied_ids[] = $id;
+							}
 						}
 					}
 				}
