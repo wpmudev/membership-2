@@ -638,6 +638,7 @@ class MS_Addon_Coupon_Model extends MS_Model_CustomPostType {
 			$this->coupon_message = __( 'This Coupon has expired.', 'membership2' );
 			$valid = false;
 		} else {
+			$membership_allowed = false;
 			if ( is_array( $this->membership_id ) ) {
 				foreach ( $this->membership_id as $valid_id ) {
 					if ( 0 == $valid_id || $valid_id == $membership_id ) {

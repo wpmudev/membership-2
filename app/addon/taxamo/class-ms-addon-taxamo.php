@@ -230,7 +230,7 @@ class MS_Addon_Taxamo extends MS_Addon {
 				array(
 					'type' 	=> MS_Helper_Html::TYPE_HTML_TEXT,
 					'title' => __( 'Settings', 'membership2' ),
-					'value' 	=> __( 'When this Add-on is enabled you will see a new section in the "Settings" page with additional options.', 'membership2' ),
+					'value' => __( 'When this Add-on is enabled you will see a new section in the "Settings" page with additional options.', 'membership2' ),
 				),
 			),
 		);
