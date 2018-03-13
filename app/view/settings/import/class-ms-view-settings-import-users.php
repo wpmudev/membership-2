@@ -34,7 +34,6 @@ class MS_View_Settings_Import_Users extends MS_View {
 			$fields['sep'],
 			$fields['batchsize'],
 			$fields['sep'],
-			$fields['clear_all'],
 			$fields['back'],
 			$fields['import']
 		);
