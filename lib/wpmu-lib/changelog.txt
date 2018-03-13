@@ -1,0 +1,199 @@
+Plugin Name: WPMU Dev code library
+Author:      Philipp Stracker, Marcin Pietrzak
+
+Change Log:
+----------------------------------------------------------------------
+
+3.0.6
+PHP
+- Change variable name to correct one.
+
+3.0.5
+PHP
+- Added sanitization of css classes.
+- Added wpColorPicker field.
+- Added wp_media field.
+- Fixed a url port problem.
+
+3.0.4
+JS
+- Added check is function "el.wpmuiSelect" to avoid JavaScript errors.
+
+3.0.3
+----------------------------------------------------------------------
+JS
+- Improved scripts to be compatible wit select2 v4.
+
+3.0.0
+----------------------------------------------------------------------
+PHP
+- Improve performance of initial module loading
+- Change library function from `lib2()` to `lib3()`
+- Add a P3P header so IE stores session data
+- Remove deprecated function `lib3()->translate_plugin()`
+- Remove deprecated function `lib3()->html->message()`
+- Add convenience function `lib3()->is_false()`
+- Rename `lib3()->html->plugin_list()` to `addon_list()`
+- Hide the "Details" link for disabled add-ons in the addon-list
+
+JS
+- Big improvements to the `wpmUi.popup()` function (templates, custom css, ...)
+- Add WordPress-like hook integration `wpmUi.add_action()`, `wpmUi.do_action()`, ...
+- Update select2 library from v3.5 to v4.0
+- Remove tiny-scrollbar JS library
+
+CSS
+- Update fontawesome library from v4.2 to v4.4
+- Update jQuery UI CSS from v1.10.4 to v1.11.4
+- Add animate.css library v3.4
+
+Migration notes
+- Rename `lib2()` to `lib3()`
+- Remove `->ui->add('scrollbar')`, add custom solution via CSS
+- Remove `->translate_plugin` with direct locationzation code
+- Replace `->html->message` with `->ui->admin_message`
+- Replace `->html->plugin_list` with `->html->addon_list`
+
+= v 3.0 ==============================================================
+
+2.0.2
+----------------------------------------------------------------------
+- Fix bug with wpmui.popup contents
+
+2.0.2
+----------------------------------------------------------------------
+- Fix javascript collision with ACF Pro plugin
+- New js element wpmuUi.progressbar()
+- New function lib2()->convert()
+- lib2()->ui->admin_message() has new styles and discardable mode
+- lib2()->html->element() regards class for hidden fields
+- lib2()->html->element() can handle new HTML5 input types: number, url, email, time, search
+- lib2()->html->element() radio-slider element can get special class 'reverse'
+- lib2()->html->element() has a new attribute called 'wrapper_class'
+- lib2()->html->plugin_list() only displays the Details link if details are present
+- lib2()->debug has many small improvements
+
+2.0.1
+----------------------------------------------------------------------
+- Fix errors when running side by side with older version
+- Add new function handlers to the JS popup: wpmUi.popup().on() and .off()
+
+2.0.0
+----------------------------------------------------------------------
+- Massive refactoring of the file and code structure
+- Added new functions
+- Much better documentation of the library
+- Great improvements in the debugger output
+
+= v 2.0 ==============================================================
+
+1.1.3
+----------------------------------------------------------------------
+- Improve the wpmUi.popup() object
+
+1.1.2
+----------------------------------------------------------------------
+- Fix issue where js/css files were not loaded in front-end
+- Several small code improvements
+
+1.1.1
+----------------------------------------------------------------------
+- Fix a PHP warning in html plugin_list
+- Improve the way javascripts and script-data is loaded in pages
+- Integrate new UI collections: 'fontawesome', 'jquery-ui'
+
+1.1.0
+----------------------------------------------------------------------
+- Add new HTML helper component: WDev()->html
+- Add new HTML function: WDev()->html->plugin_list()
+- Add new function to download files: WDev()->file_download()
+- Internal improvements
+
+1.0.17
+----------------------------------------------------------------------
+- Fix issue where scripts were not loaded in some cases
+
+1.0.16
+----------------------------------------------------------------------
+- Fix error on servers that run older version than PHP 5.3
+
+1.0.15
+----------------------------------------------------------------------
+- Add new session storage functions: WDev()->store_add(), store_get()
+- Add JS wpmUi.binary object to base-64 encode/decode data
+
+1.0.14
+----------------------------------------------------------------------
+- Add support for popup-classes (JS)
+- Add JS confirmation dialog: wpmUi.confirm()
+- Add new PHP functions to sanitize missing array keys: WDev()->load_fields()
+- Add new PHP debugging function: WDev()->debug()
+
+1.0.13
+----------------------------------------------------------------------
+- Migrate project to grunt
+- Add support for wp-config option: define('WDEV_UNMINIFIED', true)
+- Fix javascript issue with dynamic form submit in WpmUiAjaxData
+
+1.0.12
+----------------------------------------------------------------------
+- Fix issue with duplicate markup of cloned multiselect elements.
+- Make JS auto-init optional by checking body class 'no-auto-init'.
+
+1.0.11
+----------------------------------------------------------------------
+- Fixed z-index of overlay and popup window (fixes issues in Firefox)
+- Fixed issue with dropdown lists that didn't close properly.
+- Fixed loading of plugin translations.
+- Add support for multiselect lists with ajax source.
+
+1.0.10
+----------------------------------------------------------------------
+- Fixed z-index of select2 dropdown list (fixes issues of multiselect in tickbox)
+
+1.0.9 - 2014-08-15
+----------------------------------------------------------------------
+- Add the UI files 'vnav': WDev()->add_ui( 'vnav' );
+- Fix bug that happened when enqueuing the very first script/style using WDev()
+
+1.0.8 - 2014-08-12
+----------------------------------------------------------------------
+- Methods now must be called via "WDev()->method()" and not "TheLib::method()".
+- Situations when plugins include different versions of the library are resolved correctly now.
+
+1.0.7 - 2014-07-28
+----------------------------------------------------------------------
+- Make message() persitent: Message is displayed even after redirect
+- add_js() and add_css() now accept a script-alias instead of url to load core WordPress scripts.
+- New function TheLib::current_url()
+
+1.0.6 - 2014-07-21
+----------------------------------------------------------------------
+- New javascript function "wpmUi.obj()": Convert JS array to object.
+
+1.0.5 - 2014-07-11
+----------------------------------------------------------------------
+- Fix buddypress warning caused by calling get_current_user_id too early.
+- Add new parameter to ajax().load_http() to specify the target frame.
+- Change function name "load_textlang" to "translate_plugin"
+- Fix issues with url translation (css_url / js_url)
+
+1.0.4 - 2014-07-10
+----------------------------------------------------------------------
+- Fix warning about static functions.
+
+1.0.3 - 2014-07-09
+----------------------------------------------------------------------
+- Support for Windows server (fixes javascript errors)
+
+1.0.2 - 2014-07-09
+----------------------------------------------------------------------
+- Correct the "pointer" function to dismis pointers correctly.
+
+1.0.1 - 2014-07-09
+----------------------------------------------------------------------
+- PHP 5.2 compatibility
+
+1.0 - 2014-07-01
+----------------------------------------------------------------------
+- First version.

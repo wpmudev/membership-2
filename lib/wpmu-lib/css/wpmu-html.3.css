@@ -1,0 +1,355 @@
+/**
+ * WPMU Dev HTML helper styles
+ * (Philipp Stracker for WPMU Dev)
+ *
+ * This file is included by the WDev()->html->element() function.
+ *
+ * @since 1.1.0
+ */
+/***
+ * GENERAL INPUT FIELDS *
+ ***/
+#wpwrap,
+body {
+  /* Styles used to display input elements inside Widget Admin */
+  /* horizontal separator */
+  /* vertical separator */
+}
+#wpwrap .wpmui-input-wrapper.wpmui-loading > *,
+body .wpmui-input-wrapper.wpmui-loading > * {
+  opacity: 0.25;
+  cursor: default;
+}
+#wpwrap .wpmui-input-wrapper.wpmui-loading .wpmui-field-input,
+body .wpmui-input-wrapper.wpmui-loading .wpmui-field-input {
+  background-color: #E5E5E5;
+}
+#wpwrap .wpmui-input-wrapper.wpmui-loading:after,
+body .wpmui-input-wrapper.wpmui-loading:after {
+  top: 5px;
+  /* compensate for the field margin */
+  bottom: 5px;
+  /* compensate for the field margin */
+  background-color: transparent;
+}
+#wpwrap .wpmui-field-description,
+body .wpmui-field-description {
+  display: block;
+  margin: 10px 4px 10px 0;
+  color: #666;
+  font-size: 0.9em;
+  font-weight: normal;
+}
+#wpwrap .wpmui-field-input,
+#wpwrap .wpmui-field-button,
+body .wpmui-field-input,
+body .wpmui-field-button {
+  margin-top: 6px;
+  margin-bottom: 6px;
+  vertical-align: top;
+  display: inline-block;
+  position: relative;
+}
+#wpwrap .wpmui-field-input.button,
+#wpwrap .wpmui-field-input.button-primary,
+#wpwrap .wpmui-field-button,
+body .wpmui-field-input.button,
+body .wpmui-field-input.button-primary,
+body .wpmui-field-button {
+  margin-right: 6px;
+}
+#wpwrap .wpmui-field-label,
+body .wpmui-field-label {
+  display: block;
+  clear: both;
+  margin: 2px 0;
+  font-style: normal;
+  color: #222;
+}
+#wpwrap .wpmui-field-label.inline-label,
+body .wpmui-field-label.inline-label {
+  display: inline-block;
+  margin: 6px 10px 6px 0;
+}
+#wpwrap h3.wpmui-field-label,
+body h3.wpmui-field-label {
+  margin-bottom: 10px;
+}
+#wpwrap .wpmui-label-before,
+#wpwrap .wpmui-label-after,
+body .wpmui-label-before,
+body .wpmui-label-after {
+  display: inline-block;
+  margin: 6px;
+  line-height: 28px;
+  vertical-align: top;
+}
+#wpwrap .wpmui-label-before .wpmui-field-input,
+#wpwrap .wpmui-label-before .wpmui-field-button,
+#wpwrap .wpmui-label-after .wpmui-field-input,
+#wpwrap .wpmui-label-after .wpmui-field-button,
+body .wpmui-label-before .wpmui-field-input,
+body .wpmui-label-before .wpmui-field-button,
+body .wpmui-label-after .wpmui-field-input,
+body .wpmui-label-after .wpmui-field-button {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+#wpwrap .wpmui-label-before,
+body .wpmui-label-before {
+  margin-left: 0;
+}
+#wpwrap .widget-content .wpmui-wrapper,
+body .widget-content .wpmui-wrapper {
+  display: block;
+  margin: 1em 0;
+}
+#wpwrap .widget-content .wpmui-wrapper .wpmui-field-label,
+body .widget-content .wpmui-wrapper .wpmui-field-label {
+  margin: 0;
+}
+#wpwrap .widget-content .wpmui-wrapper .wpmui-field-description,
+body .widget-content .wpmui-wrapper .wpmui-field-description {
+  margin: 0;
+}
+#wpwrap .widget-content .wpmui-wrapper .wpmui-field-input,
+#wpwrap .widget-content .wpmui-wrapper .wpmui-field-button,
+body .widget-content .wpmui-wrapper .wpmui-field-input,
+body .widget-content .wpmui-wrapper .wpmui-field-button {
+  margin-top: 4px;
+  margin-bottom: 0;
+}
+#wpwrap .wpmui-separator,
+body .wpmui-separator {
+  border-bottom: 1px solid #E5E5E5;
+  margin: 15px 0;
+}
+#wpwrap .wpmui-divider,
+body .wpmui-divider {
+  position: absolute;
+  right: 20px;
+  top: 0;
+  bottom: 0;
+  border-right: 1px solid #E5E5E5;
+}
+#wpwrap .wpmui-fa,
+body .wpmui-fa {
+  font-family: Fontawesome440 !important;
+}
+#wpwrap .no-click,
+body .no-click {
+  cursor: default;
+}
+
+/***
+ * HTML BLOCK (read only) *
+ ***/
+#wpwrap .wpmui-html-text-wrapper label,
+body .wpmui-html-text-wrapper label {
+  cursor: default;
+}
+
+/***
+ * CHECKBOX *
+ ***/
+#wpwrap .wpmui-field-checkbox,
+body .wpmui-field-checkbox {
+  margin: 6px 4px 0 0;
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+#wpwrap .wpmui-checkbox-wrapper,
+body .wpmui-checkbox-wrapper {
+  margin: 6px auto;
+  position: relative;
+  display: inline-block;
+  line-height: 28px;
+}
+#wpwrap .wpmui-checkbox-wrapper .wpmui-checkbox-caption,
+body .wpmui-checkbox-wrapper .wpmui-checkbox-caption {
+  padding-left: 24px;
+  font-weight: 500;
+}
+#wpwrap .wpmui-checkbox-list,
+body .wpmui-checkbox-list {
+  border: 1px solid #e5e5e5;
+  padding: 0 5px;
+  background: #FFFFFF;
+  max-height: 320px;
+  overflow: auto;
+}
+#wpwrap .wpmui-checkbox-list .wpmui-checkbox-wrapper,
+body .wpmui-checkbox-list .wpmui-checkbox-wrapper {
+  margin: 0;
+}
+#wpwrap .wpmui-checkbox-list .wpmui-no-checkbox .wpmui-checkbox-caption,
+body .wpmui-checkbox-list .wpmui-no-checkbox .wpmui-checkbox-caption {
+  padding: 0;
+}
+#wpwrap .wpmui-checkbox-list .wpmui-group,
+body .wpmui-checkbox-list .wpmui-group {
+  margin-bottom: 10px;
+}
+#wpwrap .wpmui-checkbox-list .wpmui-group .wpmui-parent .wpmui-checkbox-caption,
+body .wpmui-checkbox-list .wpmui-group .wpmui-parent .wpmui-checkbox-caption {
+  font-weight: 600;
+}
+#wpwrap .wpmui-checkbox-list .wpmui-group .wpmui-child,
+body .wpmui-checkbox-list .wpmui-group .wpmui-child {
+  margin-left: 24px;
+}
+
+/***
+ * RADIO SLIDER *
+ ***/
+#wpwrap .wpmui-radio-slider-wrapper,
+body .wpmui-radio-slider-wrapper {
+  clear: both;
+}
+#wpwrap .wpmui-radio-slider-wrapper .wpmui-field-label,
+body .wpmui-radio-slider-wrapper .wpmui-field-label {
+  cursor: default;
+}
+#wpwrap .wpmui-radio-slider-wrapper .wpmui-label-before,
+#wpwrap .wpmui-radio-slider-wrapper .wpmui-label-after,
+body .wpmui-radio-slider-wrapper .wpmui-label-before,
+body .wpmui-radio-slider-wrapper .wpmui-label-after {
+  line-height: 18px;
+  margin-top: 3px;
+  margin-bottom: 3px;
+}
+#wpwrap .wpmui-radio-slider-wrapper .wpmui-radio-slider,
+body .wpmui-radio-slider-wrapper .wpmui-radio-slider {
+  position: relative;
+  display: inline-block;
+  width: 40px;
+  height: 18px;
+  margin: 3px 0;
+  border-radius: 10px;
+  background: #b0b0b0;
+  opacity: .8;
+  overflow: visible;
+  cursor: pointer;
+}
+#wpwrap .wpmui-radio-slider-wrapper .wpmui-radio-slider:hover,
+body .wpmui-radio-slider-wrapper .wpmui-radio-slider:hover {
+  opacity: 1;
+}
+#wpwrap .wpmui-radio-slider-wrapper .wpmui-radio-slider[readonly], #wpwrap .wpmui-radio-slider-wrapper .wpmui-radio-slider[readonly]:hover,
+body .wpmui-radio-slider-wrapper .wpmui-radio-slider[readonly],
+body .wpmui-radio-slider-wrapper .wpmui-radio-slider[readonly]:hover {
+  opacity: 0.5;
+  cursor: default;
+}
+#wpwrap .wpmui-radio-slider-wrapper .wpmui-radio-slider[readonly] .wpmui-toggle, #wpwrap .wpmui-radio-slider-wrapper .wpmui-radio-slider[readonly]:hover .wpmui-toggle,
+body .wpmui-radio-slider-wrapper .wpmui-radio-slider[readonly] .wpmui-toggle,
+body .wpmui-radio-slider-wrapper .wpmui-radio-slider[readonly]:hover .wpmui-toggle {
+  opacity: .7;
+}
+#wpwrap .wpmui-radio-slider-wrapper .wpmui-radio-slider.on,
+body .wpmui-radio-slider-wrapper .wpmui-radio-slider.on {
+  background: #6BBB1A;
+  /* rgb( 107, 187, 26 ) */
+}
+#wpwrap .wpmui-radio-slider-wrapper .wpmui-radio-slider.on .wpmui-toggle,
+body .wpmui-radio-slider-wrapper .wpmui-radio-slider.on .wpmui-toggle {
+  left: 21px;
+}
+#wpwrap .wpmui-radio-slider-wrapper .wpmui-radio-slider .wpmui-toggle,
+body .wpmui-radio-slider-wrapper .wpmui-radio-slider .wpmui-toggle {
+  position: absolute;
+  display: inline-block;
+  left: 0;
+  width: 12px;
+  height: 12px;
+  margin: 3px;
+  background: #F4F4F4;
+  border-radius: 50%;
+  transition: all .2s ease-in-out;
+}
+#wpwrap .wpmui-radio-slider-wrapper .wpmui-label-before,
+body .wpmui-radio-slider-wrapper .wpmui-label-before {
+  color: #000;
+}
+#wpwrap .wpmui-radio-slider-wrapper .wpmui-label-after,
+body .wpmui-radio-slider-wrapper .wpmui-label-after {
+  color: #CCC;
+}
+#wpwrap .wpmui-radio-slider-wrapper.on .wpmui-label-before,
+body .wpmui-radio-slider-wrapper.on .wpmui-label-before {
+  color: #CCC;
+}
+#wpwrap .wpmui-radio-slider-wrapper.on .wpmui-label-after,
+body .wpmui-radio-slider-wrapper.on .wpmui-label-after {
+  color: #390;
+  /* rgb( 51, 153, 0 ) */
+}
+#wpwrap .wpmui-radio-slider-wrapper.reverse-wrapper .wpmui-radio-slider,
+body .wpmui-radio-slider-wrapper.reverse-wrapper .wpmui-radio-slider {
+  background: #6BBB1A;
+  /* rgb( 107, 187, 26 ) */
+}
+#wpwrap .wpmui-radio-slider-wrapper.reverse-wrapper .wpmui-label-before,
+body .wpmui-radio-slider-wrapper.reverse-wrapper .wpmui-label-before {
+  color: #390;
+  /* rgb( 51, 153, 0 ) */
+}
+#wpwrap .wpmui-radio-slider-wrapper.reverse-wrapper .wpmui-label-after,
+body .wpmui-radio-slider-wrapper.reverse-wrapper .wpmui-label-after {
+  color: #CCC;
+}
+#wpwrap .wpmui-radio-slider-wrapper.reverse-wrapper.on .wpmui-radio-slider,
+body .wpmui-radio-slider-wrapper.reverse-wrapper.on .wpmui-radio-slider {
+  background: #B0B0B0;
+}
+#wpwrap .wpmui-radio-slider-wrapper.reverse-wrapper.on .wpmui-label-before,
+body .wpmui-radio-slider-wrapper.reverse-wrapper.on .wpmui-label-before {
+  color: #CCC;
+}
+#wpwrap .wpmui-radio-slider-wrapper.reverse-wrapper.on .wpmui-label-after,
+body .wpmui-radio-slider-wrapper.reverse-wrapper.on .wpmui-label-after {
+  color: #000;
+}
+#wpwrap .wpmui-radio-slider-wrapper.inp-before-wrapper,
+body .wpmui-radio-slider-wrapper.inp-before-wrapper {
+  position: relative;
+  display: block;
+}
+#wpwrap .wpmui-radio-slider-wrapper.inp-before-wrapper .wpmui-field-label,
+body .wpmui-radio-slider-wrapper.inp-before-wrapper .wpmui-field-label {
+  margin-left: 50px;
+}
+#wpwrap .wpmui-radio-slider-wrapper.inp-before-wrapper .wpmui-radio-slider,
+body .wpmui-radio-slider-wrapper.inp-before-wrapper .wpmui-radio-slider {
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+/***
+ * HTML TABLE *
+ ***/
+.wpmui-html-table {
+  width: 100%;
+  clear: both;
+  margin: 10px 0;
+  background: #FFF;
+  border: 1px solid #e5e5e5;
+  border-spacing: 0;
+  -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+}
+.wpmui-html-table td,
+.wpmui-html-table th {
+  line-height: 24px;
+  padding: 8px 6px;
+  vertical-align: top;
+  font-size: 12px;
+  overflow: hidden;
+  color: #555;
+}
+.wpmui-html-table thead tr th {
+  border-bottom: 1px solid #e1e1e1;
+  color: #333;
+}
