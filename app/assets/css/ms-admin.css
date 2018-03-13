@@ -3010,19 +3010,16 @@ body #wpwrap .ms-wrap .wpmui-radio-slider-wrapper.inline-label .wpmui-field-labe
 .wpmui-popup .sel-batchsize-wrapper,
 #wpwrap .ms-wrap .sel-batchsize-wrapper {
   position: relative;
-  margin-left: 150px;
   padding-top: 30px;
   display: block;
 }
 .wpmui-popup .sel-batchsize-wrapper .wpmui-field-label,
 #wpwrap .ms-wrap .sel-batchsize-wrapper .wpmui-field-label {
   position: absolute;
-  left: -150px;
   top: 0;
 }
 .wpmui-popup .sel-batchsize-wrapper .wpmui-field-select,
 #wpwrap .ms-wrap .sel-batchsize-wrapper .wpmui-field-select {
-  position: absolute;
   top: 0;
   margin: 0;
 }
