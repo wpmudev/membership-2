@@ -220,6 +220,17 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	 */
 	protected $content_type = 'text/html';
 
+	
+	/**
+	 * Defines if it should be shown to admin
+	 *
+	 * Only relevant for user specific mails
+	 *
+	 * @since 1.1.3
+	 * @var   bool
+	 */
+	protected $show_admin_cc = true;
+
 	/**
 	 * Don't persist this fields.
 	 *
@@ -1311,9 +1322,11 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 
 			// Prepare list of recipients.
 			$recipients 	= array( $member->email );
-			$cc_recipients 	= $this->cc_email;
-			if ( $this->cc_enabled && ! empty( $cc_recipients ) ) {
-				$recipients[] = $cc_recipients;
+			if ( $this->show_admin_cc ) {
+				$cc_recipients 	= $this->cc_email;
+				if ( $this->cc_enabled && ! empty( $cc_recipients ) ) {
+					$recipients[] = $cc_recipients;
+				}
 			}
 
 			// Final step: Allow customization of all email parts.

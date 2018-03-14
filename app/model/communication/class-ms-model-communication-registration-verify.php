@@ -21,6 +21,17 @@ class MS_Model_Communication_Registration_Verify extends MS_Model_Communication 
 	 */
 	protected $type = self::COMM_TYPE_REGISTRATION_VERIFY;
 
+
+	/**
+	 * Defines if it should be shown to admin
+	 *
+	 * Only relevant for user specific mails
+	 *
+	 * @since 1.1.3
+	 * @var   bool
+	 */
+	protected $show_admin_cc = false;
+
 	/**
 	 * Get communication description.
 	 *

@@ -88,10 +88,11 @@ class MS_View_Settings_Page_Communications extends MS_View_Settings_Edit {
 
 			MS_Helper_Html::html_element( $fields['subject'] );
 			MS_Helper_Html::html_element( $fields['email_body'] );
-
-			MS_Helper_Html::html_element( $fields['cc_enabled'] );
-			echo ' &nbsp; ';
-			MS_Helper_Html::html_element( $fields['cc_email'] );
+			if ( $comm->show_admin_cc ) {
+				MS_Helper_Html::html_element( $fields['cc_enabled'] );
+				echo ' &nbsp; ';
+				MS_Helper_Html::html_element( $fields['cc_email'] );
+			}
 			MS_Helper_Html::html_separator();
 			MS_Helper_Html::html_element( $fields['save_email'] );
 			?>
