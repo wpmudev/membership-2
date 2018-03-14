@@ -389,12 +389,12 @@ class MS_Factory {
 				$model->id 			= $wp_user->ID;
 				$model->username 	= $wp_user->user_login;
 				$model->email 		= $wp_user->user_email;
-				$model->name 		= $wp_user->display_name;
+				$model->name 		= trim( $wp_user->display_name );
 				$model->first_name 	= $wp_user->first_name;
 				$model->last_name 	= $wp_user->last_name;
 				$model->wp_user 	= $wp_user;
 
-				if ( ! $model->name ) {
+				if ( ! $model->name || empty( $model->name ) ) {
 					if ( $model->first_name ) {
 						$model->name = $model->first_name . ' ' . $model->last_name;
 					} else {
