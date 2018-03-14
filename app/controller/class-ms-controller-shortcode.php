@@ -578,15 +578,30 @@ class MS_Controller_Shortcode extends MS_Controller {
 		$setting 	= MS_Plugin::instance()->settings;
 		$member 	= MS_Model_Member::get_current_member();
                 
-		if( defined( 'MS_PROTECTED_MESSAGE_REVERSE_RULE' ) && MS_PROTECTED_MESSAGE_REVERSE_RULE && isset( $_REQUEST['membership_id'] ) ) {
+		if ( isset( $_REQUEST['membership_id'] ) ) {
 
-			$protection_msg = $setting->get_protection_message(
-				MS_Model_Settings::PROTECTION_MSG_CONTENT,
-				$_REQUEST['membership_id']
+			$has_protection_sc = MS_Helper_Shortcode::has_shortcode(
+				MS_Helper_Shortcode::SCODE_PROTECTED,
+				$post->post_content
 			);
 			
-		}
-		else{
+			if ( $has_protection_sc ) {
+			
+				$protection_msg = $setting->get_protection_message(
+					MS_Model_Settings::PROTECTION_MSG_SHORTCODE,
+					$_REQUEST['membership_id']
+				);
+				
+			} else {
+				
+				$protection_msg = $setting->get_protection_message(
+					MS_Model_Settings::PROTECTION_MSG_CONTENT,
+					$_REQUEST['membership_id']
+				);
+				
+			}
+			
+		} else {
 			if ( count( $member->subscriptions ) ) {
 
 				$sub = $member->get_subscription( 'priority' );
@@ -594,8 +609,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 					MS_Model_Settings::PROTECTION_MSG_CONTENT,
 					$sub->membership_id
 				);
-			}
-			else {
+			} else {
 				$protection_msg = $setting->get_protection_message(
 					MS_Model_Settings::PROTECTION_MSG_CONTENT
 				);
