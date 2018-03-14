@@ -30,7 +30,7 @@ $current = 'current';
 <div class="wpmui-list-wrapper">
 
 <?php if ( ! empty( $filters ) ) : ?>
-<div class="wp-filter"><ul class="filter-links"><?php
+<div class="wp-filter" style="margin-bottom: 0;"><ul class="filter-links"><?php
 	foreach ( $filters as $key => $label ) {
 		printf(
 			'<li><a href="#" class="filter %3$s" data-filter="%1$s">%2$s</a></li>',
