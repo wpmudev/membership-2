@@ -63,6 +63,7 @@ class MS_Helper_ListTable_Member extends MS_Helper_ListTable {
 	public function get_columns() {
 		$columns = array(
 			'cb' 			=> '<input type="checkbox" />',
+			'user_id' 		=> __( 'ID', 'membership2' ),
 			'username' 		=> __( 'Username', 'membership2' ),
 			'email' 		=> __( 'E-mail', 'membership2' ),
 			'membership' 	=> __( 'Membership', 'membership2' ),
@@ -260,6 +261,17 @@ class MS_Helper_ListTable_Member extends MS_Helper_ListTable {
 		);
 
 		return $html;
+	}
+
+	/**
+	 * The user id column
+	 *
+	 * @since 1.1.3
+	 * 
+	 * @param mixed $member The table item to display.
+	 */
+	public function column_user_id( $member ) {
+		return $member->id;
 	}
 
 	/**
