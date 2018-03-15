@@ -605,9 +605,10 @@ class MS_Rule extends MS_Model {
 			/*
 			 * Base rule ..
 			 *   - The meaning of TRUE/FALSE is inverted
-			 *   - NULL is always "allowed"
+			 *   - NULL is always "allowed" for $only_this
 			 */
 			$access = ! $access;
+			
 		} else {
 			// Apply dripped-content rules if neccessary.
 			if ( $access && $this->has_dripped_rules( $id ) ) {
