@@ -5,7 +5,7 @@
  *
  * @since  1.1.4
  */
-class TheLib_Session extends TheLib {
+class MsTheLib_Session extends MsTheLib {
 
 	/**
 	 * Adds a value to the data collection in the user session.

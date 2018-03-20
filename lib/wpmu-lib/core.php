@@ -56,15 +56,15 @@ if ( ! function_exists( 'mslib3' ) ) {
 // Define the absolute paths to all class files of this submodule.
 $dirname = dirname( __FILE__ ) . '/inc/';
 $files = array(
-	'TheLib'         => $dirname . 'class-thelib.php',
-	'TheLib_Core'    => $dirname . 'class-thelib-core.php',
-	'TheLib_Array'   => $dirname . 'class-thelib-array.php',
-	'TheLib_Debug'   => $dirname . 'class-thelib-debug.php',
-	'TheLib_Html'    => $dirname . 'class-thelib-html.php',
-	'TheLib_Net'     => $dirname . 'class-thelib-net.php',
-	'TheLib_Session' => $dirname . 'class-thelib-session.php',
-	'TheLib_Updates' => $dirname . 'class-thelib-updates.php',
-	'TheLib_Ui'      => $dirname . 'class-thelib-ui.php',
+	'MsTheLib'         => $dirname . 'class-thelib.php',
+	'MsTheLib_Core'    => $dirname . 'class-thelib-core.php',
+	'MsTheLib_Array'   => $dirname . 'class-thelib-array.php',
+	'MsTheLib_Debug'   => $dirname . 'class-thelib-debug.php',
+	'MsMsTheLib_Html'  => $dirname . 'class-thelib-html.php',
+	'MsTheLib_Net'     => $dirname . 'class-thelib-net.php',
+	'MsTheLib_Session' => $dirname . 'class-thelib-session.php',
+	'MsTheLib_Updates' => $dirname . 'class-thelib-updates.php',
+	'MsTheLib_Ui'      => $dirname . 'class-thelib-ui.php',
 );
 
 if ( ! class_exists( 'MsTheLib3_Wrap' ) ) {
@@ -103,7 +103,7 @@ if ( ! class_exists( 'MsTheLib3_Wrap' ) ) {
 						require_once $class_file;
 					}
 				}
-				self::$object = new TheLib_Core();
+				self::$object = new MsTheLib_Core();
 			}
 			return self::$object;
 		}
@@ -111,3 +111,9 @@ if ( ! class_exists( 'MsTheLib3_Wrap' ) ) {
 }
 // Stores the lib-directory if it contains the highest version files.
 MsTheLib3_Wrap::set_version( $version, $files );
+
+add_action( 'wp_enqueue_scripts', 'remove_csb_ui' );
+function remove_csb_ui() {
+	wp_dequeue_script( 'wpmu-wpmu-ui-3-min-js' );
+	wp_deregister_script( 'wpmu-wpmu-ui-3-min-js' );
+}

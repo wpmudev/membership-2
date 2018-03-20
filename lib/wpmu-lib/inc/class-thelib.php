@@ -4,7 +4,7 @@
  *
  * @since  1.1.0
  */
-abstract class TheLib {
+abstract class MsTheLib {
 
 	/**
 	 * Internal data collection used to pass arguments to callback functions.

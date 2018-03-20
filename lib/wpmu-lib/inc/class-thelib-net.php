@@ -5,7 +5,7 @@
  *
  * @since  2.0.0
  */
-class TheLib_Net extends TheLib {
+class MsTheLib_Net extends MsTheLib {
 
 	/**
 	 * Returns the current URL.

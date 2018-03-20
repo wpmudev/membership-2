@@ -5,7 +5,7 @@
  *
  * @since  1.1.4
  */
-class TheLib_Ui extends TheLib {
+class MsTheLib_Ui extends MsTheLib {
 
 	// Load the main JS module (the wpmUi object) and basic styles.
 	const MODULE_CORE = 'core';

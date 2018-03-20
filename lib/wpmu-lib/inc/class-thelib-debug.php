@@ -5,7 +5,7 @@
  *
  * @since 1.1.4
  */
-class TheLib_Debug extends TheLib  {
+class MsTheLib_Debug extends MsTheLib  {
 
 	/**
 	 * If set to true or false it will override the WP_DEBUG value
