@@ -208,7 +208,7 @@ class MS_Addon_Redirect extends MS_Addon {
 			$new_url 	= $model->get( 'redirect_login' );
 
 			if ( ! empty( $new_url ) ) {
-				$url = lib3()->net->expand_url( $new_url );
+				$url = mslib3()->net->expand_url( $new_url );
 			}
 		}
 
@@ -226,7 +226,7 @@ class MS_Addon_Redirect extends MS_Addon {
 			$new_url 	= $model->get( 'redirect_login' );
 
 			if ( ! empty( $new_url ) ) {
-				$redirect_to = lib3()->net->expand_url( $new_url );
+				$redirect_to = mslib3()->net->expand_url( $new_url );
 			}
 		}
 
@@ -247,7 +247,7 @@ class MS_Addon_Redirect extends MS_Addon {
 			$new_url = $model->get( 'redirect_logout' );
 
 			if ( ! empty( $new_url ) ) {
-				$url = lib3()->net->expand_url( $new_url );
+				$url = mslib3()->net->expand_url( $new_url );
 			}
 		}
 
@@ -264,7 +264,7 @@ class MS_Addon_Redirect extends MS_Addon {
 		$new_url 	= $model->get( 'redirect_logout' );
 
 		if ( ! empty( $new_url ) ) {
-			$logout_url = lib3()->net->expand_url( $new_url );
+			$logout_url = mslib3()->net->expand_url( $new_url );
 		}else{
 			$logout_url = site_url();
 		}

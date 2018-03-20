@@ -129,7 +129,7 @@ class MS_Controller_Gateway extends MS_Controller {
 			&& ( self::validate_required( $fields ) || $_POST['field'] == 'pay_button_url' )
 			&& $this->is_admin_user()
 		) {
-			lib3()->array->strip_slashes( $_POST, 'value' );
+			mslib3()->array->strip_slashes( $_POST, 'value' );
 
 			$msg = $this->gateway_list_do_action(
 				$_POST['action'],
@@ -569,7 +569,7 @@ class MS_Controller_Gateway extends MS_Controller {
 						$data['cim_profiles'] = $gateway->get_cim_profile( $member );
 					}
 
-					lib3()->array->strip_slashes( $_POST, 'auth_error' );
+					mslib3()->array->strip_slashes( $_POST, 'auth_error' );
 
 					$data['cim_payment_profile_id'] = $gateway->get_cim_payment_profile_id( $member );
 					$data['auth_error'] = ! empty( $_POST['auth_error'] ) ? $_POST['auth_error'] : '';
@@ -614,7 +614,7 @@ class MS_Controller_Gateway extends MS_Controller {
 	public function process_purchase() {
 		$fields = array( 'gateway', 'ms_relationship_id' );
 
-		lib3()->array->equip_request( 'gateway', 'ms_relationship_id' );
+		mslib3()->array->equip_request( 'gateway', 'ms_relationship_id' );
 
 		$valid = true;
 		$nonce_name = $_REQUEST['gateway'] . '_' . $_REQUEST['ms_relationship_id'];
@@ -1038,7 +1038,7 @@ class MS_Controller_Gateway extends MS_Controller {
 			switch ( $gateway->id ) {
 				case MS_Gateway_Stripe::ID:
 					if ( ! empty( $_POST['stripeToken'] ) && $this->verify_nonce() ) {
-						lib3()->array->strip_slashes( $_POST, 'stripeToken' );
+						mslib3()->array->strip_slashes( $_POST, 'stripeToken' );
 
 						$gateway->add_card( $member, $_POST['stripeToken'] );
 						if ( ! empty( $_POST['ms_relationship_id'] ) ) {
@@ -1156,9 +1156,9 @@ class MS_Controller_Gateway extends MS_Controller {
 						'ms_init' => array( 'gateway_authorize' ),
 					);
 
-					lib3()->ui->add( 'core' );
-					lib3()->ui->add( 'select' );
-					lib3()->ui->data( 'ms_data', $data );
+					mslib3()->ui->add( 'core' );
+					mslib3()->ui->add( 'select' );
+					mslib3()->ui->data( 'ms_data', $data );
 					wp_enqueue_script( 'ms-public' );
 				}
 				break;

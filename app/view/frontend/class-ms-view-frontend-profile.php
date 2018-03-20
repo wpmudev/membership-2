@@ -173,7 +173,7 @@ class MS_View_Frontend_Profile extends MS_View {
 		});
 		<?php
 		$script = ob_get_clean();
-		lib3()->ui->script( $script );
+		mslib3()->ui->script( $script );
 	}
 
 	/**

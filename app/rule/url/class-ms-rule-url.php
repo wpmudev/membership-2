@@ -100,7 +100,7 @@ class MS_Rule_Url extends MS_Controller {
 
 		switch ( $action ) {
 			case self::ACTION_ADD:
-				lib3()->array->strip_slashes( $_POST, 'url_value' );
+				mslib3()->array->strip_slashes( $_POST, 'url_value' );
 
 				$url 	= $_POST['url_value'];
 				$base 	= MS_Model_Membership::get_base();

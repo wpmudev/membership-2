@@ -30,7 +30,7 @@ class MS_Model_Export_Members extends MS_Model_Export_Base {
 		$file_name 		= $milliseconds . '_membership2-members';
 		switch ( $format ) {
 			case MS_Model_Export::JSON_EXPORT :
-				lib3()->net->file_download( json_encode( $data ), $file_name . '.json' );
+				mslib3()->net->file_download( json_encode( $data ), $file_name . '.json' );
 			break;
 
 			case MS_Model_Export::XML_EXPORT :
@@ -50,7 +50,7 @@ class MS_Model_Export_Members extends MS_Model_Export_Base {
 						$xml->addChild( $key, $members );
 					}
 				}
-				lib3()->net->file_download( $xml->asXML(), $file_name . '.xml' );
+				mslib3()->net->file_download( $xml->asXML(), $file_name . '.xml' );
 			break;
 		}
 	}

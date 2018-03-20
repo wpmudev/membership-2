@@ -196,7 +196,7 @@ class MS_Gateway_Authorize extends MS_Gateway {
 			$this
 		);
 
-		$need_code = lib3()->is_true( $this->secure_cc );
+		$need_code = mslib3()->is_true( $this->secure_cc );
 		$have_code = ! empty( $_POST['card_code'] );
 
 		if ( 0 == $invoice->total ) {
@@ -215,7 +215,7 @@ class MS_Gateway_Authorize extends MS_Gateway {
 			$invoice->timestamp = time();
 			$invoice->save();
 
-			$_POST['API Out: Secure Payment'] 		= lib3()->is_true( $this->secure_cc );
+			$_POST['API Out: Secure Payment'] 		= mslib3()->is_true( $this->secure_cc );
 			$_POST['API Out: CustomerProfileID'] 	= $cim_transaction->customerProfileId;
 			$_POST['API Out: PaymentProfileID'] 	= $cim_transaction->customerPaymentProfileId;
 			$_POST['API Out: InvoiceNumber'] 		= $cim_transaction->order->invoiceNumber;
@@ -649,7 +649,7 @@ class MS_Gateway_Authorize extends MS_Gateway {
 		$transaction->customerPaymentProfileId 	= $cim_payment_profile_id;
 
 		// Include the card code if the secure-cc flag is enabled!
-		if ( lib3()->is_true( $this->secure_cc ) ) {
+		if ( mslib3()->is_true( $this->secure_cc ) ) {
 			if ( ! empty( $_POST['card_code'] ) ) {
 				$transaction->cardCode = $_POST['card_code'];
 			}

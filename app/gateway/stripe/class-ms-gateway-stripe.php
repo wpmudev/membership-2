@@ -155,7 +155,7 @@ class MS_Gateway_Stripe extends MS_Gateway {
 		$note = 'Stripe Processing';
 
 		if ( ! empty( $_POST['stripeToken'] ) ) {
-			lib3()->array->strip_slashes( $_POST, 'stripeToken' );
+			mslib3()->array->strip_slashes( $_POST, 'stripeToken' );
 
 			$token = $_POST['stripeToken'];
 			$external_id 	= $token;

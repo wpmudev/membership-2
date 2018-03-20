@@ -224,7 +224,7 @@ class MS_Model_Export_Base extends MS_Model {
 		static $Counter = 10000;
 		static $Ids 	= array();
 
-		$Ids[$type] 	= lib3()->array->get( $Ids[$type] );
+		$Ids[$type] 	= mslib3()->array->get( $Ids[$type] );
 		if ( ! isset( $Ids[$type][$internal_id] ) ) {
 			$Ids[$type][$internal_id] = $Counter;
 			$Counter += 1;

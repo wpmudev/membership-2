@@ -244,7 +244,7 @@ class MS_Model_Import extends MS_Model {
 	 */
 	private function get_import_obj_cache( $req_type ) {
 		$cache = get_option( 'MS_Import_Obj_Cache', false );
-		$cache = lib3()->array->get( $cache );
+		$cache = mslib3()->array->get( $cache );
 		if ( ! isset( $cache[ $req_type ] ) ) { $cache[ $req_type ] = array(); }
 
 		return $cache;
@@ -398,9 +398,9 @@ class MS_Model_Import extends MS_Model {
 	protected function populate_membership( &$membership, $obj ) {
 		$membership->name 				= $obj->name;
 		$membership->description 		= $obj->description;
-		$membership->active 			= (bool) lib3()->is_true( $obj->active );
-		$membership->private			= (bool) lib3()->is_true( $obj->private );
-		$membership->is_free 			= (bool) lib3()->is_true( $obj->free );
+		$membership->active 			= (bool) mslib3()->is_true( $obj->active );
+		$membership->private			= (bool) mslib3()->is_true( $obj->private );
+		$membership->is_free 			= (bool) mslib3()->is_true( $obj->free );
 		$membership->is_setup_complete 	= true;
 
 		if ( isset( $obj->period_type ) ) {
@@ -501,7 +501,7 @@ class MS_Model_Import extends MS_Model {
 	 */
 	public function import_member( $obj ) {
 		$wpuser = get_user_by( 'email', $obj->email );
-		lib3()->array->equip( $obj, 'username', 'email', 'payment', 'subscriptions' );
+		mslib3()->array->equip( $obj, 'username', 'email', 'payment', 'subscriptions' );
 
 		if ( $wpuser ) {
 			$member = MS_Factory::load( 'MS_Model_Member', $wpuser->ID );
@@ -531,7 +531,7 @@ class MS_Model_Import extends MS_Model {
 			$pay = (object) array();
 		}
 
-		lib3()->array->equip(
+		mslib3()->array->equip(
 			$pay,
 			'stripe_card_exp',
 			'stripe_card_num',
@@ -576,7 +576,7 @@ class MS_Model_Import extends MS_Model {
 	 *
 	 */
 	public function import_user( $obj, $membership, $status, $start, $expire ) {
-		lib3()->array->equip( $obj, 'username', 'email', 'ms_membership', 'firstname', 'lastname' );
+		mslib3()->array->equip( $obj, 'username', 'email', 'ms_membership', 'firstname', 'lastname' );
 		$wpuser = get_user_by( 'email', $obj->email );
 		$member = false;
 		if ( $wpuser ) {
@@ -801,7 +801,7 @@ class MS_Model_Import extends MS_Model {
 
 		if ( empty( $source_id ) || empty( $source ) ) {
 			$src = $settings->get_custom_setting( 'import_match' );
-			$src = lib3()->array->get( $src );
+			$src = mslib3()->array->get( $src );
 
 			foreach ( $src as $lst ) {
 				if ( is_array( $lst ) ) {
@@ -933,7 +933,7 @@ class MS_Model_Import extends MS_Model {
 		}
 
 		// Then add the matching to the specified membership.
-		$data = lib3()->array->get(
+		$data = mslib3()->array->get(
 			$membership->get_custom_data( 'matching' )
 		);
 
@@ -1039,7 +1039,7 @@ class MS_Model_Import extends MS_Model {
 			$data = $membership->get_custom_data( 'matching' );
 			if ( empty( $data ) || ! is_array( $data ) ) { continue; }
 			if ( ! isset( $data[ $matching_key ] ) ) { continue; }
-			$ids = lib3()->array->get( $data[ $matching_key ] );
+			$ids = mslib3()->array->get( $data[ $matching_key ] );
 
 			foreach ( $ids as $id ) {
 				if ( $matching_id == $id ) {

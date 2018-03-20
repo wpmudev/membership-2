@@ -17,16 +17,16 @@ class TheLib_Updates extends TheLib  {
 	Example:
 
 	// make sure the queue is empty
-	lib3()->updates->clear();
+	mslib3()->updates->clear();
 
 	// Enqueue some updates
-	lib3()->updates->add( 'update_post_meta', 123, 'key', 'new-value' );
+	mslib3()->updates->add( 'update_post_meta', 123, 'key', 'new-value' );
 	$the_post = get_post( 123 );
 	$the_post['post_type'] = 'new_type';
-	lib3()->updates->add( 'update_post', $the_post );
+	mslib3()->updates->add( 'update_post', $the_post );
 
 	// Execute the changes
-	lib3()->updates->execute();
+	mslib3()->updates->execute();
 	*/
 
 	/**

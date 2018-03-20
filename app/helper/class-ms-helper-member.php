@@ -47,7 +47,7 @@ class MS_Helper_Member extends MS_Helper {
 		$class = ( $msg > 0 ) ? 'updated' : 'error';
 
 		if ( $msg = self::get_admin_message( $msg ) ) {
-			lib3()->ui->admin_message( $msg, $class );
+			mslib3()->ui->admin_message( $msg, $class );
 		}
 	}
 

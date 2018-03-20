@@ -1,7 +1,7 @@
 <?php
 /**
  * The Net component.
- * Access via function `lib3()->net`.
+ * Access via function `mslib3()->net`.
  *
  * @since  2.0.0
  */

@@ -47,7 +47,7 @@ class MS_View_MigrationM1 extends MS_View {
 				);
 			}
 
-			lib3()->ui->admin_message( $msg, 'info' );
+			mslib3()->ui->admin_message( $msg, 'info' );
 			?>
 			<div class="ms-settings-import">
 				<?php echo $view->to_html(); ?>
@@ -78,7 +78,7 @@ class MS_View_MigrationM1 extends MS_View {
 			),
 		);
 
-		lib3()->ui->data( 'ms_data', $data );
+		mslib3()->ui->data( 'ms_data', $data );
 		wp_enqueue_script( 'ms-admin' );
 	}
 

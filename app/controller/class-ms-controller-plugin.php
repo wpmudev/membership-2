@@ -530,7 +530,7 @@ class MS_Controller_Plugin extends MS_Controller {
 				break;
 			}
 			if ( ! $payment_possible ) {
-				lib3()->ui->admin_message(
+				mslib3()->ui->admin_message(
 					sprintf(
 						__( 'Oops, looks like you did not activate a payment gateway yet.<br />You need to set up and activate at least one gateway, otherwise your members cannot sign up to a paid membership.<br />%sFix this now &raquo;%s', 'membership2' ),
 						'<a href="' . self::get_admin_url( 'settings', array( 'tab' => MS_Controller_Settings::TAB_PAYMENT ) ) . '">',
@@ -1062,12 +1062,12 @@ class MS_Controller_Plugin extends MS_Controller {
 		//Load only on membership pages
 		$screen = get_current_screen();
 		if ( strpos( $screen->id , 'membership2') !== false ) {
-			lib3()->ui->css( 'ms-admin-styles' );
-			lib3()->ui->add( 'core' );
+			mslib3()->ui->css( 'ms-admin-styles' );
+			mslib3()->ui->add( 'core' );
 			wp_dequeue_script( 'wpmu-wpmu-ui-3-min-js' );
 			wp_deregister_script( 'wpmu-wpmu-ui-3-min-js' );
-			lib3()->ui->add( 'select' );
-			lib3()->ui->add( 'fontawesome' );
+			mslib3()->ui->add( 'select' );
+			mslib3()->ui->add( 'fontawesome' );
 		}
 	}
 
@@ -1091,13 +1091,13 @@ class MS_Controller_Plugin extends MS_Controller {
 	 */
 	public function enqueue_plugin_admin_scripts() {
 		//Missing scripts needed for the meta box
-		lib3()->ui->js( 'm2-jquery-plugins' );
+		mslib3()->ui->js( 'm2-jquery-plugins' );
 		if( self::is_admin_page( ) ){
-			lib3()->ui->js( 'jquery-validate' );
+			mslib3()->ui->js( 'jquery-validate' );
 		}
-		lib3()->ui->js( 'ms-admin-wpmui' );
-		lib3()->ui->js( 'ms-admin' );
-		lib3()->ui->add( 'select' );
+		mslib3()->ui->js( 'ms-admin-wpmui' );
+		mslib3()->ui->js( 'ms-admin' );
+		mslib3()->ui->add( 'select' );
 	}
 
 	/**
@@ -1140,6 +1140,6 @@ class MS_Controller_Plugin extends MS_Controller {
 		});
 		<?php
 		$script = ob_get_clean();
-		lib3()->ui->script( $script );
+		mslib3()->ui->script( $script );
 	}
 }

@@ -228,7 +228,7 @@ class MS_Model_Transactionlog extends MS_Model_CustomPostType {
 	 * @return int The total count.
 	 */
 	public static function get_item_count( $args = null ) {
-		$args = lib3()->array->get( $args );
+		$args = mslib3()->array->get( $args );
 		$cache_key 	= MS_Helper_Cache::generate_cache_key( 'ms_model_transaction_item_count', $args );
 		$results 	= MS_Helper_Cache::get_transient( $cache_key );
 		$count		= 0;
@@ -546,7 +546,7 @@ class MS_Model_Transactionlog extends MS_Model_CustomPostType {
 		}
 
 		if ( ! $this->id ) {
-			$this->url 		= lib3()->net->current_url();
+			$this->url 		= mslib3()->net->current_url();
 			$this->post 	= $_POST;
 			$this->headers 	= $this->get_headers();
 			$this->user_id 	= get_current_user_id();

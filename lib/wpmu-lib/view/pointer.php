@@ -1,7 +1,7 @@
 <?php
 /**
  * Code-snippet for WordPress pointers.
- * Used in function lib3()->html->pointer()
+ * Used in function mslib3()->html->pointer()
  *
  * @since  1.0.0
  *

@@ -448,7 +448,7 @@ class MS_Controller_Frontend extends MS_Controller {
 			);
 		}
 
-		lib3()->array->equip_request( 'step', 'membership_id' );
+		mslib3()->array->equip_request( 'step', 'membership_id' );
 
 		if ( in_array( $_REQUEST['step'], $Valid_Steps ) ) {
 			$step = $_REQUEST['step'];
@@ -709,7 +709,7 @@ class MS_Controller_Frontend extends MS_Controller {
 		$member 		= MS_Model_Member::get_current_member();
 		$membership_id 	= 0;
 
-		lib3()->array->equip_request( 'membership_id', 'move_from_id', 'ms_relationship_id' );
+		mslib3()->array->equip_request( 'membership_id', 'move_from_id', 'ms_relationship_id' );
 
 		if ( ! empty( $_POST['ms_relationship_id'] ) ) {
 			// Error path, showing payment table again with error msg
@@ -721,7 +721,7 @@ class MS_Controller_Frontend extends MS_Controller {
 			$membership_id 	= $membership->id;
 
 			if ( ! empty( $_POST['error'] ) ) {
-				lib3()->array->strip_slashes( $_POST, 'error' );
+				mslib3()->array->strip_slashes( $_POST, 'error' );
 				$data['error'] = $_POST['error'];
 			}
 		} elseif ( ! empty( $_REQUEST['membership_id'] ) ) {
@@ -1070,16 +1070,16 @@ class MS_Controller_Frontend extends MS_Controller {
 				'cancel_msg' => __( 'Are you sure you want to cancel?', 'membership2' ),
 			);
 
-			lib3()->ui->css( 'ms-styles' );
-			lib3()->ui->js( 'jquery-validate' );
-			lib3()->ui->js( 'ms-public' );
+			mslib3()->ui->css( 'ms-styles' );
+			mslib3()->ui->js( 'jquery-validate' );
+			mslib3()->ui->js( 'ms-public' );
 			MS_Controller_Plugin::translate_jquery_validator();
 
 			if ( $is_profile ) {
 				$data['ms_init'][] = 'frontend_profile';
 			}
 
-			lib3()->ui->data( 'ms_data', $data );
+			mslib3()->ui->data( 'ms_data', $data );
 		}
 	}
 

@@ -94,7 +94,7 @@ class MS_Controller_Help extends MS_Controller {
 			unset( $tabs['emails'] );
 		}
 
-		lib3()->array->equip_get( 'page' );
+		mslib3()->array->equip_get( 'page' );
 		$def_key 	= MS_Controller_Plugin::MENU_SLUG . '-help';
 		$page 		= sanitize_html_class( $_GET['page'], $def_key );
 
@@ -124,7 +124,7 @@ class MS_Controller_Help extends MS_Controller {
 		$data = array(
 			'ms_init' => array( 'view_help' ),
 		);
-		lib3()->ui->data( 'ms_data', $data );
+		mslib3()->ui->data( 'ms_data', $data );
 		wp_enqueue_script( 'ms-admin' );
 	}
 

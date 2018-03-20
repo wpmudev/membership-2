@@ -276,7 +276,7 @@ class MS_Controller_Member extends MS_Controller {
 
 			// Execute list table bulk actions.
 			elseif ( $this->verify_nonce( 'bulk' ) ) {
-				lib3()->array->equip_post( 'action', 'action2', 'member_id' );
+				mslib3()->array->equip_post( 'action', 'action2', 'member_id' );
 				$action = $_POST['action'];
 				if ( empty( $action ) || $action == '-1' ) {
 					$action = $_POST['action2'];
@@ -432,7 +432,7 @@ class MS_Controller_Member extends MS_Controller {
 
 				// Modify existing subscriptions.
 				if ( self::validate_required( $fields_modify, 'POST' ) ) {
-					$memberships = lib3()->array->get( $_POST['memberships'] );
+					$memberships = mslib3()->array->get( $_POST['memberships'] );
 
 					foreach ( $memberships as $membership_id ) {
 						if ( empty( $_POST['mem_' . $membership_id] ) ) { continue; }
@@ -858,7 +858,7 @@ class MS_Controller_Member extends MS_Controller {
 	 * @since  1.0.0
 	 */
 	public function enqueue_styles() {
-		lib3()->ui->add( 'jquery-ui' );
+		mslib3()->ui->add( 'jquery-ui' );
 	}
 
 	/**
@@ -870,7 +870,7 @@ class MS_Controller_Member extends MS_Controller {
 		$data = array(
 			'ms_init' => array(),
 		);
-		lib3()->array->equip_get( 'action' );
+		mslib3()->array->equip_get( 'action' );
 
 		if ( 'edit_date' == $_GET['action'] ) {
 			// Start and expire date edit
@@ -884,7 +884,7 @@ class MS_Controller_Member extends MS_Controller {
 			);
 		}
 
-		lib3()->ui->data( 'ms_data', $data );
+		mslib3()->ui->data( 'ms_data', $data );
 		wp_enqueue_script( 'ms-admin' );
 	}
 
@@ -900,7 +900,7 @@ class MS_Controller_Member extends MS_Controller {
 
 		$data['ms_init'][] = 'view_member_editor';
 
-		lib3()->ui->data( 'ms_data', $data );
+		mslib3()->ui->data( 'ms_data', $data );
 		wp_enqueue_script( 'ms-admin' );
 	}
 

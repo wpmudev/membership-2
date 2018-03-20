@@ -65,11 +65,11 @@ class MS_Addon_BuddyPress extends MS_Addon {
 		}
 
 		if ( self::is_active() ) {
-			$this->buddypress_registration = lib3()->is_true(
+			$this->buddypress_registration = mslib3()->is_true(
 				$this->get_setting( 'buddypress_registration' )
 			);
                         
-            $this->buddypress_xprofile = lib3()->is_true(
+            $this->buddypress_xprofile = mslib3()->is_true(
 				$this->get_setting( 'buddypress_xprofile' )
 			);
 
@@ -189,7 +189,7 @@ class MS_Addon_BuddyPress extends MS_Addon {
 				),
 				implode( '<br>', $duplicates )
 			);
-			lib3()->ui->admin_message( $msg, 'error' );
+			mslib3()->ui->admin_message( $msg, 'error' );
 		}
 	}
 
@@ -294,7 +294,7 @@ class MS_Addon_BuddyPress extends MS_Addon {
 		ob_start();
 		
 		$profile_groups 	= BP_XProfile_Group::get( array( 'fetch_fields' => true ) );
-		$profile_groups 	= lib3()->array->get( $profile_groups );
+		$profile_groups 	= mslib3()->array->get( $profile_groups );
 		$disallowed_fields 	= array();
 		$disallowed_fields 	= apply_filters(
 								'ms_bp_profile_fields_account_disallowed_fields',
@@ -307,7 +307,7 @@ class MS_Addon_BuddyPress extends MS_Addon {
 			<table>
 				<?php foreach ( $profile_groups as $profile_group ) { ?>
 				<?php
-					$fields = lib3()->array->get( $profile_group->fields );
+					$fields = mslib3()->array->get( $profile_group->fields );
 					foreach ( $fields as $field ) {
 						if( in_array( $field->name, $disallowed_fields ) ) continue;
 					?>

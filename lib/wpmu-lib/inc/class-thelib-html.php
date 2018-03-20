@@ -1,7 +1,7 @@
 <?php
 /**
  * HTML Helper functions
- * Access via function `lib3()->html`.
+ * Access via function `mslib3()->html`.
  *
  * @since 1.1.0
  */

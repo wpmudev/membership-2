@@ -205,7 +205,7 @@ if ( ! function_exists( 'ms_registration_form_error' ) ) {
 
 if ( ! function_exists( 'is_ms_registration_form_login_link_exists' ) ) {
 	function is_ms_registration_form_login_link_exists() {
-		return lib3()->is_true( MS_Helper_Template::$ms_registration_form['login_link_exists'] );
+		return mslib3()->is_true( MS_Helper_Template::$ms_registration_form['login_link_exists'] );
 	}
 }
 
@@ -274,7 +274,7 @@ if ( ! function_exists( 'get_ms_pm_membership_name' ) ) {
 
 if ( ! function_exists( 'is_ms_pm_membership_description' ) ) {
 	function is_ms_pm_membership_description() {
-		return lib3()->is_true( MS_Helper_Template::$ms_front_payment['is_membership_description'] );
+		return mslib3()->is_true( MS_Helper_Template::$ms_front_payment['is_membership_description'] );
 	}
 }
 
@@ -286,25 +286,25 @@ if ( ! function_exists( 'get_ms_pm_membership_description' ) ) {
 
 if ( ! function_exists( 'is_ms_pm_membership_free' ) ) {
 	function is_ms_pm_membership_free() {
-		return lib3()->is_true( MS_Helper_Template::$ms_front_payment['is_membership_free'] );
+		return mslib3()->is_true( MS_Helper_Template::$ms_front_payment['is_membership_free'] );
 	}
 }
 
 if ( ! function_exists( 'is_ms_pm_invoice_discount' ) ) {
 	function is_ms_pm_invoice_discount() {
-		return lib3()->is_true( MS_Helper_Template::$ms_front_payment['invoice_discount'] );
+		return mslib3()->is_true( MS_Helper_Template::$ms_front_payment['invoice_discount'] );
 	}
 }
 
 if ( ! function_exists( 'is_ms_pm_invoice_pro_rate' ) ) {
 	function is_ms_pm_invoice_pro_rate() {
-		return lib3()->is_true( MS_Helper_Template::$ms_front_payment['invoice_pro_rate'] );
+		return mslib3()->is_true( MS_Helper_Template::$ms_front_payment['invoice_pro_rate'] );
 	}
 }
 
 if ( ! function_exists( 'is_ms_pm_invoice_tax_rate' ) ) {
 	function is_ms_pm_invoice_tax_rate() {
-		return lib3()->is_true( MS_Helper_Template::$ms_front_payment['invoice_tax_rate'] );
+		return mslib3()->is_true( MS_Helper_Template::$ms_front_payment['invoice_tax_rate'] );
 	}
 }
 
@@ -334,7 +334,7 @@ if ( ! function_exists( 'get_ms_pm_invoice_formatted_pro_rate' ) ) {
 
 if ( ! function_exists( 'is_ms_pm_show_tax' ) ) {
 	function is_ms_pm_show_tax() {
-		return lib3()->is_true( MS_Helper_Template::$ms_front_payment['show_tax'] );
+		return mslib3()->is_true( MS_Helper_Template::$ms_front_payment['show_tax'] );
 	}
 }
 
@@ -370,7 +370,7 @@ if ( ! function_exists( 'get_ms_pm_invoice_formatted_total' ) ) {
 
 if ( ! function_exists( 'is_ms_pm_trial' ) ) {
 	function is_ms_pm_trial() {
-		return lib3()->is_true( MS_Helper_Template::$ms_front_payment['is_trial'] );
+		return mslib3()->is_true( MS_Helper_Template::$ms_front_payment['is_trial'] );
 	}
 }
 
@@ -400,7 +400,7 @@ if ( ! function_exists( 'get_ms_pm_invoice_payment_description' ) ) {
 
 if ( ! function_exists( 'is_ms_pm_cancel_warning' ) ) {
 	function is_ms_pm_cancel_warning() {
-		return lib3()->is_true( MS_Helper_Template::$ms_front_payment['cancel_warning'] );
+		return mslib3()->is_true( MS_Helper_Template::$ms_front_payment['cancel_warning'] );
 	}
 }
 
@@ -433,13 +433,13 @@ if ( ! function_exists( 'get_ms_ac_title' ) ) {
 
 if ( ! function_exists( 'ms_show_users_membership' ) ) {
 	function ms_show_users_membership() {
-		return lib3()->is_true( MS_Helper_Template::$ms_account['show_membership'] );
+		return mslib3()->is_true( MS_Helper_Template::$ms_account['show_membership'] );
 	}
 }
 
 if ( ! function_exists( 'show_membership_change_link' ) ) {
 	function show_membership_change_link() {
-		return lib3()->is_true( MS_Helper_Template::$ms_account['show_membership_change'] );
+		return mslib3()->is_true( MS_Helper_Template::$ms_account['show_membership_change'] );
 	}
 }
 
@@ -575,7 +575,7 @@ if ( ! function_exists( 'get_ms_no_account_membership_status' ) ) {
 
 if ( ! function_exists( 'is_ms_ac_show_profile' ) ) {
 	function is_ms_ac_show_profile() {
-		return lib3()->is_true( MS_Helper_Template::$ms_account['show_profile'] );
+		return mslib3()->is_true( MS_Helper_Template::$ms_account['show_profile'] );
 	}
 }
 
@@ -587,7 +587,7 @@ if ( ! function_exists( 'get_ms_ac_profile_title' ) ) {
 
 if ( ! function_exists( 'is_ms_ac_show_profile_change' ) ) {
 	function is_ms_ac_show_profile_change() {
-		return lib3()->is_true( MS_Helper_Template::$ms_account['show_profile_change'] );
+		return mslib3()->is_true( MS_Helper_Template::$ms_account['show_profile_change'] );
 	}
 }
 
@@ -611,7 +611,7 @@ if ( ! function_exists( 'get_ms_ac_profile_info' ) ) {
 
 if ( ! function_exists( 'is_ms_ac_show_invoices' ) ) {
 	function is_ms_ac_show_invoices() {
-		return lib3()->is_true( MS_Helper_Template::$ms_account['show_invoices'] );
+		return mslib3()->is_true( MS_Helper_Template::$ms_account['show_invoices'] );
 	}
 }
 
@@ -623,7 +623,7 @@ if ( ! function_exists( 'get_ms_ac_invoices_title' ) ) {
 
 if ( ! function_exists( 'is_ms_ac_show_all_invoices' ) ) {
 	function is_ms_ac_show_all_invoices() {
-		return lib3()->is_true( MS_Helper_Template::$ms_account['show_all_invoices'] );
+		return mslib3()->is_true( MS_Helper_Template::$ms_account['show_all_invoices'] );
 	}
 }
 
@@ -707,7 +707,7 @@ if ( ! function_exists( 'get_ms_invoice_due_date' ) ) {
 
 if ( ! function_exists( 'is_ms_ac_show_activity' ) ) {
 	function is_ms_ac_show_activity() {
-		return lib3()->is_true( MS_Helper_Template::$ms_account['show_activity'] );
+		return mslib3()->is_true( MS_Helper_Template::$ms_account['show_activity'] );
 	}
 }
 
@@ -719,7 +719,7 @@ if ( ! function_exists( 'get_ms_ac_activity_title' ) ) {
 
 if ( ! function_exists( 'is_ms_ac_show_all_activities' ) ) {
 	function is_ms_ac_show_all_activities() {
-		return lib3()->is_true( MS_Helper_Template::$ms_account['show_all_activities'] );
+		return mslib3()->is_true( MS_Helper_Template::$ms_account['show_all_activities'] );
 	}
 }
 
@@ -775,7 +775,7 @@ if ( ! function_exists( 'get_ms_event_description' ) ) {
 
 if ( ! function_exists( 'has_ms_ac_login_form' ) ) {
 	function has_ms_ac_login_form() {
-		return lib3()->is_true( MS_Helper_Template::$ms_account['has_login_form'] );
+		return mslib3()->is_true( MS_Helper_Template::$ms_account['has_login_form'] );
 	}
 }
 

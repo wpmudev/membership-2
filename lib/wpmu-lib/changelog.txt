@@ -28,12 +28,12 @@ JS
 ----------------------------------------------------------------------
 PHP
 - Improve performance of initial module loading
-- Change library function from `lib2()` to `lib3()`
+- Change library function from `lib2()` to `mslib3()`
 - Add a P3P header so IE stores session data
-- Remove deprecated function `lib3()->translate_plugin()`
-- Remove deprecated function `lib3()->html->message()`
-- Add convenience function `lib3()->is_false()`
-- Rename `lib3()->html->plugin_list()` to `addon_list()`
+- Remove deprecated function `mslib3()->translate_plugin()`
+- Remove deprecated function `mslib3()->html->message()`
+- Add convenience function `mslib3()->is_false()`
+- Rename `mslib3()->html->plugin_list()` to `addon_list()`
 - Hide the "Details" link for disabled add-ons in the addon-list
 
 JS
@@ -48,7 +48,7 @@ CSS
 - Add animate.css library v3.4
 
 Migration notes
-- Rename `lib2()` to `lib3()`
+- Rename `lib2()` to `mslib3()`
 - Remove `->ui->add('scrollbar')`, add custom solution via CSS
 - Remove `->translate_plugin` with direct locationzation code
 - Replace `->html->message` with `->ui->admin_message`

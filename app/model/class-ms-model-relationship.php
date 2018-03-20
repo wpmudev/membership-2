@@ -2152,7 +2152,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	 *         could also be TRIAL, in which case the returnv alue is false.
 	 */
 	public function add_payment( $amount, $gateway, $external_id = '' ) {
-		$this->payments = lib3()->array->get( $this->payments );
+		$this->payments = mslib3()->array->get( $this->payments );
 
 		// Update the payment-gateway.
 		$this->set_gateway( $gateway );
@@ -2270,7 +2270,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	 * @return array
 	 */
 	public function get_payments() {
-		$res = lib3()->array->get( $this->payments );
+		$res = mslib3()->array->get( $this->payments );
 
 		foreach ( $res as $key => $info ) {
 			if ( ! isset( $info['amount'] ) ) {
@@ -2695,7 +2695,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 
 		if ( $debug ) {
 			// Intended debug output, leave it here.
-			lib3()->debug->dump( $debug_msg );
+			mslib3()->debug->dump( $debug_msg );
 		}
 
 		return apply_filters(
@@ -2910,7 +2910,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 			$is_public = true;
 		} else {
 			//now we can check if requires invitation code
-			$is_public = lib3()->is_true( $invitation_code );
+			$is_public = mslib3()->is_true( $invitation_code );
 		}
 
 		// Collection of all day-values.

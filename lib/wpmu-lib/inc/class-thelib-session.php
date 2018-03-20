@@ -1,7 +1,7 @@
 <?php
 /**
  * The Session storage component.
- * Access via function `lib3()->session`.
+ * Access via function `mslib3()->session`.
  *
  * @since  1.1.4
  */

@@ -1,7 +1,7 @@
 <?php
 /**
  * Main access to the Code-Library.
- * Access via function `lib3()`.
+ * Access via function `mslib3()`.
  *
  * Inspired by Jigsaw plugin by Jared Novack (http://jigsaw.upstatement.com/)
  *

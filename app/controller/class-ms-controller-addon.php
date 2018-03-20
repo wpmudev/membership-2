@@ -69,7 +69,7 @@ class MS_Controller_Addon extends MS_Controller {
 			$addon = array( $_POST['addon'] );
 
 			if ( isset( $_POST['value'] ) ) {
-				if ( lib3()->is_true( $_POST['value'] ) ) {
+				if ( mslib3()->is_true( $_POST['value'] ) ) {
 					$msg = $this->save_addon( 'enable', $addon );
 				} else {
 					$msg = $this->save_addon( 'disable', $addon );
@@ -205,7 +205,7 @@ class MS_Controller_Addon extends MS_Controller {
 			'ms_init' => array( 'view_addons' ),
 		);
 
-		lib3()->ui->data( 'ms_data', $data );
+		mslib3()->ui->data( 'ms_data', $data );
 		wp_enqueue_script( 'ms-admin' );
 	}
 }

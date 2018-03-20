@@ -356,7 +356,7 @@ class MS_Plugin {
 	 */
 	public function plugin_activation() {
 		// Prevent recursion during plugin activation.
-		$refresh = lib3()->session->get( 'refresh_url_rules' );
+		$refresh = mslib3()->session->get( 'refresh_url_rules' );
 		if ( $refresh ) { return; }
 
 		// Update the Membership2 database entries after activation.
@@ -390,12 +390,12 @@ class MS_Plugin {
 		if ( isset( $_GET['ms_flushed'] ) && 'yes' == $_GET['ms_flushed'] ) {
 			$refresh = true;
 		} else {
-			$refresh = lib3()->session->get( 'refresh_url_rules' );
+			$refresh = mslib3()->session->get( 'refresh_url_rules' );
 		}
 
 		if ( $refresh ) { return; }
 
-		lib3()->session->add( 'refresh_url_rules', true );
+		mslib3()->session->add( 'refresh_url_rules', true );
 
 		// The URL param is only to avoid cache.
 		$url = esc_url_raw(
@@ -411,7 +411,7 @@ class MS_Plugin {
 	 * @since  1.0.0
 	 */
 	public function maybe_flush_rewrite_rules() {
-		$refresh = lib3()->session->get_clear( 'refresh_url_rules' );
+		$refresh = mslib3()->session->get_clear( 'refresh_url_rules' );
 		if ( ! $refresh ) { return; }
 
 		// Set up the plugin specific rewrite rules again.

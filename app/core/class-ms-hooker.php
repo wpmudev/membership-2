@@ -419,9 +419,9 @@ class MS_Hooker {
 	 * @since  1.0.0
 	 */
 	public function dump() {
-		lib3()->debug->enable();
+		mslib3()->debug->enable();
 		// Intended debug output, leave it here.
-		lib3()->debug->dump( $this );
+		mslib3()->debug->dump( $this );
 	}
 
 	/**
@@ -431,7 +431,7 @@ class MS_Hooker {
 	 */
 	public function log( $message ) {
 		if( defined( 'WP_DEBUG' ) && WP_DEBUG === true ) { 
-			lib3()->debug->log( '[M2]' . $message );
+			mslib3()->debug->log( '[M2]' . $message );
 		}
 	}
 }

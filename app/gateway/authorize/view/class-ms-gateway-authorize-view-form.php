@@ -274,7 +274,7 @@ class MS_Gateway_Authorize_View_Form extends MS_View {
 						<?php MS_Helper_Html::html_element( $cim );?>
 						</td>
 					</tr>
-					<?php if ( lib3()->is_true( $gateway->secure_cc ) ) : ?>
+					<?php if ( mslib3()->is_true( $gateway->secure_cc ) ) : ?>
 					<tr class="ms-row-card_cvc">
 						<td>
 						<?php MS_Helper_Html::html_element( $card_cvc ); ?>

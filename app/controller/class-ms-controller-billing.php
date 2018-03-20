@@ -501,7 +501,7 @@ class MS_Controller_Billing extends MS_Controller {
 		}
 
 		if ( 'edit' == $action ) {
-			lib3()->ui->add( 'jquery-ui' );
+			mslib3()->ui->add( 'jquery-ui' );
 		}
 	}
 
@@ -534,7 +534,7 @@ class MS_Controller_Billing extends MS_Controller {
 			}
 		}
 
-		lib3()->ui->data( 'ms_data', $data );
+		mslib3()->ui->data( 'ms_data', $data );
 		wp_enqueue_script( 'ms-admin' );
 	}
 

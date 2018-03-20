@@ -151,7 +151,7 @@ class MS_Addon_Invitation extends MS_Addon {
 					'slug' => self::SLUG,
 				)
 			);
-			lib3()->array->insert( $items, 'before', 'addon', $menu_item );
+			mslib3()->array->insert( $items, 'before', 'addon', $menu_item );
 		}
 
 		return $items;
@@ -374,7 +374,7 @@ class MS_Addon_Invitation extends MS_Addon {
 				'id' => 'no_invitation',
 				'type' => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
 				'title' => __( 'Does this Membership require an Invitation code?', 'membership2' ),
-				'value' => lib3()->is_true( $membership->get_custom_data( 'no_invitation' ) ),
+				'value' => mslib3()->is_true( $membership->get_custom_data( 'no_invitation' ) ),
 				'before' => sprintf(
 					'%s <i class="wpmui-fa wpmui-fa-lock"></i>',
 					__( 'Yes', 'membership2' )
@@ -405,7 +405,7 @@ class MS_Addon_Invitation extends MS_Addon {
 	 */
 	public function enqueue_styles() {
 		if ( isset( $_GET['action'] ) && 'edit' == $_GET['action'] ) {
-			lib3()->ui->add( 'jquery-ui' );
+			mslib3()->ui->add( 'jquery-ui' );
 		}
 
 		do_action( 'ms_addon_invitation_enqueue_styles', $this );
@@ -421,7 +421,7 @@ class MS_Addon_Invitation extends MS_Addon {
 			$plugin_url = MS_Plugin::instance()->url;
 
 			wp_enqueue_script( 'jquery-validate' );
-			lib3()->ui->add( 'jquery-ui' );
+			mslib3()->ui->add( 'jquery-ui' );
 		}
 
 		do_action( 'ms_addon_invitation_enqueue_scripts', $this );
@@ -443,7 +443,7 @@ class MS_Addon_Invitation extends MS_Addon {
 	public function do_not_skip( $flag, $invoice, $view ) {
 		$membership = $invoice->get_membership();
 
-		$is_public = lib3()->is_true(
+		$is_public = mslib3()->is_true(
 			$membership->get_custom_data( 'no_invitation' )
 		);
 
@@ -493,7 +493,7 @@ class MS_Addon_Invitation extends MS_Addon {
 	public function check_invitation_code( $data, $membership_id, $subscription, $member ) {
 		$membership = MS_Factory::load( 'MS_Model_Membership', $membership_id );
 
-		$is_public = lib3()->is_true(
+		$is_public = mslib3()->is_true(
 			$membership->get_custom_data( 'no_invitation' )
 		);
 

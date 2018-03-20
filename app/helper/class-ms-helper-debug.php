@@ -93,4 +93,4 @@ class MS_Helper_Debug extends MS_Helper {
 }
 
 MS_Helper_Debug::debug_log( '**************************** REQUEST START ****************************' );
-MS_Helper_Debug::debug_log( '***** URL: ' . lib3()->net->current_url() );
+MS_Helper_Debug::debug_log( '***** URL: ' . mslib3()->net->current_url() );

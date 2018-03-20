@@ -157,7 +157,7 @@ class MS_Helper_ListTable_Member extends MS_Helper_ListTable {
 	 * @return array Query args
 	 */
 	protected function prepare_query_args( $args ) {
-		lib3()->array->equip_request(
+		mslib3()->array->equip_request(
 			's',
 			'membership_id',
 			'search_options',
@@ -437,7 +437,7 @@ class MS_Helper_ListTable_Member extends MS_Helper_ListTable {
 	 * @since  1.0.0
 	 */
 	public function searchbox_filters() {
-		lib3()->array->equip_request( 'search_options' );
+		mslib3()->array->equip_request( 'search_options' );
 
 		$search_options = array(
 			'id' 			=> 'search_options',

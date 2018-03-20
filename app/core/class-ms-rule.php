@@ -723,7 +723,7 @@ class MS_Rule extends MS_Model {
 		}
 
 		if ( is_array( $drip_data ) ) {
-			lib3()->array->equip( $drip_data, 'type', 'date', 'delay_unit', 'delay_type' );
+			mslib3()->array->equip( $drip_data, 'type', 'date', 'delay_unit', 'delay_type' );
 
 			switch ( $drip_data['type'] ) {
 				case MS_Model_Rule::DRIPPED_TYPE_SPEC_DATE:
@@ -779,7 +779,7 @@ class MS_Rule extends MS_Model {
 		}
 
 		if ( is_array( $drip_data ) ) {
-			lib3()->array->equip( $drip_data, 'type', 'date', 'delay_unit', 'delay_type' );
+			mslib3()->array->equip( $drip_data, 'type', 'date', 'delay_unit', 'delay_type' );
 
 			switch ( $drip_data['type'] ) {
 				case MS_Model_Rule::DRIPPED_TYPE_SPEC_DATE:
@@ -1412,7 +1412,7 @@ class MS_Rule extends MS_Model {
 		switch ( $property ) {
 			case 'rule_value':
 			case 'dripped':
-				$this->$property = lib3()->array->get( $this->$property );
+				$this->$property = mslib3()->array->get( $this->$property );
 				$value = $this->$property;
 				break;
 

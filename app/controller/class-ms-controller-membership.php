@@ -210,7 +210,7 @@ class MS_Controller_Membership extends MS_Controller {
 			&& self::validate_required( $required, 'POST', false )
 			&& $this->is_admin_user()
 		) {
-			lib3()->array->strip_slashes( $_POST, 'value', 'field' );
+			mslib3()->array->strip_slashes( $_POST, 'value', 'field' );
 
 			$msg = $this->save_membership(
 				array( $_POST['field'] => $_POST['value'] )
@@ -243,7 +243,7 @@ class MS_Controller_Membership extends MS_Controller {
 			&& self::validate_required( $required, 'POST', false )
 			&& $this->is_admin_user()
 		) {
-			lib3()->array->strip_slashes( $_POST, 'value', 'field' );
+			mslib3()->array->strip_slashes( $_POST, 'value', 'field' );
 			$membership = MS_Factory::load(
 				'MS_Model_Membership',
 				intval( $_POST['membership_id'] )
@@ -449,7 +449,7 @@ class MS_Controller_Membership extends MS_Controller {
 				unset( $save_data['action'] );
 
 				if ( isset( $_POST['set_public_flag'] ) ) {
-					//lib3()->array->equip_post( 'public' );
+					//mslib3()->array->equip_post( 'public' );
 					if ( isset( $_POST['public'] ) ) {
 						$save_data['private'] = false;
 					} else {
@@ -457,8 +457,8 @@ class MS_Controller_Membership extends MS_Controller {
 					}
 				}
 				if ( isset( $_POST['set_paid_flag'] ) ) {
-					lib3()->array->equip_post( 'paid' );
-					$save_data['is_free'] = ! lib3()->is_true( $_POST['paid'] );
+					mslib3()->array->equip_post( 'paid' );
+					$save_data['is_free'] = ! mslib3()->is_true( $_POST['paid'] );
 				}
 
 				$msg = $this->save_membership( $save_data );
@@ -487,7 +487,7 @@ class MS_Controller_Membership extends MS_Controller {
 
 					$paid = isset( $_POST['set_paid_flag'] )
 						&& isset( $_POST['paid'] )
-						&& lib3()->is_true( $_POST['paid'] );
+						&& mslib3()->is_true( $_POST['paid'] );
 
 					if ( $paid ) {
 						$next_step 	= self::STEP_PAYMENT;
@@ -1084,7 +1084,7 @@ class MS_Controller_Membership extends MS_Controller {
 				$first_key = key( $tabs );
 
 				// Setup navigation tabs.
-				lib3()->array->equip_get( 'tab' );
+				mslib3()->array->equip_get( 'tab' );
 				$active_tab = sanitize_html_class( $_GET['tab'], $first_key );
 
 				if ( ! array_key_exists( $active_tab, $tabs ) ) {
@@ -1278,7 +1278,7 @@ class MS_Controller_Membership extends MS_Controller {
 					try {
 						$the_value = $membership->$field;
 						if ( $key ) {
-							$the_value = lib3()->array->get( $the_value );
+							$the_value = mslib3()->array->get( $the_value );
 							$the_value[$key] = $value;
 						} else {
 							$the_value = $value;
@@ -1317,7 +1317,7 @@ class MS_Controller_Membership extends MS_Controller {
 	 * @since  1.0.0
 	 */
 	public function enqueue_styles() {
-		lib3()->ui->add( 'jquery-ui' );
+		mslib3()->ui->add( 'jquery-ui' );
 
 		do_action( 'ms_controller_membership_enqueue_styles', $this );
 	}
@@ -1395,7 +1395,7 @@ class MS_Controller_Membership extends MS_Controller {
 				break;
 		}
 
-		lib3()->ui->data( 'ms_data', $data );
+		mslib3()->ui->data( 'ms_data', $data );
 		wp_enqueue_script( 'ms-admin' );
 		wp_enqueue_script( 'jquery-validate' );
 

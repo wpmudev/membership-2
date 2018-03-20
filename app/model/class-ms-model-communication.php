@@ -863,7 +863,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	 * Override this in child classes to customize the label.
 	 *
 	 * @since  1.0.0
-	 * @param array $field A HTML definition, passed to lib3()->html->element().
+	 * @param array $field A HTML definition, passed to mslib3()->html->element().
 	 */
 	public function set_period_name( $field ) {
 		$field['title'] = __( 'Period before/after', 'membership2' );
@@ -1650,7 +1650,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 			case 'enabled':
 			case 'cc_enabled':
 			case 'override':
-				$this->$property = lib3()->is_true( $value );
+				$this->$property = mslib3()->is_true( $value );
 				break;
 
 			case 'period':

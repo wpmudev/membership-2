@@ -1,7 +1,7 @@
 <?php
 /**
  * Code-snippet for WordPress plugin list.
- * Used in function lib3()->html->addon_list()
+ * Used in function mslib3()->html->addon_list()
  *
  * @since  1.1.0
  *

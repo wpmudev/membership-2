@@ -168,7 +168,7 @@ class MS_Model_Upgrade extends MS_Model {
 
 			// Display a message after the page is reloaded.
 			if ( ! $is_new_setup ) {
-				lib3()->ui->admin_message( implode( '<br>', $msg ), '', '', 'ms-update' );
+				mslib3()->ui->admin_message( implode( '<br>', $msg ), '', '', 'ms-update' );
 			}
 
 			do_action(
@@ -249,7 +249,7 @@ class MS_Model_Upgrade extends MS_Model {
 	 * Upgrade from any 1.0.0.x version to a higher version.
 	 */
 	static private function _upgrade_1_0_1_0() {
-		lib3()->updates->clear();
+		mslib3()->updates->clear();
 
 		/*
 		 * The "is_member" flag of users was not correctly saved when a
@@ -271,20 +271,20 @@ class MS_Model_Upgrade extends MS_Model {
 			";
 			$result = $wpdb->get_col( $sql );
 			foreach ( $result as $user_id ) {
-				lib3()->updates->add( 'update_user_meta', $user_id, 'ms_is_member', true );
+				mslib3()->updates->add( 'update_user_meta', $user_id, 'ms_is_member', true );
 			}
 		}
 
 		// Execute all queued actions!
-		lib3()->updates->plugin( 'membership2' );
-		lib3()->updates->execute();
+		mslib3()->updates->plugin( 'membership2' );
+		mslib3()->updates->execute();
 	}
 
 	/**
 	 * Upgrade from 1.0.1.0 version to a higher version.
 	 */
 	static private function _upgrade_1_0_1_1() {
-		lib3()->updates->clear();
+		mslib3()->updates->clear();
 
 		/*
 		 * A bug in 1.0.1 created multiple copies of email templates.
@@ -315,20 +315,20 @@ class MS_Model_Upgrade extends MS_Model {
 			$ids = $wpdb->get_col( $sql );
 
 			foreach ( $ids as $id ) {
-				lib3()->updates->add( 'wp_delete_post', $id, true );
+				mslib3()->updates->add( 'wp_delete_post', $id, true );
 			}
 		}
 
 		// Execute all queued actions!
-		lib3()->updates->plugin( 'membership2' );
-		lib3()->updates->execute();
+		mslib3()->updates->plugin( 'membership2' );
+		mslib3()->updates->execute();
 	}
 
 	/**
 	 * Upgrade from 1.0.1.1 version to a higher version.
 	 */
 	static private function _upgrade_1_0_2_0() {
-		lib3()->updates->clear();
+		mslib3()->updates->clear();
 
 		/*
 		 * Transaction logs are a bit messed up because some meta-keys have an
@@ -353,7 +353,7 @@ class MS_Model_Upgrade extends MS_Model {
 	 * Upgrade from 1.0.2.x version to 1.0.2.4 version.
 	 */
 	static private function _upgrade_1_0_2_4() {
-		lib3()->updates->clear();
+		mslib3()->updates->clear();
 
 		/*
 		 * Transaction matching of M1 payments with M2 memberships has improved
@@ -366,12 +366,12 @@ class MS_Model_Upgrade extends MS_Model {
 				$source_id = $membership->source_id;
 				if ( empty( $source_id ) ) { continue; }
 
-				$data = lib3()->array->get(
+				$data = mslib3()->array->get(
 					$membership->get_custom_data( 'matching' )
 				);
 
 				if ( ! isset( $data['m1'] ) ) { $data['m1'] = array(); }
-				$data['m1'] 	= lib3()->array->get( $data['m1'] );
+				$data['m1'] 	= mslib3()->array->get( $data['m1'] );
 				$data['m1'][] 	= $source_id;
 				$membership->set_custom_data( 'matching', $data );
 				$membership->save();
@@ -405,7 +405,7 @@ class MS_Model_Upgrade extends MS_Model {
 			// Cancel: This plugin is not the official plugin (maybe a backup or beta version)
 
 			if ( false !== strpos( MS_Plugin::instance()->dir, $old_dir ) ) {
-				lib3()->ui->admin_message(
+				mslib3()->ui->admin_message(
 					__( '<b>Upgrade warning</b>:<br>The Membership 2 plugin is installed in an deprecated folder. Some users did report issues when the plugin is installed in this directory.<br>To fix this issue please follow these steps:<br><br>1. Delete* the old Membership Premium plugin if it is still installed.<br>2. Delete* the Membership 2 plugin.<br>3. Re-install Membership 2 from the WPMU Dashboard - your existing data is not affected by this.<br><br>*) <em>Only deactivating the plugins does not work, you have to delete them.</em>', 'membership2' ),
 					'error'
 				);
@@ -629,7 +629,7 @@ class MS_Model_Upgrade extends MS_Model {
 
 					if ( ! is_plugin_active_for_network( MS_PLUGIN ) ) {
 						activate_plugin( MS_PLUGIN, null, true );
-						lib3()->ui->admin_message(
+						mslib3()->ui->admin_message(
 							__( 'Info: Membership2 is not activated network-wide', 'membership2' )
 						);
 					}
@@ -638,7 +638,7 @@ class MS_Model_Upgrade extends MS_Model {
 
 			// B) Check the Permalink settings.
 			/*if ( false === strpos( get_option( 'permalink_structure' ), '%postname%' ) ) {
-				lib3()->ui->admin_message(
+				mslib3()->ui->admin_message(
 					sprintf(
 						__( 'Your %sPermalink structure%s should include the %sPost name%s to ensure Membership 2 is working correctly.', 'membership2' ),
 						'<a href="' . admin_url( 'options-permalink.php' ) . '">',
@@ -651,7 +651,7 @@ class MS_Model_Upgrade extends MS_Model {
 			}*/
 
 			if ( false === ( get_option('permalink_structure') ) ) {
-				lib3()->ui->admin_message(
+				mslib3()->ui->admin_message(
 					sprintf(
 						__( 'You need to enable %sPretty Permalinks%s in your %sPermalink structure%s to ensure Membership 2 is working correctly.', 'membership2' ),
 						'<strong>',
@@ -822,7 +822,7 @@ class MS_Model_Upgrade extends MS_Model {
 
 			self::cleanup_db();
 			$msg = __( 'Membership 2 successfully reset!', 'membership2' );
-			lib3()->ui->admin_message( $msg );
+			mslib3()->ui->admin_message( $msg );
 
 			wp_safe_redirect( MS_Controller_Plugin::get_admin_url( 'MENU_SLUG' ) );
 			exit;
@@ -844,7 +844,7 @@ class MS_Model_Upgrade extends MS_Model {
 
             self::fix_subs();
             $msg = __( 'Membership 2 subscriptions fixed!', 'membership2' );
-            lib3()->ui->admin_message( $msg );
+            mslib3()->ui->admin_message( $msg );
 
             wp_safe_redirect( MS_Controller_Plugin::get_admin_url( 'MENU_SLUG' ) );
             exit;
@@ -868,8 +868,8 @@ class MS_Model_Upgrade extends MS_Model {
 
 			if ( ! self::verify_token( 'restore' ) ) { return false; }
 
-			lib3()->updates->plugin( 'membership2' );
-			if ( lib3()->updates->restore( $snapshot ) ) {
+			mslib3()->updates->plugin( 'membership2' );
+			if ( mslib3()->updates->restore( $snapshot ) ) {
 				printf(
 					'<p>' .
 					__( 'The Membership2 Snapshot "%s" was restored!', 'membership2' ) .

@@ -201,7 +201,7 @@ class MS_Model_Export_Settings extends MS_Model {
 			}
 		}
 		$milliseconds = round( microtime( true ) * 1000 );
-		lib3()->net->file_download( json_encode( $data ), $milliseconds . '_membership2-settings-export.json' );
+		mslib3()->net->file_download( json_encode( $data ), $milliseconds . '_membership2-settings-export.json' );
 	}
 
 
@@ -415,7 +415,7 @@ class MS_Model_Export_Settings extends MS_Model {
 		static $Counter = 10000;
 		static $Ids 	= array();
 
-		$Ids[$type] 	= lib3()->array->get( $Ids[$type] );
+		$Ids[$type] 	= mslib3()->array->get( $Ids[$type] );
 		if ( ! isset( $Ids[$type][$internal_id] ) ) {
 			$Ids[$type][$internal_id] = $Counter;
 			$Counter += 1;

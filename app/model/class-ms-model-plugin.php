@@ -123,7 +123,7 @@ class MS_Model_Plugin extends MS_Model {
 
 		// Old plugin is enabled? Show a warning!
 		if ( class_exists( 'M_Membership' ) ) {
-			lib3()->ui->admin_message(
+			mslib3()->ui->admin_message(
 				__( '<b>Warning</b>: The old version of the Membership plugin is active and causes conflicts with the new Membership 2 plugin. Please disable the old Membership plugin.', 'membership2' ),
 				'red'
 			);
@@ -322,11 +322,11 @@ class MS_Model_Plugin extends MS_Model {
 			$Info = apply_filters( 'ms_model_plugin_get_access_info', $Info );
 
 			if ( $simulation ) {
-				$access = lib3()->session->get_clear( 'ms-access' );
-				lib3()->session->add( 'ms-access', $Info );
+				$access = mslib3()->session->get_clear( 'ms-access' );
+				mslib3()->session->add( 'ms-access', $Info );
 				for ( $i = 0; $i < 9; $i += 1 ) {
 					if ( isset( $access[ $i ] ) ) {
-						lib3()->session->add( 'ms-access', $access[ $i ] );
+						mslib3()->session->add( 'ms-access', $access[ $i ] );
 					}
 				}
 
@@ -336,7 +336,7 @@ class MS_Model_Plugin extends MS_Model {
 					echo '<p>To disable the URL param <code>?explain=access</code> you have to set <code>WP_DEBUG</code> to false.</p>';
 					echo '<hr><h3>Recent Access checks</h3>';
 
-					lib3()->debug->stacktrace_off();
+					mslib3()->debug->stacktrace_off();
 					foreach ( $access as $item ) {
 						if ( $item['has_access'] ) {
 							$label = __( 'Allow', 'membership2' );
@@ -349,7 +349,7 @@ class MS_Model_Plugin extends MS_Model {
 							esc_attr( $label )
 						);
 						// Intended debug output, leave it here.
-						lib3()->debug->dump( $item );
+						mslib3()->debug->dump( $item );
 					}
 					wp_die( '' );
 				}
@@ -409,7 +409,7 @@ class MS_Model_Plugin extends MS_Model {
 				false
 			);
 			//Get current page url
-			$current_page_url = lib3()->net->current_url();
+			$current_page_url = mslib3()->net->current_url();
 
 			// Don't (re-)redirect the protection page.
 			if ( ! MS_Model_Pages::is_membership_page( null, MS_Model_Pages::MS_PAGE_PROTECTED_CONTENT ) ) {

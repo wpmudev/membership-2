@@ -342,7 +342,7 @@ class MS_Controller_Communication extends MS_Controller {
 			&& self::validate_required( $isset, 'POST', false )
 			&& $this->is_admin_user()
 		) {
-			lib3()->array->strip_slashes( $_POST, 'value' );
+			mslib3()->array->strip_slashes( $_POST, 'value' );
 
 			$membership_id = null;
 			if ( isset( $_POST['membership_id'] ) ) {
@@ -437,7 +437,7 @@ class MS_Controller_Communication extends MS_Controller {
 		);
 
 		if ( ! empty( $fields ) ) {
-			lib3()->array->equip(
+			mslib3()->array->equip(
 				$fields,
 				'enabled',
 				'subject',
@@ -448,7 +448,7 @@ class MS_Controller_Communication extends MS_Controller {
 				'cc_email'
 			);
 
-			$comm->enabled 	= lib3()->is_true( $fields['enabled'] );
+			$comm->enabled 	= mslib3()->is_true( $fields['enabled'] );
 			$comm->subject 	= $fields['subject'];
 			$comm->message 	= $fields['email_body'];
 			$comm->period 	= array(

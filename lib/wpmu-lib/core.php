@@ -16,11 +16,11 @@
  * Default: false
  *     define( 'WDEV_UNMINIFIED', true );
  *
- * Activate lib3()->debug->dump() without having to enable WP_DEBUG
+ * Activate mslib3()->debug->dump() without having to enable WP_DEBUG
  * Default: Same as WP_DEBUG
  *     define( 'WDEV_DEBUG', true );
  *
- * Disable lib3()->debug->dump() for Ajax requests
+ * Disable mslib3()->debug->dump() for Ajax requests
  * Default: Same as WDEV_DEBUG
  *     define( 'WDEV_AJAX_DEBUG', false );
  *
@@ -32,7 +32,7 @@
 
 $version = '3.0.5';
 
-if ( ! function_exists( 'lib3' ) ) {
+if ( ! function_exists( 'mslib3' ) ) {
 	/**
 	 * This is a shortcut function to access the latest TheLib_Core object.
 	 *
@@ -43,10 +43,10 @@ if ( ! function_exists( 'lib3' ) ) {
 	 * The main version is only increased when backwards compatibility fails!
 	 *
 	 * Usage:
-	 *   lib3()->ui->admin_message();
+	 *   mslib3()->ui->admin_message();
 	 */
-	function lib3() {
-		return TheLib3_Wrap::get_obj();
+	function mslib3() {
+		return MsTheLib3_Wrap::get_obj();
 	}
 }
 
@@ -67,16 +67,16 @@ $files = array(
 	'TheLib_Ui'      => $dirname . 'class-thelib-ui.php',
 );
 
-if ( ! class_exists( 'TheLib3_Wrap' ) ) {
+if ( ! class_exists( 'MsTheLib3_Wrap' ) ) {
 	/**
 	 * The wrapper class is used to handle situations when some plugins include
 	 * different versions of TheLib.
 	 *
 	 * TheLib3_Wrap will always keep the latest version of TheLib for later usage.
 	 *
-	 * @internal Use function `lib3()` instead!
+	 * @internal Use function `mslib3()` instead!
 	 */
-	class TheLib3_Wrap {
+	class MsTheLib3_Wrap {
 		static protected $version = '0.0.0';
 		static protected $files = array();
 		static protected $object = null;
@@ -107,7 +107,7 @@ if ( ! class_exists( 'TheLib3_Wrap' ) ) {
 			}
 			return self::$object;
 		}
-	} // End: TheLib3_Wrap
+	} // End: MsTheLib3_Wrap
 }
 // Stores the lib-directory if it contains the highest version files.
-TheLib3_Wrap::set_version( $version, $files );
+MsTheLib3_Wrap::set_version( $version, $files );

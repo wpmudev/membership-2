@@ -99,7 +99,7 @@
 			}
 		}
 
-		lib3()->net->file_download( $contents, $filename );
+		mslib3()->net->file_download( $contents, $filename );
 	}
  }
 ?>

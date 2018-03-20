@@ -56,7 +56,7 @@ class MS_Helper_Membership extends MS_Helper {
 		$class 	= ( $msg > 0 ) ? 'updated' : 'error';
 
 		if ( $msg = self::get_admin_messages( $msg ) ) {
-			lib3()->ui->admin_message( $msg, $class );
+			mslib3()->ui->admin_message( $msg, $class );
 		}
 	}
 
@@ -138,7 +138,7 @@ class MS_Helper_Membership extends MS_Helper {
 			__( 'Finish', 'membership2' )
 		);
 
-		lib3()->html->popup( $popup );
+		mslib3()->html->popup( $popup );
 
 		$settings = MS_Plugin::instance()->settings;
 		$settings->is_first_membership = false;

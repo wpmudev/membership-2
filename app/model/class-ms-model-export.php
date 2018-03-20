@@ -65,11 +65,11 @@ class MS_Model_Export extends MS_Model {
 					 break;
  
 				default :
-					 lib3()->net->file_download( __( 'Export type not yet supported', 'membership2' ), 'error.json' );
+					 mslib3()->net->file_download( __( 'Export type not yet supported', 'membership2' ), 'error.json' );
 					 break;
 			}
 		} else {
-			 lib3()->net->file_download( __( 'Invalid export type or format', 'membership2' ), 'error.json' );
+			 mslib3()->net->file_download( __( 'Invalid export type or format', 'membership2' ), 'error.json' );
 		}
 		 
 	 }

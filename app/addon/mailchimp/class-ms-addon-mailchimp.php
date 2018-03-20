@@ -138,7 +138,7 @@ class MS_Addon_Mailchimp extends MS_Addon {
 	 */
 	private static function mailchimp_log( $message ) {
 		if( defined( 'WP_DEBUG' ) && WP_DEBUG === true ) { 
-			lib3()->debug->log( '[M2] Mailchimp Error : ' . $message );
+			mslib3()->debug->log( '[M2] Mailchimp Error : ' . $message );
 		}
 	}
 
@@ -289,7 +289,7 @@ class MS_Addon_Mailchimp extends MS_Addon {
 			'ms_init' => array( 'view_settings_mailchimp' ),
 		);
 
-		lib3()->ui->data( 'ms_data', $data );
+		mslib3()->ui->data( 'ms_data', $data );
 		wp_enqueue_script( 'ms-admin' );
 	}
 
@@ -450,7 +450,7 @@ class MS_Addon_Mailchimp extends MS_Addon {
 				'mailchimp',
 				'auto_opt_in'
 			);
-			$auto_opt_in = lib3()->is_true( $auto_opt_in );
+			$auto_opt_in = mslib3()->is_true( $auto_opt_in );
 
 			$update = apply_filters(
 				'ms_addon_mailchimp_subscribe_user_update',

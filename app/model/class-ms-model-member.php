@@ -488,11 +488,11 @@ class MS_Model_Member extends MS_Model {
 			)
 		);
 
-		$args = lib3()->array->get( $args );
-		lib3()->array->equip( $args, 'meta_query', 'membership_id', 'subscription_status' );
+		$args = mslib3()->array->get( $args );
+		mslib3()->array->equip( $args, 'meta_query', 'membership_id', 'subscription_status' );
 
 		if ( 'none' !== $args['meta_query'] ) {
-			$args['meta_query'] = lib3()->array->get( $args['meta_query'] );
+			$args['meta_query'] = mslib3()->array->get( $args['meta_query'] );
 
 			switch ( $search_option ) {
 				case self::SEARCH_ONLY_MEMBERS:

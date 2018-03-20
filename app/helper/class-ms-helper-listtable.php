@@ -425,7 +425,7 @@ class MS_Helper_ListTable {
 		reset( $links );
 
 		foreach ( $links as $class => $data ) {
-			lib3()->array->equip( $data, 'label', 'url' );
+			mslib3()->array->equip( $data, 'label', 'url' );
 
 			$sep = '|';
 			if ( $last_class === $class ) { $sep = ''; }
@@ -736,7 +736,7 @@ class MS_Helper_ListTable {
 	 * @return int
 	 */
 	protected function get_pagenum() {
-		lib3()->array->equip_request( 'paged' );
+		mslib3()->array->equip_request( 'paged' );
 		$pagenum = absint( $_REQUEST['paged'] );
 
 		if ( isset( $this->_pagination_args['total_pages'] )

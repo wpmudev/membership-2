@@ -109,7 +109,7 @@ class MS_Helper_ListTable_Billing extends MS_Helper_ListTable {
 
 	private function get_query_args() {
 		$defaults = MS_Model_Invoice::get_query_args();
-		lib3()->array->equip_request( 's' );
+		mslib3()->array->equip_request( 's' );
 
 		$per_page = $this->get_items_per_page(
 			'invoice_per_page',

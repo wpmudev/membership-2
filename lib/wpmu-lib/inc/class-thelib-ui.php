@@ -1,7 +1,7 @@
 <?php
 /**
  * The UI component.
- * Access via function `lib3()->ui`.
+ * Access via function `mslib3()->ui`.
  *
  * @since  1.1.4
  */
@@ -19,7 +19,7 @@ class TheLib_Ui extends TheLib {
 	// Vertical navigation support.
 	const MODULE_VNAV = 'vnav';
 
-	// Styles for lib3()->html->element() output.
+	// Styles for mslib3()->html->element() output.
 	const MODULE_HTML = 'html_element';
 
 	// WordPress media gallery support.

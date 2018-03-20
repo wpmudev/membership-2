@@ -113,7 +113,7 @@ class MS_Model_Communicationlog extends MS_Model_CustomPostType {
 	 * @return int The total count.
 	 */
 	public static function get_item_count( $args = null ) {
-		$args = lib3()->array->get( $args );
+		$args = mslib3()->array->get( $args );
 		$args['posts_per_page'] = -1;
 		$items = self::get_items( $args );
 

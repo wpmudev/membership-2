@@ -552,15 +552,15 @@ class MS_Model_Settings extends MS_Model_Option {
 				case 'enable_query_cache':
 				case 'force_single_gateway':
 				case 'hide_admin_bar':
-					$this->$property = lib3()->is_true( $value );
+					$this->$property = mslib3()->is_true( $value );
 					break;
 
 				case 'force_registration_verification' :
-					$is_enabled 	= lib3()->is_true( $value );
+					$is_enabled 	= mslib3()->is_true( $value );
 					$comm 			= MS_Model_Communication::get_communication( MS_Model_Communication::COMM_TYPE_REGISTRATION_VERIFY );
 					$comm->enabled 	= $is_enabled;
 					$comm->save();
-					$this->$property = lib3()->is_true( $is_enabled );
+					$this->$property = mslib3()->is_true( $is_enabled );
 					break;
 
 				default:
@@ -580,7 +580,7 @@ class MS_Model_Settings extends MS_Model_Option {
 					break;
 
 				case 'advanced_media_protection':
-					$create_htaccess = lib3()->is_true( $value );
+					$create_htaccess = mslib3()->is_true( $value );
 					if ( $create_htaccess ) {
 						MS_Model_Addon::toggle_media_htaccess( $this );
 					} else {

@@ -1,7 +1,7 @@
 <?php
 /**
  * The Debug component.
- * Access via function `lib3()->debug`.
+ * Access via function `mslib3()->debug`.
  *
  * @since 1.1.4
  */

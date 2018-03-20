@@ -129,7 +129,7 @@ class MS_Controller_Adminbar extends MS_Controller {
 	public function admin_bar_manager() {
 		$redirect = false;
 
-		lib3()->array->equip_get( 'membership_id' );
+		mslib3()->array->equip_get( 'membership_id' );
 
 		if ( $this->verify_nonce( 'ms_simulate', 'any' ) ) {
 			/*
@@ -167,7 +167,7 @@ class MS_Controller_Adminbar extends MS_Controller {
 			}
 
 			if ( ! $redirect ) {
-				$redirect = lib3()->net->current_url();
+				$redirect = mslib3()->net->current_url();
 			}
 		}
 
@@ -325,7 +325,7 @@ class MS_Controller_Adminbar extends MS_Controller {
 			)
 		);
 
-		$details = lib3()->session->get( 'ms-access' );
+		$details = mslib3()->session->get( 'ms-access' );
 		$parent1 = '';
 		$parent2 = '';
 
@@ -402,8 +402,8 @@ class MS_Controller_Adminbar extends MS_Controller {
 			'switching_text' => __( 'Switching...', 'membership2' ),
 		);
 
-		lib3()->ui->add( 'select' );
-		lib3()->ui->data( 'ms_data', $data );
+		mslib3()->ui->add( 'select' );
+		mslib3()->ui->data( 'ms_data', $data );
 
 		wp_enqueue_script( 'ms-admin' );
 		wp_enqueue_script( 'jquery-ui-datepicker' );

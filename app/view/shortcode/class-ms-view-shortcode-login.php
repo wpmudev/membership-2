@@ -181,7 +181,7 @@ class MS_View_Shortcode_Login extends MS_View {
 	private function login_form( $redirect_to = null ) {
 		if ( empty( $redirect_to ) ) {
 			// Default redirect is back to the current page
-			$redirect_to = lib3()->net->current_url();
+			$redirect_to = mslib3()->net->current_url();
 		}
 
 		$defaults = array(
@@ -522,14 +522,14 @@ class MS_View_Shortcode_Login extends MS_View {
 		static $Reset_Result = null;
 
 		if ( null === $Reset_Result ) {
-			lib3()->array->equip_get( 'login', 'key' );
-			lib3()->array->equip_post( 'pass1', 'pass2' );
+			mslib3()->array->equip_get( 'login', 'key' );
+			mslib3()->array->equip_post( 'pass1', 'pass2' );
 			$rp_login = wp_unslash( $_GET['login'] );
 			$rp_key = wp_unslash( $_GET['key'] );
 			$err_msg = new WP_Error();
 			$fatal_error = false;
 
-			lib3()->array->strip_slashes( $_POST, 'pass1', 'pass2' );
+			mslib3()->array->strip_slashes( $_POST, 'pass1', 'pass2' );
 			$pass1 = $_POST['pass1'];
 			$pass2 = $_POST['pass2'];
 
@@ -673,7 +673,7 @@ class MS_View_Shortcode_Login extends MS_View {
 		// Load the ajax script that handles the Ajax login functions.
 		wp_enqueue_script( 'ms-ajax-login' );
 
-		lib3()->ui->data(
+		mslib3()->ui->data(
 			'ms_ajax_login',
 			array(
 				'loginmessage' 		=> __( 'Please log in to access this page.', 'membership2' ),
