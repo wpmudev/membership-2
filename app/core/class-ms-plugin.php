@@ -360,8 +360,8 @@ class MS_Plugin {
 		if ( $refresh ) { return; }
 
 		// Update the Membership2 database entries after activation.
-		MS_Model_Upgrade::update( true );
-
+		MS_Model_Upgrade::update( true, true );
+		
 		do_action( 'ms_plugin_activation', $this );
 	}
 
@@ -377,6 +377,7 @@ class MS_Plugin {
 				wp_clear_scheduled_hook( $hook );
 			}
 		}
+		flush_rewrite_rules();
 	}
 
 	/**

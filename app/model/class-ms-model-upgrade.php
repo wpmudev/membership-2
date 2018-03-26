@@ -56,7 +56,7 @@ class MS_Model_Upgrade extends MS_Model {
 	 * @since  1.0.0
 	 * @param  bool $force Also execute update logic when version did not change.
 	 */
-	public static function update( $force = false ) {
+	public static function update( $force = false, $rewrite = false ) {
 		static $Done = false;
 
 		if ( $Done && ! $force ) { return; }
@@ -181,6 +181,10 @@ class MS_Model_Upgrade extends MS_Model {
 
 			$addons = MS_Factory::load( 'MS_Model_Addon' );
 			$addons->flush_list();
+
+			if ( $rewrite ) {
+				flush_rewrite_rules();
+			}
 
 			// This will reload the current page.
 			MS_Plugin::flush_rewrite_rules();
