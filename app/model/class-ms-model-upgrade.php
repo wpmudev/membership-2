@@ -182,12 +182,12 @@ class MS_Model_Upgrade extends MS_Model {
 			$addons = MS_Factory::load( 'MS_Model_Addon' );
 			$addons->flush_list();
 
+			// This will reload the current page.
+			MS_Plugin::flush_rewrite_rules();
+
 			if ( $rewrite ) {
 				flush_rewrite_rules();
 			}
-
-			// This will reload the current page.
-			MS_Plugin::flush_rewrite_rules();
 		}
 	}
 
