@@ -359,7 +359,7 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 
 		$secret_key = $this->get_secret_key();
 		Stripe::setApiKey( $secret_key );
-		Stripe::setApiVersion( '2017-06-05' );
+		Stripe::setApiVersion( '2018-02-28' );
 
 		// retrieve the request's body and parse it as JSON
 		$body = @file_get_contents( 'php://input' );

@@ -57,7 +57,7 @@ class MS_Gateway_Stripe_Api extends MS_Model_Option {
 
 		$secret_key = $this->_gateway->get_secret_key();
 		Stripe::setApiKey( $secret_key );
-		Stripe::setApiVersion( '2017-06-05' );
+		Stripe::setApiVersion( '2018-02-28' );
 	}
 
 	/**
