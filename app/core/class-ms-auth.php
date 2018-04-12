@@ -40,7 +40,7 @@ class MS_Auth {
                         'user_password' => $_POST['password'],
                         'remember' 		=> isset( $_POST['remember'] ),
 					);
-					
+
 					$can_login = apply_filters( 'ms_auth_ajax_login_can_login', true, $info );
 
 					if ( $can_login ) {
@@ -70,9 +70,9 @@ class MS_Auth {
 
 								wp_destroy_current_session();
 								wp_clear_auth_cookie();
-								
+
 								$resp['error'] 	= __( 'Account not verified. Please check your email for a verification link', 'membership2' );
-								
+
 							} else {
 
 								$resp['loggedin'] 	= true;
@@ -96,11 +96,11 @@ class MS_Auth {
 
 								/**
 								 * Login filter for redirect
-								 * 
+								 *
 								 * @since 1.1.2
 								 */
 								$resp['redirect'] = apply_filters( 'ms_auth_ajax_login_redirect_url', $resp['redirect'], $user_signon->ID );
-								
+
 								/**
 								 * After login success action
 								 *

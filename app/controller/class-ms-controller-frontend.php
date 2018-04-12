@@ -127,7 +127,7 @@ class MS_Controller_Frontend extends MS_Controller {
 			$this->add_action( 'wp_logout', 'logout_redirect', 10 );
 
 			if ( ! defined( 'DOING_AJAX' ) ) {
-				//Normal WordPress login check 
+				//Normal WordPress login check
 				$this->add_action( 'wp_login', 'handle_verification_code', 10, 2 );
 			}
 
@@ -597,7 +597,7 @@ class MS_Controller_Frontend extends MS_Controller {
 			// Default WP action hook
 			do_action( 'signup_finished' );
 			do_action( 'ms_controller_frontend_register_user_before_login', $user, $_REQUEST, $this );
-			
+
 			if ( MS_Model_Event::save_event( MS_Model_Event::TYPE_MS_REGISTERED, $user ) ) {
 				if ( ! defined( 'MS_DISABLE_WP_NEW_USER_NOTIFICATION' ) ) {
 					wp_new_user_notification( $user->id );
@@ -645,7 +645,7 @@ class MS_Controller_Frontend extends MS_Controller {
 						MS_Model_Pages::get_page_url( MS_Model_Pages::MS_PAGE_REGISTER )
 					)
 				);
-				
+
 				wp_safe_redirect( $redirect );
 				exit;
 			}
@@ -664,9 +664,9 @@ class MS_Controller_Frontend extends MS_Controller {
 
 	/**
 	 * Action to notify user to check email for the verification link
-	 * 
+	 *
 	 * @since 1.1.3
-	 * 
+	 *
 	 * @return string
 	 */
 	public function check_email() {
@@ -680,7 +680,7 @@ class MS_Controller_Frontend extends MS_Controller {
 	 * Related action hooks:
 	 *
 	 * @since  1.1.3
-	 * 
+	 *
 	 * @return string
 	 */
 	public function verification_notification( $content ) {
@@ -928,7 +928,7 @@ class MS_Controller_Frontend extends MS_Controller {
 				/**
 				 * activate account action
 				 * Verify the key and show login form
-				 * 
+				 *
 				 * @since 1.1.3
 				 */
 				$view 				= MS_Factory::create( 'MS_View_Shortcode_Login' );
@@ -1032,7 +1032,7 @@ class MS_Controller_Frontend extends MS_Controller {
 			$this
 		);
 	}
-	
+
 	/**
 	 * Redirect user to page.
 	 *
@@ -1085,13 +1085,19 @@ class MS_Controller_Frontend extends MS_Controller {
 
 	/**
 	 * Check for verification on normal login
-	 * 
+	 *
 	 * @since 1.1.3
-	 * 
+	 *
 	 * @param string $login - the user login
 	 * @param WP_User $user - the user
 	 */
 	function handle_verification_code( $login, $user ) {
+		$verification_cutoff_date = '2018-04-11 23:59:59';
+		// Require verification only for new accounts
+		if ( $user->user_registered < $verification_cutoff_date ) {
+			return;
+		}
+
 		$settings = MS_Factory::load( 'MS_Model_Settings' );
 		if ( $settings->force_registration_verification ) {
 			if ( !MS_Model_Member::is_admin_user( $user->ID ) ) {
@@ -1114,11 +1120,11 @@ class MS_Controller_Frontend extends MS_Controller {
 	/**
 	 * Login Message
 	 * Set our verification message
-	 * 
+	 *
 	 * @since 1.1.3
-	 * 
+	 *
 	 * @param string $message - the login message
-	 * 
+	 *
 	 * @return string $message
 	 */
 	function login_message( $message ) {
