@@ -197,7 +197,7 @@ module.exports = function( grunt ) {
 			pot_dir: 'languages/', // With trailing slash.
 			textdomain: 'membership2',
 		},
-		
+
 		plugin_dir: 'membership/',
 		pro_plugin_dir: 'membership-pro/',
 		plugin_file: 'membership2.php',
