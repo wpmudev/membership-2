@@ -11,3 +11,6 @@ nbproject
 backup
 /backup/*
 .diff
+composer
+vendor
+composer.*
