@@ -360,6 +360,10 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 		$secret_key = $this->get_secret_key();
 		Stripe::setApiKey( $secret_key );
 
+		// Make sure everyone is using the same API version. we can update this if/when necessary.
+		// If we don't set this, Stripe will use latest version, which may break our implementation.
+		Stripe::setApiVersion( '2018-02-28' );
+
 		// retrieve the request's body and parse it as JSON
 		$body = @file_get_contents( 'php://input' );
 

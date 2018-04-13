@@ -57,6 +57,10 @@ class MS_Gateway_Stripe_Api extends MS_Model_Option {
 
 		$secret_key = $this->_gateway->get_secret_key();
 		Stripe::setApiKey( $secret_key );
+
+		// Make sure everyone is using the same API version. we can update this if/when necessary.
+		// If we don't set this, Stripe will use latest version, which may break our implementation.
+		Stripe::setApiVersion( '2018-02-28' );
 	}
 
 	/**
