@@ -252,7 +252,7 @@ class MS_Api_Member extends MS_Api {
 		$member 		= MS_Factory::load( 'MS_Model_Member', $user_id );
 		if ( $member && $member->has_membership( $membership->id ) ) {
 			$subscription = $member->get_subscription( $membership->id );
-			return $subcription;
+			return $subscription;
 		} else {
 			return new WP_Error( 'user_not_member',  __( "User is not a member or does not belong to the membership", "membership2" ), array( 'status' => 404 ) );
 		}
