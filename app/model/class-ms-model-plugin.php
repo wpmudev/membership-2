@@ -164,7 +164,7 @@ class MS_Model_Plugin extends MS_Model {
 			}
 
 			// No subscription: Assign the base membership, which only denies access.
-			if ( ! $this->member->has_membership() ) {
+			if ( is_user_logged_in() && ! $this->member->has_membership() ) {
 				$this->member->add_membership(
 					MS_Model_Membership::get_base()->id
 				);
