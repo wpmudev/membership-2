@@ -418,11 +418,11 @@ class MS_Factory {
 				);
 
 				// Remove automatic populated values from metadata, if present.
-				//unset( $member_details['ms_username'] );
-				//unset( $member_details['ms_email'] );
-				//unset( $member_details['ms_name'] );
-				//unset( $member_details['ms_first_name'] );
-				//unset( $member_details['ms_last_name'] );
+				unset( $member_details['ms_username'] );
+				unset( $member_details['ms_email'] );
+				unset( $member_details['ms_name'] );
+				unset( $member_details['ms_first_name'] );
+				unset( $member_details['ms_last_name'] );
 
 				self::populate_model( $model, $member_details, 'ms_' );
 
