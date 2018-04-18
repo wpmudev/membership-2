@@ -535,6 +535,12 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 
 		$subscription->save();
 
+		if ( $new_membership->is_free ||  ( $new_membership->price <= 0 ) ) {
+			if ( ! $subscription->is_system() && ! $is_simulated ) {
+				MS_Model_Event::save_event( MS_Model_Event::TYPE_MS_SIGNED_UP, $subscription );
+			}
+		}
+
 		return $subscription;
 	}
 
