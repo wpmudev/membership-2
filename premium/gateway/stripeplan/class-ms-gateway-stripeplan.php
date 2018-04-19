@@ -320,13 +320,13 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 			$percent_off = $coupon->discount;
 		}
 
-		$coupon_data = array(
+		$coupon_data = apply_filters( 'ms_gateway_stripe_coupon_data',  array(
 			'id' 			=> self::get_the_id( $coupon->id, 'coupon' ),
 			'duration' 		=> $duration,
 			'amount_off' 	=> $amount_off,
 			'percent_off' 	=> $percent_off,
 			'currency' 		=> $settings->currency,
-		);
+		), $coupon, $settings );
 
 		// Check if the plan needs to be updated.
 		$serialized_data 	= json_encode( $coupon_data );
