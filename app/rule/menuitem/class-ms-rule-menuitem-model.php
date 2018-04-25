@@ -10,6 +10,15 @@
 class MS_Rule_MenuItem_Model extends MS_Rule {
 
 	/**
+	 * An array that holds all menu-IDs.
+	 * This is static, so it has correct values even when multiple memberships
+	 * are evaluated.
+	 *
+	 * @var array
+	 */
+	static protected $all_items = array();
+
+	/**
 	 * An array that holds all menu-IDs that are available for the current user.
 	 * This is static, so it has correct values even when multiple memberships
 	 * are evaluated.
@@ -121,6 +130,9 @@ class MS_Rule_MenuItem_Model extends MS_Rule {
 	 */
 	public function prepare_menuitem( $item ) {
 		if ( ! empty( $item ) ) {
+			
+			self::$all_items[$item->ID] = $item->ID;
+
 			if ( $this->can_access_menu( $item ) ) {
 				self::$allowed_items[$item->ID] = $item->ID;
 			}
@@ -151,11 +163,14 @@ class MS_Rule_MenuItem_Model extends MS_Rule {
 	 */
 	public function protect_menuitems( $items, $menu, $args ) {
 		if ( ! empty( $items ) ) {
+
+			$denied_items = array_diff( self::$all_items, self::$allowed_items );
+			
 			foreach ( $items as $key => $item ) {
-				if ( ! isset( self::$allowed_items[ $item->ID ] ) ) {
+				if ( isset( $denied_items[ $item->ID ] ) ) {
 					unset( $items[ $key ] );
 				} else if ( $item->menu_item_parent > 0 ) {
-					if ( ! isset( self::$allowed_items[ $item->menu_item_parent ] ) ) {
+					if ( isset( $denied_items[ $item->menu_item_parent ] ) ) {
 						unset( $items[ $key ] );
 					}
 				}
