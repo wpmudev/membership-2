@@ -133,6 +133,7 @@ class MS_Gateway_Paypalsingle extends MS_Gateway {
 						} else {
 							$notes .= __( 'Payment registered, though amount differs from invoice.', 'membership2' );
 						}
+						$status = MS_Model_Invoice::STATUS_PAID;
 						break;
 
 					case 'Reversed':
