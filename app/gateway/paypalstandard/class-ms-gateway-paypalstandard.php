@@ -89,6 +89,7 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 		$notes_pay 			= '';
 		$notes_txn 			= '';
 		$external_id 		= null;
+		$transaction_exists = null;
 		$invoice_id 		= 0;
 		$subscription_id 	= 0;
 		$amount 			= 0;
@@ -127,6 +128,7 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 		}
 		if ( ! empty( $_POST['txn_id'] ) ) {
 			$external_id 		= $_POST['txn_id'];
+			$transaction_exists = MS_Model_Transactionlog::was_processed( self::ID, $external_id );
 		}
 		if ( ! empty( $_POST['mc_currency'] ) ) {
 			$currency 			= $_POST['mc_currency'];
@@ -157,7 +159,12 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 				if ( $invoice->id != 0 ) {
 					if ( $invoice->is_paid() ) {
 						$subscription 	= $invoice->get_subscription();
-						$invoice_id 	= $subscription->first_unpaid_invoice();
+						if( ! $transaction_exists ){
+							$invoice_id 	= $subscription->first_unpaid_invoice();	
+						}
+						else{
+							$invoice_id 	= $subscription->get_current_invoice_number();
+						}						
 					} else {
 						$invoice_id 	= $invoice->id;
 					}
@@ -541,7 +548,7 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 		}
 
 		// Step 2a: Check if the txn_id was already processed by M2.
-		if ( MS_Model_Transactionlog::was_processed( self::ID, $external_id ) ) {
+		if ( $transaction_exists ) {
 			$notes = 'Duplicate: Already processed that transaction.';
 			$success = false;
 			$ignore = true;
