@@ -128,6 +128,7 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 		}
 		if ( ! empty( $_POST['txn_id'] ) ) {
 			$external_id 		= $_POST['txn_id'];
+			$transaction_exists = MS_Model_Transactionlog::was_processed( self::ID, $external_id );
 		}
 		if ( ! empty( $_POST['mc_currency'] ) ) {
 			$currency 			= $_POST['mc_currency'];
