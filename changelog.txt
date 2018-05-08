@@ -12,6 +12,7 @@ Change Log:
 - Fix: Draft invoice created on PayPal on first payments
 - Fix: After account verification, show the payment page
 - Fix: Old members show account status as active
+- Fix: Stripe coupon details on payment form
 
 1.1.4
 - Fix: existing users should not need to verify email
