@@ -3165,15 +3165,21 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 						$comm->period['period_type']
 					);
 					if ( $comm_days == $days->remaining ) {
-						$member = $this->get_member();
-						if ( !$member->get_meta( 'ms_comm_before_finishes_sent_' . strtotime( $this->expire_date ) ) ){
+						$member 	= $this->get_member();
+						$has_sent 	= $member->get_meta( '_ms_comm_before_finishes_sent' );
+						if ( !is_array( $has_sent ) ) {
+							$has_sent = array();
+						}
+						$date_time 	= strtotime( $this->expire_date );
+						if ( !in_array( $date_time, $has_sent ) ){
 							$comm->add_to_queue( $this->id );
 							MS_Model_Event::save_event(
 								MS_Model_Event::TYPE_MS_BEFORE_FINISHES,
 								$this
 							);
+							$has_sent[] = $date_time;
 							// Mark the member as has received message.
-							$member->set_meta( 'ms_comm_before_finishes_sent_' . strtotime( $this->expire_date ), 1 );
+							$member->set_meta( '_ms_comm_before_finishes_sent', $has_sent );
 						}
 					}
 
