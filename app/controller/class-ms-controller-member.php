@@ -980,16 +980,16 @@ class MS_Controller_Member extends MS_Controller {
 			if ( $user_activation_status != 1 && MS_Model_Member::is_admin_user( $user_id ) ) {
 				$user_activation_status = 1;
 				update_user_meta( $user_id, '_ms_user_activation_status', $user_activation_status );
+			} else {
+				//Set already active users to active
+				$udata = get_userdata( $user_id );
+				$verification_cutoff_date = '2018-04-11 23:59:59';
+				if ( $udata->user_registered < $verification_cutoff_date ) {
+					$user_activation_status = 1;
+					update_user_meta( $user_id, '_ms_user_activation_status', $user_activation_status );
+				}
 			}
-
-			//Set already active users to active
-			$udata = get_userdata( $user_id );
-			$verification_cutoff_date = '2018-04-11 23:59:59';
-			if ( $udata->user_registered < $verification_cutoff_date ) {
-				$user_activation_status = 1;
-				update_user_meta( $user_id, '_ms_user_activation_status', $user_activation_status );
-			}
-
+			
 			if ( $user_activation_status != 1 ) {
 				$value 	= __( 'Not Verified' , 'membership' );
 			} else {
