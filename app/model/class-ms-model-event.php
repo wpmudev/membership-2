@@ -227,7 +227,7 @@ class MS_Model_Event extends MS_Model_CustomPostType {
 			),
 			self::TYPE_MS_BEFORE_TRIAL_FINISHES => array(
 				'topic' => self::TOPIC_WARNING,
-				'desc' 	=> __( 'Membership % s trial about to finish warning date.', 'membership2' ),
+				'desc' 	=> __( 'Membership %s trial about to finish warning date.', 'membership2' ),
 			),
 
 			/*
