@@ -6,7 +6,9 @@ Change Log:
 ----------------------------------------------------------------------
 
 1.1.5
+- Added: Stripe plan delete coupon
 - Fix: Subscription Email for free membership
+- Fix: Draft invoice created on PayPal on first payments
 
 1.1.4
 - Fix: existing users should not need to verify email
