@@ -159,10 +159,9 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 				if ( $invoice->id != 0 ) {
 					if ( $invoice->is_paid() ) {
 						$subscription 	= $invoice->get_subscription();
-						if( ! $transaction_exists ){
+						if ( ! $transaction_exists ) {
 							$invoice_id 	= $subscription->first_unpaid_invoice();	
-						}
-						else{
+						} else{
 							$invoice_id 	= $subscription->get_current_invoice_number();
 						}						
 					} else {
