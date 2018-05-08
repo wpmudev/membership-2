@@ -6,7 +6,8 @@ Change Log:
 ----------------------------------------------------------------------
 
 1.1.5
-- Added: Stripe plan delete coupon
+- Added: Delete coupon from Stripe when deleted in plugin
+- Added: Coupon type in invoice
 - Fix: Subscription Email for free membership
 - Fix: Draft invoice created on PayPal on first payments
 - Fix: After account verification, show the payment page
