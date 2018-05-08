@@ -9,6 +9,8 @@ Change Log:
 - Added: Stripe plan delete coupon
 - Fix: Subscription Email for free membership
 - Fix: Draft invoice created on PayPal on first payments
+- Fix: After account verification, show the payment page
+- Fix: Old members show account status as active
 
 1.1.4
 - Fix: existing users should not need to verify email

@@ -1990,15 +1990,31 @@ class MS_Model_Member extends MS_Model {
 	/**
 	 * Verify activation code
 	 * 
-	 * @since 1.1.3
+	 * @since 1.1.5
 	 * 
 	 * @param string $code - the verifiication code
 	 * 
 	 * @return string
 	 */
-	public static function verify_activation_code( $code ) {
+	public static function verification_account_id( $code ) {
 		global $wpdb;
 		$user_id = $wpdb->get_var( $wpdb->prepare( "SELECT user_id FROM {$wpdb->usermeta} WHERE meta_value = %s AND meta_key = %s", $code, '_ms_user_activation_key' ) );
+		if ( $user_id ) {
+			return $user_id;
+		}
+		return false;
+	}
+
+	/**
+	 * Verify activation code
+	 * 
+	 * @since 1.1.3
+	 * 
+	 * @param int $id - the user id
+	 * 
+	 * @return string
+	 */
+	public static function verify_activation_code( $user_id ) {
 		if ( $user_id ) {
 			$user_activation_status = get_user_meta( $user_id, '_ms_user_activation_status', true );
 			if ( $user_activation_status != 1 ) {

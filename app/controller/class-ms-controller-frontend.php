@@ -637,6 +637,28 @@ class MS_Controller_Frontend extends MS_Controller {
 
 				MS_Model_Event::save_event( MS_Model_Event::TYPE_MS_VERIFYACCOUNT, $user );
 
+				if ( empty( $_REQUEST['membership_id'] ) ) {
+					$after_redirect = esc_url_raw(
+						add_query_arg(
+							array(
+								'step' => self::STEP_CHOOSE_MEMBERSHIP,
+							)
+						)
+					);
+				} else {
+					$after_redirect = esc_url_raw(
+						add_query_arg(
+							array(
+								'step' => self::STEP_PAYMENT_TABLE,
+								'membership_id' => absint( $_REQUEST['membership_id'] ),
+							),
+							MS_Model_Pages::get_page_url( MS_Model_Pages::MS_PAGE_REGISTER )
+						)
+					);
+				}
+
+				update_user_meta( $user->ID, '_ms_user_activation_redirect_url', $after_redirect );
+
 				$redirect = esc_url_raw(
 					add_query_arg(
 						array(
@@ -931,10 +953,19 @@ class MS_Controller_Frontend extends MS_Controller {
 				 *
 				 * @since 1.1.3
 				 */
+				$redirect_to		= false;
 				$view 				= MS_Factory::create( 'MS_View_Shortcode_Login' );
 				$verification_key 	= wp_unslash( $_GET['key'] );
-				$message 			= MS_Model_Member::verify_activation_code( $verification_key  );
-				$redirect_to 		= MS_Model_Pages::get_page_url( MS_Model_Pages::MS_PAGE_ACCOUNT );
+				$user_id 			= MS_Model_Member::verification_account_id( $verification_key  );
+				$message 			= MS_Model_Member::verify_activation_code( $user_id  );
+				if ( $user_id ) {
+					$redirect_to 	= get_user_meta( $user_id, '_ms_user_activation_redirect_url', true );
+				}
+				if ( !$redirect_to ) {
+					$redirect_to 	= MS_Model_Pages::get_page_url( MS_Model_Pages::MS_PAGE_ACCOUNT );
+				} else {
+					delete_user_meta( $user_id, '_ms_user_activation_redirect_url' );
+				}
 				$redirect_to		= apply_filters( 'ms_front_after_login_redirect', $redirect_to );
 				$view->data 		= array( 'error_message' => $message, 'redirect_login' => $redirect_to );
 				$view->add_filter( 'the_content', 'to_html', 10 );
