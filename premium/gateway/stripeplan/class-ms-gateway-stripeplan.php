@@ -119,6 +119,12 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 			'update_stripe_data_coupon'
 		);
 
+		//Delete Coupon
+		$this->add_action(
+			'ms_deleted_MS_Addon_Coupon_Model',
+			'delete_stripe_coupon', 10, 3
+		);
+
 		$this->add_filter(
 			'ms_model_pages_get_ms_page_url',
 			'ms_model_pages_get_ms_page_url_cb',
@@ -342,6 +348,28 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 
 			$this->_api->create_or_update_coupon( $coupon_data );
 		}
+	}
+
+	/**
+	 * Action when coupon is deleted
+	 * 
+	 * @param MS_Addon_Coupon_Model $coupon - the current coupon
+	 * @param bool $deleted - if it was deleted
+	 * @param int $id - the reference ID
+	 * 
+	 * @since 1.1.5
+	 */
+	public function delete_stripe_coupon( $coupon, $deleted, $id ) {
+		if ( ! $this->active ) { return false; }
+		$this->_api->set_gateway( $this );
+		$coupon_id = apply_filters( 
+							'ms_gateway_stripe_coupon_id', 
+							self::get_the_id( $id, 'coupon' ), 
+							$id, 
+							$coupon 
+					);
+
+		$this->_api->delete_coupon( $coupon_id );
 	}
 
 	/**
