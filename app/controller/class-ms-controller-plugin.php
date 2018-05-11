@@ -1014,23 +1014,23 @@ class MS_Controller_Plugin extends MS_Controller {
 		);
 		wp_register_script(
 			'ms-ajax-login',
-			$plugin_url . 'app/assets/js/ms-public-ajax.js',
+			$plugin_url . 'app/assets/js/ms-public-ajax.min.js',
 			array( 'jquery' ), $version, true // last param forces script to load in footer
 		);
 		wp_register_script(
 			'ms-public',
-			$plugin_url . 'app/assets/js/ms-public.js',
+			$plugin_url . 'app/assets/js/ms-public.min.js',
 			array( 'jquery' ), $version
 		);
 
 		wp_register_script(
 			'm2-jquery-plugins',
-			$plugin_url . 'app/assets/js/jquery.m2.plugins.js',
+			$plugin_url . 'app/assets/js/jquery.m2.plugins.min.js',
 			array( 'jquery' ), $version
 		);
 		wp_register_script(
 			'jquery-validate',
-			$plugin_url . 'app/assets/js/jquery.m2.validate.js',
+			$plugin_url . 'app/assets/js/jquery.m2.validate.min.js',
 			array( 'jquery' ), $version
 		);
 	}
@@ -1047,7 +1047,7 @@ class MS_Controller_Plugin extends MS_Controller {
 		// The main plugin style.
 		wp_register_style(
 			'ms-styles',
-			$plugin_url . 'app/assets/css/ms-public.css',
+			$plugin_url . 'app/assets/css/ms-public.min.css',
 			array(),
 			$version
 		);

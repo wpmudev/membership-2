@@ -1094,8 +1094,8 @@ class MS_Controller_Frontend extends MS_Controller {
 		$is_ms_page = MS_Model_Pages::is_membership_page();
 		$is_profile = self::ACTION_EDIT_PROFILE == $this->get_action()
 			&& MS_Model_Pages::is_membership_page( null, MS_Model_Pages::MS_PAGE_ACCOUNT );
-
-		if ( $is_ms_page ) {
+		$load_on_front_pages = apply_filters( 'ms_controller_frontend_resources_load', true, $is_ms_page );
+		if ( $load_on_front_pages ) {
 			$data = array(
 				'ms_init' => array( 'shortcode' ),
 				'cancel_msg' => __( 'Are you sure you want to cancel?', 'membership2' ),

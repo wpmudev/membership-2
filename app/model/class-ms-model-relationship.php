@@ -3166,7 +3166,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 					);
 					if ( $comm_days == $days->remaining ) {
 						$member 	= $this->get_member();
-						$has_sent 	= $member->get_meta( '_ms_comm_before_finishes_sent' );
+						$has_sent 	= $member->get_meta( '_ms_comm_type_before_finishes_sent' );
 						if ( !is_array( $has_sent ) ) {
 							$has_sent = array();
 						}
@@ -3179,7 +3179,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 							);
 							$has_sent[] = $date_time;
 							// Mark the member as has received message.
-							$member->set_meta( '_ms_comm_before_finishes_sent', $has_sent );
+							$member->set_meta( '_ms_comm_type_before_finishes_sent', $has_sent );
 						}
 					}
 
