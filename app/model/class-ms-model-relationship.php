@@ -480,6 +480,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 		$new_membership = MS_Factory::load( 'MS_Model_Membership', $membership_id );
 		if ( $new_membership->is_free ||  ( $new_membership->price <= 0 ) ) {
 			$force_admin = true;
+			$subscription->status = self::STATUS_ACTIVE;
 		}
 
 		// Always update these fields.
