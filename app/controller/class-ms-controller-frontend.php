@@ -966,6 +966,7 @@ class MS_Controller_Frontend extends MS_Controller {
 				} else {
 					delete_user_meta( $user_id, '_ms_user_activation_redirect_url' );
 				}
+				delete_user_meta( $user_id, '_ms_user_force_activation_status' );
 				$redirect_to		= apply_filters( 'ms_front_after_login_redirect', $redirect_to );
 				$view->data 		= array( 'error_message' => $message, 'redirect_login' => $redirect_to );
 				$view->add_filter( 'the_content', 'to_html', 10 );
@@ -1123,9 +1124,10 @@ class MS_Controller_Frontend extends MS_Controller {
 	 * @param WP_User $user - the user
 	 */
 	function handle_verification_code( $login, $user ) {
-		$verification_cutoff_date = '2018-04-11 23:59:59';
+		$user_activation_status 	= get_user_meta( $user->ID, '_ms_user_force_activation_status', true );
+		$verification_cutoff_date 	= '2018-04-11 23:59:59';
 		// Require verification only for new accounts
-		if ( $user->user_registered < $verification_cutoff_date ) {
+		if ( $user->user_registered < $verification_cutoff_date && !$user_activation_status ) {
 			return;
 		}
 
