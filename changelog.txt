@@ -15,6 +15,7 @@ Change Log:
 - Fix: After account verification, show the payment page
 - Fix: Old members show account status as active
 - Fix: Stripe coupon details on payment form
+- Fix: Email sending for free membership
 
 1.1.4
 - Fix: existing users should not need to verify email
