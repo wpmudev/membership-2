@@ -573,9 +573,9 @@ class MS_Test_Subscriptions extends WP_UnitTestCase {
 		// expire date is set.
 
 		//Free will always be active
-		//$this->assertEquals( MS_Model_Relationship::STATUS_PENDING, $subscription->status, 'Pending status' );
-		//$this->assertEquals( $start_date, $subscription->start_date );
-		//$this->assertEquals( '', $subscription->expire_date );
+		$this->assertEquals( MS_Model_Relationship::STATUS_PENDING, $subscription->status, 'Pending status' );
+		$this->assertEquals( $start_date, $subscription->start_date );
+		$this->assertEquals( '', $subscription->expire_date );
 
 		$invoice = $subscription->get_current_invoice();
 		$invoice->pay_it( 'free', '0' );
