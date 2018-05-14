@@ -1041,7 +1041,9 @@ class MS_Controller_Member extends MS_Controller {
 		switch ( $doaction ) {
 			case 'ms_bulk_approve' :
 				foreach ( $items as $user_id ) {
-					update_user_meta( $user_id, '_ms_user_activation_status', 1 );
+					if ( !MS_Model_Member::is_admin_user( $user_id ) ) {
+						update_user_meta( $user_id, '_ms_user_activation_status', 1 );
+					}
 				}
 				$redirect_to = admin_url( 'users.php' );
 				$redirect_to = add_query_arg( '_ms_approved', count( $items ), $redirect_to );
@@ -1049,7 +1051,9 @@ class MS_Controller_Member extends MS_Controller {
 
 			case 'ms_bulk_disapprove' :
 				foreach ( $items as $user_id ) {
-					update_user_meta( $user_id, '_ms_user_activation_status', 0 );
+					if ( !MS_Model_Member::is_admin_user( $user_id ) ) {
+						update_user_meta( $user_id, '_ms_user_activation_status', 0 );
+					}
 				}
 				$redirect_to = admin_url( 'users.php' );
 				$redirect_to = add_query_arg( '_ms_disapproved', count( $items ), $redirect_to );
@@ -1057,10 +1061,12 @@ class MS_Controller_Member extends MS_Controller {
 
 			case 'ms_bulk_resend' :
 				foreach ( $items as $user_id ) {
-					$member = MS_Factory::load( 'MS_Model_Member', $user_id );;
-					update_user_meta( $user_id, '_ms_user_activation_status', 0 );
-					update_user_meta( $user_id, '_ms_user_force_activation_status', 1 );
-					MS_Model_Event::save_event( MS_Model_Event::TYPE_MS_VERIFYACCOUNT, $member );
+					if ( !MS_Model_Member::is_admin_user( $user_id ) ) {
+						$member = MS_Factory::load( 'MS_Model_Member', $user_id );;
+						update_user_meta( $user_id, '_ms_user_activation_status', 0 );
+						update_user_meta( $user_id, '_ms_user_force_activation_status', 1 );
+						MS_Model_Event::save_event( MS_Model_Event::TYPE_MS_VERIFYACCOUNT, $member );
+					}
 				}
 				$redirect_to = admin_url( 'users.php' );
 				$redirect_to = add_query_arg( '_ms_resend', count( $items ), $redirect_to );
