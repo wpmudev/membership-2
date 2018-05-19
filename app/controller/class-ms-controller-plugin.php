@@ -1243,11 +1243,6 @@ class MS_Controller_Plugin extends MS_Controller {
 		$member 	= MS_Factory::load( 'MS_Model_Member', $user->ID );
 		$items_removed = 0;
 		foreach ( $member->subscriptions as $sub ) {
-			$invoices 	= $sub->get_invoices();
-			foreach ( $invoices as $invoice ) {
-				$invoice->delete();
-				$items_removed++;
-			}
 			$sub->delete();
 			$items_removed++;
 		}
