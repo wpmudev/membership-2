@@ -174,6 +174,9 @@ class MS_Controller_Plugin extends MS_Controller {
 		// Select the right page to display.
 		$this->add_action( 'admin_init', 'route_submenu_request' );
 
+		//Plugin policy settings
+		$this->add_action( 'admin_init', 'add_privacy_policy_content' );
+
 		// This will do the ADMIN-SIDE initialization of the controllers
 		$this->add_action( 'ms_plugin_admin_setup', 'run_admin_init' );
 
@@ -186,6 +189,12 @@ class MS_Controller_Plugin extends MS_Controller {
 		$this->add_action( 'ms_register_public_scripts', 'register_public_styles' );
 		$this->add_action( 'wp_enqueue_scripts', 'enqueue_plugin_styles' );
 		$this->add_action( 'wp_enqueue_scripts', 'enqueue_plugin_scripts' );
+
+		/**
+		 * Register data exporters and erasers
+		 */
+		$this->add_filter( 'wp_privacy_personal_data_exporters', 'register_exporter' );
+		$this->add_filter( 'wp_privacy_personal_data_erasers', 'register_eraser' );
 	}
 
 	/**
@@ -673,6 +682,27 @@ class MS_Controller_Plugin extends MS_Controller {
 	}
 
 	/**
+	 * Add Privacy policy details
+	 * 
+	 * @since 1.1.5
+	 */
+	public function add_privacy_policy_content() {
+		if ( ! function_exists( 'wp_add_privacy_policy_content' ) ) {
+			return;
+		}
+
+		$plugin_name = MS_IS_PRO ? 'Membership 2 Pro' : 'Membership 2';
+
+		$content = __( 'Some membership stuff',
+			'membership2' );
+	 
+		wp_add_privacy_policy_content(
+			$plugin_name,
+			wp_kses_post( wpautop( $content, false ) )
+		);
+	}
+
+	/**
 	 * Simply calls the menu-handler callback function.
 	 *
 	 * This function was determined by the previous call to
@@ -1141,5 +1171,92 @@ class MS_Controller_Plugin extends MS_Controller {
 		<?php
 		$script = ob_get_clean();
 		mslib3()->ui->script( $script );
+	}
+
+	/**
+	 * Register exporters
+	 * 
+	 * @since 1.1.5
+	 * 
+	 * @param array $exporters - current registered exporters
+	 * 
+	 * @return array $exporters
+	 */
+	function register_exporter( $exporters ) {
+		$exporters['membership2'] = array(
+			'exporter_friendly_name' 	=> __( 'Membership 2 Exporter', 'membership2' ),
+			'callback' 					=> array( $this, 'add_export_data' ),
+		);
+		return $exporters;
+
+	}
+
+	/**
+	 * Register erasers
+	 * 
+	 * @since 1.1.5
+	 * 
+	 * @param array $erasers - current registered erasers
+	 * 
+	 * @return array $erasers
+	 */
+	function register_eraser( $erasers ) {
+		$erasers['membership2'] = array(
+			'eraser_friendly_name' => __( 'Membership 2 Eraser', 'membership2' ),
+			'callback'             => array( $this, 'erase_data' ),
+		);
+		return $erasers;
+	}
+
+	/**
+	 * Add export data
+	 * 
+	 * @since 1.1.5
+	 * 
+	 * @param string $email_address - current email address
+	 * @param int $page - current page
+	 * 
+	 * @return array
+	 */
+	function add_export_data( $email_address, $page = 1 ) {
+		$user 		= get_user_by( 'email', $email_address );
+		$exporter 	= new MS_Model_Export_Members();
+		$data 		= $exporter->member_data( $user->ID );
+		return array(
+			'data' => $data,
+			'done' => true,
+		);
+	}
+
+	/**
+	 * Erase data
+	 * 
+	 * @since 1.1.5
+	 * 
+	 * @param string $email_address - current email address
+	 * @param int $page - current page
+	 * 
+	 * @return array
+	 */
+	function erase_data( $email_address, $page = 1 ) {
+		$user 		= get_user_by( 'email', $email_address );
+		$member 	= MS_Factory::load( 'MS_Model_Member', $user->ID );
+		$items_removed = 0;
+		foreach ( $member->subscriptions as $sub ) {
+			$invoices 	= $sub->get_invoices();
+			foreach ( $invoices as $invoice ) {
+				$invoice->delete();
+				$items_removed++;
+			}
+			$sub->delete();
+			$items_removed++;
+		}
+
+		return array( 
+			'items_removed' => $items_removed,
+			'items_retained'=> false,
+			'messages' 		=> array( __( 'All Member Data deleted', 'membership2' ) ),
+			'done' 			=> true,
+		);
 	}
 }

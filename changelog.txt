@@ -11,6 +11,7 @@ Change Log:
 - Added: New filter ms_controller_frontend_resources_load to disable membership front scripts from loading on all pages
 - Added: Bulk action on users list to resend verification email
 - Added: Privacy Policy registration checkbox confirmation
+- Added: Member GDPR tools
 - Improved: Membership front scripts load on all pages
 - Fix: Subscription Email for free membership
 - Fix: Draft invoice created on PayPal on first payments
