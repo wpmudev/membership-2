@@ -417,14 +417,14 @@ class MS_Factory {
 					$wp_user
 				);
 
+				self::populate_model( $model, $member_details, 'ms_' );
+
 				// Remove automatic populated values from metadata, if present.
 				unset( $member_details['ms_username'] );
 				unset( $member_details['ms_email'] );
 				unset( $member_details['ms_name'] );
 				unset( $member_details['ms_first_name'] );
 				unset( $member_details['ms_last_name'] );
-
-				self::populate_model( $model, $member_details, 'ms_' );
 
 				// Load membership_relationships
 				$model->subscriptions = MS_Model_Relationship::get_subscriptions(
