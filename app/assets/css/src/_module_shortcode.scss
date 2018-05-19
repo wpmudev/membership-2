@@ -195,6 +195,17 @@
 			}
 		}
 	}
+
+	&.ms-form-element-privacy_check {
+		margin: 0px;
+		margin-left: 1em;
+
+		.wpmui-field-checkbox{
+			min-width: 10px;
+			margin: 0;
+			margin-top: 8px;
+		}
+	}
 }
 
 /* jQuery validation - on front end */

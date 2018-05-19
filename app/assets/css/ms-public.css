@@ -314,6 +314,15 @@
   min-width: 0;
   margin-right: 4px;
 }
+.ms-form-element.ms-form-element-privacy_check {
+  margin: 0px;
+  margin-left: 1em;
+}
+.ms-form-element.ms-form-element-privacy_check .wpmui-field-checkbox {
+  min-width: 10px;
+  margin: 0;
+  margin-top: 8px;
+}
 
 /* jQuery validation - on front end */
 .ms-validation-error {
@@ -870,19 +879,16 @@ input[type="image"] {
 .wpmui-popup .sel-batchsize-wrapper,
 #wpwrap .ms-wrap .sel-batchsize-wrapper {
   position: relative;
-  margin-left: 150px;
   padding-top: 30px;
   display: block;
 }
 .wpmui-popup .sel-batchsize-wrapper .wpmui-field-label,
 #wpwrap .ms-wrap .sel-batchsize-wrapper .wpmui-field-label {
   position: absolute;
-  left: -150px;
   top: 0;
 }
 .wpmui-popup .sel-batchsize-wrapper .wpmui-field-select,
 #wpwrap .ms-wrap .sel-batchsize-wrapper .wpmui-field-select {
-  position: absolute;
   top: 0;
   margin: 0;
 }
