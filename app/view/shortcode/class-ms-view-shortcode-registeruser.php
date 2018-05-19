@@ -233,7 +233,7 @@ class MS_View_Shortcode_RegisterUser extends MS_View {
 				'value' => $data['step'],
 			),
 
-			'privacy' => array(
+			'privacy_check' => array(
 				'id' 	=> 'privacy_check',
 				'title' => sprintf( __( 'By creating an account you agree to the sites %sPrivacy and Policy%s'), '<a href="'.$privacy_link.'" target="_blank">', '</a>' ),
 				'type' 	=> MS_Helper_Html::INPUT_TYPE_CHECKBOX,
@@ -271,6 +271,10 @@ class MS_View_Shortcode_RegisterUser extends MS_View {
 			'password2' => array(
 				'required' => true,
 				'equalTo' => '.ms-form-element #password',
+			),
+			'privacy_check' => array(
+				'required' => true,
+				'equalTo' => '.ms-form-element #privacy_check',
 			),
 		);
 
