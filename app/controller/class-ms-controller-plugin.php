@@ -1250,7 +1250,7 @@ class MS_Controller_Plugin extends MS_Controller {
 		return array( 
 			'items_removed' => $items_removed,
 			'items_retained'=> false,
-			'messages' 		=> array( __( 'All Member Data deleted', 'membership2' ) ),
+			'messages' 		=> array( __( 'All Subscription Data deleted', 'membership2' ) ),
 			'done' 			=> true,
 		);
 	}
