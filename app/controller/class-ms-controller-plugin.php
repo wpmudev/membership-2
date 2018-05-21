@@ -691,13 +691,22 @@ class MS_Controller_Plugin extends MS_Controller {
 			return;
 		}
 
-		$plugin_name = MS_IS_PRO ? 'Membership 2 Pro' : 'Membership 2';
-
-		$content = __( 'Some membership stuff',
+		$content = __( '<h3>Payment Gateways</h3>
+		<p class="privacy-policy-tutorial">
+			If you choose to accept Payments using Stripe, or PayPal, some of your customers data will be passed to the respective third party.
+			Some of the data includes :
+			<ul>
+				<li>Name</li>
+				<li>Email</li>
+				<li>Address</li>
+				<li>Phone</li>
+				<li>City/State/Zip</li>
+			</ul>
+		</p>',
 			'membership2' );
 	 
 		wp_add_privacy_policy_content(
-			$plugin_name,
+			'Membership 2',
 			wp_kses_post( wpautop( $content, false ) )
 		);
 	}
