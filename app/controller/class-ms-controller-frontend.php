@@ -955,6 +955,48 @@ class MS_Controller_Frontend extends MS_Controller {
 				 */
 				$redirect_to		= false;
 				$view 				= MS_Factory::create( 'MS_View_Shortcode_Login' );
+				$data_defaults 		= array(
+					'holder'          => 'div',
+					'holderclass'     => 'ms-login-form',
+					'item'            => '',
+					'itemclass'       => '',
+					'postfix'         => '',
+					'prefix'          => '',
+					'wrapwith'        => '',
+					'wrapwithclass'   => '',
+					'redirect_login'  => MS_Model_Pages::get_url_after_login(),
+					'redirect_logout' => MS_Model_Pages::get_url_after_logout(),
+					'header'          => true,
+					'register'        => true,
+					'title'           => '',
+					'show_note'       => true,   // Show the "you are not logged in" note?
+					'form'            => '',  // [login|lost|reset|logout]
+					'show_labels'     => false,
+					'autofocus'       => true,
+					'nav_pos'         => 'top', // [top|bottom]
+
+					// form="login"
+					'show_remember'   => true,
+					'label_username'  => __( 'Username', 'membership2' ),
+					'label_password'  => __( 'Password', 'membership2' ),
+					'label_remember'  => __( 'Remember Me', 'membership2' ),
+					'label_log_in'    => __( 'Log In', 'membership2' ),
+					'id_login_form'   => 'loginform',
+					'id_username'     => 'user_login',
+					'id_password'     => 'user_pass',
+					'id_remember'     => 'rememberme',
+					'id_login'        => 'wp-submit',
+					'value_username'  => '',
+					'value_remember'  => false,
+
+					// form="lost"
+					'label_lost_username' => __( 'Username or E-mail', 'membership2' ),
+					'label_lostpass'      => __( 'Reset Password', 'membership2' ),
+					'id_lost_form'        => 'lostpasswordform',
+					'id_lost_username'    => 'user_login',
+					'id_lostpass'         => 'wp-submit',
+					'value_username'      => '',
+				);
 				$verification_key 	= wp_unslash( $_GET['key'] );
 				$user_id 			= MS_Model_Member::verification_account_id( $verification_key  );
 				$message 			= MS_Model_Member::verify_activation_code( $user_id  );
@@ -967,8 +1009,10 @@ class MS_Controller_Frontend extends MS_Controller {
 					delete_user_meta( $user_id, '_ms_user_activation_redirect_url' );
 				}
 				delete_user_meta( $user_id, '_ms_user_force_activation_status' );
-				$redirect_to		= apply_filters( 'ms_front_after_login_redirect', $redirect_to );
-				$view->data 		= array( 'error_message' => $message, 'redirect_login' => $redirect_to );
+				$redirect_to						= apply_filters( 'ms_front_after_login_redirect', $redirect_to );
+				$data_defaults['error_message'] 	= $message;
+				$data_defaults['redirect_login'] 	= $redirect_to;
+				$view->data 						= apply_filters( 'ms_view_shortcode_login_data', $data_defaults, $this );
 				$view->add_filter( 'the_content', 'to_html', 10 );
 				break;
 

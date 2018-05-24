@@ -702,6 +702,16 @@ class MS_Controller_Plugin extends MS_Controller {
 				<li>Phone</li>
 				<li>City/State/Zip</li>
 			</ul>
+			We will store order information for XXX years for tax and accounting purposes. This includes your name, email address and billing addresses.
+		</p>
+		
+		<h3>Who on our team has access</h3>
+		<p class="privacy-policy-tutorial">
+			Members of our team have access to the information you provide us. Both Administrators and Shop Managers can access:
+			<ul>
+				<li>Order information like what was purchased, when it was purchased and</li>
+				<li>Customer information like your name, email address, and billing information.</li>
+			</ul>
 		</p>',
 			'membership2' );
 	 
