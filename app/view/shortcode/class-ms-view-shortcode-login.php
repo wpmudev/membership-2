@@ -71,7 +71,7 @@ class MS_View_Shortcode_Login extends MS_View {
 			$ajax_login = apply_filters( 'ms_shortcode_ajax_login', true );
 
 			// Build the Login Form.
-			$res_form .= $prefix;
+			//$res_form .= $prefix;
 			if ( $ajax_login ) {
 				$res_form .= $this->login_form( $redirect_login );
 				$res_form .= $this->lostpass_form();

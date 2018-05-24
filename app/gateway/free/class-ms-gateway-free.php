@@ -76,7 +76,7 @@ class MS_Gateway_Free extends MS_Gateway {
 		if ( 0 == $invoice->total || $invoice->uses_trial ) {
 			// Free, just process.
 			$invoice->pay_it( self::ID, '' );
-			$subscription->status = self::STATUS_ACTIVE;
+			$subscription->status = MS_Model_Relationship::STATUS_ACTIVE;
 			$subscription->save();
 			MS_Model_Event::save_event( MS_Model_Event::TYPE_MS_SIGNED_UP, $subscription );
 		}
