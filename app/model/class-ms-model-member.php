@@ -814,6 +814,11 @@ class MS_Model_Member extends MS_Model {
 			'fields' 	=> array( 'ID', 'user_email' ),
 		);
 
+		if ( defined( 'MS_ADMIN_EMAIL_CAPABILITY' ) && !empty( MS_ADMIN_EMAIL_CAPABILITY ) ) {
+			unset( $args['role'] );
+			$args['role__in'] = array( 'administrator', MS_ADMIN_EMAIL_CAPABILITY );
+		}
+
 		$wp_user_search = new WP_User_Query( $args );
 		$users 			= $wp_user_search->get_results();
 

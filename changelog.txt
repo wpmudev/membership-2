@@ -5,6 +5,9 @@ Build Stamp: BUILDTIME
 Change Log:
 ----------------------------------------------------------------------
 
+1.1.6
+- Added: New define MS_ADMIN_EMAIL_CAPABILITY for additional roles on email copy
+
 1.1.5
 - Added: Delete coupon from Stripe when deleted in plugin
 - Added: Coupon type in invoice
