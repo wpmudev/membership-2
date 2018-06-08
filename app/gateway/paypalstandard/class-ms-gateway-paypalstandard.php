@@ -145,7 +145,7 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 			} elseif ( ! empty( $_POST['rp_invoice'] ) ) {
 				$invoice_id 	= intval( $_POST['rp_invoice'] );
 			}
-
+			$current_date = MS_Helper_Period::current_date( null, true );
 			if ( $invoice_id ) {
 				// BEST CASE:
 				// 'invoice' is set in all regular M2 subscriptions!
@@ -157,6 +157,9 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 				 */
 				$invoice 	= MS_Factory::load( 'MS_Model_Invoice', $invoice_id );
 				if ( $invoice->id != 0 ) {
+					if ( $invoice->is_paid() &&  $current_date == $invoice->invoice_date ) {
+						exit; //already paid
+					}
 					if ( $invoice->is_paid() ) {
 						$subscription 	= $invoice->get_subscription();
 						if ( ! $transaction_exists ) {
@@ -575,6 +578,10 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 			);
 
 			$invoice = MS_Factory::load( 'MS_Model_Invoice', $invoice_id );
+			
+			if ( $invoice && $invoice->is_paid() &&  $current_date == $invoice->invoice_date ) {
+				exit; //already paid
+			}
 
 			if ( ! is_wp_error( $response )
 				&& 200 == $response['response']['code']

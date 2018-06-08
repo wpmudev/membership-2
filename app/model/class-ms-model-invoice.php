@@ -744,6 +744,7 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 		);
 	}
 
+
 	/**
 	 * Get current invoice number of a subscription.
 	 *
@@ -752,9 +753,9 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	 * @param  MS_Model_Relationship $subscription The membership relationship.
 	 * @return Integer The invoice number
 	 */
-	public static function get_current_invoice_number( $subscription ){
+	public static function get_current_invoice_number( $subscription ) {
 
-		$current_invoice = $invoice = self::get_invoice(
+		$current_invoice = self::get_invoice(
 			$subscription->id,
 			null,
 			array( 
