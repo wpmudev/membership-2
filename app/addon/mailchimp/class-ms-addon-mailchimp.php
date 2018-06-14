@@ -159,7 +159,7 @@ class MS_Addon_Mailchimp extends MS_Addon {
 				if ( $dont_subscribe ) {
 					// Unsubscribe from registered members mail list, if already subscribed.
 					if ( $already_subscribed ) {
-						self::unsubscribe_user( $member, $list_id );
+						self::unsubscribe_user( $member->email, $list_id );
 					}
 				} else {
 					// Subscribe to registered members mail list.
@@ -218,13 +218,14 @@ class MS_Addon_Mailchimp extends MS_Addon {
 				if ( $dont_subscribe ) {
 					/**  Unsubscribe from members mail list, if already subscribed. */
 					if ( $already_subscribed ) {
-						self::unsubscribe_user( $member, $list_id );
+						self::unsubscribe_user( $member->email, $list_id );
 					}
 				} else {
 					/** Subscribe to members mail list. */
-					if ( ! $already_subscribed ) {
-						self::subscribe_user( $member, $list_id );
+					if ( $already_subscribed ) {
+						self::unsubscribe_user( $member->email, $list_id );
 					}
+					self::subscribe_user( $member, $list_id );
 				}
 			}
 		} catch ( Exception $e ) {
@@ -275,7 +276,7 @@ class MS_Addon_Mailchimp extends MS_Addon {
 				if ( $dont_subscribe ) {
 					// Unsubscribe from deactiveted members mail list, if already subscribed.
 					if ( $already_subscribed ) {
-						self::unsubscribe_user( $member, $mail_list_deactivated );
+						self::unsubscribe_user( $member->email, $mail_list_deactivated );
 					}
 				} else {
 					// Subscribe to deactiveted members mail list.

@@ -657,7 +657,7 @@ class MS_Controller_Frontend extends MS_Controller {
 					);
 				}
 
-				update_user_meta( $user->ID, '_ms_user_activation_redirect_url', $after_redirect );
+				update_user_meta( $user->id, '_ms_user_activation_redirect_url', $after_redirect );
 
 				$redirect = esc_url_raw(
 					add_query_arg(
