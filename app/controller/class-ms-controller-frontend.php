@@ -1181,6 +1181,7 @@ class MS_Controller_Frontend extends MS_Controller {
 				$user_activation_status = get_user_meta( $user->ID, '_ms_user_activation_status', true );
 				$user_activation_status = empty( $user_activation_status ) ? 0 : $user_activation_status;
 				if ( $user_activation_status != 1 ) {
+					do_action( 'ms_controller_frontend_before_handle_verification_code_redirect', $login, $user );
 					wp_destroy_current_session();
 					wp_clear_auth_cookie();
 					$login_url = wp_login_url();
