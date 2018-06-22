@@ -2024,13 +2024,13 @@ class MS_Model_Member extends MS_Model {
 			$user_activation_status = get_user_meta( $user_id, '_ms_user_activation_status', true );
 			if ( $user_activation_status != 1 ) {
 				update_user_meta( $user_id, '_ms_user_activation_status', 1 );
-				return __( 'Account verified. Proceed to login', 'membership' );
+				return __( 'Account verified. Proceed to login', 'membership2' );
 			} else {
-				return __( 'Account already verified', 'membership' );
+				return __( 'Account already verified', 'membership2' );
 			}
 			
 		} else {
-			return __( 'Invalid code. Please check your email or try again', 'membership' );
+			return __( 'Invalid code. Please check your email or try again', 'membership2' );
 		}
 	}
 

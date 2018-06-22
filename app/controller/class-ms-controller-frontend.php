@@ -1174,7 +1174,7 @@ class MS_Controller_Frontend extends MS_Controller {
 		if ( $user->user_registered < $verification_cutoff_date && !$user_activation_status ) {
 			return;
 		}
-
+		do_action( 'ms_controller_frontend_before_handle_verification_code', $login, $user );
 		$settings = MS_Factory::load( 'MS_Model_Settings' );
 		if ( $settings->force_registration_verification ) {
 			if ( !MS_Model_Member::is_admin_user( $user->ID ) ) {
@@ -1206,7 +1206,7 @@ class MS_Controller_Frontend extends MS_Controller {
 	 */
 	function login_message( $message ) {
 		if ( isset( $_GET['ms_error'] ) ) {
-			$msg = __( 'Account not verified. Please check your email for a verification link', 'membership' );
+			$msg = __( 'Account not verified. Please check your email for a verification link', 'membership2' );
 			$msg = htmlspecialchars( $msg, ENT_QUOTES, 'UTF-8' );
 			$message .= '<p class="login message">'. $msg . '</p>';
 		}

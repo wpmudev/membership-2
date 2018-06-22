@@ -1638,7 +1638,7 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	 * Returns the membership model that is linked to this invoice.
 	 *
 	 * @since  1.0.0
-	 * @return MS_Model_Membership
+	 * @return MS_Model_Member
 	 */
 	public function get_member() {
 		return MS_Factory::load( 'MS_Model_Member', $this->user_id );

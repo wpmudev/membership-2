@@ -959,7 +959,7 @@ class MS_Controller_Member extends MS_Controller {
 				$view_url = sprintf(
 						'<a href="%1$s" title="%2$s">%3$s</a>',
 						$url,
-						__( 'View Members', 'membership' ),
+						__( 'View Members', 'membership2' ),
 						$membership->name
 					);
 				$html .= '<span style="font-weight:bold;">'. $view_url .'</span>';
@@ -967,9 +967,9 @@ class MS_Controller_Member extends MS_Controller {
 			}
 
 			if ( empty( $value ) ) {
-				$value 		= __( 'None' , 'membership' );
+				$value 		= __( 'None' , 'membership2' );
 				if ( MS_Model_Member::is_admin_user( $user_id ) ) {
-					$value 	= '<span style="font-weight:bold;">' . __( 'None (Admin User)', 'membership' ) . '</span>';
+					$value 	= '<span style="font-weight:bold;">' . __( 'None (Admin User)', 'membership2' ) . '</span>';
 				}
 			}
 
@@ -995,13 +995,13 @@ class MS_Controller_Member extends MS_Controller {
 			
 			if ( $user_activation_status != 1 ) {
 				if ( $force_user_activation_status ) {
-					$value 	= __( 'Verification Resent' , 'membership' );
+					$value 	= __( 'Verification Resent' , 'membership2' );
 				} else {
-					$value 	= __( 'Not Verified' , 'membership' );
+					$value 	= __( 'Not Verified' , 'membership2' );
 				}
 				
 			} else {
-				$value 	= __( 'Verified' , 'membership' );
+				$value 	= __( 'Verified' , 'membership2' );
 			}
 		}
         return apply_filters( 'ms_controller_member_manage_users_custom_column', $value, $column_name, $user_id );
@@ -1018,9 +1018,9 @@ class MS_Controller_Member extends MS_Controller {
 	 */
 	function add_verify_bulk_action( $actions ) {
 
-		$actions['ms_bulk_approve'] 	= __( 'Approve', 'membership' );
-		$actions['ms_bulk_disapprove'] 	= __( 'Disapprove', 'membership' );
-		$actions['ms_bulk_resend'] 		= __( 'Resend Verification Email', 'membership' );
+		$actions['ms_bulk_approve'] 	= __( 'Approve', 'membership2' );
+		$actions['ms_bulk_disapprove'] 	= __( 'Disapprove', 'membership2' );
+		$actions['ms_bulk_resend'] 		= __( 'Resend Verification Email', 'membership2' );
 
 		return $actions;
 	}
@@ -1086,21 +1086,21 @@ class MS_Controller_Member extends MS_Controller {
 			$user_count = intval( $_REQUEST['_ms_approved'] );
 			?>
 			<div class="notice notice-success is-dismissible">
-				<p><?php echo sprintf( __( '%d user accounts approved', 'membership' ), $user_count ); ?></p>
+				<p><?php echo sprintf( __( '%d user accounts approved', 'membership2' ), $user_count ); ?></p>
 			</div>
 			<?php
 		} else if ( isset ( $_REQUEST['_ms_disapproved'] ) ) {
 			$user_count = intval( $_REQUEST['_ms_disapproved'] );
 			?>
 			<div class="notice notice-success is-dismissible">
-				<p><?php echo sprintf( __( '%d user accounts disapproved', 'membership' ), $user_count ); ?></p>
+				<p><?php echo sprintf( __( '%d user accounts disapproved', 'membership2' ), $user_count ); ?></p>
 			</div>
 			<?php
 		} else if ( isset ( $_REQUEST['_ms_resend'] ) ) {
 			$user_count = intval( $_REQUEST['_ms_resend'] );
 			?>
 			<div class="notice notice-success is-dismissible">
-				<p><?php echo sprintf( __( '%d user accounts resent emails', 'membership' ), $user_count ); ?></p>
+				<p><?php echo sprintf( __( '%d user accounts resent emails', 'membership2' ), $user_count ); ?></p>
 			</div>
 			<?php
 		}
