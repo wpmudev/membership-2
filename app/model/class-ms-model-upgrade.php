@@ -823,8 +823,8 @@ class MS_Model_Upgrade extends MS_Model {
 		if ( ! $Reset_Done ) {
 			$Reset_Done = true;
 			if ( ! self::verify_token( 'reset' ) ) { return false; }
-
 			self::cleanup_db();
+			delete_site_transient( 'ms_model_simulate-network' );
 			$msg = __( 'Membership 2 successfully reset!', 'membership2' );
 			mslib3()->ui->admin_message( $msg );
 
