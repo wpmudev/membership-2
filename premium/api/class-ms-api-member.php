@@ -172,7 +172,7 @@ class MS_Api_Member extends MS_Api {
 			'offset'                => ( $page - 1 ) * $per_page,
             'subscription_status'   => $status
 		);
-        return MS_Model_Member::get_members( $args );;
+        return MS_Model_Member::get_members( $args );
     }
 
     /**
