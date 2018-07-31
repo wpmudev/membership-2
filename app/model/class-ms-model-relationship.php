@@ -2007,7 +2007,10 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 				
 				//$this->recalculate_expire_date = false;
 
-				if ( empty( $this->expire_date ) || strtotime( $this->start_date ) > strtotime( $this->expire_date ) ) {
+				if ( 
+					( empty( $this->expire_date ) || strtotime( $this->start_date ) > strtotime( $this->expire_date ) ) ||
+					( $this->status == self::STATUS_EXPIRED || $this->status == self::STATUS_CANCELED )
+				 ) {
 					$expire_date = $this->calc_expire_date( MS_Helper_Period::current_time() );
 				} else {
 					$expire_date = $this->expire_date;
