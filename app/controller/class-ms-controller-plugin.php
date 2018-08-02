@@ -1022,7 +1022,7 @@ class MS_Controller_Plugin extends MS_Controller {
 
 		wp_register_script(
 			'ms-admin-pointers',
-			$plugin_url . 'app/assets/js/ms-admin-pointers.js',
+			$plugin_url . 'app/assets/js/ms-admin-pointers.min.js',
 			array( 'jquery' ), $version
 		);
 
