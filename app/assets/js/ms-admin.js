@@ -1,6 +1,6 @@
-/*! Membership 2 Pro - v1.1.2
+/*! Membership 2 Pro - v1.1.6
  * https://premium.wpmudev.org/project/membership/
- * Copyright (c) 2017; * Licensed GPLv2+ */
+ * Copyright (c) 2018; * Licensed GPLv2+ */
 /*global window:false */
 /*global document:false */
 /*global ms_data:false */
