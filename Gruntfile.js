@@ -67,7 +67,8 @@ module.exports = function( grunt ) {
 			'{js}/jquery.m2.plugins.js': [ '{js}/vendor/jquery.nearest.js' ],
 			'{js}/jquery.m2.validate.js': [ '{js}/vendor/jquery.validate.js' ],
 			'{js}/m2.wpmu-ui.3.js': [ '{js}/vendor/wpmu-ui.3.js' ],
-			'{js}/ms-public-ajax.js': ['{js}/src/ms-public-ajax.js']
+			'{js}/ms-public-ajax.js': ['{js}/src/ms-public-ajax.js'],
+			'{js}/ms-admin-pointers.js': ['{js}/src/ms-admin-pointers.js']
 		},
 
 		// SASS files to process. Resulting CSS files will be minified as well.

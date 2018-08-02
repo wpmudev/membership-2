@@ -12,17 +12,35 @@
     "test": "grunt test"
   },
   "authors": [
-    { "name": "Paul Kevin" },
-    { "name": "Ashok Kumar Nath" },
-    { "name": "Philipp Stracker" }
+    {
+      "name": "Paul Kevin"
+    },
+    {
+      "name": "Ashok Kumar Nath"
+    },
+    {
+      "name": "Philipp Stracker"
+    }
   ],
   "contributors": [
-    { "name": "Fabio Jun Onishi" },
-    { "name": "Victor Ivanov" },
-    { "name": "Jack Kitterhing" },
-    { "name": "Rheinard Korf" },
-    { "name": "Joji Mori" },
-    { "name": "Patrick Cohen" }
+    {
+      "name": "Fabio Jun Onishi"
+    },
+    {
+      "name": "Victor Ivanov"
+    },
+    {
+      "name": "Jack Kitterhing"
+    },
+    {
+      "name": "Rheinard Korf"
+    },
+    {
+      "name": "Joji Mori"
+    },
+    {
+      "name": "Patrick Cohen"
+    }
   ],
   "devDependencies": {
     "grunt": "^1.0.1",
