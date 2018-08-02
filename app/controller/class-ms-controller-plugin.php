@@ -1020,6 +1020,12 @@ class MS_Controller_Plugin extends MS_Controller {
 			array( 'jquery' ), $version
 		);
 
+		wp_register_script(
+			'ms-admin-pointers',
+			$plugin_url . 'app/assets/js/ms-admin-pointers.js',
+			array( 'jquery' ), $version
+		);
+
 		if ( !wp_script_is( 'jquery-validate', 'registered' ) ){
 			wp_register_script(
 				'jquery-validate',
@@ -1147,6 +1153,9 @@ class MS_Controller_Plugin extends MS_Controller {
 		mslib3()->ui->js( 'ms-admin-wpmui' );
 		mslib3()->ui->js( 'ms-admin' );
 		mslib3()->ui->add( 'select' );
+
+		// Load admin pointers
+		$this->enqueue_admin_pointers();
 	}
 
 	/**
@@ -1272,5 +1281,76 @@ class MS_Controller_Plugin extends MS_Controller {
 			'messages' 		=> array( __( 'All Subscription Data deleted', 'membership2' ) ),
 			'done' 			=> true,
 		);
+	}
+
+	/**
+	* Enqueues the javascript specifically for plugin's admin pointers
+	* 
+	* @since 1.1.6
+	*/
+	public function enqueue_admin_pointers() {
+
+		// Pointers can be shown only to administrators
+		$user_id = get_current_user_id();
+        if( ! MS_Model_Member::is_admin_user( $user_id ) ) {
+        	return;
+        }
+
+		// Pointers were added on 3.3, so don't load for previous versions
+		if ( get_bloginfo( 'version' ) < '3.3' ) {
+			return;
+		}
+
+		$pointers = apply_filters( 'ms_register_admin_pointers', $this->register_admin_pointers() );
+		if ( ! $pointers || ! is_array( $pointers ) ) {
+			return;
+		}
+
+		$dismissed_wp_pointers = explode( ',', (string) get_user_meta( get_current_user_id(), 'dismissed_wp_pointers', true ) );
+    	foreach ( $pointers as $pointer_key => $pointer ) {
+    		// Remove all dismissed pointers so they don't show up
+    		if ( in_array( $pointer_key, $dismissed_wp_pointers ) ) {
+    			unset( $pointers[ $pointer_key ] );
+    		}
+
+    	}
+
+    	if ( empty( $pointers ) ) {
+    		return;
+    	}
+
+    	wp_enqueue_script( 'wp-pointer' );
+
+    	// Enqueue pointers css
+	    wp_enqueue_style( 'wp-pointer' );
+	 
+	    // Enqueue ms-admin-pointers.js
+	    wp_enqueue_script( 'ms-admin-pointers' );
+	 
+	    // Localize pointers content to js script.
+	    wp_localize_script( 'ms-admin-pointers', 'MS_Admin_Pointers', json_encode( $pointers ) );        
+	}
+
+	/**
+	* Registers the plugin's admin pointers
+	* 
+	* @since 1.1.6
+	* 
+	* @return array
+	*/
+	public function register_admin_pointers() {
+
+		$pointers['ms_admin_pointer'] = array(
+	        'target' => '#toplevel_page_membership2',
+	        'options' => array(
+	            'content' => sprintf( '<h3> %s </h3> <p> %s </p>',
+	                __( 'Create Memberships', 'membership2' ),
+	                __( 'Start creating membership levels with paywalls, password protection, time-released content here', 'membership2' )
+	            ),
+	            'position' => array( 'edge' => 'left', 'align' => 'center' )
+	        )
+	    );
+
+	    return $pointers;
 	}
 }
