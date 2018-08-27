@@ -288,7 +288,6 @@ class MS_Controller_Gateway extends MS_Controller {
 
 		$membership = $subscription->get_membership();
 		$is_free = false;
-		wpmudev_debug($invoice);
 
 		if ( $membership->is_free() ) {
 			$is_free = true;
