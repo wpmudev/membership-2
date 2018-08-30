@@ -1980,7 +1980,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 				}
 
 				if ( MS_Model_Member::is_admin_user() ) {
-					$desc = __( 'Admin has no fees!', 'membership' );
+					$desc = __( 'Admin has no fees!', 'membership2' );
 				} else {
 					$desc = sprintf(
 						$lbl,

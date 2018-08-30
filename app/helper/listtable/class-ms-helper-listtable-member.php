@@ -348,7 +348,7 @@ class MS_Helper_ListTable_Member extends MS_Helper_ListTable {
 			$visitor = array(
 				'id' 	=> 'ms-empty-' . $member->id,
 				'type' 	=> MS_Helper_Html::TYPE_HTML_TEXT,
-				'value' => __( '(Visitor)' ),
+				'value' => __( '(Visitor)', 'membership2' ),
 				'after' => 'Edit',
 				'class' => 'ms-empty-note',
 			);

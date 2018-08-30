@@ -258,7 +258,7 @@ class MS_View_Settings_Edit extends MS_View {
 			echo ' ';
 		} else {
 			printf(
-				__( 'Check Membership Status changes %s.' ) . ' ',
+				__( 'Check Membership Status changes %s.', 'membership2' ) . ' ',
 				'<a href="' . $status_url . '" title="' . $lbl_run . '">' . $status_delay . '</a>'
 			);
 		}

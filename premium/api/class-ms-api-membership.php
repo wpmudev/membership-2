@@ -65,7 +65,7 @@ class MS_Api_Membership extends MS_Api {
 					'required' 			=> true,
 					'sanitize_callback' => 'sanitize_text_field',
 					'type' 				=> 'int|string',
-					'description' 		=> __( 'The Membership ID or name or slug' ),
+					'description' 		=> __( 'The Membership ID or name or slug', 'membership2' ),
 				),
 			)
 		));

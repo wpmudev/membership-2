@@ -93,7 +93,7 @@ class MS_Gateway_Authorize extends MS_Gateway {
 		);
 
 		if ( ! is_ssl() ) {
-			throw new Exception( __( 'You must use HTTPS in order to do this', 'membership' ) );
+			throw new Exception( __( 'You must use HTTPS in order to do this', 'membership2' ) );
 		}
 
 		$invoice 	= $subscription->get_current_invoice();

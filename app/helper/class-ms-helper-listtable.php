@@ -231,9 +231,9 @@ class MS_Helper_ListTable {
 	 */
 	public function no_items() {
 		if ( $this->is_search() ) {
-			_e( 'No items found.' );
+			_e( 'No items found.', 'membership2' );
 		} else {
-			_e( 'No items available.' );
+			_e( 'No items available.', 'membership2' );
 		}
 	}
 
@@ -282,7 +282,7 @@ class MS_Helper_ListTable {
 				<span class="ms-search-info">
 					<?php
 					printf(
-						__( 'Search results for &#8220;%s&#8221;' ),
+						__( 'Search results for &#8220;%s&#8221;', 'membership2' ),
 						sprintf(
 							'<span class="ms-search-term" title="%1$s">%2$s</span>',
 							esc_attr( $this->search_string ),
@@ -526,7 +526,7 @@ class MS_Helper_ListTable {
 		do_action( 'ms_listtable_before_bulk_actions', $this );
 
 		printf( '<select name="action%s">', esc_attr( $two ) );
-		printf( '<option value="-1" selected="selected">%s</option>', __( 'Bulk Actions' ) );
+		printf( '<option value="-1" selected="selected">%s</option>', __( 'Bulk Actions', 'membership2' ) );
 
 		foreach ( $this->_actions as $name => $title ) {
 			if ( is_array( $title ) ) {
@@ -552,7 +552,7 @@ class MS_Helper_ListTable {
 		echo '</select>';
 
 		submit_button(
-			__( 'Apply' ),
+			__( 'Apply', 'membership2' ),
 			'action',
 			false,
 			false,
@@ -651,7 +651,7 @@ class MS_Helper_ListTable {
 		$m = isset( $_GET['m'] ) ? (int) $_GET['m'] : 0;
 		?>
 		<select name='m'>
-			<option<?php selected( $m, 0 ); ?> value='0'><?php _e( 'Show all dates' ); ?></option>
+			<option<?php selected( $m, 0 ); ?> value='0'><?php _e( 'Show all dates', 'membership2' ); ?></option>
 		<?php
 		foreach ( $months as $arc_row ) {
 			if ( 0 == $arc_row->year ) {
@@ -666,7 +666,7 @@ class MS_Helper_ListTable {
 				selected( $m, $year . $month, false ),
 				esc_attr( $arc_row->year . $month ),
 				/* translators: 1: month name, 2: 4-digit year */
-				sprintf( __( '%1$s %2$d' ), $wp_locale->get_month( $month ), $year )
+				sprintf( __( '%1$s %2$d', 'membership2' ), $wp_locale->get_month( $month ), $year )
 			);
 		}
 		?>
@@ -682,8 +682,8 @@ class MS_Helper_ListTable {
 	 */
 	protected function view_switcher( $current_mode ) {
 		$modes = array(
-			'list'    => __( 'List View' ),
-			'excerpt' => __( 'Excerpt View' ),
+			'list'    => __( 'List View', 'membership2' ),
+			'excerpt' => __( 'Excerpt View', 'membership2' ),
 		);
 
 		?>
@@ -709,7 +709,7 @@ class MS_Helper_ListTable {
 	 * @param int $pending_comments
 	 */
 	protected function comments_bubble( $post_id, $pending_comments ) {
-		$pending_phrase = sprintf( __( '%s pending' ), number_format( $pending_comments ) );
+		$pending_phrase = sprintf( __( '%s pending', 'membership2' ), number_format( $pending_comments ) );
 
 		if ( $pending_comments ) {
 			echo '<strong>';
@@ -875,7 +875,7 @@ class MS_Helper_ListTable {
 
 		$output = '<span class="displaying-num">' .
 			sprintf(
-				_n( '1 item', '%s items', $total_items ),
+				_n( '1 item', '%s items', $total_items, 'membership2' ),
 				number_format_i18n( $total_items )
 			) .
 			'</span>';
@@ -906,7 +906,7 @@ class MS_Helper_ListTable {
 			$page_links[] 	= sprintf(
 				'<a class="%s" title="%s" href="%s">%s</a>',
 				'first-page' . $disable_first,
-				esc_attr__( 'Go to the first page' ),
+				esc_attr__( 'Go to the first page', 'membership2' ),
 				esc_url( remove_query_arg( 'paged', $current_url ) ),
 				'&laquo;'
 			);
@@ -914,7 +914,7 @@ class MS_Helper_ListTable {
 			$page_links[] 	= sprintf(
 				'<a class="%s" title="%s" href="%s">%s</a>',
 				'prev-page' . $disable_first,
-				esc_attr__( 'Go to the previous page' ),
+				esc_attr__( 'Go to the previous page', 'membership2' ),
 				esc_url( add_query_arg( 'paged', max( 1, $current - 1 ), $current_url ) ),
 				'&lsaquo;'
 			);
@@ -924,19 +924,19 @@ class MS_Helper_ListTable {
 			} else {
 				$html_current_page = sprintf(
 					'<input class="current-page" title="%s" type="text" name="paged" value="%s" size="%d" />',
-					esc_attr__( 'Current page' ),
+					esc_attr__( 'Current page', 'membership2' ),
 					$current,
 					strlen( $total_pages )
 				);
 			}
 
 			$html_total_pages 	= sprintf( "<span class='total-pages'>%s</span>", number_format_i18n( $total_pages ) );
-			$page_links[] 		= '<span class="paging-input">' . sprintf( _x( '%1$s of %2$s', 'paging' ), $html_current_page, $html_total_pages ) . '</span>';
+			$page_links[] 		= '<span class="paging-input">' . sprintf( _x( '%1$s of %2$s', 'paging', 'membership2' ), $html_current_page, $html_total_pages ) . '</span>';
 
 			$page_links[] 		= sprintf(
 				'<a class="%s" title="%s" href="%s">%s</a>',
 				'next-page' . $disable_last,
-				esc_attr__( 'Go to the next page' ),
+				esc_attr__( 'Go to the next page', 'membership2' ),
 				esc_url( add_query_arg( 'paged', min( $total_pages, $current + 1 ), $current_url ) ),
 				'&rsaquo;'
 			);
@@ -944,7 +944,7 @@ class MS_Helper_ListTable {
 			$page_links[] 		= sprintf(
 				'<a class="%s" title="%s" href="%s">%s</a>',
 				'last-page' . $disable_last,
-				esc_attr__( 'Go to the last page' ),
+				esc_attr__( 'Go to the last page', 'membership2' ),
 				esc_url( add_query_arg( 'paged', $total_pages, $current_url ) ),
 				'&raquo;'
 			);
@@ -1098,7 +1098,7 @@ class MS_Helper_ListTable {
 				'<label class="screen-reader-text" for="cb-select-all-%1$s">%2$s</label>' .
 				'<input id="cb-select-all-%1$s" type="checkbox" />',
 				$cb_counter,
-				__( 'Select All' )
+				__( 'Select All', 'membership2' )
 			);
 			$cb_counter++;
 		}
@@ -1429,7 +1429,7 @@ class MS_Helper_ListTable {
 		$response 	= array( 'rows' => $rows );
 
 		if ( isset( $total_items ) ) {
-			$response['total_items_i18n'] 	= sprintf( _n( '1 item', '%s items', $total_items ), number_format_i18n( $total_items ) );
+			$response['total_items_i18n'] 	= sprintf( _n( '1 item', '%s items', $total_items, 'membership2' ), number_format_i18n( $total_items ) );
 		}
 
 		if ( isset( $total_pages ) ) {

@@ -562,7 +562,7 @@ class MS_Controller_Member extends MS_Controller {
 
 		if ( ! empty( $_REQUEST['user_id'] ) && ( $user_id = intval( $_REQUEST['user_id'] ) ) ) {
 			if ( user_can( $user_id, 'administrator' ) ) {
-				wp_die( __( 'Sorry, you are not allowed to access this page.' ), 403 );
+				wp_die( __( 'Sorry, you are not allowed to access this page.', 'membership2' ), 403 );
 			}
 			$data['user_id'] 	= $user_id;
 			$data['action'] 	= 'edit';

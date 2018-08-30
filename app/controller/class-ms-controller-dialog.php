@@ -157,13 +157,13 @@ class MS_Controller_Dialog extends MS_Controller {
 				$blogname = wp_specialchars_decode( get_option( 'blogname' ), ENT_QUOTES );
 			}
 
-			$title 		= sprintf( __( '[%s] Password Reset' ), $blogname );
+			$title 		= sprintf( __( '[%s] Password Reset', 'membership2' ), $blogname );
 			$title 		= apply_filters( 'retrieve_password_title', $title, $user_login, $user_data );
 			$message 	= apply_filters( 'retrieve_password_message', $message, $user_login, $reset->url, $user_data );
 
 			if ( $message && ! wp_mail( $user_email, wp_specialchars_decode( $title ), $message ) ) {
-				$resp['error'] = __( 'The e-mail could not be sent.' ) . '<br />' .
-					__( 'Possible reason: your host may have disabled the mail() function.' );
+				$resp['error'] = __( 'The e-mail could not be sent.', 'membership2' ) . '<br />' .
+					__( 'Possible reason: your host may have disabled the mail() function.', 'membership2' );
 			} else {
 				$resp['success'] = __( 'Check your e-mail for the confirmation link.', 'membership2' );
 			}
