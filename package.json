@@ -5,6 +5,8 @@
   "version": "1.1.6",
   "freeVersion": "4.1.6",
   "homepage": "https://premium.wpmudev.org/project/membership/",
+  "repository": "git+https://bitbucket.org/incsub/membership-2.git",
+  "license": "GPL-2.0",
   "scripts": {
     "build": "grunt build",
     "build:pro": "grunt build:pro",
@@ -45,6 +47,7 @@
   "devDependencies": {
     "grunt": "^1.0.1",
     "grunt-autoprefixer": "^3.0.4",
+    "grunt-checktextdomain": "^1.0.1",
     "grunt-contrib-clean": "^1.1.0",
     "grunt-contrib-compass": "^1.1.1",
     "grunt-contrib-compress": "^1.4.1",
