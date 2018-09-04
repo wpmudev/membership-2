@@ -285,6 +285,14 @@ class MS_Controller_Gateway extends MS_Controller {
 		// Get only active gateways
 		$gateways = MS_Model_Gateway::get_gateways( true );
 		$data = array();
+		$gateways_count = count( $gateways );
+
+		// Make sure free gateway is at last.
+		if ( isset( $gateways[ MS_Gateway_Free::ID ] ) ) {
+			$free = $gateways[ MS_Gateway_Free::ID ];
+			unset( $gateways[ MS_Gateway_Free::ID ] );
+			$gateways[ MS_Gateway_Free::ID ] = $free;
+		}
 
 		$membership = $subscription->get_membership();
 		$is_free = false;
@@ -319,12 +327,15 @@ class MS_Controller_Gateway extends MS_Controller {
 				     $invoice->uses_trial &&
 				     $gateway->id === MS_Gateway_Paypalstandard::ID
 				) {
+					// Do not include PayPal standard in count.
+					$gateways_count = $gateways_count - 1;
 					// Action hook to run if subscription is forced on trial.
 					do_action(
 						'ms_controller_gateway_forced_subscription',
 						$gateway->id
 					);
-				} elseif ( MS_Gateway_Free::ID !== $gateway->id ) {
+				} elseif ( MS_Gateway_Free::ID !== $gateway->id || $gateways_count <= 1 ) {
+					// If there are no other gateways active, do not show free button.
 					continue;
 				}
 			} elseif ( MS_Gateway_Free::ID === $gateway->id ) {
