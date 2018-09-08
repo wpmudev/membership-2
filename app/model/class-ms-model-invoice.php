@@ -784,9 +784,11 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	 * @param  MS_Model_Relationship $subscription The membership relationship.
 	 * @param  bool $create_missing Optional. True to overwrite existing
 	 *         invoice or false to create a new one if doesn't exist.
+	 * @param  bool $paid Is invoice paid already? Otherwise don't set status
+	 *         of the membership as active.
 	 * @return MS_Model_Invoice
 	 */
-	public static function get_current_invoice( $subscription, $create_missing = true ) {
+	public static function get_current_invoice( $subscription, $create_missing = true, $paid = true ) {
 		$invoice = self::get_invoice(
 			$subscription->id,
 			$subscription->get_current_invoice_number()
@@ -796,7 +798,8 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 			// Create a new invoice.
 			$invoice = self::create_invoice(
 				$subscription,
-				$subscription->get_current_invoice_number() 
+				$subscription->get_current_invoice_number(),
+				$paid
 			);
 		}
 
@@ -912,10 +915,12 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 	 *
 	 * @param MS_Model_Relationship $subscription The membership to create invoice for.
 	 * @param int $invoice_number Optional. The invoice number.
+	 * @param bool $paid Is invoice paid already? Otherwise don't set status
+	 *         of the membership as active.
 	 *
 	 * @return object $invoice
 	 */
-	public static function create_invoice( $subscription, $invoice_number = false ) {
+	public static function create_invoice( $subscription, $invoice_number = false, $paid = true ) {
 		$membership = $subscription->get_membership();
 
 		if ( ! MS_Model_Membership::is_valid_membership( $membership->id ) ) {
@@ -995,7 +1000,7 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 		$invoice->save();
 	
 		//If gateway is admin then set the invoice as paid.
-		if ( 'admin' == $invoice->gateway_id ) {
+		if ( 'admin' == $invoice->gateway_id && $paid ) {
 			$invoice->pay_it( $invoice->gateway_id );
 		}
 

@@ -432,6 +432,8 @@ class MS_Controller_Billing extends MS_Controller {
 			$member = MS_Factory::load( 'MS_Model_Member', $fields['user_id'] );
 			$membership_id = $fields['membership_id'];
 			$gateway_id = 'admin';
+			// Get the invoice status.
+			$paid = ( isset( $fields['status'] ) && 'paid' === $fields['status'] ) ? true :  false;
 			
 			//Get all gateways that are active.
 			//If its only one, set that as the default gateway
@@ -449,7 +451,8 @@ class MS_Controller_Billing extends MS_Controller {
 				$subscription = MS_Model_Relationship::create_ms_relationship(
 					$membership_id,
 					$member->id,
-					$gateway_id
+					$gateway_id,
+					$paid
 				);
 			} else {
 				$subscription->set_gateway( $gateway_id );
@@ -463,7 +466,7 @@ class MS_Controller_Billing extends MS_Controller {
 			$invoice = MS_Factory::load( 'MS_Model_Invoice', $invoice_id );
 			$this->log( 'Manual invoice creation' );
 			if ( ! $invoice->is_valid() ) {
-				$invoice = $subscription->get_current_invoice();
+				$invoice = $subscription->get_current_invoice( true, $paid );
 				$msg = MS_Helper_Billing::BILLING_MSG_ADDED;
 			} else {
 				$msg = MS_Helper_Billing::BILLING_MSG_UPDATED;
