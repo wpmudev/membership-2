@@ -2975,7 +2975,6 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 
 		// Update the Subscription status.
 		$next_status = $this->calculate_status( null );
-		wpmudev_debug($next_status);
 
 		switch ( $next_status ) {
 			case self::STATUS_TRIAL:
@@ -3264,7 +3263,6 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 						$gateway = $this->get_gateway();
 						$gateway->check_card_expiration( $this );
 						$gateway->request_payment( $this );
-						wpmudev_debug($gateway);
 
 						// Check if the payment was successful.
 						$days->remaining = $this->get_remaining_period();
