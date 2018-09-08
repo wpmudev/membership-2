@@ -452,6 +452,7 @@ class MS_Controller_Billing extends MS_Controller {
 					$membership_id,
 					$member->id,
 					$gateway_id,
+					0,
 					$paid
 				);
 			} else {
