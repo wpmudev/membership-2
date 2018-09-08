@@ -1667,13 +1667,18 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	/**
 	 * Convenience function to access next invoice for this subscription.
 	 *
+	 * @param  bool $create_missing Optional. True to overwrite existing
+	 *         invoice or false to create a new one if doesn't exist.
+	 * @param bool $paid Is invoice paid already? Otherwise don't set status
+	 *         of the membership as active.
+	 *
 	 * @since  1.0.0
 	 * @api
 	 *
 	 * @return MS_Model_Invoice
 	 */
-	public function get_next_invoice( $create_missing = true ) {
-		return MS_Model_Invoice::get_next_invoice( $this, $create_missing );
+	public function get_next_invoice( $create_missing = true, $paid = true ) {
+		return MS_Model_Invoice::get_next_invoice( $this, $create_missing, $paid );
 	}
 
 	/**
@@ -3138,7 +3143,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 
 				if ( $auto_renew && $days->remaining < $days->invoice_before ) {
 					// Create a new invoice a few days before expiration.
-					$invoice = $this->get_next_invoice();
+					$invoice = $this->get_next_invoice( true, false );
 				} else {
 					// set to false to avoid creation of new invoice
 					$invoice = $this->get_current_invoice(false);
