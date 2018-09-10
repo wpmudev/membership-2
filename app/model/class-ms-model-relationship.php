@@ -532,6 +532,19 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 		$membership 				= $subscription->get_membership();
 		$subscription->payment_type = $membership->payment_type;
 
+		/**
+		 * Filter to bypass paid status check for admin gateway.
+		 *
+		 * Use this filter if you want to set admin gateway subscriptions
+		 * active without checking paid status.
+		 *
+		 * @since 1.1.6
+		 *
+		 * @param bool   $paid Should make it paid?
+		 * @param object $subscription Subscription object.
+		 */
+		$paid = apply_filters( 'ms_model_relationship_admin_gateway_paid', $paid, $subscription );
+
 		// Make the status as active if admin gateway and invoice is paid.
 		if ( 'admin' == $gateway_id && $paid ) {
 			$subscription->trial_period_completed = true;

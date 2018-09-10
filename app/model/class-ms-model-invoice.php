@@ -1002,6 +1002,19 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 		$invoice->total_amount_changed();
 
 		$invoice->save();
+
+		/**
+		 * Filter to bypass paid status check for admin gateway.
+		 *
+		 * Use this filter if you want to set admin gateway invoices
+		 * as paid by default even if the status selected was not paid.
+		 *
+		 * @since 1.1.6
+		 *
+		 * @param bool   $paid Should make it paid?
+		 * @param object $invoice Invoice object.
+		 */
+		$paid = apply_filters( 'ms_model_invoice_admin_gateway_paid', $paid, $invoice );
 	
 		//If gateway is admin then set the invoice as paid.
 		if ( 'admin' == $invoice->gateway_id && $paid ) {
