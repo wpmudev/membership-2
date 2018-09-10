@@ -1144,18 +1144,22 @@ class MS_Controller_Plugin extends MS_Controller {
 	 *
 	 * @return void
 	 */
-	public function enqueue_plugin_admin_scripts() {
-		//Missing scripts needed for the meta box
-		mslib3()->ui->js( 'm2-jquery-plugins' );
-		if( self::is_admin_page( ) ){
-			mslib3()->ui->js( 'jquery-validate' );
-		}
-		mslib3()->ui->js( 'ms-admin-wpmui' );
-		mslib3()->ui->js( 'ms-admin' );
-		mslib3()->ui->add( 'select' );
+	public function enqueue_plugin_admin_scripts( $hook ) {
+		//Load only on membership pages
+		$screen = get_current_screen();
+		if ( strpos( $screen->id, 'membership2' ) !== false ) {
+			//Missing scripts needed for the meta box
+			mslib3()->ui->js( 'm2-jquery-plugins' );
+			if ( self::is_admin_page() ) {
+				mslib3()->ui->js( 'jquery-validate' );
+			}
+			mslib3()->ui->js( 'ms-admin-wpmui' );
+			mslib3()->ui->js( 'ms-admin' );
+			mslib3()->ui->add( 'select' );
 
-		// Load admin pointers
-		$this->enqueue_admin_pointers();
+			// Load admin pointers
+			$this->enqueue_admin_pointers();
+		}
 	}
 
 	/**

@@ -46,6 +46,8 @@ class MS_Helper_Cache extends MS_Helper {
 		if ( !is_null( $args ) && is_array( $args ) ) {
 			if ( isset( $args['page'] ) ) {
 				$name = $name . '_' . $args['page'];
+			} elseif ( isset( $args['author'] ) ) {
+				$name = $name . '_' . $args['author'];
 			}
 		}
 		return $name;
