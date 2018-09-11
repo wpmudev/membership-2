@@ -396,13 +396,16 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	 * @param  string $gateway_id The gateway which is used for payment.
 	 * @param  int|string $move_from_id A list of membership IDs to cancel on
 	 *         payment. This property is handled by the MS_Model_Invoice class.
+	 * @param  bool $paid Is invoice paid already? Otherwise don't set status
+	 *         of the membership as active.
 	 * @return MS_Model_Relationship The created relationship.
 	 */
 	public static function create_ms_relationship(
 		$membership_id 	= 0,
 		$user_id 		= 0,
 		$gateway_id 	= 'admin',
-		$move_from_id 	= 0
+		$move_from_id 	= 0,
+		$paid           = true
 	) {
 		do_action(
 			'ms_model_relationship_create_ms_relationship_before',
@@ -417,7 +420,8 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 				$membership_id,
 				$user_id,
 				$gateway_id,
-				$move_from_id
+				$move_from_id,
+				$paid
 			);
 		} else {
 			$subscription = null;
@@ -441,12 +445,20 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	/**
 	 * Helper function called by create_ms_relationship()
 	 *
+	 * @param  int $membership_id The Membership to subscribe to.
+	 * @param  int $user_id The user who subscribes to the membership.
+	 * @param  string $gateway_id The gateway which is used for payment.
+	 * @param  int|string $move_from_id A list of membership IDs to cancel on
+	 *         payment. This property is handled by the MS_Model_Invoice class.
+	 * @param  bool $paid Is invoice paid already? Otherwise don't set status
+	 *         of the membership as active.
+	 *
 	 * @since  1.0.0
 	 * @internal
 	 *
 	 * @return MS_Model_Relationship The created relationship.
 	 */
-	private static function _create_ms_relationship( $membership_id, $user_id, $gateway_id, $move_from_id ) {
+	private static function _create_ms_relationship( $membership_id, $user_id, $gateway_id, $move_from_id, $paid = true ) {
 		$is_simulated = false;
 
 		// Try to reuse existing db record to keep history.
@@ -520,7 +532,21 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 		$membership 				= $subscription->get_membership();
 		$subscription->payment_type = $membership->payment_type;
 
-		if ( 'admin' == $gateway_id ) {
+		/**
+		 * Filter to bypass paid status check for admin gateway.
+		 *
+		 * Use this filter if you want to set admin gateway subscriptions
+		 * active without checking paid status.
+		 *
+		 * @since 1.1.6
+		 *
+		 * @param bool   $paid Should make it paid?
+		 * @param object $subscription Subscription object.
+		 */
+		$paid = apply_filters( 'ms_model_relationship_admin_gateway_paid', $paid, $subscription );
+
+		// Make the status as active if admin gateway and invoice is paid.
+		if ( 'admin' == $gateway_id && $paid ) {
 			$subscription->trial_period_completed = true;
 			$subscription->status = self::STATUS_ACTIVE;
 
@@ -1637,25 +1663,35 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	/**
 	 * Convenience function to access current invoice for this subscription.
 	 *
+	 * @param  bool $create_missing Optional. True to overwrite existing
+	 *         invoice or false to create a new one if doesn't exist.
+	 * @param  bool $paid Is invoice paid already? Otherwise don't set status
+	 *         of the membership as active.
+	 *
 	 * @since  1.0.0
 	 * @api
 	 *
 	 * @return MS_Model_Invoice
 	 */
-	public function get_current_invoice( $create_missing = true ) {
-		return MS_Model_Invoice::get_current_invoice( $this, $create_missing );
+	public function get_current_invoice( $create_missing = true, $paid = true ) {
+		return MS_Model_Invoice::get_current_invoice( $this, $create_missing, $paid );
 	}
 
 	/**
 	 * Convenience function to access next invoice for this subscription.
 	 *
+	 * @param  bool $create_missing Optional. True to overwrite existing
+	 *         invoice or false to create a new one if doesn't exist.
+	 * @param bool $paid Is invoice paid already? Otherwise don't set status
+	 *         of the membership as active.
+	 *
 	 * @since  1.0.0
 	 * @api
 	 *
 	 * @return MS_Model_Invoice
 	 */
-	public function get_next_invoice( $create_missing = true ) {
-		return MS_Model_Invoice::get_next_invoice( $this, $create_missing );
+	public function get_next_invoice( $create_missing = true, $paid = true ) {
+		return MS_Model_Invoice::get_next_invoice( $this, $create_missing, $paid );
 	}
 
 	/**
@@ -3120,7 +3156,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 
 				if ( $auto_renew && $days->remaining < $days->invoice_before ) {
 					// Create a new invoice a few days before expiration.
-					$invoice = $this->get_next_invoice();
+					$invoice = $this->get_next_invoice( true, false );
 				} else {
 					// set to false to avoid creation of new invoice
 					$invoice = $this->get_current_invoice(false);
