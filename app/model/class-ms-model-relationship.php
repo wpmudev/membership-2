@@ -966,8 +966,9 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 			} else {
 				$new_subscription->status = self::STATUS_ACTIVE;
 			}
+
 			// Save new membership.
-            $new_subscription->save();
+			$new_subscription->save();
 		}
 	}
 
@@ -3219,9 +3220,9 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 					}
 					if ( is_null( $invoice ) ) {
 						$new_membership_id = (int) $membership->on_end_membership_id;
-                    	if ( $days->remaining <= 0 && $new_membership_id > 0 ) {
+						if ( $days->remaining <= 0 && $new_membership_id > 0 ) {
 							$this->maybe_move_membership( $membership );
-                    	}
+						}
 						return;
 					}
 				}
