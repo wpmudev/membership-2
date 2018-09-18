@@ -270,6 +270,22 @@ class MS_Rule_Media_Model extends MS_Rule {
 
 					// Ignore links that have no relevant wp_posts entry.
 					if ( empty( $post_id ) ) { continue; }
+
+					/**
+					 * Filter to skip single attachment from protection url.
+					 *
+					 * This filter can be used to skip attachment urls from being
+					 * replaced with protected paths.
+					 *
+					 * @since 1.1.6
+					 *
+					 * @param bool Should skip current attachment?
+					 * @param int  $post_id Attchment ID.
+					 */
+					if ( apply_filters( 'ms_rule_media_model_skip_protect', false, $post_id ) ) {
+						continue;
+					}
+
 					$f_info = $this->extract_file_info( $file );
 
 					// We have a protected file - so we'll mask it!
