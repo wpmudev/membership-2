@@ -918,6 +918,61 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	}
 
 	/**
+	 * May be move membership after deactivation.
+	 *
+	 * After deactivating one membership, assign new
+	 * membership if on_end_membership_id is set.
+	 *
+	 * @param object $membership Membership object.
+	 *
+	 * @since 1.1.6
+	 *
+	 * @return void
+	 */
+	private function maybe_move_membership( $membership ) {
+		// Do not continue if on_end_membership_id is empty.
+		if ( empty( $membership->on_end_membership_id ) ) {
+			return;
+		}
+
+		// Deactivate the current membership.
+		$this->deactivate_membership();
+
+		// Move membership to configured membership.
+		$new_membership = MS_Factory::load(
+			'MS_Model_Membership',
+			$membership->on_end_membership_id
+		);
+
+		if ( $new_membership->is_valid() ) {
+			$member = MS_Factory::load( 'MS_Model_Member', $this->user_id );
+			$new_subscription = $member->add_membership(
+				$membership->on_end_membership_id,
+				$this->gateway_id
+			);
+
+			MS_Model_Event::save_event(
+				MS_Model_Event::TYPE_MS_MOVED,
+				$new_subscription
+			);
+
+			/*
+			 * If the new membership is paid we want that the user
+			 * confirms the payment in his account. So we set it
+			 * to "Pending" first. If its free we set it as active
+			 */
+			if ( ! $new_membership->is_free() ) {
+				$new_subscription->status = self::STATUS_PENDING;
+			} else {
+				$new_subscription->status = self::STATUS_ACTIVE;
+			}
+
+			// Save new membership.
+			$new_subscription->save();
+		}
+	}
+
+	/**
 	 * Deactivate membership.
 	 *
 	 * Cancel membership and move to deactivated state.
@@ -3164,6 +3219,10 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 						$invoice = $this->get_previous_invoice();
 					}
 					if ( is_null( $invoice ) ) {
+						$new_membership_id = (int) $membership->on_end_membership_id;
+						if ( $days->remaining <= 0 && $new_membership_id > 0 ) {
+							$this->maybe_move_membership( $membership );
+						}
 						return;
 					}
 				}
@@ -3319,39 +3378,8 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 						$this
 					);
 				} elseif ( $deactivate ) {
-					$this->deactivate_membership();
+					$this->maybe_move_membership( $membership );
 					$next_status = $this->status;
-
-					// Move membership to configured membership.
-					$new_membership = MS_Factory::load(
-						'MS_Model_Membership',
-						$membership->on_end_membership_id
-					);
-
-					if ( $new_membership->is_valid() ) {
-						$member = MS_Factory::load( 'MS_Model_Member', $this->user_id );
-						$new_subscription = $member->add_membership(
-							$membership->on_end_membership_id,
-							$this->gateway_id
-						);
-
-						MS_Model_Event::save_event(
-							MS_Model_Event::TYPE_MS_MOVED,
-							$new_subscription
-						);
-
-						/*
-						 * If the new membership is paid we want that the user
-						 * confirms the payment in his account. So we set it
-						 * to "Pending" first. If its free we set it as active
-						 */
-						if ( ! $new_membership->is_free() ) {
-							$new_subscription->status = self::STATUS_PENDING;
-						} else {
-							$new_subscription->status = self::STATUS_ACTIVE;
-                        }
-                        $new_subscription->save();
-					}
 				}
 				break;
 
