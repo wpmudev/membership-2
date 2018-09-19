@@ -39,5 +39,4 @@ class MS_Rule_Special_ListTable extends MS_Helper_ListTable_Rule {
 	public function column_url( $item ) {
 		return $item->url;
 	}
-
 }

@@ -75,7 +75,7 @@ class MS_Hooker {
 	 *
 	 * @since  1.0.0
 	 */
-	static public function prepare_class() {
+	public static function prepare_class() {
 		do_action( 'ms_hooker_prepare_class' );
 	}
 
@@ -381,8 +381,8 @@ class MS_Hooker {
 	 *
 	 * @since  1.0.0
 	 */
-	static protected function _message_reset() {
-		MS_Hooker::$_messages = array();
+	protected static function _message_reset() {
+		self::$_messages = array();
 	}
 
 	/**
@@ -394,21 +394,21 @@ class MS_Hooker {
 	 *
 	 * @since  1.0.0
 	 */
-	static protected function _message( $key = null, $value = null ) {
-		if ( ! is_array( MS_Hooker::$_messages ) ) {
-			$this->_message_reset();
+	protected static function _message( $key = null, $value = null ) {
+		if ( ! is_array( self::$_messages ) ) {
+			self::_message_reset();
 		}
 
 		if ( null === $key ) {
-			return MS_Hooker::$_messages;
+			return self::$_messages;
 		} else if ( null !== $key && null === $value ) {
-			if ( isset( MS_Hooker::$_messages[$key] ) ) {
-				return MS_Hooker::$_messages[$key];
+			if ( isset( self::$_messages[$key] ) ) {
+				return self::$_messages[$key];
 			} else {
 				return '';
 			}
 		} else if ( null !== $key && null !== $value ) {
-			MS_Hooker::$_messages[$key] = $value;
+			self::$_messages[$key] = $value;
 		}
 	}
 
