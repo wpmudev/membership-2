@@ -459,7 +459,9 @@ class MS_Controller_Billing extends MS_Controller {
 				$subscription->set_gateway( $gateway_id );
 			}
 
-			if ( ! isset( $fields['modify_date'] ) || ! $fields['modify_date'] ) {
+			// If status is changed to paid and subscription was expired, recalculate expiry date.
+			$recalculate = apply_filters( 'ms_controller_billing_recalculate_expire_date', $paid && $subscription->is_expired() );
+			if ( ! $recalculate && ( ! isset( $fields['modify_date'] ) || ! $fields['modify_date'] ) ) {
 				$subscription->set_recalculate_expire_date( false );
 			}
 
