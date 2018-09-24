@@ -463,6 +463,12 @@ class MS_Controller_Billing extends MS_Controller {
 				$subscription->set_recalculate_expire_date( false );
 			}
 
+			// If status is changed to paid and subscription was expired, recalculate expiry date.
+			$recalculate = $paid && $subscription->is_expired() && 'admin' === $gateway_id;
+			if ( apply_filters( 'ms_controller_billing_recalculate_expire_date', $recalculate ) ) {
+				$subscription->set_recalculate_expire_date( true );
+			}
+
 			$invoice_id = intval( $fields['invoice_id'] );
 			$invoice = MS_Factory::load( 'MS_Model_Invoice', $invoice_id );
 			$this->log( 'Manual invoice creation' );

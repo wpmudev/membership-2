@@ -1121,7 +1121,7 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 		}
 
 		// Manual gateway works differently. This conditon avoids infinite loop.
-		if ( MS_Gateway_Manual::ID != $gateway_id ) {
+		if ( MS_Gateway_Manual::ID != $gateway_id && 'admin' != $gateway_id ) {
 			/*
 			 * Process the payment and update the subscription.
 			 * This function will call the config_period() function to calculate
@@ -1276,7 +1276,7 @@ class MS_Model_Invoice extends MS_Model_CustomPostType {
 						);
 					}
 
-					if ( MS_Gateway_Manual::ID == $this->gateway_id ) {
+					if ( MS_Gateway_Manual::ID == $this->gateway_id || 'admin' === $this->gateway_id ) {
 						$this->pay_it( $this->gateway_id );
 					}
 					break;
