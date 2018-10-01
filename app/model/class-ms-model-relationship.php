@@ -174,7 +174,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	 * @since  1.0.0
 	 * @var string $status
 	 */
-	protected $status;
+	public $status;
 
 	/**
 	 * Current invoice count.
@@ -2041,9 +2041,12 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 		if ( null !== $invoice ) {
 			$total_price = $invoice->total; // Includes Tax
 			$trial_price = $invoice->trial_price; // Includes Tax
+			$trial_due   = $invoice->due_date; // Invoice due.
+			$trial_ends  = $invoice->trial_ends; // Invoice trial expire.
 		} else {
 			$total_price = $membership->total_price; // Excludes Tax
 			$trial_price = $membership->trial_price; // Excludes Tax
+			$trial_due   = $trial_ends = $this->trial_expire_date; // Trial end.
 		}
 
 		$total_price = MS_Helper_Billing::format_price( $total_price );
@@ -2211,10 +2214,10 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 				$currency,
 				$trial_price,
 				MS_Helper_Period::format_date(
-					$invoice->due_date,
-					__( 'M j', 'membership2' )
+					$trial_due,
+					'M j'
 				),
-				MS_Helper_Period::format_date( $invoice->trial_ends )
+				MS_Helper_Period::format_date( $trial_ends )
 			);
 		}
 
