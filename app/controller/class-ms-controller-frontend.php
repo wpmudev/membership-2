@@ -755,7 +755,8 @@ class MS_Controller_Frontend extends MS_Controller {
 				$membership_id,
 				$member->id,
 				'',
-				$move_from_id
+				$move_from_id,
+				false
 			);
 		} else {
 			MS_Helper_Debug::debug_log( 'Error: missing POST params' );
@@ -768,7 +769,7 @@ class MS_Controller_Frontend extends MS_Controller {
 			MS_Model_Pages::redirect_to( MS_Model_Pages::MS_PAGE_MEMBERSHIPS );
 		}
 
-		$invoice = $subscription->get_current_invoice();
+		$invoice = $subscription->get_current_invoice( true, false );
 
 		/**
 		 * Notify Add-ons that we are preparing payment details for a membership
