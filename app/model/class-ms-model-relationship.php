@@ -1770,9 +1770,9 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	 */
 	public function get_next_billable_invoice() {
 		if ( $this->is_expired() ) {
-			return $this->get_next_invoice();
+			return $this->get_next_invoice( true, false );
 		} else {
-			return $this->get_current_invoice();
+			return $this->get_current_invoice( true, false );
 		}
 	}
 
