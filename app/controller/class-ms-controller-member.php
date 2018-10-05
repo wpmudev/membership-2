@@ -141,6 +141,9 @@ class MS_Controller_Member extends MS_Controller {
 
 		//Profile update hooks
 		add_action( 'profile_update', array( $this, 'handle_profile_membership' ), 10, 2 );
+
+		// When subscription status is changed by admin.
+		$this->add_action( 'ms_controller_members_admin_status_changed', 'subscription_status_change', 10, 2 );
 	}
 
 	/**
@@ -453,6 +456,26 @@ class MS_Controller_Member extends MS_Controller {
 							}
 						}
 
+						if ( $data['status'] !== $subscription->status ) {
+							/**
+							 * When subscription status is changed.
+							 *
+							 * This action hook runs when subscription status is changed
+							 * manually by admin.
+							 *
+							 * @param string $data['status'] New status.
+							 * @param object $subscription MS_Model_Relationship
+							 * @param array  $data Form data of current membership.
+							 *
+							 * @since 1.1.6
+							 */
+							do_action( 'ms_controller_members_admin_status_changed',
+								$data['status'],
+								$subscription,
+								$data
+							);
+						}
+
 						$subscription->start_date 	= $data['start'];
 						$subscription->expire_date 	= $data['expire'];
 						$subscription->status 		= $data['status'];
@@ -520,6 +543,29 @@ class MS_Controller_Member extends MS_Controller {
 		$view 		= MS_Factory::create( 'MS_View_Member_List' );
 		$view->data = apply_filters( 'ms_view_member_list_data', $data, $this );
 		$view->render();
+	}
+
+	/**
+	 * Handle the manual status change process.
+	 *
+	 * When status of a subscription is changed by
+	 * admin user, process the related actions.
+	 *
+	 * @param string $new_status   New status..
+	 * @param object $subscription MS_Model_Relationship.
+	 *
+	 * @since 1.1.6
+	 */
+	public function subscription_status_change( $new_status, $subscription ) {
+		// Switch status.
+		switch ( $new_status ) {
+			// Cancel the subscription.
+			case 'cancel':
+				$subscription->cancel_membership();
+				break;
+
+			// Handle other statuses here.
+		}
 	}
 
 	/**
