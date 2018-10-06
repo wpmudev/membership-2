@@ -1033,6 +1033,36 @@ class MS_Controller_Plugin extends MS_Controller {
 				array( 'jquery' ), $version
 			);
 		}
+
+		// Localize text.
+		wp_localize_script(
+			'ms-admin',
+			'ms_admin_text',
+			$this->admin_localize_text()
+		);
+	}
+
+	/**
+	 * Translatable strings array.
+	 *
+	 * @since 1.1.6
+	 *
+	 * @return array
+	 */
+	private function admin_localize_text() {
+
+		$messages = array(
+			'recurring_cancel_warning' => esc_html__( 'Please note, if this membership has an active subscription in payment gateway, it will be canceled and you may not be able to re-activate it later.', 'membership2' ),
+		);
+
+		/**
+		 * Filter to add translatable text to admin scripts.
+		 *
+		 * @param array Text.
+		 *
+		 * @since 1.1.6
+		 */
+		return apply_filters( 'ms_controller_plugin_localize_admin', $messages );
 	}
 
 	/**

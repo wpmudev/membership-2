@@ -356,12 +356,19 @@ class MS_View_Member_Editor extends MS_View {
 						'type' 			=> MS_Helper_Html::INPUT_TYPE_SELECT,
 						'value' 		=> $subscription->status,
 						'field_options' => $status_options,
+						'id'            => 'subscription-status',
 					);
 
 					$fields['subscriptions'][] = array(
 						'name' 	=> 'memberships[]',
 						'type' 	=> MS_Helper_Html::INPUT_TYPE_HIDDEN,
 						'value' => $the_membership->id,
+					);
+
+					$fields['subscriptions'][] = array(
+						'id' 	=> 'payment_type',
+						'type' 	=> MS_Helper_Html::INPUT_TYPE_HIDDEN,
+						'value' => $the_membership->payment_type,
 					);
 
 					$fields['subscriptions'][] = array(
