@@ -560,7 +560,7 @@ class MS_Controller_Member extends MS_Controller {
 		// Switch status.
 		switch ( $new_status ) {
 			// Cancel the subscription.
-			case 'cancel':
+			case 'canceled':
 				$subscription->cancel_membership();
 				break;
 
