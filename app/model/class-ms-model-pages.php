@@ -571,6 +571,15 @@ class MS_Model_Pages extends MS_Model_Option {
 		if ( isset( $_REQUEST['redirect_to'] ) ) {
 			$url 		= $_REQUEST['redirect_to'];
 			$enforce 	= true; // This redirection was enforced via REUQEST param.
+		} elseif( isset( $_REQUEST['membership_id'] ) ){
+			$url 		= add_query_arg(
+							array(
+								'step' => MS_Controller_Frontend::STEP_PAYMENT_TABLE,
+								'membership_id' => absint( $_REQUEST['membership_id'] ),
+							),
+							MS_Model_Pages::get_page_url( MS_Model_Pages::MS_PAGE_REGISTER )
+						);
+			$enforce 	= true; // Again, this redirection was enforced via REUQEST param.
 		} else {
 			$url 		= self::get_page_url( self::MS_PAGE_ACCOUNT );
 			$enforce 	= false; // This is the default redirection.
