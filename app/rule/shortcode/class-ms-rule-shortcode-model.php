@@ -300,7 +300,7 @@ class MS_Rule_Shortcode_Model extends MS_Rule {
 		if ( mslib3()->is_true( $access ) ) {
 			$msg_access = __( 'Visible for members of', 'membership2' );
 			$alt_msg1 	= __( 'Other users will see', 'membership2' );
-			$alt_msg2 	= __( 'Other uses will see nothing', 'membership2' );
+			$alt_msg2 	= __( 'Other users will see nothing', 'membership2' );
 		} else {
 			$msg_access = __( 'Hidden from members of', 'membership2' );
 			$alt_msg1 	= __( 'Those users will see', 'membership2' );
