@@ -470,7 +470,7 @@ class MS_View_Shortcode_Login extends MS_View {
 
 		$yourname = sprintf(
 			__( 'You are logged in as %s.', 'membership2' ),
-			ucfirst( $member->name )
+			ucfirst( $member->full_name )
 		);
 
 		$yourname = apply_filters(
