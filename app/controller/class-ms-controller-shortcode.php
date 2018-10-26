@@ -681,10 +681,10 @@ class MS_Controller_Shortcode extends MS_Controller {
 					'label_remember'  => __( 'Remember Me', 'membership2' ),
 					'label_log_in'    => __( 'Log In', 'membership2' ),
 					'id_login_form'   => 'loginform',
-					'id_username'     => 'user_login',
+					'id_username'     => 'log_username',
 					'id_password'     => 'user_pass',
 					'id_remember'     => 'rememberme',
-					'id_login'        => 'wp-submit',
+					'id_login'        => 'log-submit',
 					'value_username'  => '',
 					'value_remember'  => false,
 
