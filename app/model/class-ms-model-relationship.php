@@ -174,7 +174,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	 * @since  1.0.0
 	 * @var string $status
 	 */
-	public $status;
+	protected $status;
 
 	/**
 	 * Current invoice count.
@@ -1085,7 +1085,12 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 			)
 		);
 
-		$eligible = false;
+		/**
+		 * Filter to modify forcing trial even if not in allowed statuses.
+		 *
+		 * @since 1.1.6
+		 */
+		$force = apply_filters( 'ms_model_relationship_is_trial_eligible_force', MS_Model_Member::is_admin_user() );
 
 		if ( ! $membership->has_trial() ) {
 			// Trial Membership is globally disabled.
@@ -1093,7 +1098,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 		} elseif ( self::STATUS_TRIAL == $this->status ) {
 			// Subscription IS already in trial, so it's save to assume true.
 			$eligible = true;
-		} elseif ( ! in_array( $this->status, $trial_eligible_status ) ) {
+		} elseif ( ! in_array( $this->status, $trial_eligible_status ) && ! $force ) {
 			// Current Subscription is not allowed for a trial membership anymore.
 			$eligible = false;
 		} elseif ( $this->trial_period_completed ) {
