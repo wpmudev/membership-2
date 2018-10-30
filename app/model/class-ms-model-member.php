@@ -84,6 +84,20 @@ class MS_Model_Member extends MS_Model {
 	protected $subscriptions = array();
 
 	/**
+	 * Member's pending subscriptions.
+	 *
+	 * Note: This field is populated by MS_Factory when the Member instance is
+	 * created.
+	 *
+	 * @since  1.1.6
+	 * @var array {
+	 *     @type int $membership_id The membership ID.
+	 *     @type MS_Model_Relationship The membership relationship model object.
+	 * }
+	 */
+	protected $pending_subscriptions = array();
+
+	/**
 	 * Indicator if the user is an active M2 Member.
 	 *
 	 * This is a convenience/redudant flag to speed up SQL queries.
@@ -1345,6 +1359,32 @@ class MS_Model_Member extends MS_Model {
 	}
 
 	/**
+	 * Returns a list of pending membership IDs.
+	 *
+	 * Returns the list of membership IDs of the pending
+	 * subscriptions of the current user.
+	 *
+	 * @since 1.1.6
+	 *
+	 * @return array
+	 */
+	public function get_pending_membership_ids() {
+		$result = array();
+
+		// If no pending subscriptions, return empty.
+		if ( empty( $this->pending_subscriptions ) ) {
+			return $result;
+		}
+
+		// Get membership IDs of subscriptions.
+		foreach ( $this->pending_subscriptions as $subscription ) {
+			$result[] = $subscription->membership_id;
+		}
+
+		return $result;
+	}
+
+	/**
 	 * Add a new membership.
 	 *
 	 * If multiple membership is disabled, may move existing membership.
@@ -1608,6 +1648,16 @@ class MS_Model_Member extends MS_Model {
 					$subscription 	= $item;
 					$key 			= $ind;
 					break;
+				}
+			}
+			// Check and remove pending subscriptions also.
+			if ( empty( $subscription ) && ! empty( $this->pending_subscriptions ) ) {
+				foreach ( $this->pending_subscriptions as $ind => $item ) {
+					if ( $item->membership_id == $membership_id ) {
+						$subscription 	= $item;
+						$key 			= $ind;
+						break;
+					}
 				}
 			}
 		}

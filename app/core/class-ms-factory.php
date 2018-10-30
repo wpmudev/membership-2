@@ -430,6 +430,14 @@ class MS_Factory {
 				$model->subscriptions = MS_Model_Relationship::get_subscriptions(
 					array( 'user_id' => $model->id )
 				);
+
+				// Load pending membership_relationships.
+				$model->pending_subscriptions = MS_Model_Relationship::get_subscriptions(
+					array(
+						'user_id' => $model->id,
+						'status' => MS_Model_Relationship::STATUS_PENDING,
+					)
+				);
 			}
 		}
 		

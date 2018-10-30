@@ -278,10 +278,12 @@ class MS_View_Member_Editor extends MS_View {
 				'class' => 'group-title',
 				'value' => __( 'Manage Subscriptions', 'membership2' ),
 			);
-			if ( $user->subscriptions ) {
+			if ( $user->subscriptions || $user->pending_subscriptions ) {
 				$gateways = MS_Model_Gateway::get_gateway_names( false, true );
+				// Get all subscriptions.
+				$subscriptions = array_merge( $user->pending_subscriptions, $user->subscriptions );
 
-				foreach ( $user->subscriptions as $subscription ) {
+				foreach ( $subscriptions as $subscription ) {
 					if ( MS_Model_Relationship::STATUS_DEACTIVATED == $subscription->status ) {
 						continue;
 					}
