@@ -27,9 +27,24 @@ class MS_Widget_Login extends WP_Widget {
 	 * @param array $instance
 	 */
 	public function widget( $args, $instance ) {
+		global $post;
 		$redirect_login 	= false;
 		$redirect_logout 	= false;
 		$shortcode_args 	= '';
+
+		// Do not show login widget in actual login page.
+		if ( isset( $post->post_content ) &&
+		     // Make sure we already have login shortcode in this page.
+		     MS_Helper_Shortcode::has_shortcode( MS_Helper_Shortcode::SCODE_LOGIN, $post->post_content ) &&
+		     /**
+		      * Filter hook to disable hiding widget.
+		      *
+		      * @since 1.1.6
+		      */
+		     apply_filters( 'ms_widget_login_hide_on_login_page', true )
+		) {
+			return;
+		}
 
 		if ( ! empty( $instance['redirect_login'] ) ) {
 			$redirect_login = mslib3()->net->expand_url( $instance['redirect_login'] );
