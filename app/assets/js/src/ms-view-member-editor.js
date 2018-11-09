@@ -10,6 +10,8 @@ window.ms_init.view_member_editor = function init () {
 		sel_user = jQuery( '.ms-group-select #user_id' ),
 		btn_add = jQuery( '#btn_create' ),
 		btn_select = jQuery( '#btn_select' ),
+		payment_type = jQuery( '#payment_type' ),
+		subscription_status = jQuery( '#subscription-status' ),
 		chosen_options = {},
 		validate_buttons;
 
@@ -97,4 +99,12 @@ window.ms_init.view_member_editor = function init () {
 	sel_user.wpmuiSelect( chosen_options );
 
 	validate_buttons();
+
+	// If admin in going to cancel recurring subscription, show warning.
+	subscription_status.on( 'change', function () {
+		// If changed status is canceled and payment type is recurring.
+		if ( 'canceled' === subscription_status.val() && 'recurring' === payment_type.val() ) {
+			window.alert( window.ms_admin_text.recurring_cancel_warning );
+		}
+	} );
 };
