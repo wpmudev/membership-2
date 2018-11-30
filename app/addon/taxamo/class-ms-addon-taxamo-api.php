@@ -239,11 +239,7 @@ class MS_Addon_Taxamo_Api extends MS_Controller {
 			'vat_number',
 		);
 
-		$valid_keys = apply_filters(
-			'ms_addon_taxamo_set_tax_profile_valid_keys',
-			$valid_keys,
-			$this
-		);
+		$valid_keys = apply_filters( 'ms_addon_taxamo_set_tax_profile_valid_keys', $valid_keys );
 
 		if ( ! in_array( $field, $valid_keys ) ) {
 			return false;
