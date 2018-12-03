@@ -575,8 +575,8 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	 */
 	public static function get_subscription_ids( $args = null ) {
 		static $Subscription_IDs = array();
-		$args 	= self::get_query_args( $args );
-		$key 	= md5( json_encode( $args ) );
+		$query_args = self::get_query_args( $args );
+		$key 	    = md5( json_encode( $args ) );
 
 		if ( ! isset( $Subscription_IDs[ $key ] ) ) {
 			$Subscription_IDs[ $key ] = array();
@@ -587,7 +587,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 			if ( $results ) {
 				$items = $results;
 			} else {
-				$query = new WP_Query( $args );
+				$query = new WP_Query( $query_args );
 				$items = $query->posts;
 				MS_Helper_Cache::query_cache( $items, $cache_key );
 			}
