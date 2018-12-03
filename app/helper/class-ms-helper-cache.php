@@ -50,6 +50,11 @@ class MS_Helper_Cache extends MS_Helper {
 				$name = $name . '_' . $args['user_id'];
 			}
 
+			// If filtered using membership id, add that to key.
+			if ( ! empty( $args['membership_id'] ) ) {
+				$name = $name . '_mem' . $args['membership_id'];
+			}
+
 			// If filtered using status, add that to key.
 			if ( isset( $args['status'] ) && is_string( $args['status'] ) ) {
 				$name = $name . '_' . $args['status'];
