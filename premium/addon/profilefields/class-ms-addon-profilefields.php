@@ -771,13 +771,13 @@ class MS_Addon_Profilefields extends MS_Addon {
 
 			<?php if ( 'textarea' == bp_get_the_profile_field_type() ) { ?>
 
-				<label for="<?php bp_the_profile_field_input_name(); ?>"><?php bp_the_profile_field_name(); ?> <?php if ( bp_get_the_profile_field_is_required() ) : ?><?php _e( '(required)', 'buddypress' ); ?><?php endif; ?></label>
+				<label for="<?php bp_the_profile_field_input_name(); ?>"><?php bp_the_profile_field_name(); ?> <?php if ( bp_get_the_profile_field_is_required() ) : ?><?php _e( '(required)', 'membership2' ); ?><?php endif; ?></label>
 				<?php do_action( bp_get_the_profile_field_errors_action() ); ?>
 				<textarea rows="5" cols="40" <?php echo $readonly ?> name="<?php bp_the_profile_field_input_name(); ?>" id="<?php bp_the_profile_field_input_name(); ?>"><?php echo xprofile_get_field_data( bp_get_the_profile_field_id(), get_current_user_id() ); ?></textarea>
 
 			<?php } elseif ( 'selectbox' == bp_get_the_profile_field_type() ) { ?>
 
-				<label for="<?php bp_the_profile_field_input_name(); ?>"><?php bp_the_profile_field_name(); ?> <?php if ( bp_get_the_profile_field_is_required() ) : ?><?php _e( '(required)', 'buddypress' ); ?><?php endif; ?></label>
+				<label for="<?php bp_the_profile_field_input_name(); ?>"><?php bp_the_profile_field_name(); ?> <?php if ( bp_get_the_profile_field_is_required() ) : ?><?php _e( '(required)', 'membership2' ); ?><?php endif; ?></label>
 				<?php do_action( bp_get_the_profile_field_errors_action() ); ?>
 				<select <?php echo $readonly ?> name="<?php bp_the_profile_field_input_name(); ?>" id="<?php bp_the_profile_field_input_name(); ?>">
 					<?php bp_the_profile_field_options( array( 'user_id' => get_current_user_id() ) ); ?>
@@ -785,7 +785,7 @@ class MS_Addon_Profilefields extends MS_Addon {
 
 			<?php } elseif ( 'multiselectbox' == bp_get_the_profile_field_type() ) { ?>
 
-				<label for="<?php bp_the_profile_field_input_name(); ?>"><?php bp_the_profile_field_name(); ?> <?php if ( bp_get_the_profile_field_is_required() ) : ?><?php _e( '(required)', 'buddypress' ); ?><?php endif; ?></label>
+				<label for="<?php bp_the_profile_field_input_name(); ?>"><?php bp_the_profile_field_name(); ?> <?php if ( bp_get_the_profile_field_is_required() ) : ?><?php _e( '(required)', 'membership2' ); ?><?php endif; ?></label>
 				<?php do_action( bp_get_the_profile_field_errors_action() ); ?>
 				<select <?php echo $readonly ?> name="<?php bp_the_profile_field_input_name(); ?>" id="<?php bp_the_profile_field_input_name(); ?>" multiple="multiple">
 					<?php bp_the_profile_field_options( array( 'user_id' => get_current_user_id() ) ); ?>
@@ -794,20 +794,20 @@ class MS_Addon_Profilefields extends MS_Addon {
 			<?php } elseif ( 'radio' == bp_get_the_profile_field_type() ) { ?>
 
 				<div class="radio">
-					<span class="label"><?php bp_the_profile_field_name(); ?> <?php if ( bp_get_the_profile_field_is_required() ) : ?><?php _e( '(required)', 'buddypress' ); ?><?php endif; ?></span>
+					<span class="label"><?php bp_the_profile_field_name(); ?> <?php if ( bp_get_the_profile_field_is_required() ) : ?><?php _e( '(required)', 'membership2' ); ?><?php endif; ?></span>
 
 					<?php do_action( bp_get_the_profile_field_errors_action() ); ?>
 					<?php bp_the_profile_field_options( array( 'user_id' => get_current_user_id() ) ); ?>
 
 					<?php if ( ! bp_get_the_profile_field_is_required() ) : ?>
-						<a class="clear-value" href="javascript:clear( '<?php bp_the_profile_field_input_name(); ?>' );"><?php _e( 'Clear', 'buddypress' ); ?></a>
+						<a class="clear-value" href="javascript:clear( '<?php bp_the_profile_field_input_name(); ?>' );"><?php _e( 'Clear', 'membership2' ); ?></a>
 					<?php endif; ?>
 				</div>
 
 			<?php } elseif ( 'checkbox' == bp_get_the_profile_field_type() ) { ?>
 
 				<div class="checkbox">
-					<span class="label"><?php bp_the_profile_field_name(); ?> <?php if ( bp_get_the_profile_field_is_required() ) : ?><?php _e( '(required)', 'buddypress' ); ?><?php endif; ?></span>
+					<span class="label"><?php bp_the_profile_field_name(); ?> <?php if ( bp_get_the_profile_field_is_required() ) : ?><?php _e( '(required)', 'membership2' ); ?><?php endif; ?></span>
 
 					<?php do_action( bp_get_the_profile_field_errors_action() ); ?>
 					<?php bp_the_profile_field_options( array( 'user_id' => get_current_user_id() ) ); ?>
@@ -816,7 +816,7 @@ class MS_Addon_Profilefields extends MS_Addon {
 			<?php } elseif ( 'datebox' == bp_get_the_profile_field_type() ) { ?>
 
 				<div class="datebox">
-					<label for="<?php bp_the_profile_field_input_name(); ?>_day"><?php bp_the_profile_field_name(); ?> <?php if ( bp_get_the_profile_field_is_required() ) : ?><?php _e( '(required)', 'buddypress' ); ?><?php endif; ?></label>
+					<label for="<?php bp_the_profile_field_input_name(); ?>_day"><?php bp_the_profile_field_name(); ?> <?php if ( bp_get_the_profile_field_is_required() ) : ?><?php _e( '(required)', 'membership2' ); ?><?php endif; ?></label>
 					<?php do_action( bp_get_the_profile_field_errors_action() ); ?>
 
 					<select <?php echo $readonly ?> name="<?php bp_the_profile_field_input_name(); ?>_day" id="<?php bp_the_profile_field_input_name(); ?>_day">
@@ -834,7 +834,7 @@ class MS_Addon_Profilefields extends MS_Addon {
 
 			<?php } else { ?>
 
-				<label for="<?php bp_the_profile_field_input_name(); ?>"><?php bp_the_profile_field_name(); ?> <?php if ( bp_get_the_profile_field_is_required() ) : ?><?php _e( '(required)', 'buddypress' ); ?><?php endif; ?></label>
+				<label for="<?php bp_the_profile_field_input_name(); ?>"><?php bp_the_profile_field_name(); ?> <?php if ( bp_get_the_profile_field_is_required() ) : ?><?php _e( '(required)', 'membership2' ); ?><?php endif; ?></label>
 				<?php do_action( bp_get_the_profile_field_errors_action() ); ?>
 				<input type="<?php bp_the_profile_field_type() ?>" <?php echo $readonly ?> name="<?php bp_the_profile_field_input_name(); ?>" id="<?php bp_the_profile_field_input_name(); ?>" value="<?php echo strip_tags( xprofile_get_field_data( bp_get_the_profile_field_id(), get_current_user_id() ) ); ?>" />
 
@@ -845,22 +845,22 @@ class MS_Addon_Profilefields extends MS_Addon {
 
 				<?php if ( bp_current_user_can( 'bp_xprofile_change_field_visibility' ) ) : ?>
 					<p class="field-visibility-settings-toggle" id="field-visibility-settings-toggle-<?php bp_the_profile_field_id() ?>">
-						<?php printf( __( 'This field can be seen by: <span class="current-visibility-level">%s</span>', 'buddypress' ), bp_get_the_profile_field_visibility_level_label() ) ?> <a href="#" class="visibility-toggle-link"><?php _ex( 'Change', 'Change profile field visibility level', 'buddypress' ); ?></a>
+						<?php printf( __( 'This field can be seen by: <span class="current-visibility-level">%s</span>', 'membership2' ), bp_get_the_profile_field_visibility_level_label() ) ?> <a href="#" class="visibility-toggle-link"><?php _ex( 'Change', 'Change profile field visibility level', 'membership2' ); ?></a>
 					</p>
 
 					<div class="field-visibility-settings" id="field-visibility-settings-<?php bp_the_profile_field_id() ?>">
 						<fieldset>
-							<legend><?php _e( 'Who can see this field?', 'buddypress' ) ?></legend>
+							<legend><?php _e( 'Who can see this field?', 'membership2' ) ?></legend>
 
 							<?php bp_profile_visibility_radio_buttons() ?>
 
 						</fieldset>
-						<a class="field-visibility-settings-close" href="#"><?php _e( 'Close', 'buddypress' ) ?></a>
+						<a class="field-visibility-settings-close" href="#"><?php _e( 'Close', 'membership2' ) ?></a>
 
 					</div>
 				<?php else : ?>
 					<p class="field-visibility-settings-notoggle" id="field-visibility-settings-toggle-<?php bp_the_profile_field_id() ?>">
-						<?php printf( __( 'This field can be seen by: <span class="current-visibility-level">%s</span>', 'buddypress' ), bp_get_the_profile_field_visibility_level_label() ) ?>
+						<?php printf( __( 'This field can be seen by: <span class="current-visibility-level">%s</span>', 'membership2' ), bp_get_the_profile_field_visibility_level_label() ) ?>
 					</p>
 				<?php endif ?>
 			<?php endif ?>

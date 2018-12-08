@@ -27,7 +27,7 @@ class MS_View_Membership_PaymentSetup extends MS_View {
 				array(
 					'title' => __( 'Payment', 'membership2' ),
 					'title_icon_class' => 'wpmui-fa wpmui-fa-money',
-					'desc' => __( 'Set up your payment gateways and Membership Price' ),
+					'desc' => __( 'Set up your payment gateways and Membership Price', 'membership2' ),
 				)
 			);
 			?>

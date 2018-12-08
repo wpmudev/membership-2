@@ -89,6 +89,7 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 		$notes_pay 			= '';
 		$notes_txn 			= '';
 		$external_id 		= null;
+		$transaction_exists = null;
 		$invoice_id 		= 0;
 		$subscription_id 	= 0;
 		$amount 			= 0;
@@ -127,6 +128,7 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 		}
 		if ( ! empty( $_POST['txn_id'] ) ) {
 			$external_id 		= $_POST['txn_id'];
+			$transaction_exists = MS_Model_Transactionlog::was_processed( self::ID, $external_id );
 		}
 		if ( ! empty( $_POST['mc_currency'] ) ) {
 			$currency 			= $_POST['mc_currency'];
@@ -143,7 +145,7 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 			} elseif ( ! empty( $_POST['rp_invoice'] ) ) {
 				$invoice_id 	= intval( $_POST['rp_invoice'] );
 			}
-
+			$current_date = MS_Helper_Period::current_date( null, true );
 			if ( $invoice_id ) {
 				// BEST CASE:
 				// 'invoice' is set in all regular M2 subscriptions!
@@ -155,9 +157,16 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 				 */
 				$invoice 	= MS_Factory::load( 'MS_Model_Invoice', $invoice_id );
 				if ( $invoice->id != 0 ) {
+					if ( $invoice->is_paid() &&  $current_date == $invoice->invoice_date ) {
+						exit; //already paid
+					}
 					if ( $invoice->is_paid() ) {
 						$subscription 	= $invoice->get_subscription();
-						$invoice_id 	= $subscription->first_unpaid_invoice();
+						if ( ! $transaction_exists ) {
+							$invoice_id 	= $subscription->first_unpaid_invoice();	
+						} else{
+							$invoice_id 	= $subscription->get_current_invoice_number();
+						}						
 					} else {
 						$invoice_id 	= $invoice->id;
 					}
@@ -541,7 +550,7 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 		}
 
 		// Step 2a: Check if the txn_id was already processed by M2.
-		if ( MS_Model_Transactionlog::was_processed( self::ID, $external_id ) ) {
+		if ( $transaction_exists ) {
 			$notes = 'Duplicate: Already processed that transaction.';
 			$success = false;
 			$ignore = true;
@@ -569,6 +578,10 @@ class MS_Gateway_Paypalstandard extends MS_Gateway {
 			);
 
 			$invoice = MS_Factory::load( 'MS_Model_Invoice', $invoice_id );
+			
+			if ( $invoice && $invoice->is_paid() &&  $current_date == $invoice->invoice_date ) {
+				exit; //already paid
+			}
 
 			if ( ! is_wp_error( $response )
 				&& 200 == $response['response']['code']

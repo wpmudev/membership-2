@@ -1439,8 +1439,6 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 			$subscription
 		);
 
-		$wp_user = $member->get_user();
-
 		foreach ( $comm_vars as $key => $description ) {
 			$var_value = '';
 
@@ -1500,7 +1498,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 					break;
 
 				case self::COMM_VAR_USER_DISPLAY_NAME:
-					$var_value = $wp_user->display_name;
+					$var_value = $member->display_name;
 					break;
 
 				case self::COMM_VAR_USER_FIRST_NAME:

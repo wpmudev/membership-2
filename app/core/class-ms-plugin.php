@@ -388,7 +388,8 @@ class MS_Plugin {
 	 * @param string $url The URL to load after flushing the rewrite rules.
 	 */
 	static public function flush_rewrite_rules( $url = false ) {
-		if ( isset( $_GET['ms_flushed'] ) && 'yes' == $_GET['ms_flushed'] ) {
+		// Do not redirect on bulk update
+		if ( ( isset( $_GET['ms_flushed'] ) && 'yes' == $_GET['ms_flushed'] ) || ( isset( $_REQUEST['action2'] ) && 'activate-selected' == $_REQUEST['action2'] ) ) {
 			$refresh = true;
 		} else {
 			$refresh = mslib3()->session->get( 'refresh_url_rules' );

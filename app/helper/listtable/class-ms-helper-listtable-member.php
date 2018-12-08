@@ -344,11 +344,13 @@ class MS_Helper_ListTable_Member extends MS_Helper_ListTable {
 			$html = '<b>' . __( 'Admin User', 'membership2' ) . '</b>';
 		} else {
 			$subscriptions = $member->get_membership_ids();
+			$pending_subs  = $member->get_pending_membership_ids();
+			$subscriptions = array_merge( $pending_subs, $subscriptions );
 
 			$visitor = array(
 				'id' 	=> 'ms-empty-' . $member->id,
 				'type' 	=> MS_Helper_Html::TYPE_HTML_TEXT,
-				'value' => __( '(Visitor)' ),
+				'value' => __( '(Visitor)', 'membership2' ),
 				'after' => 'Edit',
 				'class' => 'ms-empty-note',
 			);
@@ -382,14 +384,19 @@ class MS_Helper_ListTable_Member extends MS_Helper_ListTable {
 	}
 
 	/**
-	 * Adds a class to the <tr> element
+	 * Adds a class to the <tr> element.
+	 *
+	 * @param object $member MS_Model_Member.
 	 *
 	 * @since  1.0.0
-	 * @param  object $member
+	 *
+	 * @return string $class
 	 */
 	protected function single_row_class( $member ) {
-		$subscriptions 	= $member->get_membership_ids();
-		$class 			= empty( $subscriptions ) ? 'ms-empty' : 'ms-assigned';
+		$subs         = $member->get_membership_ids();
+		$pending_subs = $member->get_pending_membership_ids();
+		$subs         = array_merge( $pending_subs, $subs );
+		$class        = empty( $subs ) ? 'ms-empty' : 'ms-assigned';
 
 		return $class;
 	}
@@ -522,6 +529,16 @@ class MS_Helper_ListTable_Member extends MS_Helper_ListTable {
 		$views['expired'] 	= array(
 			'url' 	=> $url,
 			'label' => __( 'Expired', 'membership2' ),
+			'count' => $count,
+		);
+
+		// Pending.
+		$url = esc_url_raw( add_query_arg( 'status', 'pending' ) );
+		$args['subscription_status'] = 'pending';
+		$count = MS_Model_Member::get_members_count( $args );
+		$views['pending'] 	= array(
+			'url' 	=> $url,
+			'label' => __( 'Pending', 'membership2' ),
 			'count' => $count,
 		);
 

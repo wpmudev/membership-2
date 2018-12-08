@@ -417,6 +417,8 @@ class MS_Factory {
 					$wp_user
 				);
 
+				self::populate_model( $model, $member_details, 'ms_' );
+
 				// Remove automatic populated values from metadata, if present.
 				unset( $member_details['ms_username'] );
 				unset( $member_details['ms_email'] );
@@ -424,11 +426,17 @@ class MS_Factory {
 				unset( $member_details['ms_first_name'] );
 				unset( $member_details['ms_last_name'] );
 
-				self::populate_model( $model, $member_details, 'ms_' );
-
 				// Load membership_relationships
 				$model->subscriptions = MS_Model_Relationship::get_subscriptions(
 					array( 'user_id' => $model->id )
+				);
+
+				// Load pending membership_relationships.
+				$model->pending_subscriptions = MS_Model_Relationship::get_subscriptions(
+					array(
+						'user_id' => $model->id,
+						'status' => MS_Model_Relationship::STATUS_PENDING,
+					)
 				);
 			}
 		}

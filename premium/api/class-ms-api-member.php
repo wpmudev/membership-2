@@ -59,19 +59,19 @@ class MS_Api_Member extends MS_Api {
 					'required' 			=> false,
 					'sanitize_callback' => 'sanitize_text_field',
 					'type' 				=> 'int',
-					'description' 		=> __( 'Results per page. Defaults to 10' ),
+					'description' 		=> __( 'Results per page. Defaults to 10', 'membership2' ),
 				),
                 'page' 		    => array(
 					'required' 			=> true,
 					'sanitize_callback' => 'sanitize_text_field',
 					'type' 				=> 'int',
-					'description' 		=> __( 'Current page' ),
+					'description' 		=> __( 'Current page', 'membership2' ),
 				),
                 'member_status' 	=> array(
 					'required' 			=> false,
 					'sanitize_callback' => 'sanitize_text_field',
 					'type' 				=> 'String',
-					'description' 		=> __( 'Membership status. Eg pending, waiting, active, trial, canceled, trial_expired, expired, deactivated' ),
+					'description' 		=> __( 'Membership status. Eg pending, waiting, active, trial, canceled, trial_expired, expired, deactivated', 'membership2' ),
 				),
 			)
 		));
@@ -87,7 +87,7 @@ class MS_Api_Member extends MS_Api {
 					'sanitize_callback' => 'sanitize_text_field',
 					'type' 				=> 'String',
                     'validate_callback' => 'is_string',
-					'description' 		=> __( 'Membership status. Eg pending, waiting, active, trial, canceled, trial_expired, expired, deactivated' ),
+					'description' 		=> __( 'Membership status. Eg pending, waiting, active, trial, canceled, trial_expired, expired, deactivated', 'membership2' ),
 				),
 			)
 		));
@@ -101,7 +101,7 @@ class MS_Api_Member extends MS_Api {
 					'required' 			=> true,
 					'sanitize_callback' => 'sanitize_text_field',
 					'type' 				=> 'int',
-					'description' 		=> __( 'The user id' ),
+					'description' 		=> __( 'The user id', 'membership2' ),
 				),
 			)
 		));
@@ -116,13 +116,13 @@ class MS_Api_Member extends MS_Api {
 						'required' 			=> true,
 						'sanitize_callback' => 'sanitize_text_field',
 						'type' 				=> 'int',
-						'description' 		=> __( 'The user id' ),
+						'description' 		=> __( 'The user id', 'membership2' ),
 					),
 					'membership_id' => array(
 						'required' 			=> true,
 						'sanitize_callback' => 'sanitize_text_field',
 						'type' 				=> 'int',
-						'description' 		=> __( 'The Membership ID' ),
+						'description' 		=> __( 'The Membership ID', 'membership2' ),
 					),
 				)
 			),
@@ -135,13 +135,13 @@ class MS_Api_Member extends MS_Api {
 						'required' 			=> true,
 						'sanitize_callback' => 'sanitize_text_field',
 						'type' 				=> 'int',
-						'description' 		=> __( 'The user id' ),
+						'description' 		=> __( 'The user id', 'membership2' ),
 					),
 					'membership_id' => array(
 						'required' 			=> true,
 						'sanitize_callback' => 'sanitize_text_field',
 						'type' 				=> 'int',
-						'description' 		=> __( 'The Membership ID' ),
+						'description' 		=> __( 'The Membership ID', 'membership2' ),
 					),
 				)
 			)
@@ -172,7 +172,7 @@ class MS_Api_Member extends MS_Api {
 			'offset'                => ( $page - 1 ) * $per_page,
             'subscription_status'   => $status
 		);
-        return MS_Model_Member::get_members( $args );;
+        return MS_Model_Member::get_members( $args );
     }
 
     /**

@@ -132,10 +132,17 @@ class MS_Addon_Coupon_Helper_Listtable extends MS_Helper_ListTable {
 		}
 
 		if ( $is_any ) {
-			$html = sprintf(
-				'<span class="ms-low">%s</span>',
-				__( 'Any', 'membership2' )
-			);
+			if ( '0' == $item->membership_id ) {
+				$html = sprintf(
+					'<span class="ms-low">%s</span>',
+					__( 'Any', 'membership2' )
+				);
+			} else {
+				$html = sprintf(
+					'<span class="ms-low">%s</span>',
+					__( 'None', 'membership2' )
+				);
+			}
 		}
 
 		return $html;

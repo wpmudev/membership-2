@@ -86,7 +86,7 @@ class MS_View_Settings_Page_Setup extends MS_View {
 						sprintf(
 							'<a href="%1$s" target="_blank">%2$s</a>',
 							admin_url( 'nav-menus.php' ),
-							__( 'Appearance' ) . ' &raquo; ' . __( 'Menus' )
+							__( 'Appearance', 'membership2' ) . ' &raquo; ' . __( 'Menus', 'membership2' )
 						)
 					);
 					?>

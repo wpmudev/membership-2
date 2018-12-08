@@ -141,6 +141,9 @@ class MS_Controller_Member extends MS_Controller {
 
 		//Profile update hooks
 		add_action( 'profile_update', array( $this, 'handle_profile_membership' ), 10, 2 );
+
+		// When subscription status is changed by admin.
+		$this->add_action( 'ms_controller_members_admin_status_changed', 'subscription_status_change', 10, 2 );
 	}
 
 	/**
@@ -453,6 +456,26 @@ class MS_Controller_Member extends MS_Controller {
 							}
 						}
 
+						if ( $data['status'] !== $subscription->status ) {
+							/**
+							 * When subscription status is changed.
+							 *
+							 * This action hook runs when subscription status is changed
+							 * manually by admin.
+							 *
+							 * @param string $data['status'] New status.
+							 * @param object $subscription MS_Model_Relationship
+							 * @param array  $data Form data of current membership.
+							 *
+							 * @since 1.1.6
+							 */
+							do_action( 'ms_controller_members_admin_status_changed',
+								$data['status'],
+								$subscription,
+								$data
+							);
+						}
+
 						$subscription->start_date 	= $data['start'];
 						$subscription->expire_date 	= $data['expire'];
 						$subscription->status 		= $data['status'];
@@ -523,6 +546,29 @@ class MS_Controller_Member extends MS_Controller {
 	}
 
 	/**
+	 * Handle the manual status change process.
+	 *
+	 * When status of a subscription is changed by
+	 * admin user, process the related actions.
+	 *
+	 * @param string $new_status   New status..
+	 * @param object $subscription MS_Model_Relationship.
+	 *
+	 * @since 1.1.6
+	 */
+	public function subscription_status_change( $new_status, $subscription ) {
+		// Switch status.
+		switch ( $new_status ) {
+			// Cancel the subscription.
+			case 'canceled':
+				$subscription->cancel_membership();
+				break;
+
+			// Handle other statuses here.
+		}
+	}
+
+	/**
 	 * Generate the Export button on the Members list view
 	 *
 	 * @since 1.1.3
@@ -562,7 +608,7 @@ class MS_Controller_Member extends MS_Controller {
 
 		if ( ! empty( $_REQUEST['user_id'] ) && ( $user_id = intval( $_REQUEST['user_id'] ) ) ) {
 			if ( user_can( $user_id, 'administrator' ) ) {
-				wp_die( __( 'Sorry, you are not allowed to access this page.' ), 403 );
+				wp_die( __( 'Sorry, you are not allowed to access this page.', 'membership2' ), 403 );
 			}
 			$data['user_id'] 	= $user_id;
 			$data['action'] 	= 'edit';
@@ -959,7 +1005,7 @@ class MS_Controller_Member extends MS_Controller {
 				$view_url = sprintf(
 						'<a href="%1$s" title="%2$s">%3$s</a>',
 						$url,
-						__( 'View Members', 'membership' ),
+						__( 'View Members', 'membership2' ),
 						$membership->name
 					);
 				$html .= '<span style="font-weight:bold;">'. $view_url .'</span>';
@@ -967,24 +1013,41 @@ class MS_Controller_Member extends MS_Controller {
 			}
 
 			if ( empty( $value ) ) {
-				$value 		= __( 'None' , 'membership' );
+				$value 		= __( 'None' , 'membership2' );
 				if ( MS_Model_Member::is_admin_user( $user_id ) ) {
-					$value 	= '<span style="font-weight:bold;">' . __( 'None (Admin User)', 'membership' ) . '</span>';
+					$value 	= '<span style="font-weight:bold;">' . __( 'None (Admin User)', 'membership2' ) . '</span>';
 				}
 			}
 
 		} else if ( 'verified' == $column_name ) {
 
 			$user_activation_status = get_user_meta( $user_id, '_ms_user_activation_status', true );
+			$force_user_activation_status = get_user_meta( $user_id, '_ms_user_force_activation_status', true );
 			$user_activation_status = empty( $user_activation_status ) ? 0 : $user_activation_status;
 			if ( $user_activation_status != 1 && MS_Model_Member::is_admin_user( $user_id ) ) {
 				$user_activation_status = 1;
 				update_user_meta( $user_id, '_ms_user_activation_status', $user_activation_status );
-			}
-			if ( $user_activation_status != 1 ) {
-				$value 	= __( 'Not Verified' , 'membership' );
 			} else {
-				$value 	= __( 'Verified' , 'membership' );
+				if ( !$force_user_activation_status ) {
+					//Set already active users to active
+					$udata = get_userdata( $user_id );
+					$verification_cutoff_date = '2018-04-11 23:59:59';
+					if ( $udata->user_registered < $verification_cutoff_date ) {
+						$user_activation_status = 1;
+						update_user_meta( $user_id, '_ms_user_activation_status', $user_activation_status );
+					}
+				}
+			}
+			
+			if ( $user_activation_status != 1 ) {
+				if ( $force_user_activation_status ) {
+					$value 	= __( 'Verification Resent' , 'membership2' );
+				} else {
+					$value 	= __( 'Not Verified' , 'membership2' );
+				}
+				
+			} else {
+				$value 	= __( 'Verified' , 'membership2' );
 			}
 		}
         return apply_filters( 'ms_controller_member_manage_users_custom_column', $value, $column_name, $user_id );
@@ -1001,8 +1064,9 @@ class MS_Controller_Member extends MS_Controller {
 	 */
 	function add_verify_bulk_action( $actions ) {
 
-		$actions['ms_bulk_approve'] 	= __( 'Approve', 'membership' );
-		$actions['ms_bulk_disapprove'] 	= __( 'Disapprove', 'membership' );
+		$actions['ms_bulk_approve'] 	= __( 'Approve', 'membership2' );
+		$actions['ms_bulk_disapprove'] 	= __( 'Disapprove', 'membership2' );
+		$actions['ms_bulk_resend'] 		= __( 'Resend Verification Email', 'membership2' );
 
 		return $actions;
 	}
@@ -1023,7 +1087,9 @@ class MS_Controller_Member extends MS_Controller {
 		switch ( $doaction ) {
 			case 'ms_bulk_approve' :
 				foreach ( $items as $user_id ) {
-					update_user_meta( $user_id, '_ms_user_activation_status', 1 );
+					if ( !MS_Model_Member::is_admin_user( $user_id ) ) {
+						update_user_meta( $user_id, '_ms_user_activation_status', 1 );
+					}
 				}
 				$redirect_to = admin_url( 'users.php' );
 				$redirect_to = add_query_arg( '_ms_approved', count( $items ), $redirect_to );
@@ -1031,10 +1097,25 @@ class MS_Controller_Member extends MS_Controller {
 
 			case 'ms_bulk_disapprove' :
 				foreach ( $items as $user_id ) {
-					update_user_meta( $user_id, '_ms_user_activation_status', 0 );
+					if ( !MS_Model_Member::is_admin_user( $user_id ) ) {
+						update_user_meta( $user_id, '_ms_user_activation_status', 0 );
+					}
 				}
 				$redirect_to = admin_url( 'users.php' );
 				$redirect_to = add_query_arg( '_ms_disapproved', count( $items ), $redirect_to );
+			break;
+
+			case 'ms_bulk_resend' :
+				foreach ( $items as $user_id ) {
+					if ( !MS_Model_Member::is_admin_user( $user_id ) ) {
+						$member = MS_Factory::load( 'MS_Model_Member', $user_id );;
+						update_user_meta( $user_id, '_ms_user_activation_status', 0 );
+						update_user_meta( $user_id, '_ms_user_force_activation_status', 1 );
+						MS_Model_Event::save_event( MS_Model_Event::TYPE_MS_VERIFYACCOUNT, $member );
+					}
+				}
+				$redirect_to = admin_url( 'users.php' );
+				$redirect_to = add_query_arg( '_ms_resend', count( $items ), $redirect_to );
 			break;
 		}
 	
@@ -1051,14 +1132,21 @@ class MS_Controller_Member extends MS_Controller {
 			$user_count = intval( $_REQUEST['_ms_approved'] );
 			?>
 			<div class="notice notice-success is-dismissible">
-				<p><?php echo sprintf( __( '%d user accounts approved', 'membership' ), $user_count ); ?></p>
+				<p><?php echo sprintf( __( '%d user accounts approved', 'membership2' ), $user_count ); ?></p>
 			</div>
 			<?php
 		} else if ( isset ( $_REQUEST['_ms_disapproved'] ) ) {
 			$user_count = intval( $_REQUEST['_ms_disapproved'] );
 			?>
 			<div class="notice notice-success is-dismissible">
-				<p><?php echo sprintf( __( '%d user accounts disapproved', 'membership' ), $user_count ); ?></p>
+				<p><?php echo sprintf( __( '%d user accounts disapproved', 'membership2' ), $user_count ); ?></p>
+			</div>
+			<?php
+		} else if ( isset ( $_REQUEST['_ms_resend'] ) ) {
+			$user_count = intval( $_REQUEST['_ms_resend'] );
+			?>
+			<div class="notice notice-success is-dismissible">
+				<p><?php echo sprintf( __( '%d user accounts resent emails', 'membership2' ), $user_count ); ?></p>
 			</div>
 			<?php
 		}

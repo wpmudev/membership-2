@@ -264,7 +264,7 @@ class MS_Helper_Html extends MS_Helper {
 			$state 	= ('closed' === $state ? 'closed' : 'open');
 			$handle = sprintf(
 				'<div class="handlediv" title="%s"></div>',
-				__( 'Click to toggle' ) // Intentionally no text-domain, so we use WordPress default translation.
+				__( 'Click to toggle', 'membership2' ) // Intentionally no text-domain, so we use WordPress default translation.
 			);
 		}
 		$box_class = $state;

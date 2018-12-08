@@ -133,10 +133,10 @@ class MS_View_Settings_Import_Users extends MS_View {
 		);
 
 		$batchsizes = array(
-			1 	=> __( 'Each item on its own' ),
-			10 	=> __( 'Small (10 items)' ),
-			30 	=> __( 'Normal (30 items)' ),
-			100 => __( 'Big (100 items)' ),
+			1 	=> __( 'Each item on its own', 'membership2' ),
+			10 	=> __( 'Small (10 items)', 'membership2' ),
+			30 	=> __( 'Normal (30 items)', 'membership2' ),
+			100 => __( 'Big (100 items)', 'membership2' ),
 		);
 
 		$fields['batchsize'] = array(

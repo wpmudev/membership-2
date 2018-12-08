@@ -63,7 +63,7 @@ class MS_Rule_Special_Model extends MS_Rule {
 	 * @since  1.0.0
 	 * @return bool
 	 */
-	static public function is_active() {
+	public static function is_active() {
 		return MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_SPECIAL_PAGES );
 	}
 
@@ -75,9 +75,9 @@ class MS_Rule_Special_Model extends MS_Rule {
 	 *
 	 * @return bool
 	 */
-	static public function is_special_page() {
-		if ( null === $this->_is_special ) {
-			$this->_is_special = is_home()
+	public static function is_special_page() {
+		if ( null === self::$_is_special ) {
+			self::$_is_special = is_home()
 				|| is_front_page()
 				|| is_404()
 				|| is_search()
@@ -87,7 +87,7 @@ class MS_Rule_Special_Model extends MS_Rule {
 				|| is_time();
 		}
 
-		return $this->_is_special;
+		return self::$_is_special;
 	}
 
 	/**
@@ -165,19 +165,45 @@ class MS_Rule_Special_Model extends MS_Rule {
 			 * so we have to define a hierarchy which flag is actually used.
 			 */
 			switch ( $key ) {
-				case 'front': $result 		= is_front_page(); break;
-				case 'home': $result 		= is_home(); break;
-				case 'notfound': $result 	= is_404(); break;
-				case 'search': $result 		= is_search(); break;
-				case 'attachment': $result 	= is_attachment(); break;
-				case 'single': $result 		= is_singular(); break;
-				case 'archive': $result 	= is_archive(); break;
-				case 'author': $result 		= is_author(); break;
-				case 'date': $result 		= is_date(); break;
-				case 'year': $result 		= is_year(); break;
-				case 'month': $result 		= is_month(); break;
-				case 'day': $result 		= is_day(); break;
-				case 'time': $result 		= is_time(); break;
+				case 'front':
+					$result = is_front_page();
+					break;
+				case 'home':
+					$result = is_home();
+					break;
+				case 'notfound':
+					$result = is_404();
+					break;
+				case 'search':
+					$result = is_search();
+					break;
+				case 'attachment':
+					$result = is_attachment();
+					break;
+				case 'single':
+					$result = is_singular();
+					break;
+				case 'archive':
+					$result = is_archive();
+					break;
+				case 'author':
+					$result = is_author();
+					break;
+				case 'date':
+					$result = is_date();
+					break;
+				case 'year':
+					$result = is_year();
+					break;
+				case 'month':
+					$result = is_month();
+					break;
+				case 'day':
+					$result = is_day();
+					break;
+				case 'time':
+					$result = is_time();
+					break;
 			}
 
 			if ( $result ) {
@@ -362,5 +388,4 @@ class MS_Rule_Special_Model extends MS_Rule {
 			$this
 		);
 	}
-
 }

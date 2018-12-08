@@ -56,12 +56,22 @@ class MS_View_Shortcode_Invoice extends MS_View {
 			$inv_taxes = '';
 		}
 
+		$inv_coupon_type = '';
+
 		if ( $invoice->discount ) {
 			$inv_discount = sprintf(
 				'%s -%s',
 				$invoice->currency,
 				MS_Helper_Billing::format_price( $invoice->discount )
 			);
+
+			if ( $invoice->coupon_id ) {
+				if ( class_exists( 'MS_Addon_Coupon_Model' ) ) {
+					$coupon 			= MS_Factory::load( 'MS_Addon_Coupon_Model', $invoice->coupon_id );
+					$inv_coupon_type 	= MS_Addon_Coupon_Model::DURATION_ONCE === $coupon->duration ? 'Once' : 'Forever';
+				}
+			}
+
 		} else {
 			$inv_discount = '';
 		}
@@ -82,19 +92,20 @@ class MS_View_Shortcode_Invoice extends MS_View {
 			MS_Helper_Billing::format_price( $invoice->total )
 		);
 
-		$inv_title = apply_filters( 'ms_invoice_title', $inv_title, $invoice );
-		$inv_from = apply_filters( 'ms_invoice_sender', MS_Plugin::instance()->settings->invoice_sender_name, $invoice );
-		$inv_to = apply_filters( 'ms_invoice_recipient', $member->username, $invoice, $member );
-		$inv_status = apply_filters( 'ms_invoice_status', $invoice->status_text(), $invoice );
-		$inv_item_name = apply_filters( 'ms_invoice_item_name', $membership->name, $invoice, $membership );
-		$inv_amount = apply_filters( 'ms_invoice_amount', $inv_amount, $invoice );
-		$inv_taxes = apply_filters( 'ms_invoice_taxes', $inv_taxes, $invoice );
-		$inv_discount = apply_filters( 'ms_invoice_discount', $inv_discount, $invoice );
-		$inv_pro_rate = apply_filters( 'ms_invoice_pro_rate', $inv_pro_rate, $invoice );
-		$inv_total = apply_filters( 'ms_invoice_total', $inv_total, $invoice );
+		$inv_title 		= apply_filters( 'ms_invoice_title', $inv_title, $invoice );
+		$inv_from 		= apply_filters( 'ms_invoice_sender', MS_Plugin::instance()->settings->invoice_sender_name, $invoice );
+		$inv_to 		= apply_filters( 'ms_invoice_recipient', $member->username, $invoice, $member );
+		$inv_status 	= apply_filters( 'ms_invoice_status', $invoice->status_text(), $invoice );
+		$inv_item_name 	= apply_filters( 'ms_invoice_item_name', $membership->name, $invoice, $membership );
+		$inv_amount 	= apply_filters( 'ms_invoice_amount', $inv_amount, $invoice );
+		$inv_taxes 		= apply_filters( 'ms_invoice_taxes', $inv_taxes, $invoice );
+		$inv_discount 	= apply_filters( 'ms_invoice_discount', $inv_discount, $invoice );
+		$inv_coupon_type = apply_filters( 'ms_invoice_coupon_type', $inv_coupon_type, $invoice );
+		$inv_pro_rate 	= apply_filters( 'ms_invoice_pro_rate', $inv_pro_rate, $invoice );
+		$inv_total 		= apply_filters( 'ms_invoice_total', $inv_total, $invoice );
 
-		$inv_details = apply_filters( 'ms_invoice_description', $invoice->description, $invoice, null );
-		$inv_date = apply_filters(
+		$inv_details 	= apply_filters( 'ms_invoice_description', $invoice->description, $invoice, null );
+		$inv_date 		= apply_filters(
 			'ms_invoice_date',
 			MS_Helper_Period::format_date( $invoice->invoice_date ),
 			$invoice,
@@ -205,7 +216,13 @@ class MS_View_Shortcode_Invoice extends MS_View {
 					<?php if ( ! empty( $inv_discount ) ) : ?>
 						<tr class="ms-inv-discount <?php echo esc_attr( $sep ); $sep = ''; ?>">
 							<th><?php _e( 'Coupon discount', 'membership2' ); ?></th>
-							<td class="ms-inv-price"><?php echo $inv_discount; ?></td>
+							<td class="ms-inv-price">
+								<?php echo $inv_discount; 
+									if ( ! empty( $inv_coupon_type ) ) {
+										echo ' (' . $inv_coupon_type . ')';
+									}
+								?>
+							</td>
 						</tr>
 					<?php endif; ?>
 

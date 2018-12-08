@@ -278,10 +278,12 @@ class MS_View_Member_Editor extends MS_View {
 				'class' => 'group-title',
 				'value' => __( 'Manage Subscriptions', 'membership2' ),
 			);
-			if ( $user->subscriptions ) {
+			if ( $user->subscriptions || $user->pending_subscriptions ) {
 				$gateways = MS_Model_Gateway::get_gateway_names( false, true );
+				// Get all subscriptions.
+				$subscriptions = array_merge( $user->pending_subscriptions, $user->subscriptions );
 
-				foreach ( $user->subscriptions as $subscription ) {
+				foreach ( $subscriptions as $subscription ) {
 					if ( MS_Model_Relationship::STATUS_DEACTIVATED == $subscription->status ) {
 						continue;
 					}
@@ -356,12 +358,19 @@ class MS_View_Member_Editor extends MS_View {
 						'type' 			=> MS_Helper_Html::INPUT_TYPE_SELECT,
 						'value' 		=> $subscription->status,
 						'field_options' => $status_options,
+						'id'            => 'subscription-status',
 					);
 
 					$fields['subscriptions'][] = array(
 						'name' 	=> 'memberships[]',
 						'type' 	=> MS_Helper_Html::INPUT_TYPE_HIDDEN,
 						'value' => $the_membership->id,
+					);
+
+					$fields['subscriptions'][] = array(
+						'id' 	=> 'payment_type',
+						'type' 	=> MS_Helper_Html::INPUT_TYPE_HIDDEN,
+						'value' => $the_membership->payment_type,
 					);
 
 					$fields['subscriptions'][] = array(

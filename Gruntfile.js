@@ -67,7 +67,8 @@ module.exports = function( grunt ) {
 			'{js}/jquery.m2.plugins.js': [ '{js}/vendor/jquery.nearest.js' ],
 			'{js}/jquery.m2.validate.js': [ '{js}/vendor/jquery.validate.js' ],
 			'{js}/m2.wpmu-ui.3.js': [ '{js}/vendor/wpmu-ui.3.js' ],
-			'{js}/ms-public-ajax.js': ['{js}/src/ms-public-ajax.js']
+			'{js}/ms-public-ajax.js': ['{js}/src/ms-public-ajax.js'],
+			'{js}/ms-admin-pointers.js': ['{js}/src/ms-admin-pointers.js']
 		},
 
 		// SASS files to process. Resulting CSS files will be minified as well.
@@ -474,6 +475,38 @@ module.exports = function( grunt ) {
 			}
 		},
 
+		// Verify in text domain is used properly.
+		checktextdomain: {
+			options: {
+				text_domain: 'membership2',
+				keywords: [
+					'__:1,2d',
+					'_e:1,2d',
+					'_x:1,2c,3d',
+					'esc_html__:1,2d',
+					'esc_html_e:1,2d',
+					'esc_html_x:1,2c,3d',
+					'esc_attr__:1,2d',
+					'esc_attr_e:1,2d',
+					'esc_attr_x:1,2c,3d',
+					'_ex:1,2c,3d',
+					'_n:1,2,4d',
+					'_nx:1,2,4c,5d',
+					'_n_noop:1,2,3d',
+					'_nx_noop:1,2,3c,4d'
+				]
+			},
+			files: {
+				src: [
+					'app/**/*.php',
+					'free/**/*.php',
+					'premium/**/*.php',
+					'membership2.php'
+				],
+				expand: true
+			}
+		},
+
 		// BUILD: Replace conditional tags in code.
 		replace: {
 			pro: {
@@ -571,6 +604,9 @@ module.exports = function( grunt ) {
 
 	} );
 
+	// Check if text domain is used properly.
+	grunt.registerTask( 'prepare_textdomain', ['checktextdomain'] );
+
 	// Test task.
 	grunt.registerTask( 'hello', 'Test if grunt is working', function() {
 		grunt.log.subhead( 'Hi there :)' );
@@ -586,6 +622,9 @@ module.exports = function( grunt ) {
 		} else {
 			build = ['pro', 'free'];
 		}
+
+		// Make sure translation strings are correct.
+		grunt.task.run( 'prepare_textdomain' );
 
 		// First run unit tests.
 		grunt.task.run( 'phpunit' );

@@ -260,6 +260,18 @@ class MS_Model_CustomPostType extends MS_Model {
 		}
 
 		do_action( 'MS_Model_CustomPostType_delete_after', $this, $res );
+
+		global $wp_current_filter;
+		$class = get_class( $this );
+		if ( ! in_array( 'ms_deleted_' . $class, $wp_current_filter ) ) {
+			/**
+			 * Action triggered after a custom post type model is deleted from database
+			 *
+			 * @since  1.1.5
+			 */
+			do_action( 'ms_deleted_' . $class, $this, $res, $this->id );
+		}
+
 		MS_Factory::revert_blog();
 		return $res;
 	}

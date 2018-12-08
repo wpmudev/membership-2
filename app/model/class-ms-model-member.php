@@ -84,6 +84,20 @@ class MS_Model_Member extends MS_Model {
 	protected $subscriptions = array();
 
 	/**
+	 * Member's pending subscriptions.
+	 *
+	 * Note: This field is populated by MS_Factory when the Member instance is
+	 * created.
+	 *
+	 * @since  1.1.6
+	 * @var array {
+	 *     @type int $membership_id The membership ID.
+	 *     @type MS_Model_Relationship The membership relationship model object.
+	 * }
+	 */
+	protected $pending_subscriptions = array();
+
+	/**
 	 * Indicator if the user is an active M2 Member.
 	 *
 	 * This is a convenience/redudant flag to speed up SQL queries.
@@ -814,6 +828,11 @@ class MS_Model_Member extends MS_Model {
 			'fields' 	=> array( 'ID', 'user_email' ),
 		);
 
+		if ( defined( 'MS_ADMIN_EMAIL_CAPABILITY' ) ) {
+			unset( $args['role'] );
+			$args['role__in'] = array( 'administrator', MS_ADMIN_EMAIL_CAPABILITY );
+		}
+
 		$wp_user_search = new WP_User_Query( $args );
 		$users 			= $wp_user_search->get_results();
 
@@ -1340,6 +1359,32 @@ class MS_Model_Member extends MS_Model {
 	}
 
 	/**
+	 * Returns a list of pending membership IDs.
+	 *
+	 * Returns the list of membership IDs of the pending
+	 * subscriptions of the current user.
+	 *
+	 * @since 1.1.6
+	 *
+	 * @return array
+	 */
+	public function get_pending_membership_ids() {
+		$result = array();
+
+		// If no pending subscriptions, return empty.
+		if ( empty( $this->pending_subscriptions ) ) {
+			return $result;
+		}
+
+		// Get membership IDs of subscriptions.
+		foreach ( $this->pending_subscriptions as $subscription ) {
+			$result[] = $subscription->membership_id;
+		}
+
+		return $result;
+	}
+
+	/**
 	 * Add a new membership.
 	 *
 	 * If multiple membership is disabled, may move existing membership.
@@ -1603,6 +1648,16 @@ class MS_Model_Member extends MS_Model {
 					$subscription 	= $item;
 					$key 			= $ind;
 					break;
+				}
+			}
+			// Check and remove pending subscriptions also.
+			if ( empty( $subscription ) && ! empty( $this->pending_subscriptions ) ) {
+				foreach ( $this->pending_subscriptions as $ind => $item ) {
+					if ( $item->membership_id == $membership_id ) {
+						$subscription 	= $item;
+						$key 			= $ind;
+						break;
+					}
 				}
 			}
 		}
@@ -1990,26 +2045,42 @@ class MS_Model_Member extends MS_Model {
 	/**
 	 * Verify activation code
 	 * 
-	 * @since 1.1.3
+	 * @since 1.1.5
 	 * 
 	 * @param string $code - the verifiication code
 	 * 
 	 * @return string
 	 */
-	public static function verify_activation_code( $code ) {
+	public static function verification_account_id( $code ) {
 		global $wpdb;
 		$user_id = $wpdb->get_var( $wpdb->prepare( "SELECT user_id FROM {$wpdb->usermeta} WHERE meta_value = %s AND meta_key = %s", $code, '_ms_user_activation_key' ) );
+		if ( $user_id ) {
+			return $user_id;
+		}
+		return false;
+	}
+
+	/**
+	 * Verify activation code
+	 * 
+	 * @since 1.1.3
+	 * 
+	 * @param int $id - the user id
+	 * 
+	 * @return string
+	 */
+	public static function verify_activation_code( $user_id ) {
 		if ( $user_id ) {
 			$user_activation_status = get_user_meta( $user_id, '_ms_user_activation_status', true );
 			if ( $user_activation_status != 1 ) {
 				update_user_meta( $user_id, '_ms_user_activation_status', 1 );
-				return __( 'Account verified. Proceed to login', 'membership' );
+				return __( 'Account verified. Proceed to login', 'membership2' );
 			} else {
-				return __( 'Account already verified', 'membership' );
+				return __( 'Account already verified', 'membership2' );
 			}
 			
 		} else {
-			return __( 'Invalid code. Please check your email or try again', 'membership' );
+			return __( 'Invalid code. Please check your email or try again', 'membership2' );
 		}
 	}
 
