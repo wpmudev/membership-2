@@ -496,23 +496,4 @@ class MS_Gateway_Stripe_Api extends MS_Model_Option {
 			HOUR_IN_SECONDS
 		);
 	}
-
-	/**
-	 * Little hack to force the plugin to store/load the stripe_api data in same
-	 * option-field as the stripe-gateway settings.
-	 *
-	 * @since  1.0.0
-	 * @return string
-	 */
-	public function option_key() {
-		// Option key should be all lowercase.
-		$key = 'ms_gateway_stripe';
-
-		// Network-wide mode uses different options then single-site mode.
-		if ( MS_Plugin::is_network_wide() ) {
-			$key .= '-network';
-		}
-
-		return $key;
-	}
 }
