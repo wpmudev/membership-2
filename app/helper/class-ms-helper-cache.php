@@ -112,5 +112,24 @@ class MS_Helper_Cache extends MS_Helper {
 	public static function delete_transient( $key ) {
 		wp_cache_delete( $key, self::CACHE_GROUP );
 	}
+
+	/**
+	 * Cache flushing wrapper.
+	 *
+	 * This is here because object cache flushes can be prevented.
+	 * If in case wp_cache_flush function is disabled we will try
+	 * to flush it directly.
+	 *
+	 * @since 1.1.6
+	 */
+	public static function flush_cache() {
+		global $wp_object_cache;
+		// In some cases
+		if ( is_object( $wp_object_cache ) && is_callable( array( $wp_object_cache, 'flush' ) ) ) {
+			$wp_object_cache->flush();
+		} elseif ( is_callable( 'wp_cache_flush' ) ) {
+			wp_cache_flush();
+		}
+	}
 }
 ?>

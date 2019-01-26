@@ -155,6 +155,7 @@ class MS_Controller_Plugin extends MS_Controller {
 		$this->controllers['frontend']             = MS_Factory::load( 'MS_Controller_Frontend' );
 		$this->controllers['import']               = MS_Factory::load( 'MS_Controller_Import' );
 		$this->controllers['help']                 = MS_Factory::load( 'MS_Controller_Help' );
+		$this->controllers['compatibility']        = MS_Factory::load( 'MS_Controller_Compatibility' );
 
 		// API should be the last Controller to create.
 		$this->controllers['api']                  = MS_Controller_Api::instance();
