@@ -1030,7 +1030,7 @@ class MS_Model_Member extends MS_Model {
 			update_user_meta( $this->id, 'ms_' . $field, $val );
 		}
 
-		wp_cache_set( $this->id, $this, $class );
+		MS_Helper_Cache::set_cache( $this->id, $this, $class );
 
 		// Remove our "mute-password-reset-email" trigger again.
 		remove_filter( 'send_password_change_email', '__return_false' );

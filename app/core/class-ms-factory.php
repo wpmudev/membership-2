@@ -260,7 +260,7 @@ class MS_Factory {
 		$class 		= get_class( $model );
 
 		$option_key = $model->option_key();
-		$cache 		= wp_cache_get( $option_key, 'MS_Model_Option' );
+		$cache 		= MS_Helper_Cache::get_cache( $option_key, 'MS_Model_Option' );
 
 		if ( $cache ) {
 			$model 	= $cache;
@@ -290,7 +290,7 @@ class MS_Factory {
 	 */
 	public static function load_from_wp_transient( $model ) {
 		$option_key = $model->option_key();
-		$cache = wp_cache_get( $option_key, 'MS_Model_Transient' );
+		$cache = MS_Helper_Cache::get_cache( $option_key, 'MS_Model_Transient' );
 
 		if ( $cache ) {
 			$model = $cache;
@@ -323,7 +323,7 @@ class MS_Factory {
 		$class = get_class( $model );
 
 		if ( ! empty( $model_id ) ) {
-			$cache = wp_cache_get( $model_id, $class );
+			$cache = MS_Helper_Cache::get_cache( $model_id, $class );
 
 			if ( $cache ) {
 				$model = $cache;
@@ -376,7 +376,7 @@ class MS_Factory {
 	 */
 	protected static function load_from_wp_user( $model, $user_id, $name = null ) {
 		$class = get_class( $model );
-		$cache = wp_cache_get( $user_id, $class );
+		$cache = MS_Helper_Cache::get_cache( $user_id, $class );
 
 		if ( $cache ) {
 			$model = $cache;
