@@ -24,17 +24,17 @@ class MS_Controller_Compatibility extends MS_Controller {
 		parent::__construct();
 
 		// Flush cache when a membership is assigned to a member.
-		$this->add_filter( 'ms_model_member_add_membership', 'flush_membership_cache' );
+		$this->add_filter( 'ms_model_member_add_membership', 'refresh_membership_cache' );
 		// Flush cache when a membership is dropped from a member.
-		$this->add_filter( 'ms_model_membership_drop_membership', 'flush_membership_cache' );
+		$this->add_filter( 'ms_model_membership_drop_membership', 'refresh_membership_cache' );
 		// Flush cache when a membership is cancelled from a member.
-		$this->add_filter( 'ms_model_membership_cancel_membership', 'flush_membership_cache' );
+		$this->add_filter( 'ms_model_membership_cancel_membership', 'refresh_membership_cache' );
 		// Flush cache when a membership is moved.
-		$this->add_filter( 'ms_model_membership_move_membership', 'flush_membership_cache' );
+		$this->add_filter( 'ms_model_membership_move_membership', 'refresh_membership_cache' );
 	}
 
 	/**
-	 * Flush cache on membership create/cancel/drop/move.
+	 * Refresh cache on membership create/cancel/drop/move.
 	 *
 	 * In few hosting environments where Object cache is persistent
 	 * we need to make sure updates are being reflected in real time.
@@ -45,9 +45,9 @@ class MS_Controller_Compatibility extends MS_Controller {
 	 *
 	 * @return mixed $data
 	 */
-	public function flush_membership_cache( $data ) {
+	public function refresh_membership_cache( $data ) {
 		// Flush caches.
-		MS_Helper_Cache::flush_cache();
+		MS_Helper_Cache::refresh_cache();
 
 		return $data;
 	}
