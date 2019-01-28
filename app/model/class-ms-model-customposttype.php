@@ -183,7 +183,7 @@ class MS_Model_CustomPostType extends MS_Model {
 			update_post_meta( $this->id, $field, $val );
 		}
 
-		wp_cache_set( $this->id, $this, $class );
+		MS_Helper_Cache::set_cache( $this->id, $this, $class );
 		$this->after_save();
 		MS_Factory::revert_blog();
 

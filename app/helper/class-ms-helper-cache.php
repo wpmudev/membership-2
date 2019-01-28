@@ -9,8 +9,14 @@
  */
 class MS_Helper_Cache extends MS_Helper {
 
+	/**
+	 * Cache group name.
+	 */
 	const CACHE_GROUP = 'ms_helper_cache';
 
+	/**
+	 * Cache key for cache version.
+	 */
 	const CACHE_VERSION_KEY = 'ms_helper_cache_version';
 
 	/**
@@ -87,7 +93,7 @@ class MS_Helper_Cache extends MS_Helper {
 				$duration = MS_QUERY_CACHE_DURATION;
 			}
 
-			wp_cache_set( $key, $results, self::CACHE_GROUP, $duration );
+			self::set_cache( $key, $results, self::CACHE_GROUP, $duration );
 		}
 	}
 
@@ -102,7 +108,7 @@ class MS_Helper_Cache extends MS_Helper {
 	 * @return mixed cache value
 	 */
 	public static function get_transient( $key, $default_enable = false ) {
-		$results = wp_cache_get( $key, self::CACHE_GROUP );
+		$results = MS_Helper_Cache::get_cache( $key, self::CACHE_GROUP );
 
 		if ( self::is_query_cache_enabled( $default_enable ) && ! empty( $results ) ) {
 			return $results;
@@ -149,7 +155,8 @@ class MS_Helper_Cache extends MS_Helper {
 	 *
 	 * Set cache using this method so that
 	 * we can delete them without flushing
-	 * the object cache as whole.
+	 * the object cache as whole. This cache can be
+	 * deleted using normal wp_cache_delete.
 	 *
 	 * @param int|string $key    The cache key to use for retrieval later.
 	 * @param mixed      $data   The contents to store in the cache.
