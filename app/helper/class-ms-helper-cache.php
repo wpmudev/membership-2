@@ -172,8 +172,15 @@ class MS_Helper_Cache extends MS_Helper {
 	public static function set_cache( $key, $data, $group = '', $expire = 0 ) {
 		// Get the current version.
 		$version = wp_cache_get( self::CACHE_VERSION_KEY );
-		// In case version is not set, use default 1.
-		$version = empty( $version ) ? 1 : $version;
+
+		// In case version is not set, set now.
+		if ( empty( $version ) ) {
+			// In case version is not set, use default 1.
+			$version = 1;
+
+			// Set cache version.
+			wp_cache_set( self::CACHE_VERSION_KEY, $version );
+		}
 
 		// Add to cache array with version.
 		$data = array(
@@ -203,11 +210,18 @@ class MS_Helper_Cache extends MS_Helper {
 	 *                      contents on success
 	 */
 	public static function get_cache( $key, $group = '', $force = false, &$found = null ) {
+		// Get the current version.
+		$version = wp_cache_get( self::CACHE_VERSION_KEY );
+		// Do not continue if version is not set.
+		if ( empty( $version ) ) {
+			return false;
+		}
+
 		// Get the cache value.
 		$data = wp_cache_get( $key, $group, $force, $found );
 
 		// Return only data.
-		if ( ! empty( $data['data'] ) ) {
+		if ( isset( $data['version'] ) && $version === $data['version'] && ! empty( $data['data'] ) ) {
 			return $data['data'];
 		}
 
