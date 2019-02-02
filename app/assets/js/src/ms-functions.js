@@ -281,7 +281,7 @@ window.ms_functions = {
 		var info_field,
 			fn = window.ms_functions;
 
-		info_field = field.nearest( '.ms-save-text-wrapper' );
+		info_field = field.closest( '.ms-save-text-wrapper' );
 
 		if ( null !== info_field.data( 'msg_timeout' ) ) {
 			window.clearTimeout( info_field.data( 'msg_timeout' ) );
