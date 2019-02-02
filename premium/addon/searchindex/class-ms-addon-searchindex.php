@@ -82,6 +82,12 @@ class MS_Addon_Searchindex extends MS_Addon {
 			);
 
 			$this->add_filter(
+				'ms_model_membership_is_base',
+				'is_valid_type',
+				10, 2
+			);
+
+			$this->add_filter(
 				'ms_model_membership_get_types',
 				'get_types'
 			);
