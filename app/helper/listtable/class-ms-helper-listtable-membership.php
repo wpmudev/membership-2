@@ -327,7 +327,7 @@ class MS_Helper_ListTable_Membership extends MS_Helper_ListTable {
 		$lines = array();
 		foreach ( $shortcodes as $code => $details ) {
 			$lines[] = sprintf(
-				'<div>%s: <code>%s</code></div>',
+				'<div>%s: <span class="ms-code">%s</span></div>',
 				$details['label'],
 				sprintf(
 					$details['tag'],
