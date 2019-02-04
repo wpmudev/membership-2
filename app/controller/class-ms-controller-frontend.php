@@ -1150,8 +1150,16 @@ class MS_Controller_Frontend extends MS_Controller {
 			mslib3()->ui->css( 'ms-styles' );
 			mslib3()->ui->js( 'ms-public' );
 
-			// Make sure other plugins can disable jQuery validate.
-			if ( apply_filters( 'ms_controller_frontend_load_jquery_validate', true ) ) {
+			/**
+			 * Make sure other plugins can disable jQuery validate.
+			 *
+			 * @param bool true Should load jQuery validate?.
+			 * @param bool $is_ms_page Is an MS page?.
+			 * @param bool $is_profile Is a MS profile page?.
+			 *
+			 * @since 1.1.6
+			 */
+			if ( apply_filters( 'ms_controller_frontend_load_jquery_validate', true, $is_ms_page, $is_profile ) ) {
 				mslib3()->ui->js( 'jquery-validate' );
 				MS_Controller_Plugin::translate_jquery_validator();
 			}
