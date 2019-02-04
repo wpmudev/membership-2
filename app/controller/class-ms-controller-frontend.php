@@ -1140,6 +1140,8 @@ class MS_Controller_Frontend extends MS_Controller {
 		$is_ms_page = MS_Model_Pages::is_membership_page();
 		$is_profile = self::ACTION_EDIT_PROFILE == $this->get_action()
 			&& MS_Model_Pages::is_membership_page( null, MS_Model_Pages::MS_PAGE_ACCOUNT );
+		// If at least one MS shortcode found.
+		$has_shortcode = MS_Helper_Shortcode::has_ms_shortcode();
 		$load_on_front_pages = apply_filters( 'ms_controller_frontend_resources_load', true, $is_ms_page );
 		if ( $load_on_front_pages ) {
 			$data = array(
@@ -1156,10 +1158,11 @@ class MS_Controller_Frontend extends MS_Controller {
 			 * @param bool true Should load jQuery validate?.
 			 * @param bool $is_ms_page Is an MS page?.
 			 * @param bool $is_profile Is a MS profile page?.
+			 * @param bool $has_shortcode Is any shortcodes found?.
 			 *
 			 * @since 1.1.6
 			 */
-			if ( apply_filters( 'ms_controller_frontend_load_jquery_validate', true, $is_ms_page, $is_profile ) ) {
+			if ( apply_filters( 'ms_controller_frontend_load_jquery_validate', true, $is_ms_page, $is_profile, $has_shortcode ) ) {
 				mslib3()->ui->js( 'jquery-validate' );
 				MS_Controller_Plugin::translate_jquery_validator();
 			}
@@ -1167,6 +1170,15 @@ class MS_Controller_Frontend extends MS_Controller {
 			if ( $is_profile ) {
 				$data['ms_init'][] = 'frontend_profile';
 			}
+
+			add_filter( 'ms_controller_frontend_load_jquery_validate', function( $load, $is_ms_page, $is_profile ) {
+				// No need to load if not a m2 page.
+				if ( ! $is_profile && ! $is_ms_page ) {
+					$load = false;
+				}
+
+				return $load;
+			});
 
 			mslib3()->ui->data( 'ms_data', $data );
 		}
