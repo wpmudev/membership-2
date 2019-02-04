@@ -1148,9 +1148,13 @@ class MS_Controller_Frontend extends MS_Controller {
 			);
 
 			mslib3()->ui->css( 'ms-styles' );
-			mslib3()->ui->js( 'jquery-validate' );
 			mslib3()->ui->js( 'ms-public' );
-			MS_Controller_Plugin::translate_jquery_validator();
+
+			// Make sure other plugins can disable jQuery validate.
+			if ( apply_filters( 'ms_controller_frontend_load_jquery_validate', true ) ) {
+				mslib3()->ui->js( 'jquery-validate' );
+				MS_Controller_Plugin::translate_jquery_validator();
+			}
 
 			if ( $is_profile ) {
 				$data['ms_init'][] = 'frontend_profile';
