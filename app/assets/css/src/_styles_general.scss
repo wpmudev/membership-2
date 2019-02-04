@@ -61,6 +61,19 @@
 		color: #999;
 		cursor: not-allowed;
 	}
+	
+	span {
+		&.ms-code {
+			padding: 3px 5px 2px 5px;
+			margin: 0 1px;
+			background: #eaeaea;
+			background: rgba(0, 0, 0, .07);
+			font-size: 13px;
+			font-family: Consolas, Monaco, monospace;
+			direction: ltr;
+			unicode-bidi: embed;
+		}
+	}
 }
 
 .ms-html {
