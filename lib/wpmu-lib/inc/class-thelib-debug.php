@@ -502,7 +502,8 @@ class MsTheLib_Debug extends MsTheLib  {
 				$type_label .= ' [' . get_class( $data ) . ']';
 			}
 
-			$last_key = end( (array_keys( $dump_data )) );
+			$keys = array_keys( $dump_data );
+			$last_key = end( $keys );
 			reset( $dump_data );
 
 			foreach ( $dump_data as $key => $value ) {
