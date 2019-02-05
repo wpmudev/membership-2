@@ -47,7 +47,7 @@ class MS_Model_Option extends MS_Model {
 		$this->instance = $this;
 		$this->after_save();
 
-		wp_cache_set( $option_key, $this, 'MS_Model_Option' );
+		MS_Helper_Cache::set_cache( $option_key, $this, 'MS_Model_Option' );
 	}
 
 	/**
@@ -61,7 +61,7 @@ class MS_Model_Option extends MS_Model {
 		$settings 	= MS_Factory::get_option( $option_key );
 		MS_Factory::populate_model( $this, $settings );
 
-		wp_cache_set( $option_key, $this, 'MS_Model_Option' );
+		MS_Helper_Cache::set_cache( $option_key, $this, 'MS_Model_Option' );
 	}
 
 	/**
