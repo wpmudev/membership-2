@@ -33,7 +33,7 @@ class MS_Model_Transient extends MS_Model {
 
 		$this->after_save();
 
-		wp_cache_set( $option_key, $this, 'MS_Model_Transient' );
+		MS_Helper_Cache::set_cache( $option_key, $this, 'MS_Model_Transient' );
 	}
 
 	/**

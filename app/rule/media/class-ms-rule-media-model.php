@@ -422,7 +422,7 @@ class MS_Rule_Media_Model extends MS_Rule {
 			}
 
 			// See if we cached that URL already.
-			$id = wp_cache_get( $url, 'ms_attachment_id' );
+			$id = MS_Helper_Cache::get_cache( $url, 'ms_attachment_id' );
 
 			if ( empty( $id ) ) {
 				$sql = "
@@ -437,7 +437,7 @@ class MS_Rule_Media_Model extends MS_Rule {
 				$sql 	= $wpdb->prepare( $sql, $url );
 				$id 	= $wpdb->get_var( $sql );
 
-				wp_cache_set( $url, $id, 'ms_attachment_id' );
+				MS_Helper_Cache::set_cache( $url, $id, 'ms_attachment_id' );
 			}
 		}
 
