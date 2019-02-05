@@ -462,6 +462,11 @@ class MS_Rule_Media_Model extends MS_Rule {
 		global $wpdb;
 		$filename = basename( $file_url );
 
+		// Do not simply continue with a number.
+		if ( is_numeric( $filename ) ) {
+			return 0;
+		}
+
 		// TODO: This is the same code as used in function `get_attachment_id` above??
 		$rows = $wpdb->get_results(
 			$wpdb->prepare( "

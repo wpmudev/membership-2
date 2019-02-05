@@ -78,6 +78,20 @@ class MS_Helper_Shortcode extends MS_Helper {
 	}
 
 	/**
+	 * This function checks if any of the MS shortcodes are added to content.
+	 *
+	 * @since  1.1.6
+	 *
+	 * @return boolean
+	 */
+	public static function has_ms_shortcode() {
+		return apply_filters(
+			'ms_helper_shortcode_get_membership_shortcodes',
+			! empty( self::$did_shortcodes )
+		);
+	}
+
+	/**
 	 * Resets the shortcode-memory.
 	 *
 	 * This is required when a page has multiple calls to the_content - if the
