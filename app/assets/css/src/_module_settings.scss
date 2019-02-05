@@ -519,8 +519,8 @@
 
 		.is-offline {
 			/* PayPal Standard does not work in offline mode */
-			&.gateway-paypal_standard .offline-flag,
-			&.gateway-paypal_single .offline-flag {
+			&.gateway-paypalstandard .offline-flag,
+			&.gateway-paypalsingle .offline-flag {
 				display: inline-block;
 
 				&:before {
