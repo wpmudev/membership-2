@@ -192,7 +192,7 @@ class MsTheLib_Net extends MsTheLib {
 		static $Checked = array();
 
 		if ( ! isset( $Checked[$url] ) ) {
-			$check = 'http://www.isup.me/' . $url;
+			$check = 'https://downforeveryoneorjustme.com/' . $url;
 			$res = wp_remote_get( $check, array( 'decompress' => false ) );
 
 			if ( is_wp_error( $res ) ) {
