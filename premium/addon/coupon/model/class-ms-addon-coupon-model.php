@@ -611,7 +611,7 @@ class MS_Addon_Coupon_Model extends MS_Model_CustomPostType {
 	 * @param int $membership_id The membership id for which coupon is applied
 	 * @return boolean True if valid coupon.
 	 */
-	public function is_valid( $membership_id = 0 ) {
+	public function is_valid( $membership_id = 0, $invoice = null ) {
 		$valid = true;
 		$this->coupon_message = null;
 
@@ -637,6 +637,11 @@ class MS_Addon_Coupon_Model extends MS_Model_CustomPostType {
 		} elseif ( ! empty( $this->expire_date ) && $expire_date_timestamp < $timestamp ) {
 			$this->coupon_message = __( 'This Coupon has expired.', 'membership2' );
 			$valid = false;
+		} elseif ( MS_Addon_Coupon_Model::DURATION_ONCE === $this->duration && ! is_null( $invoice ) ) {
+			if ( $invoice->is_valid() && 1 < $invoice->invoice_number ) {
+				$this->coupon_message = __( 'This Coupon can be used only in first payment.', 'membership2' );
+				$valid = false;
+			}
 		} else {
 			$membership_allowed = false;
 			if ( is_array( $this->membership_id ) ) {
@@ -693,7 +698,7 @@ class MS_Addon_Coupon_Model extends MS_Model_CustomPostType {
 		$original_price = $price;
 		$discount = 0;
 
-		if ( $this->is_valid( $membership->id ) ) {
+		if ( $this->is_valid( $membership->id, $subscription->get_current_invoice( false ) ) ) {
 			$discount = $this->discount;
 
 			if ( self::TYPE_PERCENT == $this->discount_type ) {
