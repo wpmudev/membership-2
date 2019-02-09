@@ -773,6 +773,7 @@ class MsTheLib_Debug extends MsTheLib  {
 			cursor: default;
 			padding: 0;
 			border: 0;
+			word-break: normal!important;
 		}
 		.wdev-debug .wdev-dump tr:hover td {
 			background-color: #FFF;
@@ -809,6 +810,7 @@ class MsTheLib_Debug extends MsTheLib  {
 			padding: 1px 2px !important;
 			font-size: 12px;
 			vertical-align: top;
+			word-break: normal!important;
 		}
 		.wdev-trace {
 			margin: 4px 0 0 0;
