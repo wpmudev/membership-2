@@ -146,7 +146,7 @@ module.exports = function( grunt ) {
 			main_free: 'membership.php',
 			base: 'master',
 			pro: 'm2-pro',
-			free: 'm2-free',
+			free: 'm2-free'
 		},
 
 		// BUILD patterns to exclude code for specific builds.
@@ -156,12 +156,14 @@ module.exports = function( grunt ) {
 				{ match: /\/\* start:pro \*\//g, replace: '' },
 				{ match: /\/\* end:pro \*\//g, replace: '' },
 				{ match: /\/\* start:free \*[^]+?\* end:free \*\//mg, replace: '' },
+				{ match: /# assets start[^]+?# assets end/g, replace: '' }
 			],
 			free: [
 				{ match: /BUILDTIME/g, replace: buildtime },
 				{ match: /\/\* start:free \*\//g, replace: '' },
 				{ match: /\/\* end:free \*\//g, replace: '' },
 				{ match: /\/\* start:pro \*[^]+?\* end:pro \*\//mg, replace: '' },
+				{ match: /# assets start[^]+?# assets end/g, replace: '' }
 			],
 			// Files to apply above patterns to (not only php files).
 			files: {
@@ -172,6 +174,7 @@ module.exports = function( grunt ) {
 					'**/*.js',
 					'**/*.html',
 					'**/*.txt',
+					'.gitignore',
 					'!node_modules/**',
 					'!lib/**',
 					'!docs/**',
