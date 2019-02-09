@@ -20,8 +20,10 @@ composer
 vendor
 composer.*
 
-# Ignore auto generated assets.
-app/assets/css/*
-app/assets/js/*
-!app/assets/css/src/*
-!app/assets/js/src/*
+# assets start
+app/assets/css/**/*
+app/assets/js/**/*
+!app/assets/css/src/**/*
+!app/assets/js/src/**/*
+!app/assets/js/vendor/**/*
+# assets end
