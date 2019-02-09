@@ -14,3 +14,8 @@ backup
 composer
 vendor
 composer.*
+
+app/assets/css/*
+app/assets/js/*
+!app/assets/css/src/*
+!app/assets/js/src/*
