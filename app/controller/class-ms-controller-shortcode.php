@@ -30,7 +30,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 		// By default assume no content for the protected-content code
 		add_shortcode(
 			MS_Helper_Shortcode::SCODE_PROTECTED,
-			array( $this, '__return_null' )
+			'__return_null'
 		);
 
 		if ( MS_Plugin::is_enabled() ) {
@@ -164,7 +164,7 @@ class MS_Controller_Shortcode extends MS_Controller {
 	public function page_is_protected() {
 		remove_shortcode(
 			MS_Helper_Shortcode::SCODE_PROTECTED,
-			array( $this, '__return_null' )
+			'__return_null'
 		);
 
 		add_shortcode(
