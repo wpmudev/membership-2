@@ -1,8 +1,13 @@
+# Version control.
 .svn
 /.project
 .sass-cache
 node_modules
+
+# Exclude release folder.
 release
+
+# Other folders.
 OK
 *.local
 .DS_Store
@@ -15,6 +20,7 @@ composer
 vendor
 composer.*
 
+# Ignore auto generated assets.
 app/assets/css/*
 app/assets/js/*
 !app/assets/css/src/*
