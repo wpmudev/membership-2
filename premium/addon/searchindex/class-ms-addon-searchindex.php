@@ -260,7 +260,7 @@ class MS_Addon_Searchindex extends MS_Addon {
 			$result = true;
 
 			// but should be visible in protection tab
-			if( isset( $_GET['page'] ) && $_GET['page'] === MS_Controller_Plugin::MENU_SLUG .'-protection' ){
+			if( MS_Controller_Plugin::is_page( 'protection' ) ){
 				$result = false;
 			}
 		}
