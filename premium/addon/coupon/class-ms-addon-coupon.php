@@ -727,7 +727,7 @@ class MS_Addon_Coupon extends MS_Addon {
 				MS_Addon_Coupon_Model::load_by_code( $_POST['coupon_code'] )
 			);
 
-			if ( ! $coupon || ! $coupon->is_valid( $membership->id ) ) return $desc;
+			if ( ! $coupon || ! $coupon->is_valid( $membership->id, $invoice ) ) return $desc;
 
 			if ( MS_Model_Membership::PAYMENT_TYPE_RECURRING === $membership->payment_type && MS_Addon_Coupon_Model::DURATION_ONCE !== $invoice->duration ) return $desc;
 
