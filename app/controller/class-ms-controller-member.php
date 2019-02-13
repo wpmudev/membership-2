@@ -111,6 +111,10 @@ class MS_Controller_Member extends MS_Controller {
 			'remove_membership_from_user'
 		);
 
+		$this->add_action(
+			'delete_user',
+			'cleanup_member_events'
+		);
 
 		$this->add_action(
 			'ms_bulk_actions_table_nav_members',
@@ -215,6 +219,25 @@ class MS_Controller_Member extends MS_Controller {
 				$member->drop_membership( $memberships_id );
 			}
 		}
+	}
+
+	/**
+	 * Delete all events for the user.
+	 *
+	 * We need to clear all the events from the
+	 * wp database, otherwise it may show up for
+	 * the future users with same user id.
+	 *
+	 * @param int $user_id User ID.
+	 *
+	 * @since 1.1.6
+	 */
+	public function cleanup_member_events( $user_id ) {
+		// Delete events.
+		MS_Model_Event::delete_events( array(
+			'author'         => $user_id,
+			'posts_per_page' => -1,
+		) );
 	}
 
 	/**

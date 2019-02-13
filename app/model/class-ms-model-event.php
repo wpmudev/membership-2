@@ -621,4 +621,29 @@ class MS_Model_Event extends MS_Model_CustomPostType {
 
 		return apply_filters( 'ms_model_event_is_duplicate', $is_duplicate, $event, $data );
 	}
+
+	/**
+	 * Deletes all events based on the arguments passed.
+	 *
+	 * WARNING: This can't be undone.
+	 *
+	 * @param array $args Argument for the event.
+	 *
+	 * @since 1.1.6
+	 */
+	public static function delete_events( $args = array() ) {
+		// Get the events for the user.
+		$events = self::get_events( $args );
+		// Continue only if events found.
+		if ( empty( $events ) ) {
+			return;
+		}
+
+		// Loop through each blog and delete.
+		foreach ( $events as $event ) {
+			$event->delete();
+		}
+
+		do_action( 'ms_model_event_delete_events', $events, $args );
+	}
 }
