@@ -26,7 +26,7 @@
                         </tr>
                 <?php endif; ?>
 
-                <?php if ( ! is_ms_pm_membership_free() ) : ?>
+                <?php if ( ! is_ms_pm_membership_free() && ! is_ms_admin_user() ) : ?>
                         <?php if ( is_ms_pm_invoice_discount() || is_ms_pm_invoice_pro_rate() || is_ms_pm_invoice_tax_rate() ) : ?>
                         <tr>
                                 <td class="ms-title-column">
