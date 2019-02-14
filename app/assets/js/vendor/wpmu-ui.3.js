@@ -141,6 +141,7 @@
 			if ( typeof el.data( 'select2' ) === 'object' ) { return; }
 			if ( typeof el.data( 'chosen' ) === 'object' ) { return; }
 			if ( el.filter( '[class*=acf-]' ).length ) { return; }
+			if ( el.filter( '[class*=chzn-]' ).length ) { return; }
 
 			// Prevent double initialization (with other WPMU LIB plugin)
 			if ( el.data( 'wpmui-select' ) === '1' ) { return; }
@@ -196,6 +197,7 @@
 			if ( typeof el.data( 'select2' ) === 'object' ) { return; }
 			if ( typeof el.data( 'chosen' ) === 'object' ) { return; }
 			if ( el.filter( '[class*=acf-]' ).length ) { return; }
+			if ( el.filter( '[class*=chzn-]' ).length ) { return; }
 
 			// Prevent double initialization (with other WPMU LIB plugin)
 			if ( el.data( 'wpmui-select' ) === '1' ) { return; }
