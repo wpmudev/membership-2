@@ -366,7 +366,7 @@ class MS_Model_Upgrade extends MS_Model {
 		 */
 		{
 			$memberships = MS_Model_Membership::get_memberships();
-			foreach ( $memberships as $item ) {
+			foreach ( $memberships as $membership ) {
 				$source_id = $membership->source_id;
 				if ( empty( $source_id ) ) { continue; }
 
