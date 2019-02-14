@@ -489,11 +489,18 @@ class MS_Rule extends MS_Model {
 	 *
 	 * @since  1.0.0
 	 * @param  array $values A list of allowed IDs.
+	 *
+	 *
+	 * rule_value escaped before display in html, and then save it to db
+	 * so we must escape this before check with rule_value
+	 * from db ( make sure rule_value are same in html and db )
+	 * 
 	 */
 	public function populate( $values ) {
 		foreach ( $values as $data ) {
 			if ( is_scalar( $data ) ) {
-				$this->give_access( $data );
+				// escape rule value
+				$this->give_access( esc_attr( $data ) );
 			} else {
 
 				if ( isset( $data['id'] )
@@ -501,6 +508,8 @@ class MS_Rule extends MS_Model {
 					&& is_array( $data['dripped'] )
 					&& count( $data['dripped'] ) > 3
 				) {
+					// escape rule value
+					$data['id'] = esc_attr( $data['id'] );
 					$this->give_access( $data['id'] );
 					$this->dripped[ $data['id'] ] = array(
 						'type' => $data['dripped'][0],
