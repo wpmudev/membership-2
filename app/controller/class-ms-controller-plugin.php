@@ -1152,6 +1152,8 @@ class MS_Controller_Plugin extends MS_Controller {
 			mslib3()->ui->add( 'core' );
 			wp_dequeue_script( 'wpmu-wpmu-ui-3-min-js' );
 			wp_deregister_script( 'wpmu-wpmu-ui-3-min-js' );
+			wp_dequeue_script( 'wpmu-wpmu-ui-3-js' );
+			wp_deregister_script( 'wpmu-wpmu-ui-3-js' );
 			mslib3()->ui->add( 'select' );
 			mslib3()->ui->add( 'fontawesome' );
 		}
