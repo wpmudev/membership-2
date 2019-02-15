@@ -633,7 +633,7 @@ module.exports = function( grunt ) {
 		grunt.task.run( 'prepare_textdomain' );
 
 		// First run unit tests.
-		//grunt.task.run( 'phpunit' );
+		grunt.task.run( 'phpunit' );
 
 		// Run the default tasks (js/css/php validation).
 		grunt.task.run( 'default' );
