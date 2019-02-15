@@ -787,7 +787,7 @@ class MS_Model_Communication extends MS_Model_CustomPostType {
 	 * @since  1.0.1.0
 	 */
 	public function save_post_data( $post ) {
-		$this->description = $this->message;
+		$this->description      = $this->message;
 		$post['post_content'] 	= $this->message;
 		$post['post_excerpt'] 	= $this->message;
 		$post['post_parent'] 	= intval( $this->membership_id );
