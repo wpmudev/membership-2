@@ -547,7 +547,7 @@ class MS_Model_Upgrade extends MS_Model {
 		}
 
 		// Clear all data from WP Object cache.
-		wp_cache_flush();
+		MS_Helper_Cache::flush_cache();
 
 		// Redirect to the main page.
 		wp_safe_redirect( MS_Controller_Plugin::get_admin_url() );

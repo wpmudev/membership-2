@@ -34,7 +34,7 @@ class MS_Factory {
 	 */
 	static public function _reset() {
 		self::$Singleton = array();
-		wp_cache_flush();
+		MS_Helper_Cache::flush_cache();
 	}
 
 	/**
@@ -207,7 +207,7 @@ class MS_Factory {
 	 * @since  1.0.0
 	 */
 	static public function clear() {
-		wp_cache_flush();
+		MS_Helper_Cache::flush_cache();
 	}
 
 	/**
