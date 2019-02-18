@@ -773,7 +773,7 @@ class MS_Controller_Frontend extends MS_Controller {
 			$subscription,
 			$membership
 		);
-		$invoice->save();
+		// $invoice->save();//already run save action in MS_View_Frontend_Payment->to_html
 
 		$data['invoice'] 			= $invoice;
 		$data['membership'] 		= $membership;
