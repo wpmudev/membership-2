@@ -610,24 +610,18 @@ class MS_Controller_Frontend extends MS_Controller {
 
 				do_action( 'ms_controller_frontend_register_user_complete', $user, $_REQUEST, $this );
 
-				// Go to membership signup payment form.
+				// Go to account page if membership id is not given.
 				if ( empty( $_REQUEST['membership_id'] ) ) {
-					$redirect = esc_url_raw(
-						add_query_arg(
-							array(
-								'step' => self::STEP_CHOOSE_MEMBERSHIP,
-							)
-						)
-					);
+					$redirect = MS_Model_Pages::get_page_url( MS_Model_Pages::MS_PAGE_ACCOUNT );
 				} else {
-					$redirect = esc_url_raw(
-						add_query_arg(
-							array(
-								'step' => self::STEP_PAYMENT_TABLE,
-								'membership_id' => absint( $_REQUEST['membership_id'] ),
-							),
-							MS_Model_Pages::get_page_url( MS_Model_Pages::MS_PAGE_REGISTER )
-						)
+
+					// redirect url already sanitized by wp_safe_redirect
+					$redirect = add_query_arg(
+						array(
+							'step' => self::STEP_PAYMENT_TABLE,
+							'membership_id' => absint( $_REQUEST['membership_id'] ),
+						),
+						MS_Model_Pages::get_page_url( MS_Model_Pages::MS_PAGE_REGISTER )
 					);
 				}
 
@@ -638,34 +632,28 @@ class MS_Controller_Frontend extends MS_Controller {
 				MS_Model_Event::save_event( MS_Model_Event::TYPE_MS_VERIFYACCOUNT, $user );
 
 				if ( empty( $_REQUEST['membership_id'] ) ) {
-					$after_redirect = esc_url_raw(
-						add_query_arg(
-							array(
-								'step' => self::STEP_CHOOSE_MEMBERSHIP,
-							)
+					$after_redirect = add_query_arg(
+						array(
+							'step' => self::STEP_CHOOSE_MEMBERSHIP,
 						)
 					);
 				} else {
-					$after_redirect = esc_url_raw(
-						add_query_arg(
-							array(
-								'step' => self::STEP_PAYMENT_TABLE,
-								'membership_id' => absint( $_REQUEST['membership_id'] ),
-							),
-							MS_Model_Pages::get_page_url( MS_Model_Pages::MS_PAGE_REGISTER )
-						)
+					$after_redirect = add_query_arg(
+						array(
+							'step' => self::STEP_PAYMENT_TABLE,
+							'membership_id' => absint( $_REQUEST['membership_id'] ),
+						),
+						MS_Model_Pages::get_page_url( MS_Model_Pages::MS_PAGE_REGISTER )
 					);
 				}
 
 				update_user_meta( $user->id, '_ms_user_activation_redirect_url', $after_redirect );
 
-				$redirect = esc_url_raw(
-					add_query_arg(
-						array(
-							'action' => 'check_email'
-						),
-						MS_Model_Pages::get_page_url( MS_Model_Pages::MS_PAGE_REGISTER )
-					)
+				$redirect = add_query_arg(
+					array(
+						'action' => 'check_email'
+					),
+					MS_Model_Pages::get_page_url( MS_Model_Pages::MS_PAGE_REGISTER )
 				);
 
 				wp_safe_redirect( $redirect );
