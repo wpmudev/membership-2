@@ -2061,6 +2061,42 @@ class MS_Model_Member extends MS_Model {
 	}
 
 	/**
+	 * Update the ms meta values to database.
+	 *
+	 * Use this method only if you want to update db
+	 * with latest meta values. When user profile is updated
+	 * from WP user form, we need this method to sync those
+	 * values with ms.
+	 *
+	 * @since 1.1.6
+	 */
+	public function sync_meta() {
+		// MS meta items.
+		$ms_fields = array(
+			'ms_email' => $this->wp_user->user_email,
+			'ms_name' => $this->wp_user->display_name,
+			'ms_first_name' => $this->wp_user->first_name,
+			'ms_last_name' => $this->wp_user->last_name,
+		);
+
+		/**
+		 * Use this filter if you need to update more fields.
+		 *
+		 * @param array  $ms_fields MS meta fields and values.
+		 * @param object $this      Current class object.
+		 */
+		$ms_fields = apply_filters( 'ms_model_member_sync_meta_fields', $ms_fields, $this );
+
+		// Update the meta values.
+		foreach ( $ms_fields as $key => $value ) {
+			$this->set_meta( $key, $value );
+		}
+
+		// We don't need cache.
+		wp_cache_delete( $this->id, get_class() );
+	}
+
+	/**
 	 * Verify activation code
 	 * 
 	 * @since 1.1.3

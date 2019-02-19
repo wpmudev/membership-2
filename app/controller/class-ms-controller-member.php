@@ -443,7 +443,13 @@ class MS_Controller_Member extends MS_Controller {
 					'last_name' 	=> sanitize_text_field( $_POST['last_name'] ),
 					'display_name' 	=> sanitize_text_field( $_POST['displayname'] ),
 				);
-				wp_update_user( $data );
+				$user_id = wp_update_user( $data );
+
+				if ( ! is_wp_error( $user_id ) ) {
+					$redirect = esc_url_raw(
+						add_query_arg( array( 'user_id' => $user_id ) )
+					);
+				}
 			}
 
 			// Process Action: Subscribe to a new membership.
@@ -1176,17 +1182,23 @@ class MS_Controller_Member extends MS_Controller {
 	}
 
 	/**
-	 * Check updated profile
-	 * If a normal user with a membership is update to admin, we need to clear the subscription
+	 * Check updated profile.
+	 *
+	 * If a normal user with a membership is update to admin, we need to clear the subscription.
+	 * Also, sync the updated field values for m2 meta.
 	 * 
 	 * @since 1.1.3
 	 * 
-	 * @param int $user_id - the user id
-	 * @param array $old_user_data - the old user data
-	 *
+	 * @param int   $user_id       The user id.
+	 * @param array $old_user_data The old user data.
 	 */
 	function handle_profile_membership( $user_id, $old_user_data ) {
+		// Remove memberships from admin users.
 		$this->remove_membership_from_admin( $user_id );
+
+		// Update the meta if required.
+		$member = MS_Factory::load( 'MS_Model_Member', $user_id );
+		$member->sync_meta();
 	}
 
 	/**
@@ -1209,5 +1221,4 @@ class MS_Controller_Member extends MS_Controller {
 			}
 		}
 	}
-
 }
