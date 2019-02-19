@@ -338,7 +338,7 @@ class MS_Addon_Wpml extends MS_Addon {
 
 		wp_enqueue_style(
 			'ms-view-wpml',
-			$plugin_url . '/app/addon/wpml/assets/css/wpml.css'
+			$plugin_url . 'premium/addon/wpml/assets/css/wpml.css'
 		);
 
 		do_action( 'ms_addon_wpml_enqueue_styles', $this );
