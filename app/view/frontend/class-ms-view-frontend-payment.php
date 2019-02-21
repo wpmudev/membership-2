@@ -25,6 +25,8 @@ class MS_View_Frontend_Payment extends MS_View {
 
 		/**
 		 * Log the users IP and current timestamp inside the invoice.
+         *
+         * And also save coupon if it have applied, see filter ms_signup_payment_details
 		 *
 		 * @since 1.0.2.0
 		 */

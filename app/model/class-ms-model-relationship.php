@@ -2152,6 +2152,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 				break;
 
 			case MS_Model_Membership::PAYMENT_TYPE_RECURRING:
+				$no_payment_rest = $membership->pay_cycle_repetitions - $this->get_current_invoice_number() + 1;
 				if ( 1 == $membership->pay_cycle_repetitions ) {
 					// Exactly 1 payment. Actually same as the "finite" type.
 					if ( $short ) {
@@ -2163,9 +2164,9 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 					if ( $membership->pay_cycle_repetitions > 1 ) {
 						// Fixed number of payments (more than 1)
 						if ( $short ) {
-							$lbl = __( '%4$s times <span class="price">%1$s %2$s</span> (each %3$s)', 'membership2' );
+							$lbl = _n( 'One time <span class="price">%1$s %2$s</span>.', '%4$s times <span class="price">%1$s %2$s</span> (each %3$s)', $no_payment_rest, 'membership2' );
 						} else {
-							$lbl = __( 'You will make %4$s payments of <span class="price">%1$s %2$s</span>, one each %3$s.', 'membership2' );
+							$lbl = _n( 'You will make a payment of <span class="price">%1$s %2$s</span>.', 'You will make %4$s payments of <span class="price">%1$s %2$s</span>, one each %3$s.', $no_payment_rest, 'membership2' );
 						}
 					} else {
 						// Indefinite number of payments
@@ -2184,7 +2185,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 						$currency,
 						$total_price,
 						MS_Helper_Period::get_period_desc( $membership->pay_cycle_period ),
-						$membership->pay_cycle_repetitions
+						$no_payment_rest
 					),
 					$short,
 					$currency,
