@@ -405,7 +405,7 @@ class MS_Controller_Member extends MS_Controller {
 			) {
 				$data = array(
 					'user_login' 	=> sanitize_text_field( $_POST['username'] ),
-					'user_email' 	=> sanitize_text_field( $_POST['email'] ),
+					'user_email' 	=> sanitize_email( $_POST['email'] ),
 					'first_name' 	=> sanitize_text_field( $_POST['first_name'] ),
 					'last_name' 	=> sanitize_text_field( $_POST['last_name'] ),
 					'user_pass' 	=> $_POST['password'],
@@ -437,11 +437,11 @@ class MS_Controller_Member extends MS_Controller {
 				&& self::validate_required( $fields_update, 'POST' )
 			) {
 				$data = array(
-					'ID' => intval( $_POST['user_id'] ),
-					'user_email' 	=> sanitize_text_field( $_POST['email'] ),
-					'first_name' 	=> sanitize_text_field( $_POST['first_name'] ),
-					'last_name' 	=> sanitize_text_field( $_POST['last_name'] ),
-					'display_name' 	=> sanitize_text_field( $_POST['displayname'] ),
+					'ID'           => intval( $_POST['user_id'] ),
+					'user_email'   => sanitize_email( $_POST['email'] ),
+					'first_name'   => sanitize_text_field( $_POST['first_name'] ),
+					'last_name'    => sanitize_text_field( $_POST['last_name'] ),
+					'display_name' => sanitize_text_field( $_POST['displayname'] ),
 				);
 				$user_id = wp_update_user( $data );
 
