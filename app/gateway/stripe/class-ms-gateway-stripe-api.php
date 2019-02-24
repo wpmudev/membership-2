@@ -349,6 +349,14 @@ class MS_Gateway_Stripe_Api extends MS_Model_Option {
 				'coupon' 		=> $coupon_id,
 			);
 			$subscription = $customer->subscriptions->create( $args );
+		} elseif ( $subscription->cancel_at_period_end ) {
+			// Reactivate if a cancel already scheduled.
+			try {
+				$subscription->cancel_at_period_end = false;
+				$subscription->save();
+			} catch( Exception $e ) {
+				// Well, failed to reactivate.
+			}
 		}
 
 		return apply_filters(
