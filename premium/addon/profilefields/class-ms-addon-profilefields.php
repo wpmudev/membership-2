@@ -113,7 +113,80 @@ class MS_Addon_Profilefields extends MS_Addon {
 				'save_user_meta_fields',
 				99, 1
 			);
+
+			// for export
+			$this->add_filter(
+				'ms_export/export_member',
+				'export_member', 10, 3
+			);
 		}
+	}
+
+	/**
+	 * Export member profile data filtered by profilefields addon.
+	 *
+	 * @since  1.1.6
+	 * @param  MS_Model_Member $member
+	 * @return object Export data
+	 */
+	public function export_member( $output, $member, $export_base_obj ) {
+		// only filter export for member data
+		if ( ! is_a( $export_base_obj, 'MS_Model_Export_Base' ) ) {
+			//return $output;
+		}
+
+		// Get custom field values.
+		$values = $this->get_values( $member );
+
+		foreach ( $values as $field => $value ) {
+			if ( isset( $output[ $field ] ) ) {
+				continue;
+			}
+
+			$output[ $field ] = $value;
+		}
+		//wpmudev_debug($values,'output');
+
+		return apply_filters( 'ms_export_profilefields_export_member', $output, $member, $export_base_obj, $this );
+	}
+
+	public function get_values( $member ) {
+		$values = array();
+		if ( empty( $member->id ) ) {
+			return $values;
+		}
+
+		$user                   = $member->get_user();
+		$values['username']	    = $member->username;
+		$values['first_name']   = $member->first_name;
+		$values['last_name']    = $member->last_name;
+		$values['email']        = $member->email;
+		$values['nickname']     = $member->get_meta( 'nickname' );
+		$values['display_name'] = $user->display_name;
+		$values['website']      = $user->user_url;
+		$values['description']  = $member->get_meta( 'description' );
+
+		if ( function_exists( 'bp_is_active' ) && bp_is_active( 'xprofile' ) ) {
+			$profile_groups = BP_XProfile_Group::get(
+				array(
+					'fetch_fields' => true,
+					'user_id' => $member->id,
+				)
+			);
+			$profile_groups = mslib3()->array->get( $profile_groups );
+
+			foreach ( $profile_groups as $profile_group ) {
+				$fields = mslib3()->array->get( $profile_group->fields );
+				foreach ( $fields as $field ) {
+					$values['xprofile_' . $field->id] = array(
+						'label' => $field->name,
+						'type' => $field->type
+					);
+				}
+			}
+		}
+
+		return $values;
 	}
 
 	/**
