@@ -616,7 +616,7 @@ class MS_Addon_Coupon extends MS_Addon {
 			$coupon = MS_Factory::load( 'MS_Addon_Coupon_Model', $invoice->coupon_id );
 			// Save coupon data if duration is forever.
 			if ( MS_Addon_Coupon_Model::DURATION_ALWAYS === $coupon->duration ) {
-				$this->save_coupon_data( $invoice );
+				$this->save_coupon_data( $invoice, $coupon );
 			}
 			$coupon->remove_application( $member->id, $invoice->membership_id );
 			$coupon->used = $coupon->used + 1;
@@ -634,17 +634,19 @@ class MS_Addon_Coupon extends MS_Addon {
 	 * gateways will not be able to remove the coupon.
 	 * Stripe for example - https://stripe.com/docs/api/coupons/delete?lang=php
 	 *
-	 * @param MS_Model_Invoice $invoice Invoice object.
+	 * @param MS_Model_Invoice      $invoice Invoice object.
+	 * @param MS_Addon_Coupon_Model $coupon  Coupon object.
 	 *
 	 * @since 1.1.7
 	 */
-	private function save_coupon_data( $invoice ) {
+	private function save_coupon_data( $invoice, $coupon ) {
 		// Get invoice subscription.
 		$subscription = $invoice->get_subscription();
 		if ( ! empty( $subscription ) ) {
 			// Add coupon data as meta for future use.
 			$subscription->set_custom_data( 'ms_coupon', array(
-				'id' => $invoice->coupon_id,
+				'id'       => $invoice->coupon_id,
+				'code'     => $coupon->code,
 				'discount' => $invoice->discount,
 				'duration' => $invoice->duration,
 			) );
@@ -683,9 +685,15 @@ class MS_Addon_Coupon extends MS_Addon {
 			$invoice->coupon_id = $coupon['id'];
 			$invoice->discount  = $coupon['discount'];
 			$invoice->duration  = $coupon['duration'];
+
+			// Check if old coupon still exist.
+			$coupon = MS_Factory::load( 'MS_Addon_Coupon_Model', $invoice->coupon_id );
+			// Let the admin know if it's deleted.
+			$deleted = empty( $coupon->id ) ? '(deleted)' : '';
 			$note = sprintf(
-				__( 'Apply Coupon "%s": Discount %s %s!', 'membership2' ),
-				$coupon['id'],
+				__( 'Apply Coupon "%s" %s: Discount %s %s!', 'membership2' ),
+				$coupon['code'],
+				$deleted,
 				$invoice->currency,
 				$coupon['discount']
 			);
