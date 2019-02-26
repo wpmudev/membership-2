@@ -640,9 +640,16 @@ class MS_Addon_Coupon extends MS_Addon {
 	 * @since 1.1.7
 	 */
 	private function save_coupon_data( $invoice, $coupon ) {
+		// Get the membership.
+		$membership = $invoice->get_membership();
 		// Get invoice subscription.
 		$subscription = $invoice->get_subscription();
-		if ( ! empty( $subscription ) ) {
+		// Only if subscription exist.
+		if ( ! empty( $subscription )
+		     && ! empty( $membership )
+		     // Only for recurring payments.
+		     && MS_Model_Membership::PAYMENT_TYPE_RECURRING === $membership->payment_type
+		) {
 			// Add coupon data as meta for future use.
 			$subscription->set_custom_data( 'ms_coupon', array(
 				'id'       => $invoice->coupon_id,
