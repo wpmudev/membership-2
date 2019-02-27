@@ -76,12 +76,6 @@ class MS_Addon_Searchindex extends MS_Addon {
 			);
 
 			$this->add_filter(
-				'ms_model_membership_is_valid_type',
-				'is_valid_type',
-				10, 2
-			);
-
-			$this->add_filter(
 				'ms_model_membership_is_base',
 				'is_valid_type',
 				10, 2
@@ -117,7 +111,21 @@ class MS_Addon_Searchindex extends MS_Addon {
 				'hide_membership',
 				10, 2
 			);
+
+			// See Search Index as a base type
+			$this->add_filter(
+				'ms_model_membership_is_base',
+				'is_valid_type',
+				10, 2
+			);
 		}
+
+		// Exclude Search Index from list "Valid type"
+		$this->add_filter(
+			'ms_model_membership_is_valid_type',
+			'is_valid_type',
+			10, 2
+		);
 	}
 
 	/**
