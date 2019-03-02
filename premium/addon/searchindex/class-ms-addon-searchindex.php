@@ -117,7 +117,7 @@ class MS_Addon_Searchindex extends MS_Addon {
 				'ms_model_membership_is_base',
 				'is_valid_type',
 				10, 2
-			);
+			);			
 		}
 
 		// Exclude Search Index from list "Valid type"
@@ -125,6 +125,11 @@ class MS_Addon_Searchindex extends MS_Addon {
 			'ms_model_membership_is_valid_type',
 			'is_valid_type',
 			10, 2
+		);
+
+
+		$this->add_filter( 'ms_model_membership_get_query_args',
+			'set_not_visible_like_a_guest'
 		);
 	}
 
@@ -247,6 +252,30 @@ class MS_Addon_Searchindex extends MS_Addon {
 		}
 
 		return $result;
+	}
+
+	/**
+	 * Hide it in the case guest/user type not visible too (ex: All users/subscription details)
+	 *
+	 *
+	 * @since  1.1.7
+	 * @internal
+	 *
+	 * @param $args The query post args
+	 *     @see @link http://codex.wordpress.org/Class_Reference/WP_Query
+	 * @return array $args The parsed args.
+	 */
+	public function set_not_visible_like_a_guest( $args = null ) {
+
+		if ( empty( $args['include_guest'] ) ) {
+			$args['meta_query'][ self::MEMBERSHIP_TYPE ] = array(
+				'key'     => 'type',
+				'value'   => self::MEMBERSHIP_TYPE,
+				'compare' => '!=',
+			);
+		}
+
+		return $args;
 	}
 
 	/**
