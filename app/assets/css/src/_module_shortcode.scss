@@ -2,6 +2,8 @@
  * Shortcode Styles
  */
 .ms-membership-form-wrapper {
+	position: relative;
+
 	legend {
 		display: block;
 		margin-bottom: 20px;
@@ -50,6 +52,15 @@
 			background: #AAA;
 		}
 	}
+
+	.ms-login-form {
+		.nav {
+			position: absolute;
+			bottom: 0;
+			right: 0;
+		}
+	}
+
 }
 
 .ms-membership-details-wrapper {
