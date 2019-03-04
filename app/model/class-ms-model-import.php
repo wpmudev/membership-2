@@ -222,7 +222,8 @@ class MS_Model_Import extends MS_Model {
 
 		// Remember this import.
 		$settings = MS_Factory::load( 'MS_Model_Settings' );
-		$settings->import[ $this->source_key ] = date( 'Y-m-d H:i' );
+		// should be assign a new array instead of, see MS_Model_Setting->__set
+		$settings->import = array_merge($settings->import, array( $this->source_key => date( 'Y-m-d H:i' ) ) );
 		$settings->save();
 	}
 
