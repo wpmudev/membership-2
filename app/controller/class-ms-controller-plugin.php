@@ -1003,34 +1003,36 @@ class MS_Controller_Plugin extends MS_Controller {
 
 		// The main plugin script.
 		// Dont add dependants that hav not already loaded - Paul Kevin
+		$suffix = $this->get_suffix();
+
 		wp_register_script(
 			'ms-admin',
-			$plugin_url . 'app/assets/js/ms-admin.min.js',
+			$plugin_url . "app/assets/js/ms-admin{$suffix}.js",
 			array( 'jquery' ), $version
 		);
 
 		wp_register_script(
 			'ms-admin-wpmui',
-			$plugin_url . 'app/assets/js/m2.wpmu-ui.3.min.js',
+			$plugin_url . "app/assets/js/m2.wpmu-ui.3{$suffix}.js",
 			array( 'jquery' ), $version
 		);
 
 		wp_register_script(
 			'm2-jquery-plugins',
-			$plugin_url . 'app/assets/js/jquery.m2.plugins.js',
+			$plugin_url . "app/assets/js/jquery.m2.plugins{$suffix}.js",
 			array( 'jquery' ), $version
 		);
 
 		wp_register_script(
 			'ms-admin-pointers',
-			$plugin_url . 'app/assets/js/ms-admin-pointers.min.js',
+			$plugin_url . "app/assets/js/ms-admin-pointers{$suffix}.js",
 			array( 'jquery' ), $version
 		);
 
 		if ( !wp_script_is( 'jquery-validate', 'registered' ) ){
 			wp_register_script(
 				'jquery-validate',
-				$plugin_url . 'app/assets/js/jquery.m2.validate.js',
+				$plugin_url . "app/assets/js/jquery.m2.validate{$suffix}.js",
 				array( 'jquery' ), $version
 			);
 		}
@@ -1078,7 +1080,7 @@ class MS_Controller_Plugin extends MS_Controller {
 		// The main plugin style.
 		wp_register_style(
 			'ms-admin-styles',
-			$plugin_url . 'app/assets/css/ms-admin.min.css',
+			$plugin_url . 'app/assets/css/ms-admin'. $this->get_suffix() .'.css',
 			null, $version
 		);
 	}
@@ -1092,31 +1094,33 @@ class MS_Controller_Plugin extends MS_Controller {
 		$plugin_url = MS_Plugin::instance()->url;
 		$version = MS_Plugin::instance()->version;
 
+		$suffix = $this->get_suffix();
+
 		// The main plugin script.
 		wp_register_script(
 			'ms-admin',
-			$plugin_url . 'app/assets/js/ms-admin.min.js',
+			$plugin_url . "app/assets/js/ms-admin{$suffix}.js",
 			array( 'jquery', 'jquery-validate', 'm2-jquery-plugins' ), $version
 		);
 		wp_register_script(
 			'ms-ajax-login',
-			$plugin_url . 'app/assets/js/ms-public-ajax.min.js',
+			$plugin_url . "app/assets/js/ms-public-ajax{$suffix}.js",
 			array( 'jquery' ), $version, true // last param forces script to load in footer
 		);
 		wp_register_script(
 			'ms-public',
-			$plugin_url . 'app/assets/js/ms-public.min.js',
+			$plugin_url . "app/assets/js/ms-public{$suffix}.js",
 			array( 'jquery' ), $version
 		);
 
 		wp_register_script(
 			'm2-jquery-plugins',
-			$plugin_url . 'app/assets/js/jquery.m2.plugins.min.js',
+			$plugin_url . "app/assets/js/jquery.m2.plugins{$suffix}.js",
 			array( 'jquery' ), $version
 		);
 		wp_register_script(
 			'jquery-validate',
-			$plugin_url . 'app/assets/js/jquery.m2.validate.min.js',
+			$plugin_url . "app/assets/js/jquery.m2.validate{$suffix}.js",
 			array( 'jquery' ), $version
 		);
 	}
@@ -1133,7 +1137,7 @@ class MS_Controller_Plugin extends MS_Controller {
 		// The main plugin style.
 		wp_register_style(
 			'ms-styles',
-			$plugin_url . 'app/assets/css/ms-public.min.css',
+			$plugin_url . 'app/assets/css/ms-public'. $this->get_suffix() .'.css',
 			array(),
 			$version
 		);
@@ -1397,5 +1401,22 @@ class MS_Controller_Plugin extends MS_Controller {
 	    );
 
 	    return $pointers;
+	}
+
+	/**
+	 * Get suffix of js/css libraries base on WDEV_UNMINIFIED|SCRIPT_DEBUG mode
+	 *
+	 * @since  1.1.6
+	 * @return string (.min | '')
+	 */
+	public function get_suffix(){
+		static $Suffix;
+
+		if( $Suffix === null ){
+			// Use minified libraries if WDEV_UNMINIFIED|SCRIPT_DEBUG is turned off
+			$Suffix = ( defined('WDEV_UNMINIFIED') && WDEV_UNMINIFIED ) || ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) ? '' : '.min';
+		}
+
+		return $Suffix;
 	}
 }
