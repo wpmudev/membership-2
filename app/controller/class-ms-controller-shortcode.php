@@ -298,7 +298,15 @@ class MS_Controller_Shortcode extends MS_Controller {
 				}
 			}
 		}
-                
+
+		// If there are no memberships to register.
+		if ( empty( $memberships ) ) {
+			// Show an error message.
+			return $this->ms_note(
+				array( 'type' => 'error' ),
+				__( 'Sorry there are no memberships available for registration.', 'membership2' )
+			);
+		}
 
 		$data['memberships'] = $memberships;
 		$move_from_ids = array();
