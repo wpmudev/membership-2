@@ -139,11 +139,6 @@ class MS_Addon_Profilefields extends MS_Addon {
 	public function export_member( $output, $member, $export_base_obj ) {
 		// Get WP user.
 		$user = $member->get_user();
-		// Get member fields.
-		$output['username']   = $member->username;
-		$output['first_name'] = $member->first_name;
-		$output['last_name']  = $member->last_name;
-		$output['email']      = $member->email;
 		// Get user fields.
 		$output['display_name'] = $user->display_name;
 		$output['website']      = $user->user_url;
