@@ -123,70 +123,61 @@ class MS_Addon_Profilefields extends MS_Addon {
 	}
 
 	/**
-	 * Export member profile data filtered by profilefields addon.
+	 * Export member profile data filtered by profile fields addon.
 	 *
-	 * @since  1.1.6
-	 * @param  MS_Model_Member $member
-	 * @return object Export data
+	 * Export all member fields including BuddyPress XProfile fields
+	 * We can use BP functions to get data.
+	 *
+	 * @param array           $output          Output array.
+	 * @param MS_Model_Member $member          Member object.
+	 * @param object          $export_base_obj Export object.
+	 *
+	 * @since 1.1.7
+	 *
+	 * @return array Export data.
 	 */
 	public function export_member( $output, $member, $export_base_obj ) {
-		// only filter export for member data
-		if ( ! is_a( $export_base_obj, 'MS_Model_Export_Base' ) ) {
-			//return $output;
-		}
+		// Get WP user.
+		$user = $member->get_user();
+		// Get member fields.
+		$output['username']   = $member->username;
+		$output['first_name'] = $member->first_name;
+		$output['last_name']  = $member->last_name;
+		$output['email']      = $member->email;
+		// Get user fields.
+		$output['display_name'] = $user->display_name;
+		$output['website']      = $user->user_url;
+		// Get meta values.
+		$output['nickname']    = $member->get_meta( 'nickname' );
+		$output['description'] = $member->get_meta( 'description' );
 
-		// Get custom field values.
-		$values = $this->get_values( $member );
-
-		foreach ( $values as $field => $value ) {
-			if ( isset( $output[ $field ] ) ) {
-				continue;
-			}
-
-			$output[ $field ] = $value;
-		}
-		//wpmudev_debug($values,'output');
-
-		return apply_filters( 'ms_export_profilefields_export_member', $output, $member, $export_base_obj, $this );
-	}
-
-	public function get_values( $member ) {
-		$values = array();
-		if ( empty( $member->id ) ) {
-			return $values;
-		}
-
-		$user                   = $member->get_user();
-		$values['username']	    = $member->username;
-		$values['first_name']   = $member->first_name;
-		$values['last_name']    = $member->last_name;
-		$values['email']        = $member->email;
-		$values['nickname']     = $member->get_meta( 'nickname' );
-		$values['display_name'] = $user->display_name;
-		$values['website']      = $user->user_url;
-		$values['description']  = $member->get_meta( 'description' );
-
+		// Get X Profile field values.
 		if ( function_exists( 'bp_is_active' ) && bp_is_active( 'xprofile' ) ) {
-			$profile_groups = BP_XProfile_Group::get(
-				array(
-					'fetch_fields' => true,
-					'user_id' => $member->id,
-				)
-			);
+			// Get profile field groups.
+			$profile_groups = BP_XProfile_Group::get( array(
+				'fetch_fields' => true,
+				'user_id' => $member->id
+			) );
+
+			// Make sure it is array.
 			$profile_groups = mslib3()->array->get( $profile_groups );
 
+			// Loop through each fields.
 			foreach ( $profile_groups as $profile_group ) {
 				$fields = mslib3()->array->get( $profile_group->fields );
+				// Loop through each fields in group.
 				foreach ( $fields as $field ) {
-					$values['xprofile_' . $field->id] = array(
-						'label' => $field->name,
-						'type' => $field->type
-					);
+					$output['xprofile'][$field->id] = xprofile_get_field_data( $field->id, $member->id );
 				}
 			}
 		}
 
-		return $values;
+		/**
+		 * Filter to add/edit fields to member export.
+		 *
+		 * @since 1.1.7
+		 */
+		return apply_filters( 'ms_export_profilefields_export_member', $output, $member, $export_base_obj, $this );
 	}
 
 	/**
@@ -261,13 +252,13 @@ class MS_Addon_Profilefields extends MS_Addon {
 		static $Profile_Fields = null;
 
 		if ( null === $Profile_Fields ) {
-                    
+
 			$public_display = array();
-			
+
 			if ( is_user_logged_in() ) {
 				$member = MS_Model_Member::get_current_member();
 				$user = $member->get_user();
-					
+
 				$public_display['display_nickname']  = $user->nickname;
 				$public_display['display_username']  = $member->username;
 				//echo $member->first_name;
@@ -289,19 +280,19 @@ class MS_Addon_Profilefields extends MS_Addon {
 					$public_display['display_lastfirst'] = $member->last_name . ' ' . $member->first_name;
 				}
 
-				if ( ! in_array( $user->display_name, $public_display ) ) 
+				if ( ! in_array( $user->display_name, $public_display ) )
 					$public_display = array( 'display_displayname' => $user->display_name ) + $public_display;
 
 				$public_display = array_map( 'trim', $public_display );
 				//$public_display = array_unique( $public_display );
-					
+
 			}
-			
+
 			foreach( $public_display as $key => $val ) {
 				unset( $public_display[$key] );
 				$public_display[$val] = $val;
 			}
-                        
+
 			$Profile_Fields = array(
 				'username' => array(
 					'label' => __( 'Username', 'membership2' ),
@@ -484,7 +475,7 @@ class MS_Addon_Profilefields extends MS_Addon {
 				}
 
 				if ( 'required' == $setting ) {
-					
+
 					if( 'datebox' == $all_fields[$field]['type'] && 0 === strpos( $field, 'xprofile_' ) ){
 
 						if( function_exists( 'xprofile_get_field' ) ){
@@ -496,13 +487,13 @@ class MS_Addon_Profilefields extends MS_Addon {
 							$required[$key . '_month'] = $all_fields[$field]['label'];
 							$required[$key . '_year'] = $all_fields[$field]['label'];
 
-						}						
+						}
 
 					}
 					else{
 						$required[$key] = $all_fields[$field]['label'];
 					}
-					
+
 				}
 			}
 		}
@@ -604,7 +595,7 @@ class MS_Addon_Profilefields extends MS_Addon {
 					'value' 		=> $value,
 					'read_only' 	=> $readonly,
                     'field_options' => isset( $defaults['field_options'] ) ? $defaults['field_options'] : array()
-				);               
+				);
 			}
 		}
 
@@ -749,7 +740,7 @@ class MS_Addon_Profilefields extends MS_Addon {
 				$_POST['description']
 			);
 		}
-                
+
         if ( isset( $_POST['nickname'] ) ) {
 			wp_update_user(
 				array(
@@ -798,13 +789,13 @@ class MS_Addon_Profilefields extends MS_Addon {
 							$_REQUEST['field_' . $field_id . '_month'] .
 							'-' .
 							$_REQUEST['field_' . $field_id . '_year'];
-							
+
 						$value = date( 'Y-m-d', strtotime( $date ) ) . ' 00:00:00';
-						
+
 					} else {
 						continue;
                     }
-                                    
+
 				} else {
                     $value = $_REQUEST['field_' . $field_id];
                 }
