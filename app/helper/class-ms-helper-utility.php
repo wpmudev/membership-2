@@ -1,9 +1,10 @@
 <?php
+
 /**
  * This Helper creates additional utility functions.
  *
- * @since  1.0.0
- * @package Membership2
+ * @since      1.0.0
+ * @package    Membership2
  * @subpackage Helper
  */
 class MS_Helper_Utility extends MS_Helper {
@@ -21,6 +22,7 @@ class MS_Helper_Utility extends MS_Helper {
 	 *
 	 * @param mixed $arr1 First array to intersect.
 	 * @param mixed $arr2 Second array to intersect.
+	 *
 	 * @return array Combined array.
 	 */
 	public static function array_intersect_assoc_deep( &$arr1, &$arr2 ) {
@@ -29,6 +31,7 @@ class MS_Helper_Utility extends MS_Helper {
 		if ( ! is_array( $arr1 ) && ! is_array( $arr2 ) ) {
 			$arr1 = (string) $arr1;
 			$arr2 = (string) $arr2;
+
 			return $arr1 == $arr2 ? $arr1 : false;
 		} elseif ( is_array( $arr1 ) !== is_array( $arr2 ) ) {
 			MS_Helper_Debug::debug_log(
@@ -36,6 +39,7 @@ class MS_Helper_Utility extends MS_Helper {
 				'Both params need to be of same type (array or string).',
 				true
 			);
+
 			return false;
 		}
 
@@ -86,15 +90,15 @@ class MS_Helper_Utility extends MS_Helper {
 			if ( $force_ssl ) {
 				$Url = 'https://';
 			} elseif ( isset( $_SERVER['HTTPS'] ) && 'on' == $_SERVER['HTTPS'] ) {
-				$Url = 'https://';
+				$Url       = 'https://';
 				$force_ssl = true;
 			}
 
 			$Url .= $_SERVER['SERVER_NAME'];
-			if ( $_SERVER['SERVER_PORT'] != '80' && !$force_ssl ) {
+			if ( $_SERVER['SERVER_PORT'] != '80' && ! $force_ssl ) {
 				$Url .= ':' . $_SERVER['SERVER_PORT'];
 			}
-			
+
 			$Url .= $_SERVER['REQUEST_URI'];
 
 			$Url = apply_filters(
@@ -112,6 +116,7 @@ class MS_Helper_Utility extends MS_Helper {
 	 * @since  1.0.0
 	 *
 	 * @param string $url the original url
+	 *
 	 * @return string The changed url.
 	 */
 	public static function get_ssl_url( $url ) {
@@ -136,19 +141,19 @@ class MS_Helper_Utility extends MS_Helper {
 	protected static function get_remote_ip() {
 		$flag = ! WP_DEBUG ? FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE : null;
 		$keys = array(
-				'HTTP_CLIENT_IP',
-				'HTTP_X_FORWARDED_FOR',
-				'HTTP_X_FORWARDED',
-				'HTTP_X_CLUSTER_CLIENT_IP',
-				'HTTP_FORWARDED_FOR',
-				'HTTP_FORWARDED',
-				'REMOTE_ADDR',
+			'HTTP_CLIENT_IP',
+			'HTTP_X_FORWARDED_FOR',
+			'HTTP_X_FORWARDED',
+			'HTTP_X_CLUSTER_CLIENT_IP',
+			'HTTP_FORWARDED_FOR',
+			'HTTP_FORWARDED',
+			'REMOTE_ADDR',
 		);
 
 		$remote_ip = false;
 		foreach ( $keys as $key ) {
 			if ( array_key_exists( $key, $_SERVER ) === true ) {
-				foreach ( array_filter( array_map( 'trim', explode( ',', $_SERVER[$key] ) ) ) as $ip ) {
+				foreach ( array_filter( array_map( 'trim', explode( ',', $_SERVER[ $key ] ) ) ) as $ip ) {
 					if ( filter_var( $ip, FILTER_VALIDATE_IP, $flag ) !== false ) {
 						$remote_ip = $ip;
 						break;
@@ -166,15 +171,15 @@ class MS_Helper_Utility extends MS_Helper {
 	 * @since  1.0.0
 	 *
 	 * @param  string $post_type Post type ID.
-	 * @param  array $args Post type details.
+	 * @param  array  $args      Post type details.
 	 */
 	public static function register_post_type( $post_type, $args = null ) {
 		$defaults = array(
-			'public' 				=> false,
-			'has_archive' 			=> false,
-			'publicly_queryable' 	=> false,
-			'supports' 				=> false,
-			'hierarchical' 			=> false,
+			'public'             => false,
+			'has_archive'        => false,
+			'publicly_queryable' => false,
+			'supports'           => false,
+			'hierarchical'       => false,
 		);
 
 		$args = wp_parse_args( $args, $defaults );
@@ -187,41 +192,47 @@ class MS_Helper_Utility extends MS_Helper {
 	 * return the same color
 	 *
 	 * @since  1.0.0
+	 *
 	 * @param  string $key Some name/ID value
+	 *
 	 * @return string HTML color code (#123456)
 	 */
 	public static function color_index( $key ) {
 		static $Colors = array();
 		$key = strtolower( $key );
 
-		if ( ! isset( $Colors[$key] ) ) {
+		if ( ! isset( $Colors[ $key ] ) ) {
 			$base_hash = md5( $key );
 
 			$h = hexdec( substr( $base_hash, 0, 2 ) ) +
-				hexdec( substr( $base_hash, 10, 2 ) ) +
-				hexdec( substr( $base_hash, 20, 2 ) );
+			     hexdec( substr( $base_hash, 10, 2 ) ) +
+			     hexdec( substr( $base_hash, 20, 2 ) );
 
 			$s = 35 + ( hexdec( substr( $base_hash, 1, 2 ) ) % 15 );
 
 			$l = 45 + ( hexdec( substr( $base_hash, 2, 2 ) ) % 15 );
 
-			$Colors[$key] = self::hsl2web( $h, $s / 100, $l / 100 );
+			$Colors[ $key ] = self::hsl2web( $h, $s / 100, $l / 100 );
 		}
 
-		return apply_filters( 'ms_helper_color_index', $Colors[$key], $key );
+		return apply_filters( 'ms_helper_color_index', $Colors[ $key ], $key );
 	}
 
 	/**
 	 * Takes Hue/Saturation/Lightness color definition and returns a hex color code
 	 *
 	 * @since  1.0.0
+	 *
 	 * @param  float $h
 	 * @param  float $s
 	 * @param  float $l
+	 *
 	 * @return string
 	 */
-	static public function hsl2web( $h, $s, $l ){
-		$r = 0; $g = 0; $b = 0;
+	static public function hsl2web( $h, $s, $l ) {
+		$r = 0;
+		$g = 0;
+		$b = 0;
 
 		$h %= 360;
 		$c = ( 1 - abs( 2 * $l - 1 ) ) * $s;
@@ -229,22 +240,34 @@ class MS_Helper_Utility extends MS_Helper {
 		$m = $l - ( $c / 2 );
 
 		if ( $h < 60 ) {
-			$r = $c; $g = $x; $b = 0;
+			$r = $c;
+			$g = $x;
+			$b = 0;
 		} else if ( $h < 120 ) {
-			$r = $x; $g = $c; $b = 0;
+			$r = $x;
+			$g = $c;
+			$b = 0;
 		} else if ( $h < 180 ) {
-			$r = 0; $g = $c; $b = $x;
+			$r = 0;
+			$g = $c;
+			$b = $x;
 		} else if ( $h < 240 ) {
-			$r = 0; $g = $x; $b = $c;
+			$r = 0;
+			$g = $x;
+			$b = $c;
 		} else if ( $h < 300 ) {
-			$r = $x; $g = 0; $b = $c;
+			$r = $x;
+			$g = 0;
+			$b = $c;
 		} else {
-			$r = $c; $g = 0; $b = $x;
+			$r = $c;
+			$g = 0;
+			$b = $x;
 		}
 
 		$r = str_pad( dechex( ( $r + $m ) * 255 ), 2, '0', STR_PAD_LEFT );
 		$g = str_pad( dechex( ( $g + $m ) * 255 ), 2, '0', STR_PAD_LEFT );
-		$b = str_pad( dechex( ( $b + $m  ) * 255 ), 2, '0', STR_PAD_LEFT );
+		$b = str_pad( dechex( ( $b + $m ) * 255 ), 2, '0', STR_PAD_LEFT );
 
 		return '#' . $r . $g . $b;
 	}
@@ -255,6 +278,7 @@ class MS_Helper_Utility extends MS_Helper {
 	 * @since  1.0.0
 	 *
 	 * @param  string $url The URL to check
+	 *
 	 * @return bool
 	 */
 	static public function is_current_url( $url, $ignore = array( 'paged' ) ) {
@@ -264,11 +288,15 @@ class MS_Helper_Utility extends MS_Helper {
 			$query_string = parse_url( $_SERVER['REQUEST_URI'], PHP_URL_QUERY );
 			parse_str( $query_string, $Cur_url );
 		}
-		foreach ( $ignore as $param ) { unset( $Cur_url[$param] ); }
+		foreach ( $ignore as $param ) {
+			unset( $Cur_url[ $param ] );
+		}
 
 		$query_string = parse_url( $url, PHP_URL_QUERY );
 		parse_str( $query_string, $params );
-		foreach ( $ignore as $param ) { unset( $params[$param] ); }
+		foreach ( $ignore as $param ) {
+			unset( $params[ $param ] );
+		}
 
 		return ( $params == $Cur_url );
 	}
@@ -282,7 +310,9 @@ class MS_Helper_Utility extends MS_Helper {
 	 * front-end is on https:// - this function fixes this.
 	 *
 	 * @since  1.0.1.2
+	 *
 	 * @param  string $path Argument passed to the home_url() function.
+	 *
 	 * @return string The correct URL for a front-end page.
 	 */
 	static public function home_url( $path = '' ) {
@@ -295,13 +325,15 @@ class MS_Helper_Utility extends MS_Helper {
 	 * {@see description of home_url above for details}
 	 *
 	 * @since  1.0.1.2
-	 * @param  int $blog_id Blog-ID; by default the current blog is used.
-	 * @param  string $path Argument passed to the home_url() function.
+	 *
+	 * @param  int    $blog_id Blog-ID; by default the current blog is used.
+	 * @param  string $path    Argument passed to the home_url() function.
+	 *
 	 * @return string The correct URL for a front-end page.
 	 */
 	static public function get_home_url( $blog_id = null, $path = '' ) {
 		$schema = is_ssl() ? 'https' : 'http';
-		$url 	= get_home_url( $blog_id, $path, $schema );
+		$url    = get_home_url( $blog_id, $path, $schema );
 
 		return apply_filters(
 			'ms_helper_home_url',
@@ -320,20 +352,20 @@ class MS_Helper_Utility extends MS_Helper {
 	 * @return String
 	 */
 	static public function build_url( $parts = array() ) {
-		if ( empty( $parts ) ){
+		if ( empty( $parts ) ) {
 			return "";
 		}
 
-		return ( isset( $parts['scheme'] ) ? "{$parts['scheme']}:" : '' ) . 
-				( (isset($parts['user'] ) || isset( $parts['host'] ) ) ? '//' : '' ) . 
-				( isset($parts['user'] ) ? "{$parts['user']}" : '' ) . 
-				( isset($parts['pass'] ) ? ":{$parts['pass']}" : '' ) . 
-				( isset($parts['user'] ) ? '@' : '' ) . 
-				( isset($parts['host'] ) ? "{$parts['host']}" : '' ) . 
-				( isset($parts['port'] ) ? ":{$parts['port']}" : '' ) . 
-				( isset($parts['path'] ) ? "{$parts['path']}" : '' ) . 
-				( isset($parts['query'] ) ? "?{$parts['query']}" : '' ) . 
-				( isset($parts['fragment'] ) ? "#{$parts['fragment']}" : '' );
+		return ( isset( $parts['scheme'] ) ? "{$parts['scheme']}:" : '' ) .
+		       ( ( isset( $parts['user'] ) || isset( $parts['host'] ) ) ? '//' : '' ) .
+		       ( isset( $parts['user'] ) ? "{$parts['user']}" : '' ) .
+		       ( isset( $parts['pass'] ) ? ":{$parts['pass']}" : '' ) .
+		       ( isset( $parts['user'] ) ? '@' : '' ) .
+		       ( isset( $parts['host'] ) ? "{$parts['host']}" : '' ) .
+		       ( isset( $parts['port'] ) ? ":{$parts['port']}" : '' ) .
+		       ( isset( $parts['path'] ) ? "{$parts['path']}" : '' ) .
+		       ( isset( $parts['query'] ) ? "?{$parts['query']}" : '' ) .
+		       ( isset( $parts['fragment'] ) ? "#{$parts['fragment']}" : '' );
 	}
 
 	/**
@@ -355,17 +387,17 @@ class MS_Helper_Utility extends MS_Helper {
 	 *
 	 * @return Array
 	 */
-	static function xml2array ( $xml ) {
+	static function xml2array( $xml ) {
 		$out = array();
 		foreach ( $xml->children() as $r ) {
-			$t 	= array();
-			if ( count( $r->children() ) == 0) {
+			$t = array();
+			if ( count( $r->children() ) == 0 ) {
 				$out[ $r->getName() ] = strval( $r );
-			} else{
+			} else {
 				$out[ $r->getName() ][] = self::xml2array( $r );
 			}
 		}
-	
+
 		return $out;
 	}
 
@@ -380,7 +412,28 @@ class MS_Helper_Utility extends MS_Helper {
 		if ( is_array( $array ) ) {
 			return ( object ) $array;
 		}
+
 		return $array;
+	}
+
+	/**
+	 * Get asset normal or minified asset links.
+	 *
+	 * @param string $link Asset path.
+	 * @param string $ext  File extension.
+	 *
+	 * @since 1.1.7
+	 *
+	 * @return string
+	 */
+	public static function asset_link( $link, $ext = 'js' ) {
+		// Use minified libraries if WDEV_UNMINIFIED|SCRIPT_DEBUG is turned off.
+		if ( ( defined( 'WDEV_UNMINIFIED' ) && WDEV_UNMINIFIED ) || ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) ) {
+			return $link . '.' . $ext;
+		}
+
+		// Append extension.
+		return $link . '.min.' . $ext;
 	}
 }
 
@@ -390,14 +443,17 @@ if ( ! function_exists( 'array_unshift_assoc' ) ) {
 	 * the array keys.
 	 *
 	 * @since  1.0.0
-	 * @param  array $arr
+	 *
+	 * @param  array  $arr
 	 * @param  scalar $key
-	 * @param  mixed $val
+	 * @param  mixed  $val
+	 *
 	 * @return array
 	 */
 	function array_unshift_assoc( &$arr, $key, $val ) {
-		$arr 		= array_reverse( $arr, true );
-		$arr[$key] 	= $val;
+		$arr         = array_reverse( $arr, true );
+		$arr[ $key ] = $val;
+
 		return array_reverse( $arr, true );
 	}
 }
@@ -407,7 +463,9 @@ if ( ! function_exists( 'ms_home_url' ) ) {
 	 * Returns an URL for a front-end page with the correct URL schema.
 	 *
 	 * @since  1.0.1.2
+	 *
 	 * @param  string $path Argument passed to the home_url() function.
+	 *
 	 * @return string The correct URL for a front-end page.
 	 */
 	function ms_home_url( $path ) {
@@ -420,8 +478,10 @@ if ( ! function_exists( 'ms_get_home_url' ) ) {
 	 * Returns an URL for a front-end page with the correct URL schema.
 	 *
 	 * @since  1.0.1.2
-	 * @param  int $blog_id Blog-ID; by default the current blog is used.
-	 * @param  string $path Argument passed to the home_url() function.
+	 *
+	 * @param  int    $blog_id Blog-ID; by default the current blog is used.
+	 * @param  string $path    Argument passed to the home_url() function.
+	 *
 	 * @return string The correct URL for a front-end page.
 	 */
 	function ms_get_home_url( $blog_id, $path ) {

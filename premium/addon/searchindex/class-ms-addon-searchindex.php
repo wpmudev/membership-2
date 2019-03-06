@@ -83,7 +83,7 @@ class MS_Addon_Searchindex extends MS_Addon {
 
 			$this->add_filter(
 				'ms_model_membership_is_base',
-				'is_valid_type',
+				'is_base_type',
 				10, 2
 			);
 
@@ -109,8 +109,13 @@ class MS_Addon_Searchindex extends MS_Addon {
 				'apply_membership'
 			);
 
+			$this->add_action(
+				'ms_load_member',
+				'create_membership'
+			);
+
 			// Last action in the init sequence.
-			$this->create_membership();
+			// $this->create_membership();
 		} else {
 			$this->add_filter(
 				'ms_model_membership_get_memberships',
@@ -170,7 +175,7 @@ class MS_Addon_Searchindex extends MS_Addon {
 	 *
 	 * @since 1.0.1.0
 	 */
-	protected function create_membership() {
+	public function create_membership() {
 		$this->membership = MS_Model_Membership::_get_system_membership(
 			self::MEMBERSHIP_TYPE,
 			true
@@ -236,6 +241,28 @@ class MS_Addon_Searchindex extends MS_Addon {
 	public function is_valid_type( $result, $membership_type ) {
 		if ( self::MEMBERSHIP_TYPE == $membership_type ) {
 			$result = true;
+		}
+
+		return $result;
+	}
+
+
+	/**
+	 * Search Index should be a hidden type
+	 *
+	 * @since  1.0.1.0
+	 * @param  bool $result Default response.
+	 * @param  string $membership_type The Membership type to check.
+	 * @return bool Is-Base-Type flag.
+	 */
+	public function is_base_type( $result, $membership_type ) {
+		if ( self::MEMBERSHIP_TYPE == $membership_type ) {
+			$result = true;
+
+			// but should be visible in protection tab
+			if( MS_Controller_Plugin::is_page( 'protection' ) ){
+				$result = false;
+			}
 		}
 
 		return $result;

@@ -393,12 +393,13 @@ class MS_Helper_Html extends MS_Helper {
 					$url 		= $tab['url'];
 					$attributes = array();
 
+					$url = remove_query_arg( 'status', $url );
+
 					foreach ( $persistent as $param ) {
 						mslib3()->array->equip_request( $param );
 						$value 	= $_REQUEST[ $param ];
-						$url 	= esc_url_raw(
-							add_query_arg( $param, $value, $url )
-						);
+						
+						$url 	= add_query_arg( $param, $value, $url );
 					}
 
 					$attributes[] = 'class="ms-tab-link"';
