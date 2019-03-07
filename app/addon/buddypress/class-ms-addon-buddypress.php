@@ -765,6 +765,8 @@ class MS_Addon_BuddyPress extends MS_Addon {
 	 * Import member xprofile data if BuddyPress addon is enabled.
 	 *
 	 * Import all member BuddyPress XProfile fields using BP functions.
+	 * NOTE: We will import the field values only if the same field exist
+	 * in new site.
 	 *
 	 * @param object $member Member object.
 	 * @param object $obj    Export object.
@@ -774,14 +776,14 @@ class MS_Addon_BuddyPress extends MS_Addon {
 	 * @return void
 	 */
 	public function import_xprofile_fields( $member, $obj ) {
-		if ( empty( $obj['xprofile'] ) ) {
+		if ( empty( $obj->xprofile ) ) {
 			return;
 		}
 
 		// Continue only if BuddyPress is available.
 		if ( function_exists( 'bp_is_active' ) && bp_is_active( 'xprofile' ) ) {
 			// Loop through each field.
-			foreach ( $obj['xprofile'] as $field ) {
+			foreach ( $obj->xprofile as $field ) {
 				// Continue only if field id is set.
 				if ( ! isset( $field['id'], $field['type'], $field['value'] ) ) {
 					continue;
