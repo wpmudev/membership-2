@@ -937,7 +937,7 @@ class MS_Rule extends MS_Model {
 	 * @param MS_Rule $base_rule The source rule model to merge rules to.
 	 */
 	public function protect_undefined_items( $base_rule ) {
-		if ( $base_rule->rule_type == $this->rule_type ) { return; }
+		if ( $base_rule->rule_type != $this->rule_type ) { return; }
 
 		if ( ! is_array( $this->rule_value ) ) {
 			$this->rule_value = array();
