@@ -559,10 +559,15 @@ class MS_Model_Import extends MS_Model {
 		$member->save();
 
 		// Import all memberships of the member.
-		foreach ( $obj->subscriptions as $subscription ) {
-			$subscription = (object) $subscription;
-			$this->import_subscription( $member, $subscription );
+		if ( ! empty( $obj->subscriptions ) ) {
+			foreach ( $obj->subscriptions as $subscription ) {
+				$subscription = (object) $subscription;
+				$this->import_subscription( $member, $subscription );
+			}
 		}
+
+		// Update the user.
+		$this->update_user( $member->id, $obj );
 	}
 
 	/**
@@ -577,7 +582,7 @@ class MS_Model_Import extends MS_Model {
 	 *
 	 */
 	public function import_user( $obj, $membership, $status, $start, $expire ) {
-		mslib3()->array->equip( $obj, 'username', 'email', 'ms_membership', 'firstname', 'lastname' );
+		mslib3()->array->equip( $obj, 'username', 'email', 'ms_membership', 'first_name', 'last_name' );
 		$wpuser = get_user_by( 'email', $obj->email );
 		$member = false;
 		if ( $wpuser ) {
@@ -600,8 +605,8 @@ class MS_Model_Import extends MS_Model {
 		}
 		if ( $member ) {
 			$member->is_member 	= true;
-			$member->first_name = $obj->firstname;
-			$member->last_name 	= $obj->lastname;
+			$member->first_name = $obj->first_name;
+			$member->last_name  = $obj->last_name;
 			$member->save();
 			
 			if ( $membership ) {
@@ -645,6 +650,9 @@ class MS_Model_Import extends MS_Model {
 				}
 			}
 		}
+
+		// Update the user.
+		$this->update_user( $member->id, $obj );
 	}
 
 	/**
@@ -660,8 +668,8 @@ class MS_Model_Import extends MS_Model {
 		if ( empty( $membership ) ) {
 			$this->errors[] = sprintf(
 				__( 'Could not import a Membership for User <strong>%1$s</strong> (%2$s)', 'membership2' ),
-				esc_attr( $obj->username ),
-				esc_attr( $obj->email )
+				esc_attr( $member->username ),
+				esc_attr( $member->email )
 			);
 			return;
 		}
@@ -669,7 +677,7 @@ class MS_Model_Import extends MS_Model {
 		if ( $membership->is_base() ) {
 			$this->errors[] = sprintf(
 				__( 'Did not import the base membership %2$s for <strong>%1$s</strong>', 'membership2' ),
-				esc_attr( $obj->username ),
+				esc_attr( $member->username ),
 				esc_attr( $membership->name )
 			);
 			return;
@@ -1103,5 +1111,42 @@ class MS_Model_Import extends MS_Model {
 		}
 
 		return $res;
+	}
+
+	/**
+	 * Update the WP user fields of a user.
+	 *
+	 * We need to update extra fields for the imported users.
+	 * These fields are not mapped directly to member object.
+	 *
+	 * @param int    $id   User ID.
+	 * @param object $data Import object.
+	 *
+	 * @since 1.1.7
+	 */
+	private function update_user( $id, $data ) {
+		// Continue only if user data is found.
+		if ( ! empty( $data->wp_user ) ) {
+			// Custom user fields.
+			$fields = array(
+				'nickname',
+				'description',
+				'user_url',
+				'display_name',
+				'user_nicename',
+			);
+
+			// We need id for sure.
+			$user_data = array( 'ID' => $id );
+			// Set each fields.
+			foreach ( $fields as $field ) {
+				if ( isset( $data->wp_user[ $field ] ) ) {
+					$user_data[ $field ] = $data->wp_user[ $field ];
+				}
+			}
+
+			// Update the user.
+			wp_update_user( $user_data );
+		}
 	}
 }
