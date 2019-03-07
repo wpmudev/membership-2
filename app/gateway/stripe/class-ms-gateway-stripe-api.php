@@ -326,6 +326,18 @@ class MS_Gateway_Stripe_Api extends MS_Model_Option {
 
 		$subscription = $this->get_subscription( $customer, $membership );
 
+		// We don't need cancelled subscriptions.
+		if ( isset( $subscription->cancel_at_period_end ) && $subscription->cancel_at_period_end == true ) {
+			try {
+				// Cancel the subscription immediately.
+				$subscription->cancel();
+			} catch( Exception $e ) {
+				// Well, failed to cancel.
+			}
+			// No subscription.
+			$subscription = false;
+		}
+
 		/*
 		 * If no active subscription was found for the membership create it.
 		 */
@@ -349,14 +361,6 @@ class MS_Gateway_Stripe_Api extends MS_Model_Option {
 				'coupon' 		=> $coupon_id,
 			);
 			$subscription = $customer->subscriptions->create( $args );
-		} elseif ( $subscription->cancel_at_period_end ) {
-			// Reactivate if a cancel already scheduled.
-			try {
-				$subscription->cancel_at_period_end = false;
-				$subscription->save();
-			} catch( Exception $e ) {
-				// Well, failed to reactivate.
-			}
 		}
 
 		return apply_filters(
