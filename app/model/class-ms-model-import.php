@@ -1140,7 +1140,7 @@ class MS_Model_Import extends MS_Model {
 			$user_data = array( 'ID' => $id );
 			// Set each fields.
 			foreach ( $fields as $field ) {
-				if ( isset( $data->wp_user[ $field ] ) ) {
+				if ( ! empty( $data->wp_user[ $field ] ) ) {
 					$user_data[ $field ] = $data->wp_user[ $field ];
 				}
 			}
