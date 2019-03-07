@@ -568,6 +568,16 @@ class MS_Model_Import extends MS_Model {
 
 		// Update the user.
 		$this->update_user( $member->id, $obj );
+
+		/**
+		 * Run actions after member is imported.
+		 *
+		 * @param object $member Member object.
+		 * @param object $obj    Import object.
+		 *
+		 * @since 1.1.7
+		 */
+		do_action( 'ms_import_member_imported', $member, $obj );
 	}
 
 	/**
@@ -653,6 +663,16 @@ class MS_Model_Import extends MS_Model {
 
 		// Update the user.
 		$this->update_user( $member->id, $obj );
+
+		/**
+		 * Run actions after user is imported.
+		 *
+		 * @param object $member Member object.
+		 * @param object $obj    Import object.
+		 *
+		 * @since 1.1.7
+		 */
+		do_action( 'ms_import_user_imported', $member, $obj );
 	}
 
 	/**
@@ -1140,7 +1160,7 @@ class MS_Model_Import extends MS_Model {
 			$user_data = array( 'ID' => $id );
 			// Set each fields.
 			foreach ( $fields as $field ) {
-				if ( isset( $data->wp_user[ $field ] ) ) {
+				if ( ! empty( $data->wp_user[ $field ] ) ) {
 					$user_data[ $field ] = $data->wp_user[ $field ];
 				}
 			}
