@@ -1049,17 +1049,17 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 	 */
 	public static function _get_system_membership( $type, $create_missing = true ) {
 		static $Special_Membership = array();
-		$comp_key 	= $type;
-		$membership = false;
 
-		if ( ! isset( $Special_Membership[ $comp_key ] ) ) {
+		if ( ! isset( $Special_Membership[ $type ] ) ) {
 			$membership = false;
 			global $wpdb;
 
 			MS_Factory::select_blog();
 
-			$cache_key 	= MS_Helper_Cache::generate_cache_key( 'ms_model_membership_system_membership' );
+			// Should be specific cache key for each membership type
+			$cache_key 	= MS_Helper_Cache::generate_cache_key( 'ms_model_membership_system_membership_' . $type );
 			$results 	= MS_Helper_Cache::get_transient( $cache_key );
+
 			if ( $results ) {
 				$base = $results;
 			} else {
@@ -1110,12 +1110,12 @@ class MS_Model_Membership extends MS_Model_CustomPostType {
 				$membership->save();
 			}
 
-			$Special_Membership[ $comp_key ] = $membership;
+			$Special_Membership[ $type ] = $membership;
 		}
 
 		return apply_filters(
 			'ms_model_membership_get_system_membership',
-			$Special_Membership[ $comp_key ],
+			$Special_Membership[ $type ],
 			$type
 		);
 	}

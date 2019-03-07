@@ -83,8 +83,10 @@ class MS_View_Settings_Import_Users extends MS_View {
 			),
 		);
 
-		$membership 		= $data->membership;
-		$membership_name 	= false;
+		$membership       = $data->membership;
+		$membership_name  = false;
+		$membership_names = array();
+
 		if ( $membership ) {
 			$membership = MS_Factory::load(
 				'MS_Model_Membership',
@@ -95,21 +97,31 @@ class MS_View_Settings_Import_Users extends MS_View {
 
 		foreach ( $data->users as $item ) {
 			$item = (object) $item;
-			if ( !$membership_name ) {
-				$membership = MS_Factory::load(
-					'MS_Model_Membership',
-					$item->membershipid
-				);
-				if ( $membership->id ) {
-					$membership_name = $membership->name;
-				} else {
-					$membership_name = __( 'N/A', 'membership2' );
+			if ( ! $membership_name ) {
+				// check if exist in $membership_names
+				if( isset( $membership_names[$item->membershipid] ) ){
+					$membership_import_name = $membership_names[$item->membershipid];
+				}else{
+					$membership = MS_Factory::load(
+						'MS_Model_Membership',
+						$item->membershipid
+					);
+					if ( $membership->id ) {
+						$membership_import_name = $membership->name;
+					} else {
+						$membership_import_name = __( 'N/A', 'membership2' );
+					}
+
+					// save to $membership_names
+					$membership_names[$item->membershipid] = $membership_import_name;
 				}
+			}else{
+				$membership_import_name = $membership_name;
 			}
 			$users[] = array(
 				$item->username,
 				$item->email,
-				$membership_name,
+				$membership_import_name,
 				$data->status,
 				$data->start,
 				$data->expire

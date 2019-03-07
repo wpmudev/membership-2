@@ -122,8 +122,19 @@ class MS_Model_Export_Base extends MS_Model {
 		$output['id'] 			= $this->exp_id( 'user', $member->id );
 		$output['email'] 		= $member->email;
 		$output['username'] 	= $member->username;
-		$output['firstname'] 	= $member->first_name;
-		$output['lastname'] 	= $member->last_name;
+		$output['first_name'] 	= $member->first_name;
+		$output['last_name'] 	= $member->last_name;
+
+		// Get WP user data also.
+		$user = get_userdata( $member->id );
+		// Store them to data array.
+		$output['wp_user'] 	= array(
+			'nickname'      => $user->nickname,
+			'description'   => $user->description,
+			'user_url'      => $user->user_url,
+			'display_name'  => $user->display_name,
+			'user_nicename' => $user->user_nicename,
+		);
 
 		$gw_stripe 				= MS_Gateway_Stripe::ID;
 		$gw_auth 				= MS_Gateway_Authorize::ID;

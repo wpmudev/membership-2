@@ -15,6 +15,7 @@ window.ms_init.view_settings_import = function init() {
 		sel_batchsize = form_import.find( '#batchsize' ),
 		the_popup = null,
 		the_progress = null,
+		action_name = null,
 		queue = [],
 		queue_count = 0;
 
@@ -158,7 +159,11 @@ window.ms_init.view_settings_import = function init() {
 			.label( icon + '<span>' + batch.label + '</span>' );
 
 		// Prepare the ajax payload.
-		batch.action = btn_import.val();
+		if( ! action_name ){
+			action_name = btn_import.length ? btn_import.val() : btn_user_import.val();
+		}
+		batch.action = action_name;
+
 		delete batch.label;
 
 		// Send the ajax request and call this function again when done.

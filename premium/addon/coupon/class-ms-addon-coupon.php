@@ -123,6 +123,12 @@ class MS_Addon_Coupon extends MS_Addon {
 				10, 2
 			);
 
+			$this->add_filter(
+				'ms_model_relationship_get_payment_description/recurring',
+				'payment_description_recurring',
+				10, 6
+			);
+
 			// Apply Coupon-Discount to invoice
 			$this->add_filter(
 				'ms_signup_payment_details',
@@ -135,12 +141,6 @@ class MS_Addon_Coupon extends MS_Addon {
 				'ms_view_frontend_payment_data',
 				'process_payment_table',
 				10, 4
-			);
-			
-			$this->add_filter(
-				'ms_model_relationship_get_payment_description/recurring',
-				'payment_description_recurring',
-				10, 6
 			);
 
 			$this->add_filter(
@@ -825,15 +825,16 @@ class MS_Addon_Coupon extends MS_Addon {
 
 			if ( ! $coupon || ! $coupon->is_valid( $membership->id, $invoice ) ) return $desc;
 
-			if ( MS_Model_Membership::PAYMENT_TYPE_RECURRING === $membership->payment_type && MS_Addon_Coupon_Model::DURATION_ONCE !== $invoice->duration ) return $desc;
+			if ( MS_Model_Membership::PAYMENT_TYPE_RECURRING === $membership->payment_type && MS_Addon_Coupon_Model::DURATION_ONCE !== $coupon->duration ) return $desc;
 
 			$lbl = '';
+			$no_payment_repeat = $membership->pay_cycle_repetitions - 1;
 			if ( $membership->pay_cycle_repetitions > 1 ) {
 				// Fixed number of payments (more than 1)
 				if ( $short ) {
-					$lbl = __( '<span class="price">%1$s %2$s</span> first time and then <span class="price">%1$s %3$s</span> (each %4$s)', 'membership2' );
+					$lbl = _n( '<span class="price">%1$s %2$s</span> first time and then <span class="price">%1$s %3$s</span>', '<span class="price">%1$s %2$s</span> first time and then <span class="price">%1$s %3$s</span> (each %4$s)', $no_payment_repeat, 'membership2' );
 				} else {
-					$lbl = __( 'First payment <span class="price">%1$s %2$s</span> and then you will make %5$s payments of <span class="price">%1$s %3$s</span>, one each %4$s.', 'membership2' );
+					$lbl = _n( 'First payment <span class="price">%1$s %2$s</span> and then you will make a payment of <span class="price">%1$s %3$s</span>.', 'First payment <span class="price">%1$s %2$s</span> and then you will make %5$s payments of <span class="price">%1$s %3$s</span>, one each %4$s.', $no_payment_repeat, 'membership2' );
 				}
 			} else {
 				// Indefinite number of payments
@@ -848,11 +849,11 @@ class MS_Addon_Coupon extends MS_Addon {
 				$lbl,
 				$currency,
 				$total_price,
-				$membership->price,				
+				MS_Helper_Billing::format_price($membership->price),
 				MS_Helper_Period::get_period_desc( $membership->pay_cycle_period ),
-				$membership->pay_cycle_repetitions - 1
+				$no_payment_repeat
 			);
-			
+
 		}
 
 		return $desc;

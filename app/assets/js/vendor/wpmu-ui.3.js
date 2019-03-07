@@ -803,6 +803,11 @@
 		if ( html_classes) {
 			_html.removeClass( html_classes );
 		}
+
+		// should be remove olverlay class too
+		if( null !== _modal_overlay ){
+			_modal_overlay.removeClass();
+		}
 	};
 
 	/**
