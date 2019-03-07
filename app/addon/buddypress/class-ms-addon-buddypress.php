@@ -78,6 +78,27 @@ class MS_Addon_BuddyPress extends MS_Addon {
 				'rule_tabs'
 			);
 
+			// Export xprofile fields.
+			$this->add_filter(
+				'ms_export/export_member',
+				'export_xprofile_fields',
+				10, 3
+			);
+
+			// Import xprofile fields.
+			$this->add_action(
+				'ms_import_member_imported',
+				'import_xprofile_fields',
+				10, 2
+			);
+
+			// Import xprofile fields.
+			$this->add_action(
+				'ms_import_member_imported',
+				'import_xprofile_fields',
+				10, 2
+			);
+
 			MS_Factory::load( 'MS_Addon_BuddyPress_Rule' );
 
 			/*
@@ -138,7 +159,6 @@ class MS_Addon_BuddyPress extends MS_Addon {
 					'bp_core_signup_user',
 					'disable_validation'
 				);
-
 			}	
 
 			
@@ -690,4 +710,91 @@ class MS_Addon_BuddyPress extends MS_Addon {
 		$member->confirm();
 	}
 
+	/**
+	 * Export member xprofile data if BuddyPress addon is enabled.
+	 *
+	 * Export all member BuddyPress XProfile fields using BP functions.
+	 *
+	 * @param array           $output          Output array.
+	 * @param MS_Model_Member $member          Member object.
+	 * @param object          $export_base_obj Export object.
+	 *
+	 * @since 1.1.7
+	 *
+	 * @return array Export data.
+	 */
+	public function export_xprofile_fields( $output, $member, $export_base_obj ) {
+		// Get X Profile field values.
+		if ( function_exists( 'bp_is_active' ) && bp_is_active( 'xprofile' ) ) {
+			// Get profile field groups.
+			$profile_groups = BP_XProfile_Group::get( array(
+				'fetch_fields' => true,
+				'user_id' => $member->id
+			) );
+
+			// Make sure it is array.
+			$profile_groups = mslib3()->array->get( $profile_groups );
+
+			// Loop through each fields.
+			foreach ( $profile_groups as $profile_group ) {
+				$fields = mslib3()->array->get( $profile_group->fields );
+				// Loop through each fields in group.
+				foreach ( $fields as $field ) {
+					$output['xprofile'][] = array(
+						'id'    => $field->id,
+						'type'  => $field->type,
+						'value' => xprofile_get_field_data( $field->id, $member->id ),
+					);
+				}
+			}
+		}
+
+		/**
+		 * Filter to add/edit fields to member export.
+		 *
+		 * @param array  $output          Output data.
+		 * @param object $member          Member object.
+		 * @param object $export_base_obj Export modal.
+		 *
+		 * @since 1.1.7
+		 */
+		return apply_filters( 'ms_export_xprofile_fields', $output, $member, $export_base_obj );
+	}
+
+	/**
+	 * Import member xprofile data if BuddyPress addon is enabled.
+	 *
+	 * Import all member BuddyPress XProfile fields using BP functions.
+	 *
+	 * @param object $member Member object.
+	 * @param object $obj    Export object.
+	 *
+	 * @since 1.1.7
+	 *
+	 * @return void
+	 */
+	public function import_xprofile_fields( $member, $obj ) {
+		if ( empty( $obj['xprofile'] ) ) {
+			return;
+		}
+
+		// Continue only if BuddyPress is available.
+		if ( function_exists( 'bp_is_active' ) && bp_is_active( 'xprofile' ) ) {
+			// Loop through each field.
+			foreach ( $obj['xprofile'] as $field ) {
+				// Continue only if field id is set.
+				if ( ! isset( $field['id'], $field['type'], $field['value'] ) ) {
+					continue;
+				}
+
+				// Get current site's field data.
+				$field_data = xprofile_get_field( $field['id'] );
+				// Import only if the field type is same.
+				if ( isset( $field_data->type ) && $field_data->type === $field['type'] ) {
+					// Set the data.
+					xprofile_set_field_data( $field['id'], $member->id, $field['value'] );
+				}
+			}
+		}
+	}
 }
