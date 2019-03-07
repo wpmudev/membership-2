@@ -113,12 +113,6 @@ class MS_Addon_Profilefields extends MS_Addon {
 				'save_user_meta_fields',
 				99, 1
 			);
-
-			// for export
-			$this->add_filter(
-				'ms_export/export_member',
-				'export_profile_fields', 10, 3
-			);
 		}
 	}
 
@@ -879,58 +873,5 @@ class MS_Addon_Profilefields extends MS_Addon {
 		<?php
 		$html = ob_get_clean();
 		return $html;
-	}
-
-	/**
-	 * Export member profile data filtered by profile fields addon.
-	 *
-	 * Export all member fields including BuddyPress XProfile fields
-	 * We can use BP functions to get data.
-	 *
-	 * @param array           $output          Output array.
-	 * @param MS_Model_Member $member          Member object.
-	 * @param object          $export_base_obj Export object.
-	 *
-	 * @since 1.1.7
-	 *
-	 * @return array Export data.
-	 */
-	public function export_profile_fields( $output, $member, $export_base_obj ) {
-		// Get WP user.
-		$user = $member->get_user();
-		// Get user fields.
-		$output['display_name'] = $user->display_name;
-		$output['website']      = $user->user_url;
-		// Get meta values.
-		$output['nickname']    = $member->get_meta( 'nickname' );
-		$output['description'] = $member->get_meta( 'description' );
-
-		// Get X Profile field values.
-		if ( function_exists( 'bp_is_active' ) && bp_is_active( 'xprofile' ) ) {
-			// Get profile field groups.
-			$profile_groups = BP_XProfile_Group::get( array(
-				'fetch_fields' => true,
-				'user_id' => $member->id
-			) );
-
-			// Make sure it is array.
-			$profile_groups = mslib3()->array->get( $profile_groups );
-
-			// Loop through each fields.
-			foreach ( $profile_groups as $profile_group ) {
-				$fields = mslib3()->array->get( $profile_group->fields );
-				// Loop through each fields in group.
-				foreach ( $fields as $field ) {
-					$output['xprofile'][$field->id] = xprofile_get_field_data( $field->id, $member->id );
-				}
-			}
-		}
-
-		/**
-		 * Filter to add/edit fields to member export.
-		 *
-		 * @since 1.1.7
-		 */
-		return apply_filters( 'ms_export_profilefields_export_member', $output, $member, $export_base_obj, $this );
 	}
 }
