@@ -606,7 +606,7 @@ class MS_Model_Import extends MS_Model {
 		if ( $member ) {
 			$member->is_member 	= true;
 			$member->first_name = $obj->first_name;
-			$member->last_name 	= $obj->last_name;
+			$member->last_name  = $obj->last_name;
 			$member->save();
 			
 			if ( $membership ) {
