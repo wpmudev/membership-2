@@ -7,6 +7,7 @@ Change Log:
 
 1.1.6
 - Added: New define MS_ADMIN_EMAIL_CAPABILITY for additional roles on email copy
+- Added: New filter ms_controller_frontend_load_jquery_validate to disable jQuery validate.
 
 1.1.5
 - Added: Delete coupon from Stripe when deleted in plugin
