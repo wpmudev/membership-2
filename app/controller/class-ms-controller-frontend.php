@@ -1159,15 +1159,6 @@ class MS_Controller_Frontend extends MS_Controller {
 				$data['ms_init'][] = 'frontend_profile';
 			}
 
-			add_filter( 'ms_controller_frontend_load_jquery_validate', function( $load, $is_ms_page, $is_profile ) {
-				// No need to load if not a m2 page.
-				if ( ! $is_profile && ! $is_ms_page ) {
-					$load = false;
-				}
-
-				return $load;
-			});
-
 			mslib3()->ui->data( 'ms_data', $data );
 		}
 	}
