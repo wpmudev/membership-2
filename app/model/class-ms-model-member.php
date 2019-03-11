@@ -2071,6 +2071,11 @@ class MS_Model_Member extends MS_Model {
 	 * @since 1.1.6
 	 */
 	public function sync_meta() {
+		// We need WP user.
+		if ( empty( $this->wp_user ) ) {
+			return;
+		}
+
 		// MS meta items.
 		$ms_fields = array(
 			'ms_email' => $this->wp_user->user_email,
