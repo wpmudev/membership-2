@@ -143,7 +143,7 @@ class MS_Addon_Wpml extends MS_Addon {
 			$this->add_filter(
 				'ms_model_pages_get_ms_page_url',
 				'translate_page_url',
-				10, 3
+				10, 5
 			);
 
 			$this->add_filter(
@@ -377,11 +377,15 @@ class MS_Addon_Wpml extends MS_Addon {
 	 * @param  string $url The default URL.
 	 * @param  string $page_type Not used.
 	 * @param  bool $ssl Should the URL use ssl protocol?
+	 *
+	 * @since  1.1.6
+	 * @param  int $site_id current site id
+	 * @param  int $post_id Post id
 	 * @return string Localized URL.
 	 */
-	public function translate_page_url( $url, $page_type, $ssl ) {
+	public function translate_page_url( $url, $page_type, $ssl, $site_id, $post_id ) {
 		if ( $this->current_lang != $this->default_lang ) {
-			$post_id = url_to_postid( $url );
+			// $post_id = url_to_postid( $url );
 
 			$tr_post_id = apply_filters(
 				'wpml_object_id',
