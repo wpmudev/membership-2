@@ -642,7 +642,7 @@ module.exports = function( grunt ) {
 		grunt.task.run( 'makepot' );
 
 		// Update the integrated API documentation.
-		grunt.task.run( 'docs' );
+		//grunt.task.run( 'docs' );
 
 		for ( i in build ) {
 			branch = build[i];
