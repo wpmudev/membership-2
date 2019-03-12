@@ -33,7 +33,7 @@ class MS_Addon_BuddyPress extends MS_Addon {
 	 * @return bool
 	 */
 	static public function is_active() {
-		if ( ! self::buddypress_active()
+		if ( ! self::buddypress_active( true )
 			&& MS_Model_Addon::is_enabled( self::ID )
 		) {
 			$model = MS_Factory::load( 'MS_Model_Addon' );
@@ -73,11 +73,6 @@ class MS_Addon_BuddyPress extends MS_Addon {
 				$this->get_setting( 'buddypress_xprofile' )
 			);
 
-			$this->add_filter(
-				'ms_controller_protection_tabs',
-				'rule_tabs'
-			);
-
 			// Export xprofile fields.
 			$this->add_filter(
 				'ms_export/export_member',
@@ -99,7 +94,15 @@ class MS_Addon_BuddyPress extends MS_Addon {
 				10, 2
 			);
 
-			MS_Factory::load( 'MS_Addon_BuddyPress_Rule' );
+			// Only show protection in actual BP site.
+			if ( self::buddypress_active() ) {
+				$this->add_filter(
+					'ms_controller_protection_tabs',
+					'rule_tabs'
+				);
+
+				MS_Factory::load( 'MS_Addon_BuddyPress_Rule' );
+			}
 
 			/*
 			 * Using the BuddyPress registration form is optional.
@@ -260,7 +263,7 @@ class MS_Addon_BuddyPress extends MS_Addon {
 			),
 		);
 
-		if ( ! self::buddypress_active() ) {
+		if ( ! self::buddypress_active( true ) ) {
 			$list[ self::ID ]->description .= sprintf(
 				'<br /><b>%s</b>',
 				__( 'Activate BuddyPress to use this Add-on', 'membership2' )
@@ -274,10 +277,25 @@ class MS_Addon_BuddyPress extends MS_Addon {
 	/**
 	 * Returns true, when the BuddyPress plugin is activated.
 	 *
-	 * @since  1.0.0
+	 * @param bool $subsite_check Should check if BP is installed in a subsite.
+	 *
+	 * @since 1.0.0
+	 *
 	 * @return bool
 	 */
-	static public function buddypress_active() {
+	static public function buddypress_active( $subsite_check = false ) {
+		// If BuddyPress is installed within a sub site and network protect mode is enabled.
+		if ( $subsite_check && defined( 'MS_PROTECT_NETWORK' ) && MS_PROTECT_NETWORK && defined( 'BP_ROOT_BLOG' ) ) {
+			// Switch to the BP site.
+			switch_to_blog( BP_ROOT_BLOG );
+			// Check if plugin is active.
+			$active = is_plugin_active( 'buddypress/bp-loader.php' );
+			// Restore to old blog.
+			restore_current_blog();
+
+			return $active;
+		}
+
 		global $bp;
 
 		return ( ! empty( $bp ) && function_exists( 'bp_buffer_template_part' ) && function_exists( 'buddypress' ) );
