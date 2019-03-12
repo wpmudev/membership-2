@@ -49,6 +49,10 @@ As mentioned, we will only update the master branch with all changes, even if th
 1. Put the code into a product directory (prefered).
 2. Wrap code in product conditions.
 
+### Pull Requests
+
+Always send pull requests to `master` branch unless a release is in QA. If a new version is already in QA, send your PR to `development` branch. We will merge these changes to `master` after releasing new version or QA is failed.
+
 ### Product directories
 
 The prefered way to implement different code is to move pro code into the subfolder `/premium`. Code in the other directories is supposed to be core-plugin code (i.e. free plugin).
