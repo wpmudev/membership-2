@@ -92,8 +92,9 @@ class MS_Addon_Recaptcha_View extends MS_View {
 				'name'      => 'custom[recaptcha][register]',
 				'type'      => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
 				'title'     => __( 'Registration Form', 'membership2' ),
-				'desc'      => '',
+				'desc'      => __( 'Enable Google reCaptcha in registration form.', 'membership2' ),
 				'value'     => mslib3()->is_true( $registration ),
+				'class' => 'inp-before',
 				'ajax_data' => array(
 					'group'  => 'recaptcha',
 					'field'  => 'register',
@@ -105,8 +106,9 @@ class MS_Addon_Recaptcha_View extends MS_View {
 				'name'      => 'custom[recaptcha][login]',
 				'type'      => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
 				'title'     => __( 'Login Form', 'membership2' ),
-				'desc'      => '',
+				'desc'      => __( 'Enable Google reCaptcha in login form.', 'membership2' ),
 				'value'     => mslib3()->is_true( $login ),
+				'class' => 'inp-before',
 				'ajax_data' => array(
 					'group'  => 'recaptcha',
 					'field'  => 'login',
