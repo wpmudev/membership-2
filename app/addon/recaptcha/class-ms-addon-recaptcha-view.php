@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Class MS_Addon_Recaptcha_View.
+ */
 class MS_Addon_Recaptcha_View extends MS_View {
 
 	/**
@@ -7,9 +10,10 @@ class MS_Addon_Recaptcha_View extends MS_View {
 	 *
 	 * @since 1.1.7
 	 *
-	 * @return string
+	 * @return void
 	 */
 	public function render_tab() {
+		// Prepare fields.
 		$fields = $this->prepare_fields();
 		ob_start();
 		?>
@@ -42,18 +46,19 @@ class MS_Addon_Recaptcha_View extends MS_View {
 	 * Prepare fields that are displayed in the form.
 	 *
 	 * @since 1.1.7
+	 *
 	 * @return array
 	 */
 	protected function prepare_fields() {
-		$api_status = MS_Addon_Mailchimp::get_api_status();
-		$settings   = $this->data['settings'];
-
+		// Settings.
+		$settings = $this->data['settings'];
+		// Action.
 		$action       = MS_Controller_Settings::AJAX_ACTION_UPDATE_CUSTOM_SETTING;
-		$registration = $settings->get_custom_setting( 'recaptcha', 'register_form' );
-		$login        = $settings->get_custom_setting( 'recaptcha', 'login_form' );
+		$registration = $settings->get_custom_setting( 'recaptcha', 'register' );
+		$login        = $settings->get_custom_setting( 'recaptcha', 'login' );
 
 		$fields = array(
-			'site_key'      => array(
+			'site_key'   => array(
 				'id'        => 'site_key',
 				'name'      => 'custom[recaptcha][site_key]',
 				'type'      => MS_Helper_Html::INPUT_TYPE_TEXT,
@@ -66,7 +71,7 @@ class MS_Addon_Recaptcha_View extends MS_View {
 					'action' => $action,
 				),
 			),
-			'secret_key'    => array(
+			'secret_key' => array(
 				'id'        => 'secret_key',
 				'name'      => 'custom[recaptcha][secret_key]',
 				'type'      => MS_Helper_Html::INPUT_TYPE_TEXT,
@@ -79,32 +84,32 @@ class MS_Addon_Recaptcha_View extends MS_View {
 					'action' => $action,
 				),
 			),
-			'separator'     => array(
+			'separator'  => array(
 				'type' => MS_Helper_Html::TYPE_HTML_SEPARATOR,
 			),
-			'register_form' => array(
+			'register'   => array(
 				'id'        => 'register_form',
-				'name'      => 'custom[recaptcha][register_form]',
+				'name'      => 'custom[recaptcha][register]',
 				'type'      => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
 				'title'     => __( 'Registration Form', 'membership2' ),
 				'desc'      => '',
 				'value'     => mslib3()->is_true( $registration ),
 				'ajax_data' => array(
 					'group'  => 'recaptcha',
-					'field'  => 'register_form',
+					'field'  => 'register',
 					'action' => $action,
 				),
 			),
-			'login_form'    => array(
+			'login'      => array(
 				'id'        => 'login_form',
-				'name'      => 'custom[recaptcha][login_form]',
+				'name'      => 'custom[recaptcha][login]',
 				'type'      => MS_Helper_Html::INPUT_TYPE_RADIO_SLIDER,
 				'title'     => __( 'Login Form', 'membership2' ),
 				'desc'      => '',
 				'value'     => mslib3()->is_true( $login ),
 				'ajax_data' => array(
 					'group'  => 'recaptcha',
-					'field'  => 'login_form',
+					'field'  => 'login',
 					'action' => $action,
 				),
 			),
