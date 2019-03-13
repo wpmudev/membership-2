@@ -235,7 +235,7 @@ class MS_View_Shortcode_RegisterUser extends MS_View {
 
 			'privacy_check' => array(
 				'id' 	=> 'privacy_check',
-				'title' => sprintf( __( 'By creating an account you agree to the sites %sPrivacy and Policy%s', 'membership2' ), '<a href="'.$privacy_link.'" target="_blank">', '</a>' ),
+				'title' => sprintf( __( 'By creating an account you agree to the sites %sPrivacy Policy%s', 'membership2' ), '<a href="'.$privacy_link.'" target="_blank">', '</a>' ),
 				'type' 	=> MS_Helper_Html::INPUT_TYPE_CHECKBOX,
 				'value' => 'privacy',
 			),

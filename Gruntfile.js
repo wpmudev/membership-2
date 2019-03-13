@@ -20,7 +20,7 @@ module.exports = function( grunt ) {
 	var buildtime = new Date().toISOString();
 
 	var conf = {
-		// Folder that contains the CSS files.
+		// Folder that contains the JS files.
 		js_folder: 'app/assets/js/',
 
 		// Folder that contains the CSS files.
