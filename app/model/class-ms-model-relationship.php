@@ -1668,19 +1668,17 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	 * @since  1.0.0
 	 * @api
 	 *
-	 *@since  1.1.6 add hook filter grace_period by subscription
-	 * 
-	 *
 	 * @return int Remaining days.
 	 */
 	public function get_remaining_period( $grace_period = 1 ) {
-
 		/**
 		 * The grace-period extends the subscriptions `active` by the given
 		 * number of days to allow payment gateways some extra time to
 		 * report any payments, before actually expiring the subscription.
 		 *
-		 * @since 1.1.6
+		 * @since  1.1.7
+		 * @param  int                   $grace_period Number of days to extend `active` state.
+		 * @param  MS_Model_Relationship $subscription The processed subscription.
 		 */
 		$grace_period = apply_filters(
 			'ms_subscription_expiration_grace_period',
