@@ -378,15 +378,14 @@ class MS_Addon_Wpml extends MS_Addon {
 	 * @param  string $page_type Not used.
 	 * @param  bool $ssl Should the URL use ssl protocol?
 	 *
-	 * @since  1.1.6
-	 * @param  int $site_id current site id
-	 * @param  int $post_id Post id
+	 * @since  1.1.7
+	 * @param  int $site_id Current site id.
+	 * @param  int $post_id Post id.
+	 *
 	 * @return string Localized URL.
 	 */
 	public function translate_page_url( $url, $page_type, $ssl, $site_id, $post_id ) {
 		if ( $this->current_lang != $this->default_lang ) {
-			// $post_id = url_to_postid( $url );
-
 			$tr_post_id = apply_filters(
 				'wpml_object_id',
 				$post_id,

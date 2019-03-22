@@ -526,8 +526,9 @@ class MS_Model_Pages extends MS_Model_Option {
 				$ssl,
 				$site_id,
 				/**
-				 * add page id for filter hook
-				 * @since  1.1.6
+				 * Page ID.
+				 *
+				 * @since 1.1.7
 				 */
 				$page_id
 			);
