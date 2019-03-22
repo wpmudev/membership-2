@@ -70,18 +70,6 @@ class MS_Addon_Searchindex extends MS_Addon {
 			);
 
 			$this->add_filter(
-				'ms_model_membership_is_system',
-				'is_system',
-				10, 2
-			);
-
-			$this->add_filter(
-				'ms_model_membership_is_base',
-				'is_base_type',
-				10, 2
-			);
-
-			$this->add_filter(
 				'ms_model_membership_get_types',
 				'get_types'
 			);
@@ -116,25 +104,32 @@ class MS_Addon_Searchindex extends MS_Addon {
 				'hide_membership',
 				10, 2
 			);
-
-			// See Search Index as a base type
-			$this->add_filter(
-				'ms_model_membership_is_base',
-				'is_valid_type',
-				10, 2
-			);			
 		}
 
-		// Exclude Search Index from list "Valid type"
+		// Search Index is a valid type.
 		$this->add_filter(
 			'ms_model_membership_is_valid_type',
 			'is_valid_type',
 			10, 2
 		);
 
-
+		// Exclude from queries if required.
 		$this->add_filter( 'ms_model_membership_get_query_args',
-			'set_not_visible_like_a_guest'
+			'exclude_from_query'
+		);
+
+		// Search index is base type.
+		$this->add_filter(
+			'ms_model_membership_is_base',
+			'is_base_type',
+			10, 2
+		);
+
+		// This is a system membership.
+		$this->add_filter(
+			'ms_model_membership_is_system',
+			'is_system',
+			10, 2
 		);
 	}
 
@@ -274,7 +269,7 @@ class MS_Addon_Searchindex extends MS_Addon {
 
 			// but should be visible in protection tab
 			if( MS_Controller_Plugin::is_page( 'protection' ) ){
-				$result = false;
+				//$result = false;
 			}
 		}
 
@@ -282,18 +277,19 @@ class MS_Addon_Searchindex extends MS_Addon {
 	}
 
 	/**
-	 * Hide it in the case guest/user type not visible too (ex: All users/subscription details)
+	 * Hide Search Index memberships from queries.
 	 *
+	 * Search Index is a base membership, so hide it by
+	 * default and include only if base type is requested.
 	 *
-	 * @since  1.1.7
-	 * @internal
+	 * @since 1.1.7
 	 *
-	 * @param $args The query post args
-	 *     @see @link http://codex.wordpress.org/Class_Reference/WP_Query
+	 * @param array $args The query args (http://codex.wordpress.org/Class_Reference/WP_Query).
+	 *
 	 * @return array $args The parsed args.
 	 */
-	public function set_not_visible_like_a_guest( $args = null ) {
-
+	public function exclude_from_query( $args = null ) {
+		// Always exclude unless base membership is requested.
 		if ( empty( $args['include_guest'] ) ) {
 			$args['meta_query'][ self::MEMBERSHIP_TYPE ] = array(
 				'key'     => 'type',
