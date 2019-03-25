@@ -96,7 +96,11 @@ class MS_Controller_Plugin extends MS_Controller {
 				break;
 			}
 		}
-		if ( ! $p3p_done ) { header( 'P3P:CP="NOI"' ); }
+
+		// We can not set header, when it's already sent.
+		if ( ! $p3p_done && ! headers_sent() ) {
+			header( 'P3P:CP="NOI"' );
+		}
 
 		/*
 		 * Remove the "&msg" attribute from the URL if it was already present in
