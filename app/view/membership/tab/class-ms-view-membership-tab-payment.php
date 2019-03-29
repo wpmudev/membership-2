@@ -103,7 +103,7 @@ class MS_View_Membership_Tab_Payment extends MS_View {
 					<div class="ms-trial-wrapper">
 						<?php MS_Helper_Html::html_separator(); ?>
 						<h4>
-							<?php _e( 'Well done, you just created your first paid membership!', 'membership2' ); ?>
+							<?php _e( 'Well done, you just created a paid membership!', 'membership2' ); ?>
 						</h4>
 						<p>
 							<?php _e( 'To give visitors an extra incentive to register for this Membership you can offer a free trial period for a limited time. Do you want to enable this feature now?', 'membership2' ); ?>
