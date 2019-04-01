@@ -273,8 +273,7 @@ class MS_View_Shortcode_RegisterUser extends MS_View {
 				'equalTo' => '.ms-form-element #password',
 			),
 			'privacy_check' => array(
-				'required' => true,
-				'equalTo' => '.ms-form-element #privacy_check',
+				'required' => true
 			),
 		);
 
