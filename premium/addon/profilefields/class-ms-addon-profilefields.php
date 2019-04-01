@@ -385,8 +385,7 @@ class MS_Addon_Profilefields extends MS_Addon {
 
 		$custom_fields = $this->customize_form( $custom_fields, $data, $config );
 
-		// allways add privary field if exist
-		// admin can disable this field by leave blank in privacy setting page
+		// Always make sure the privacy checkbox is considered.
 		if( isset( $fields['privacy_check'] ) ){
 			$custom_fields[] = $fields['privacy_check'];
 		}
