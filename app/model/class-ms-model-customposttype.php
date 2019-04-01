@@ -168,13 +168,13 @@ class MS_Model_CustomPostType extends MS_Model {
 		$data = $this->save_meta_data( $data );
 
 
-		// cache
+		// Cache.
 		$cache = false;
 
 		if ( empty( $this->id ) ) {
 			$this->id = wp_insert_post( $post );
 		} else {
-			// Retrive cache
+			// Retrieve cache.
 			$cache = MS_Helper_Cache::get_cache( $this->id, $class );
 
 			$post[ 'ID' ] = $this->id;
@@ -187,11 +187,8 @@ class MS_Model_CustomPostType extends MS_Model {
 
 		// Then we update all meta fields that are inside the collection
 		foreach ( $data as $field => $val ) {
-			if( ! $cache || ! isset( $cache->$field ) || $cache->$field !== $val ){
-				/**
-				 * Only update if have any change
-				 * We will save extra queries for each access/signup, this is particularly the case if cache enabled
-				 */
+			// Only update if we have really changed something.
+			if( ! isset( $cache->$field ) || $cache->$field !== $val ) {
 				update_post_meta( $this->id, $field, $val );
 			}
 		}

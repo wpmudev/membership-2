@@ -1001,13 +1001,13 @@ class MS_Model_Member extends MS_Model {
 		 */
 		add_filter( 'send_password_change_email', '__return_false' );
 
-		// cache
+		// Cache.
 		$cache = false;
 
 		if ( empty( $this->id ) ) {
 			$this->create_new_user();
-		}else{
-			// Retrive cache
+		} else {
+			// Retrieve cache.
 			$cache = MS_Helper_Cache::get_cache( $this->id, $class );
 		}
 
@@ -1033,8 +1033,8 @@ class MS_Model_Member extends MS_Model {
 
 		// Then update all meta fields that are inside the collection
 		foreach ( $data as $field => $val ) {
-			// only update if have any change
-			if( ! $cache || ! isset( $cache->$field ) || $cache->$field !== $val ){
+			// Update only we have really changed.
+			if( ! isset( $cache->$field ) || $cache->$field !== $val ){
 				update_user_meta( $this->id, 'ms_' . $field, $val );
 			}
 		}
