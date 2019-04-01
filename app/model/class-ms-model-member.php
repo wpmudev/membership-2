@@ -1160,6 +1160,14 @@ class MS_Model_Member extends MS_Model {
 			}
 		}
 
+		// Add privacy policy validation.
+		if ( MS_Helper_Utility::get_privacy_page() && empty( $_POST['privacy_check'] ) ) {
+			$validation_errors->add(
+				'privacy_check',
+				__( 'You must read and accept Privacy Policy.', 'membership2' )
+			);
+		}
+
 		$validation_errors 		= apply_filters(
 			'ms_model_membership_create_new_user_validation_errors',
 			$validation_errors, $this

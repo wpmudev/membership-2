@@ -48,9 +48,9 @@ class MS_Addon_Profilefields_View_Settings extends MS_View {
 		$profile_fields = MS_Addon_Profilefields::list_fields();
 
 		$reg_config = $settings->get_custom_setting( 'profilefields', 'register' );
-		$reg_config = mslib3()->array->get($reg_config);
+		$reg_config = mslib3()->array->get( $reg_config );
 		$edit_config = $settings->get_custom_setting( 'profilefields', 'profile' );
-		$edit_config = mslib3()->array->get($edit_config);
+		$edit_config = mslib3()->array->get( $edit_config );
 		$was_initialized = false;
 
 		$registration_options = array(
