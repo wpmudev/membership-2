@@ -694,9 +694,9 @@ class MS_Addon_Coupon extends MS_Addon {
 			$invoice->duration  = $coupon['duration'];
 
 			// Check if old coupon still exist.
-			$coupon = MS_Factory::load( 'MS_Addon_Coupon_Model', $invoice->coupon_id );
+			$coupon_model = MS_Factory::load( 'MS_Addon_Coupon_Model', $invoice->coupon_id );
 			// Let the admin know if it's deleted.
-			$deleted = empty( $coupon->id ) ? '(deleted)' : '';
+			$deleted = empty( $coupon_model->id ) ? '(deleted)' : '';
 			$note = sprintf(
 				__( 'Apply Coupon "%s" %s: Discount %s %s!', 'membership2' ),
 				$coupon['code'],
