@@ -310,7 +310,7 @@ class MS_View_Member_Editor extends MS_View {
 						);
 					}
 					// Expire date already reached:
-					elseif ( ! empty( $subscription->expire_date ) && strtotime( $subscription->expire_date ) < strtotime( MS_Helper_Period::current_date() ) ) {
+					elseif ( ! empty( $subscription->expire_date ) && $subscription->get_remaining_period() < 0 ) {
 						$valid_stati = array(
 							MS_Model_Relationship::STATUS_EXPIRED => true,
 							MS_Model_Relationship::STATUS_DEACTIVATED => true,

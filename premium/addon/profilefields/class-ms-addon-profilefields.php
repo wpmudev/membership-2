@@ -22,7 +22,7 @@ class MS_Addon_Profilefields extends MS_Addon {
 	 * @since  1.0.1.0
 	 * @return bool
 	 */
-	static public function is_active() {
+	public static function is_active() {
 		return MS_Model_Addon::is_enabled( self::ID );
 	}
 
@@ -184,7 +184,7 @@ class MS_Addon_Profilefields extends MS_Addon {
 	 * @since  1.0.1.0
 	 * @return array
 	 */
-	static public function list_fields() {
+	public static function list_fields() {
 		static $Profile_Fields = null;
 
 		if ( null === $Profile_Fields ) {
@@ -385,6 +385,11 @@ class MS_Addon_Profilefields extends MS_Addon {
 
 		$custom_fields = $this->customize_form( $custom_fields, $data, $config );
 
+		// Always make sure the privacy checkbox is considered.
+		if( isset( $fields['privacy_check'] ) ){
+			$custom_fields[] = $fields['privacy_check'];
+		}
+
 		return $custom_fields;
 	}
 
@@ -410,12 +415,9 @@ class MS_Addon_Profilefields extends MS_Addon {
 					$key = 'field_' . substr( $field, 9 );
 				}
 
-				if ( 'required' == $setting ) {
-					
+				if ( 'required' == $setting && isset( $all_fields[ $field ] ) ) {
 					if( 'datebox' == $all_fields[$field]['type'] && 0 === strpos( $field, 'xprofile_' ) ){
-
 						if( function_exists( 'xprofile_get_field' ) ){
-
 							$xfield_id = substr( $field, 9 );
 							$xfield = xprofile_get_field( $xfield_id );
 
@@ -423,10 +425,8 @@ class MS_Addon_Profilefields extends MS_Addon {
 							$required[$key . '_month'] = $all_fields[$field]['label'];
 							$required[$key . '_year'] = $all_fields[$field]['label'];
 
-						}						
-
-					}
-					else{
+						}
+					} else {
 						$required[$key] = $all_fields[$field]['label'];
 					}
 					
@@ -555,7 +555,12 @@ class MS_Addon_Profilefields extends MS_Addon {
 	 */
 	public function register_rules( $rules ) {
 		$settings = MS_Plugin::instance()->settings;
-		$config = $settings->get_custom_setting( 'profilefields', 'register' );
+		$config = (array) $settings->get_custom_setting( 'profilefields', 'register' );
+
+		// Make sure privacy field is required.
+		if( isset( $rules['privacy_check'] ) ){
+			$config['privacy_check'] = 'required';
+		}
 
 		return $this->validation_rules( $config );
 	}

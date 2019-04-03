@@ -524,7 +524,13 @@ class MS_Model_Pages extends MS_Model_Option {
 				$url,
 				$page_type,
 				$ssl,
-				$site_id
+				$site_id,
+				/**
+				 * Page ID.
+				 *
+				 * @since 1.1.7
+				 */
+				$page_id
 			);
 		}
 

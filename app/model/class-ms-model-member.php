@@ -1001,8 +1001,14 @@ class MS_Model_Member extends MS_Model {
 		 */
 		add_filter( 'send_password_change_email', '__return_false' );
 
+		// Cache.
+		$cache = false;
+
 		if ( empty( $this->id ) ) {
 			$this->create_new_user();
+		} else {
+			// Retrieve cache.
+			$cache = MS_Helper_Cache::get_cache( $this->id, $class );
 		}
 
 		if ( isset( $this->username ) ) {
@@ -1027,7 +1033,10 @@ class MS_Model_Member extends MS_Model {
 
 		// Then update all meta fields that are inside the collection
 		foreach ( $data as $field => $val ) {
-			update_user_meta( $this->id, 'ms_' . $field, $val );
+			// Update only we have really changed.
+			if( ! isset( $cache->$field ) || $cache->$field !== $val ){
+				update_user_meta( $this->id, 'ms_' . $field, $val );
+			}
 		}
 
 		MS_Helper_Cache::set_cache( $this->id, $this, $class );
@@ -1158,6 +1167,14 @@ class MS_Model_Member extends MS_Model {
 					);
 				}
 			}
+		}
+
+		// Add privacy policy validation.
+		if ( MS_Helper_Utility::get_privacy_page() && empty( $_POST['privacy_check'] ) ) {
+			$validation_errors->add(
+				'privacy_check',
+				__( 'You must read and accept Privacy Policy.', 'membership2' )
+			);
 		}
 
 		$validation_errors 		= apply_filters(

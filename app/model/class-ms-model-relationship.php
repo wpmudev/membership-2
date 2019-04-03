@@ -1671,6 +1671,21 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 	 * @return int Remaining days.
 	 */
 	public function get_remaining_period( $grace_period = 1 ) {
+		/**
+		 * The grace-period extends the subscriptions `active` by the given
+		 * number of days to allow payment gateways some extra time to
+		 * report any payments, before actually expiring the subscription.
+		 *
+		 * @since  1.1.7
+		 * @param  int                   $grace_period Number of days to extend `active` state.
+		 * @param  MS_Model_Relationship $subscription The processed subscription.
+		 */
+		$grace_period = apply_filters(
+			'ms_subscription_expiration_grace_period',
+			$grace_period,
+			$this
+		);
+
 		$period_days = MS_Helper_Period::subtract_dates(
 			$this->expire_date,
 			MS_Helper_Period::current_date(),
@@ -2713,21 +2728,6 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 				$debug_msg[] = '[Not ACTIVE(2): Expire date set or wrong status-request]';
 			}
 
-			/**
-			 * The grace-period extends the subscriptions `active` by the given
-			 * number of days to allow payment gateways some extra time to
-			 * report any payments, before actually expiring the subscription.
-			 *
-			 * @since  1.0.3.0
-			 * @param  int                   $grace_period Number of days to extend `active` state.
-			 * @param  MS_Model_Relationship $subscription The processed subscription.
-			 */
-			$grace_period = apply_filters(
-				'ms_subscription_expiration_grace_period',
-				1,
-				$this
-			);
-
 			/*
 			 * If expire date is not reached then membership obviously is active.
 			 * Note: When remaining days is 0 then the user is on last day
@@ -2735,7 +2735,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 			 */
 			if ( ! $calc_status
 				&& ! empty( $this->expire_date )
-				&& $this->get_remaining_period( $grace_period ) >= 0
+				&& $this->get_remaining_period() >= 0
 			) {
 				$calc_status = self::STATUS_ACTIVE;
 				$debug_msg[] = '[ACTIVE(3): Expire date set and not reached]';
