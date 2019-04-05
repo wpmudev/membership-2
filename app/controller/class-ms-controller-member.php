@@ -303,8 +303,7 @@ class MS_Controller_Member extends MS_Controller {
 						)
 					)
 				);
-			} // Execute list table bulk actions.
-            elseif ( $this->verify_nonce( 'bulk' ) ) {
+			} elseif ( $this->verify_nonce( 'bulk' ) ) { // Execute list table bulk actions.
 				mslib3()->array->equip_post( 'action', 'action2', 'member_id' );
 				$action = $_POST['action'];
 				if ( empty( $action ) || $action == '-1' ) {
@@ -354,11 +353,10 @@ class MS_Controller_Member extends MS_Controller {
 						add_query_arg( array( 'msg' => $msg ) )
 					);
 				}
-			} // Execute edit view page action submit.
-            elseif ( isset( $_POST['submit'] )
-			         && $this->verify_nonce()
-			         && self::validate_required( $fields_edit, 'POST' )
-			) {
+			} elseif ( isset( $_POST['submit'] )
+			           && $this->verify_nonce()
+			           && self::validate_required( $fields_edit, 'POST' )
+			) { // Execute edit view page action submit.
 				if ( is_array( $_POST['member_id'] ) ) {
 					$member_ids = $_POST['member_id'];
 				} else {
@@ -418,21 +416,19 @@ class MS_Controller_Member extends MS_Controller {
 						add_query_arg( array( 'user_id' => $user_id ) )
 					);
 				}
-			} // Process Action: Select existing user.
-            elseif ( isset( $_POST['btn_select'] )
-			         && $this->verify_nonce()
-			         && self::validate_required( $fields_select, 'POST' )
-			) {
+			} elseif ( isset( $_POST['btn_select'] )
+			           && $this->verify_nonce()
+			           && self::validate_required( $fields_select, 'POST' )
+			) { // Process Action: Select existing user.
 				$user_id = intval( $_POST['user_id'] );
 
 				$redirect = esc_url_raw(
 					add_query_arg( array( 'user_id' => $user_id ) )
 				);
-			} // Process Action: Update existing user.
-            elseif ( isset( $_POST['btn_save'] )
-			         && $this->verify_nonce()
-			         && self::validate_required( $fields_update, 'POST' )
-			) {
+			} elseif ( isset( $_POST['btn_save'] )
+			           && $this->verify_nonce()
+			           && self::validate_required( $fields_update, 'POST' )
+			) { // Process Action: Update existing user.
 				$data    = array(
 					'ID'           => intval( $_POST['user_id'] ),
 					'user_email'   => sanitize_email( $_POST['email'] ),
@@ -447,10 +443,9 @@ class MS_Controller_Member extends MS_Controller {
 						add_query_arg( array( 'user_id' => $user_id ) )
 					);
 				}
-			} // Process Action: Subscribe to a new membership.
-            elseif ( isset( $_POST['btn_modify'] )
-			         && $this->verify_nonce()
-			) {
+			} elseif ( isset( $_POST['btn_modify'] )
+			           && $this->verify_nonce()
+			) { // Process Action: Subscribe to a new membership.
 				// REQUEST here: When editing a user the ID is sent in the URL.
 				$user_id = intval( $_REQUEST['user_id'] );
 				$user    = MS_Factory::load( 'MS_Model_Member', $user_id );
