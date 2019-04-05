@@ -681,7 +681,22 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 		$m2 = $b->get_membership();
 
 		if ( $m1->priority == $m2->priority ) {
-			return $m1->name < $m2->name ? -1 : 1;
+			/**
+			 * Make sure the active membership gets priority when
+			 * multiple membership addon is disabled.
+			 *
+			 * @author Tho Bui
+			 */
+			if( ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MULTI_MEMBERSHIPS ) ){
+				$order_by_active = ( $b->status === self::STATUS_ACTIVE ) - ( $a->status === self::STATUS_ACTIVE );
+				if ( $order_by_active === 0 ) {
+					return $m1->name < $m2->name ? -1 : 1;
+				}
+
+				return $order_by_active;
+			} else {
+				return $m1->name < $m2->name ? -1 : 1;
+			}
 		} else {
 			return $m1->priority - $m2->priority;
 		}
