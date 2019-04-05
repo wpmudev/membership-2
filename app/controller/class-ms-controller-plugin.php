@@ -688,7 +688,7 @@ class MS_Controller_Plugin extends MS_Controller {
 
 	/**
 	 * Add Privacy policy details
-	 * 
+	 *
 	 * @since 1.1.5
 	 */
 	public function add_privacy_policy_content() {
@@ -719,7 +719,7 @@ class MS_Controller_Plugin extends MS_Controller {
 			</ul>
 		</p>',
 			'membership2' );
-	 
+
 		wp_add_privacy_policy_content(
 			'Membership 2',
 			wp_kses_post( wpautop( $content, false ) )
@@ -1055,9 +1055,10 @@ class MS_Controller_Plugin extends MS_Controller {
 	 * @return array
 	 */
 	private function admin_localize_text() {
-
 		$messages = array(
-			'recurring_cancel_warning' => esc_html__( 'Please note, if this membership has an active subscription in payment gateway, it will be canceled and you may not be able to re-activate it later.', 'membership2' ),
+			'recurring_cancel_warning'    => esc_html__( 'Please note, if this membership has an active subscription in payment gateway, it will be canceled and you may not be able to re-activate it later.', 'membership2' ),
+            'membership_multiple_limit'   => MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MULTI_MEMBERSHIPS ) ? 0 : 1,
+            'membership_multiple_message' => esc_html__( 'Multiple memberships feature is not enabled.', 'membership2' ),
 		);
 
 		/**
@@ -1252,11 +1253,11 @@ class MS_Controller_Plugin extends MS_Controller {
 
 	/**
 	 * Register exporters
-	 * 
+	 *
 	 * @since 1.1.5
-	 * 
+	 *
 	 * @param array $exporters - current registered exporters
-	 * 
+	 *
 	 * @return array $exporters
 	 */
 	function register_exporter( $exporters ) {
@@ -1270,11 +1271,11 @@ class MS_Controller_Plugin extends MS_Controller {
 
 	/**
 	 * Register erasers
-	 * 
+	 *
 	 * @since 1.1.5
-	 * 
+	 *
 	 * @param array $erasers - current registered erasers
-	 * 
+	 *
 	 * @return array $erasers
 	 */
 	function register_eraser( $erasers ) {
@@ -1287,12 +1288,12 @@ class MS_Controller_Plugin extends MS_Controller {
 
 	/**
 	 * Add export data
-	 * 
+	 *
 	 * @since 1.1.5
-	 * 
+	 *
 	 * @param string $email_address - current email address
 	 * @param int $page - current page
-	 * 
+	 *
 	 * @return array
 	 */
 	function add_export_data( $email_address, $page = 1 ) {
@@ -1307,12 +1308,12 @@ class MS_Controller_Plugin extends MS_Controller {
 
 	/**
 	 * Erase data
-	 * 
+	 *
 	 * @since 1.1.5
-	 * 
+	 *
 	 * @param string $email_address - current email address
 	 * @param int $page - current page
-	 * 
+	 *
 	 * @return array
 	 */
 	function erase_data( $email_address, $page = 1 ) {
@@ -1324,7 +1325,7 @@ class MS_Controller_Plugin extends MS_Controller {
 			$items_removed++;
 		}
 
-		return array( 
+		return array(
 			'items_removed' => $items_removed,
 			'items_retained'=> false,
 			'messages' 		=> array( __( 'All Subscription Data deleted', 'membership2' ) ),
@@ -1334,7 +1335,7 @@ class MS_Controller_Plugin extends MS_Controller {
 
 	/**
 	* Enqueues the javascript specifically for plugin's admin pointers
-	* 
+	*
 	* @since 1.1.6
 	*/
 	public function enqueue_admin_pointers() {
@@ -1372,19 +1373,19 @@ class MS_Controller_Plugin extends MS_Controller {
 
     	// Enqueue pointers css
 	    wp_enqueue_style( 'wp-pointer' );
-	 
+
 	    // Enqueue ms-admin-pointers.js
 	    wp_enqueue_script( 'ms-admin-pointers' );
-	 
+
 	    // Localize pointers content to js script.
-	    wp_localize_script( 'ms-admin-pointers', 'MS_Admin_Pointers', json_encode( $pointers ) );        
+	    wp_localize_script( 'ms-admin-pointers', 'MS_Admin_Pointers', json_encode( $pointers ) );
 	}
 
 	/**
 	* Registers the plugin's admin pointers
-	* 
+	*
 	* @since 1.1.6
-	* 
+	*
 	* @return array
 	*/
 	public function register_admin_pointers() {

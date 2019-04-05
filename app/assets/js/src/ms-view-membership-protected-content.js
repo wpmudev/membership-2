@@ -223,7 +223,14 @@ window.ms_init.memberships_column = function init_column( column_class ) {
 		templateResult: format_result,
 		templateSelection: format_tag,
 		escapeMarkup: function( m ) { return m; },
+		maximumSelectionLength: window.ms_admin_text.membership_multiple_limit,
 		dropdownCssClass: 'ms-memberships wpmui-select2',
-		width: '100%'
+		width: '100%',
+		language: {
+			// Custom message for multi select limit.
+			maximumSelected: function () {
+				return window.ms_admin_text.membership_multiple_message;
+			}
+		}
 	});
 };

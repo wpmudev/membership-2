@@ -831,14 +831,22 @@ class MS_Controller_Member extends MS_Controller {
 
 		// Drop memberships that are not specified
 		foreach ( $member->get_membership_ids() as $old_id ) {
-			if ( in_array( $old_id, $memberships ) ) { continue; }
+			if ( in_array( $old_id, $memberships ) ) {
+			    continue;
+			}
 			$member->drop_membership( $old_id );
 		}
 
-		// Add new memberships
-		foreach ( $memberships as $membership_id ) {
-			$subscription = $member->add_membership( $membership_id );
-		}
+		// Add new memberships.
+        foreach ( $memberships as $membership_id ) {
+	        // Do not let them add multiple memberships when addon is disabled.
+            if ( ! $member->has_membership( $membership_id )
+                 && ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MULTI_MEMBERSHIPS )
+            ) {
+                continue;
+            }
+            $member->add_membership( $membership_id );
+        }
 
 		if ( $member->has_membership() ) {
 			$member->is_member = true;
