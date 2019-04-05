@@ -1014,38 +1014,44 @@ class MS_Controller_Member extends MS_Controller {
 	 */
 	public function manage_users_custom_column( $value, $column_name, $user_id ) {
 		if ( 'membership' == $column_name ) {
-			$member       = MS_Factory::load( 'MS_Model_Member', $user_id );
-			$subscription = $member->get_subscription( 'priority' );
-			if ( $subscription ) {
-				$membership = $subscription->get_membership();
-				$color      = MS_Helper_Utility::color_index( $membership->type . $membership->id );
-				$html       = '<span class="ms-color" style="
-					background-color:' . $color . ';
-					width: 20px;
-					float: left;
-					margin-right: 5px;
-					border-radius: 45px;
-					box-shadow: 0 -20px 10px -10px rgba(0, 0, 0, 0.2) inset;
-					">&nbsp;
-					</span>';
-				$url        = MS_Controller_Plugin::get_admin_url(
-					'members',
-					array( 'membership_id' => $membership->id )
-				);
-				$view_url   = sprintf(
-					'<a href="%1$s" title="%2$s">%3$s</a>',
-					$url,
-					__( 'View Members', 'membership2' ),
-					$membership->name
-				);
-				$html       .= '<span style="font-weight:bold;">' . $view_url . '</span>';
-				$value      = $html;
-			}
+			// Admin user has access to everything.
+			if ( MS_Model_Member::is_admin_user( $user_id ) ) {
+				$value = '<span style="font-weight:bold;">' . __( 'None (Admin User)', 'membership2' ) . '</span>';
+			} else {
+				$member       = MS_Factory::load( 'MS_Model_Member', $user_id );
+				$subscription = $member->get_subscription( 'priority' );
+				if ( $subscription ) {
+					$membership = $subscription->get_membership();
+					$color      = MS_Helper_Utility::color_index( $membership->type . $membership->id );
 
-			if ( empty( $value ) ) {
-				$value = __( 'None', 'membership2' );
-				if ( MS_Model_Member::is_admin_user( $user_id ) ) {
-					$value = '<span style="font-weight:bold;">' . __( 'None (Admin User)', 'membership2' ) . '</span>';
+					$html = '<span class="ms-color" style="
+                        background-color:' . $color . ';
+                        width: 20px;
+                        float: left;
+                        margin-right: 5px;
+                        border-radius: 45px;
+                        box-shadow: 0 -20px 10px -10px rgba(0, 0, 0, 0.2) inset;
+                        ">&nbsp;
+					</span>';
+
+					$url = MS_Controller_Plugin::get_admin_url(
+						'members',
+						array( 'membership_id' => $membership->id )
+					);
+
+					$view_url = sprintf(
+						'<a href="%1$s" title="%2$s">%3$s</a>',
+						$url,
+						__( 'View Members', 'membership2' ),
+						$membership->name
+					);
+
+					$html  .= '<span style="font-weight:bold;">' . $view_url . '</span>';
+					$value = $html;
+				}
+
+				if ( empty( $value ) ) {
+					$value = __( 'None', 'membership2' );
 				}
 			}
 
