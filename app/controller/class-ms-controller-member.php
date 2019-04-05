@@ -841,12 +841,6 @@ class MS_Controller_Member extends MS_Controller {
 
 		// Add new memberships.
 		foreach ( $memberships as $membership_id ) {
-			// Do not let them add multiple memberships when addon is disabled.
-			if ( ! $member->has_membership( $membership_id )
-			     && ! MS_Model_Addon::is_enabled( MS_Model_Addon::ADDON_MULTI_MEMBERSHIPS )
-			) {
-				continue;
-			}
 			$member->add_membership( $membership_id );
 		}
 
