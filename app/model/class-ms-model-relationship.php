@@ -1346,7 +1346,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 		if ( ! in_array( $this->status, $no_expire_date ) ) {
 			$valid_date = MS_Helper_Period::is_after(
 				$expire_date,
-				$this->expire_date,
+				$this->start_date,
 				$this->trial_expire_date
 			);
 			if ( ! $valid_date && $this->recalculate_expire_date ) {
