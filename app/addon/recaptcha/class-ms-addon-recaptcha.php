@@ -359,6 +359,9 @@ class MS_Addon_Recaptcha extends MS_Addon {
 	 *
 	 * Validate for recaptch response in login form
 	 * and return WP_Error for failed validation.
+	 * Note: We will validate only if the captch field is found.
+	 * Because the used hook (wp_authenticate_user) can be used manually
+	 * inside any other plugin. Even our registration form is using it.
 	 *
 	 * @param object $user WP_User.
 	 *
@@ -369,12 +372,8 @@ class MS_Addon_Recaptcha extends MS_Addon {
 	public function login_validation( $user ) {
 		// Only when enabled.
 		if ( $this->login_enabled ) {
-			// We need captcha data when addon is configured.
-			if ( empty( $_POST['ms_recaptcha_response'] ) ) {
-				$user = new WP_Error( 'blank_captcha', __( 'No captcha response.', 'membership2' ) );
-			}
-
-			if ( ! $this->validate_response( $_POST['ms_recaptcha_response'] ) ) {
+			// Validate captch only when required.
+			if ( isset( $_POST['ms_recaptcha_response'] ) && ! $this->validate_response( $_POST['ms_recaptcha_response'] ) ) {
 				$user = new WP_Error( 'captcha_error', __( 'Captcha validation failed.', 'membership2' ) );
 			}
 		}
