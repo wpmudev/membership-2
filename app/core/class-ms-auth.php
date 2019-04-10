@@ -52,7 +52,7 @@ class MS_Auth {
 							$user_signon = wp_signon( $info, false );
 
 							if ( is_wp_error( $user_signon ) ) {
-								$resp['error'] = $user_signon->get_error_message();
+								$resp['error'] = __( 'Wrong username or password', 'membership2' );
 							} else {
 								$settings = MS_Factory::load( 'MS_Model_Settings' );
 								if ( $settings->force_registration_verification ) {
