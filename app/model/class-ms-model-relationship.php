@@ -1101,7 +1101,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 		} elseif ( ! in_array( $this->status, $trial_eligible_status ) && ! $force ) {
 			// Current Subscription is not allowed for a trial membership anymore.
 			$eligible = false;
-		} elseif ( $this->trial_period_completed && ( ! empty( $this->trial_expire_date || ! $force ) ) ) {
+		} elseif ( ( $this->trial_period_completed && ( ! empty( $this->trial_expire_date || ! $force ) ) ) ) {
 			// Trial membership already consumed.
 			$eligible = false;
 		} else {
