@@ -475,7 +475,10 @@ class MS_Factory {
 		$ignore[] 	= 'actions';
 		$ignore[] 	= 'filters';
 		$ignore[] 	= 'ignore_fields';
-		$ignore[]   = 'name';
+		// We don't need to overwrite name of member.
+		if ( $model instanceof MS_Model_Member ) {
+			$ignore[]   = 'name';
+		}
 		if ( !empty( $model->current_invoice_number ) ) {
 			$ignore[] = 'current_invoice_number';
 		}
