@@ -293,7 +293,6 @@ class MS_View_Shortcode_RegisterUser extends MS_View {
 		?>
 		jQuery(function() {
 			var args = {
-				onkeyup: false,
 				errorClass: 'ms-validation-error',
 				rules: <?php echo json_encode( $rule_data ); ?>
 			};
