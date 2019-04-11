@@ -93,6 +93,12 @@ class MS_Controller_Communication extends MS_Controller {
 		if ( is_admin() ) {
 			$member = MS_Factory::load( 'MS_Model_Member', $user_id );
 			MS_Model_Event::save_event( MS_Model_Event::TYPE_MS_REGISTERED, $member );
+
+			// Send account verification  email if required.
+			$settings = MS_Factory::load( 'MS_Model_Settings' );
+			if ( $settings->force_registration_verification ) {
+				MS_Model_Event::save_event( MS_Model_Event::TYPE_MS_VERIFYACCOUNT, $member );
+			}
 		}
 	}
 
