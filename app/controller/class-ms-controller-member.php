@@ -148,7 +148,7 @@ class MS_Controller_Member extends MS_Controller {
 		add_action( 'profile_update', array( $this, 'handle_profile_membership' ), 10, 2 );
 
 		// When subscription status is changed by admin.
-		$this->add_action( 'ms_controller_members_admin_status_changed', 'subscription_status_change', 10, 2 );
+		$this->add_action( 'ms_controller_members_admin_status_changed', 'subscription_status_change', 10, 4 );
 	}
 
 	/**
@@ -491,11 +491,15 @@ class MS_Controller_Member extends MS_Controller {
 							 * @param array  $data         Form data of current membership.
 							 *
 							 * @since 1.1.6
+							 *
+							 * @param  object $user MS_Model_Member
+							 * @since  1.1.7
 							 */
 							do_action( 'ms_controller_members_admin_status_changed',
 								$data['status'],
 								$subscription,
-								$data
+								$data,
+								$user
 							);
 						}
 
@@ -576,15 +580,35 @@ class MS_Controller_Member extends MS_Controller {
 	 *
 	 * @param string $new_status   New status..
 	 * @param object $subscription MS_Model_Relationship.
+	 * 
 	 *
 	 * @since 1.1.6
+	 *
+	 * @param  array $data $_POST params
+	 * @param  object $member MS_Model_Member
+	 *
+	 * @since  1.1.7
 	 */
-	public function subscription_status_change( $new_status, $subscription ) {
+	public function subscription_status_change( $new_status, $subscription, $data, $member ) {
 		// Switch status.
 		switch ( $new_status ) {
 			// Cancel the subscription.
 			case MS_Model_Relationship::STATUS_CANCELED:
 				$subscription->cancel_membership();
+				break;
+			case MS_Model_Relationship::STATUS_ACTIVE:
+				/**
+				 * If a member sign up via register form
+				 * in that case it store in spending_subscriptions
+				 * and then admin active the membership for this member via Edit Member screen
+				 * as now it should be move to active subscriptions
+				 * and active member too
+				 *
+				 * @since  1.1.7
+				 */
+				if ( MS_Model_Relationship::STATUS_PENDING === $subscription->status ) {
+					$member->add_membership( $subscription->membership_id );
+				}
 				break;
 
 			// Handle other statuses here.
