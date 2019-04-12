@@ -598,13 +598,10 @@ class MS_Controller_Member extends MS_Controller {
 				break;
 			case MS_Model_Relationship::STATUS_ACTIVE:
 				/**
-				 * If a member sign up via register form
-				 * in that case it store in spending_subscriptions
-				 * and then admin active the membership for this member via Edit Member screen
-				 * as now it should be move to active subscriptions
-				 * and active member too
+				 * Make sure the status is changed to active if it is manually
+                 * edited from admin.
 				 *
-				 * @since  1.1.7
+				 * @since 1.1.7
 				 */
 				if ( MS_Model_Relationship::STATUS_PENDING === $subscription->status ) {
 					$member->add_membership( $subscription->membership_id );
