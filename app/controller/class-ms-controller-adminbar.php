@@ -382,7 +382,7 @@ class MS_Controller_Adminbar extends MS_Controller {
 	 *
 	 */
 	public function customize_toolbar_front() {
-		if ( ! $this->is_admin_user() ) {
+		if ( ! $this->is_admin_user() && ! current_user_can( 'edit_pages' ) ) {
 			$this->remove_admin_bar_nodes();
 		}
 	}
