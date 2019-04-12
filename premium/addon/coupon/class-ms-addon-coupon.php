@@ -143,6 +143,11 @@ class MS_Addon_Coupon extends MS_Addon {
 				10, 4
 			);
 
+			$this->add_filter(
+				'ms_model_invoice_create_before_save',
+				'maybe_apply_coupon',
+				10, 2
+			);
 		}
 	}
 
@@ -602,16 +607,107 @@ class MS_Addon_Coupon extends MS_Addon {
 	 * When an invoice is paid, check if it did use a coupon. If yes, then update
 	 * the coupon counter.
 	 *
-	 * @since  1.0.0
-	 * @param  MS_Model_Invoice $invoice
+	 * @param MS_Model_Invoice $invoice Invoice object.
+	 *
+	 * @since 1.0.0
 	 */
 	public function invoice_paid( $invoice, $member ) {
 		if ( $invoice->coupon_id ) {
 			$coupon = MS_Factory::load( 'MS_Addon_Coupon_Model', $invoice->coupon_id );
+			// Save coupon data if duration is forever.
+			if ( MS_Addon_Coupon_Model::DURATION_ALWAYS === $coupon->duration ) {
+				$this->save_coupon_data( $invoice, $coupon );
+			}
 			$coupon->remove_application( $member->id, $invoice->membership_id );
 			$coupon->used = $coupon->used + 1;
 			$coupon->save();
 		}
+	}
+
+	/**
+	 * Save coupon data for future use.
+	 *
+	 * We need this data to use for renewal
+	 * invoices which is being created automatically.
+	 * In case if coupon is deleted, we still need
+	 * this discount applied to membership because
+	 * gateways will not be able to remove the coupon.
+	 * Stripe for example - https://stripe.com/docs/api/coupons/delete?lang=php
+	 *
+	 * @param MS_Model_Invoice      $invoice Invoice object.
+	 * @param MS_Addon_Coupon_Model $coupon  Coupon object.
+	 *
+	 * @since 1.1.7
+	 */
+	private function save_coupon_data( $invoice, $coupon ) {
+		// Get the membership.
+		$membership = $invoice->get_membership();
+		// Get invoice subscription.
+		$subscription = $invoice->get_subscription();
+		// Only if subscription exist.
+		if ( ! empty( $subscription )
+		     && ! empty( $membership )
+		     // Only for recurring payments.
+		     && MS_Model_Membership::PAYMENT_TYPE_RECURRING === $membership->payment_type
+		) {
+			// Add coupon data as meta for future use.
+			$subscription->set_custom_data( 'ms_coupon', array(
+				'id'       => $invoice->coupon_id,
+				'code'     => $coupon->code,
+				'discount' => $invoice->discount,
+				'duration' => $invoice->duration,
+			) );
+
+			// Save subscription.
+			$subscription->save();
+		}
+	}
+
+	/**
+	 * Apply a coupon to the new invoice.
+	 *
+	 * If a coupon was applied to a membership
+	 * which is `forever` in duration, we need to
+	 * apply that discount to the invoice.
+	 * Even if the coupon is deleted later, we still
+	 * need this discount.
+	 *
+	 * @param MS_Model_Invoice      $invoice      Invoice object.
+	 * @param MS_Model_Relationship $subscription Subscription object.
+	 *
+	 * @since 1.1.7
+	 *
+	 * @return mixed
+	 */
+	public function maybe_apply_coupon( $invoice, $subscription ) {
+		// If there is a coupon already, bail.
+		if ( ! empty( $invoice->coupon_id ) ) {
+			return $invoice;
+		}
+
+		// Get the coupon data from subscription.
+		$coupon = $subscription->get_custom_data( 'ms_coupon' );
+		// If a coupon data is found.
+		if ( ! empty( $coupon['id'] ) ) {
+			$invoice->coupon_id = $coupon['id'];
+			$invoice->discount  = $coupon['discount'];
+			$invoice->duration  = $coupon['duration'];
+
+			// Check if old coupon still exist.
+			$coupon_model = MS_Factory::load( 'MS_Addon_Coupon_Model', $invoice->coupon_id );
+			// Let the admin know if it's deleted.
+			$deleted = empty( $coupon_model->id ) ? '(deleted)' : '';
+			$note = sprintf(
+				__( 'Apply Coupon "%s" %s: Discount %s %s!', 'membership2' ),
+				$coupon['code'],
+				$deleted,
+				$invoice->currency,
+				$coupon['discount']
+			);
+			$invoice->add_notes( $note );
+		}
+
+		return $invoice;
 	}
 
 	/**
