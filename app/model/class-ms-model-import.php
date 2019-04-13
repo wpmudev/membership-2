@@ -599,8 +599,12 @@ class MS_Model_Import extends MS_Model {
 			$member = MS_Factory::load( 'MS_Model_Member', $wpuser->ID );
 		} else {
 			$wpuser 	= wp_create_user( $obj->username, '', $obj->email );
-			if ( !is_wp_error( $wpuser )  && is_numeric( $wpuser ) ) {		
+			if ( ! is_wp_error( $wpuser )  && is_numeric( $wpuser ) ) {
 				$user_id = (int) $wpuser;
+
+				// Send an email notification to reset password.
+				wp_new_user_notification( $wpuser, null, 'user' );
+
 				$member = MS_Factory::load( 'MS_Model_Member', $user_id );
 			} else {
 				$this->errors[] = sprintf(
