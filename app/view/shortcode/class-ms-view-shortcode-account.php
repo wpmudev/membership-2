@@ -49,7 +49,6 @@ class MS_View_Shortcode_Account extends MS_View {
 		$edit_url = esc_url_raw(
 				add_query_arg(
 						array( 'action' => MS_Controller_Frontend::ACTION_EDIT_PROFILE ),
-						// We should do profile edit in account page.
 						MS_Model_Pages::get_page_url( MS_Model_Pages::MS_PAGE_ACCOUNT )
 				)
 		);
@@ -62,7 +61,8 @@ class MS_View_Shortcode_Account extends MS_View {
 		
 		$detail_url = esc_url_raw(
 				add_query_arg(
-						array( 'action' => MS_Controller_Frontend::ACTION_VIEW_INVOICES )
+						array( 'action' => MS_Controller_Frontend::ACTION_VIEW_INVOICES ),
+						MS_Model_Pages::get_page_url( MS_Model_Pages::MS_PAGE_ACCOUNT )
 				)
 		);
 
@@ -74,7 +74,8 @@ class MS_View_Shortcode_Account extends MS_View {
 		
 		$detail_url = esc_url_raw(
 				add_query_arg(
-						array( 'action' => MS_Controller_Frontend::ACTION_VIEW_ACTIVITIES )
+						array( 'action' => MS_Controller_Frontend::ACTION_VIEW_ACTIVITIES ),
+						MS_Model_Pages::get_page_url( MS_Model_Pages::MS_PAGE_ACCOUNT )
 				)
 		);
 
