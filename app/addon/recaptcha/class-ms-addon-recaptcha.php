@@ -392,6 +392,14 @@ class MS_Addon_Recaptcha extends MS_Addon {
 	 * @return bool
 	 */
 	private function validate_response( $token ) {
+		// To make sure we don't duplicate the request.
+		static $valid = null;
+
+		// If we have already verified, no need to do again.
+		if ( ! is_null( $valid ) ) {
+			return $valid;
+		}
+
 		// Date to be sent.
 		$data = array(
 			'secret'   => $this->secret_key,
@@ -406,16 +414,18 @@ class MS_Addon_Recaptcha extends MS_Addon {
 
 		// Make sure it's not an error.
 		if ( is_wp_error( $response ) ) {
-			return false;
+			$valid = false;
 		} else {
 			// Get the response data.
 			$body = json_decode( wp_remote_retrieve_body( $response ), true );
 			// Status should be true.
 			if ( ! isset( $body['success'] ) || mslib3()->is_false( $body['success'] ) ) {
-				return false;
+				$valid = false;
+			} else {
+				$valid = true;
 			}
 		}
 
-		return true;
+		return $valid;
 	}
 }

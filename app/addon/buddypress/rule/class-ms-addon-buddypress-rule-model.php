@@ -106,10 +106,7 @@ class MS_Addon_BuddyPress_Rule_Model extends MS_Rule {
 	public function override_ms_rule_page_model_has_access( $has_access, $id, $obj ) {
 		if ( is_buddypress() ) {
 			// Check if access to *all* BuddyPress pages is restricted
-			$has_access = parent::has_access(
-				MS_Addon_BuddyPress_Rule::PROTECT_ALL,
-				$admin_has_access
-			);
+			$has_access = parent::has_access( MS_Addon_BuddyPress_Rule::PROTECT_ALL );
 		}
 
 		if ( $has_access ) {
@@ -117,10 +114,7 @@ class MS_Addon_BuddyPress_Rule_Model extends MS_Rule {
 			if ( ! empty( $component ) ) {
 				if ( 'members' == $component || bp_is_user() ) {
 					// Member listing or member profile access.
-					$has_access = parent::has_access(
-						MS_Addon_BuddyPress_Rule::PROTECT_MEMBERS,
-						$admin_has_access
-					);
+					$has_access = parent::has_access( MS_Addon_BuddyPress_Rule::PROTECT_MEMBERS );
 				}
 			}
 		}

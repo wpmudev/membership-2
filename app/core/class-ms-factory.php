@@ -394,8 +394,8 @@ class MS_Factory {
 				$model->last_name 	= $wp_user->last_name;
 				$model->wp_user 	= $wp_user;
 
-				if ( ! $model->name || empty( $model->name ) ) {
-					if ( $model->first_name ) {
+				if ( empty( $model->name ) ) {
+					if ( ! empty( $model->first_name ) ) {
 						$model->name = $model->first_name . ' ' . $model->last_name;
 					} else {
 						$model->name = $wp_user->user_login;
@@ -475,6 +475,10 @@ class MS_Factory {
 		$ignore[] 	= 'actions';
 		$ignore[] 	= 'filters';
 		$ignore[] 	= 'ignore_fields';
+		// We don't need to overwrite name of member.
+		if ( $model instanceof MS_Model_Member ) {
+			$ignore[]   = 'name';
+		}
 		if ( !empty( $model->current_invoice_number ) ) {
 			$ignore[] = 'current_invoice_number';
 		}

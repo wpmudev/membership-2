@@ -1105,7 +1105,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 		 *
 		 * @since 1.1.6
 		 */
-		$force = apply_filters( 'ms_model_relationship_is_trial_eligible_force', MS_Model_Member::is_admin_user() );
+		$force = apply_filters( 'ms_model_relationship_trial_forced', MS_Model_Member::is_admin_user() );
 
 		if ( ! $membership->has_trial() ) {
 			// Trial Membership is globally disabled.
@@ -1116,7 +1116,7 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 		} elseif ( ! in_array( $this->status, $trial_eligible_status ) && ! $force ) {
 			// Current Subscription is not allowed for a trial membership anymore.
 			$eligible = false;
-		} elseif ( $this->trial_period_completed ) {
+		} elseif ( $this->trial_period_completed && ( ! empty( $this->trial_expire_date ) || ! $force ) ) {
 			// Trial membership already consumed.
 			$eligible = false;
 		} else {
@@ -2644,8 +2644,18 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 		}
 
 		if ( $check_trial ) {
+			/**
+			 * Filter to modify forcing trial even if not in allowed statuses.
+			 *
+			 * @since 1.1.6
+			 */
+			$force = apply_filters( 'ms_model_relationship_trial_forced', MS_Model_Member::is_admin_user() );
+
 			if ( ! $calc_status
-				&& strtotime( $this->trial_expire_date ) >= strtotime( MS_Helper_Period::current_date() )
+				&& ( ( $force && empty( $this->trial_expire_date ) && $set_status === self::STATUS_TRIAL )
+				     || strtotime( $this->trial_expire_date ) >= strtotime( MS_Helper_Period::current_date()
+					)
+			     )
 			) {
 				$calc_status = self::STATUS_TRIAL;
 				$debug_msg[] = '[TRIAL: Trial-Expire date not reached]';
@@ -2654,7 +2664,8 @@ class MS_Model_Relationship extends MS_Model_CustomPostType {
 			}
 
 			if ( ! $calc_status
-				&& strtotime( $this->trial_expire_date ) < strtotime( MS_Helper_Period::current_date() )
+			     && ! empty( $this->trial_expire_date )
+			     && strtotime( $this->trial_expire_date ) < strtotime( MS_Helper_Period::current_date() )
 			) {
 				$calc_status = self::STATUS_TRIAL_EXPIRED;
 				$debug_msg[] = '[TRIAL-EXPIRED: Trial-Expire date reached]';
