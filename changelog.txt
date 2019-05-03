@@ -1,6 +1,6 @@
 Plugin Name: Membership 2
 Author:      Paul Kevin, Ashok Kumar Nath, Philipp Stracker
-Build Stamp: BUILDTIME
+Build Stamp: 2019-05-03T14:45:12.397Z
 
 Change Log:
 ----------------------------------------------------------------------

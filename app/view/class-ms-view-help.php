@@ -1814,7 +1814,7 @@ class MS_View_Help extends MS_View {
 		return $html;
 	}
 
-	/* start:pro */
+	
 
 	/**
 	 * Render the rest api documentation
@@ -1907,5 +1907,5 @@ class MS_View_Help extends MS_View {
 				
 		return $html;
 	}
-	/* end:pro */
+	
 }

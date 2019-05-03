@@ -20,10 +20,3 @@ composer
 vendor
 composer.*
 
-# assets start
-app/assets/css/**/*
-app/assets/js/**/*
-!app/assets/css/src/**/*
-!app/assets/js/src/**/*
-!app/assets/js/vendor/**/*
-# assets end
