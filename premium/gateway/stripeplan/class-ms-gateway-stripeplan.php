@@ -611,6 +611,12 @@ class MS_Gateway_Stripeplan extends MS_Gateway {
 						$success = true;
 						$invoice->pay_it( self::ID, $stripe_sub->id );
 						$this->cancel_if_done( $subscription, $stripe_sub );
+						// Make sure the dates are matching.
+						if ( $subscription->expire_date != $stripe_sub->current_period_end ) {
+							$subscription->recalculate_expire_date = false;
+							$subscription->expire_date = date('Y-m-d', $stripe_sub->current_period_end );
+							$subscription->save();
+						}
 					}
 				}
 			} catch ( Exception $e ) {

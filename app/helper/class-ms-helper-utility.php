@@ -435,6 +435,34 @@ class MS_Helper_Utility extends MS_Helper {
 		// Append extension.
 		return $link . '.min.' . $ext;
 	}
+
+	/**
+	 * Get privacy policy page.
+	 *
+	 * This will return false if the privacy policy
+	 * page is not ready yet.
+	 *
+	 * @since 1.1.7
+	 *
+	 * @return bool|string
+	 */
+	public static function get_privacy_page() {
+		static $privacy_page = null;
+
+		if ( $privacy_page === null ) {
+			// Get privacy policy page.
+			$page = (int) get_option( 'wp_page_for_privacy_policy');
+
+			// Get the link only if the page is public.
+			if ( $page && 'publish' === get_post_status( $page ) ) {
+				$privacy_page = esc_url( get_permalink( $page ) );
+			} else {
+				$privacy_page = false;
+			}
+		}
+
+		return $privacy_page;
+	}
 }
 
 if ( ! function_exists( 'array_unshift_assoc' ) ) {

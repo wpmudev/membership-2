@@ -32,7 +32,4 @@ class MS_Helper extends MS_Hooker {
 		 */
 		do_action( 'ms_helper_construct', $this );
 	}
-
-
-
 }
