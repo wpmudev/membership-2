@@ -261,8 +261,13 @@ class MS_Gateway_Paypalstandard_View_Button extends MS_View {
 					'value' => $period_type,
 				);
 
-				$once_duration = !empty( $invoice->discount ) && !empty( $invoice->duration ) && MS_Addon_Coupon_Model::DURATION_ONCE === $invoice->duration;
+				$once_duration = (
+					( !empty( $invoice->discount ) && !empty( $invoice->duration ) && MS_Addon_Coupon_Model::DURATION_ONCE === $invoice->duration ) ||
+					( MS_Addon_Prorate::is_active() && ! empty( $invoice->pro_rate ) && $invoice->pro_rate > 0 )
+				);
+
 				if ( $once_duration ) {
+
 					$n = empty( $fields['p1'] ) ? 1 : 2;
 
 					$fields['a'.$n] 		= array(
@@ -283,6 +288,7 @@ class MS_Gateway_Paypalstandard_View_Button extends MS_View {
 						'value' => $period_type,
 					);
 				}
+		
 
 				$custom_period_type 	= isset( $period_type ) ? $period_type : '';
 				$custom_period_value 	= isset( $period_value ) ? $period_value : '';

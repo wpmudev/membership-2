@@ -40,9 +40,22 @@ class MS_Addon_Prorate extends MS_Addon {
 	 */
 	public function init() {
 		if ( self::is_active() ) {
+
+			//$this->add_filter(
+			//	'ms_model_invoice_create_before_save',
+			//	'add_discount'
+			//);
+
 			$this->add_filter(
-				'ms_model_invoice_create_before_save',
-				'add_discount'
+				'ms_signup_payment_details',
+				'add_discount',
+				10, 2
+			);
+
+			$this->add_filter(
+				'ms_model_relationship_get_payment_description/recurring',
+				'payment_description_recurring',
+				10, 6
 			);
 		}
 	}
@@ -86,9 +99,8 @@ class MS_Addon_Prorate extends MS_Addon {
 	 * @param  MS_Model_Invoice $invoice
 	 * @return MS_Model_Invoice Modified Invoice.
 	 */
-	public function add_discount( $invoice ) {
-		$subscription = $invoice->get_subscription();
-
+	public function add_discount( $invoice, $subscription ) {
+		
 		// If memberships were already cancelled don't pro-rate again!
 		if ( $subscription->cancelled_memberships ) { return $invoice; }
 
@@ -185,4 +197,55 @@ class MS_Addon_Prorate extends MS_Addon {
 			$subscription
 		);
 	}
+
+
+	/**
+	 * Sets the payment description on checkout page if a valid coupon is applied
+	 *
+	 * @since  1.1.6
+	 * @param  String $desc
+	 * @param  Boolean $short
+	 * @param  String $currency
+	 * @param  String $total_price Price where discount has already been applied
+	 * @param  MS_Model_Membership $membership
+	 * @param  MS_Model_Invoice $invoice
+	 * @return String Payment description
+	 */
+	public function payment_description_recurring( $desc, $short, $currency, $total_price, $membership, $invoice ){
+
+		if ( 1 == $membership->pay_cycle_repetitions ) return $desc;
+
+		if ( ! empty( $invoice->pro_rate ) && $invoice->pro_rate > 0 && ! empty( $_REQUEST['membership_id'] ) ) {
+
+			$lbl = '';
+			if ( $membership->pay_cycle_repetitions > 1 ) {
+				// Fixed number of payments (more than 1)
+				if ( $short ) {
+					$lbl = __( '<span class="price">%1$s %2$s</span> first time and then <span class="price">%1$s %3$s</span> (each %4$s)', 'membership2' );
+				} else {
+					$lbl = __( 'First payment <span class="price">%1$s %2$s</span> and then you will make %5$s payments of <span class="price">%1$s %3$s</span>, one each %4$s.', 'membership2' );
+				}
+			} else {
+				// Indefinite number of payments
+				if ( $short ) {
+					$lbl = __( '<span class="price">%1$s %2$s</span> first time and then <span class="price">%1$s %3$s</span> (each %4$s)', 'membership2' );
+				} else {
+					$lbl = __( 'You will pay <span class="price">%1$s %2$s</span> first time and then <span class="price">%1$s %3$s</span> each %4$s.', 'membership2' );
+				}
+			}
+
+			$desc = sprintf(
+				$lbl,
+				$currency,
+				$total_price,
+				$membership->price,				
+				MS_Helper_Period::get_period_desc( $membership->pay_cycle_period ),
+				$membership->pay_cycle_repetitions - 1
+			);
+			
+		}
+
+		return $desc;
+	}
+
 }
