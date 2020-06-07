@@ -433,12 +433,20 @@ class MS_Gateway_Paypalstandard_View_Button extends MS_View {
 		 * 1 - allows subscribers to sign up for new subscriptions and modify their current subscriptions
 		 * 2 - allows subscribers to modify only their current subscriptions
 		*/
+
+		/**
+		 * Removing the "modify" variable as it has been deprecated:
+		 * https://developer.paypal.com/docs/paypal-payments-standard/integration-guide/Appx-websitestandard-htmlvariables/#deprecated-variables
+		 */
+
+		/*
 		$modify = ! empty( $move_from_id );
 		$fields['modify'] = array(
 			'id' 	=> 'modify',
 			'type' 	=> MS_Helper_Html::INPUT_TYPE_HIDDEN,
 			'value' => $modify ? 2 : 0,
 		);
+		*/
                 
 		$custom_interval 		= $fields['p3']['value'] . $fields['t3']['value'];
 		$custom_invoice_date 	= date( 'Y-m-d H:i:s' );
