@@ -961,9 +961,10 @@ class MS_Controller_Plugin extends MS_Controller {
 	 *
 	 * @return string The custom template path.
 	 */
+	
 	public function custom_page_template( $default_template ) {
 		$template = '';
-
+	
 		// Checks for invoice single template.
 		if ( $type = MS_Model_Pages::is_membership_page() ) {
 			$membership_id = apply_filters(
@@ -972,26 +973,25 @@ class MS_Controller_Plugin extends MS_Controller {
 				true,
 				true
 			);
-
+	
 			if ( $membership_id ) {
 				$template = get_query_template(
 					'm2',
-					'm2-' . $type . '-' . $membership_id . '.php'
+					array('m2-' . $type . '-' . $membership_id . '.php')
 				);
 			}
-
+	
 			if ( ! $template ) {
 				$template = get_query_template(
 					'm2',
-					'm2-' . $type . '.php'
+					array('m2-' . $type . '.php')
 				);
 			}
 		}
-
+	
 		if ( ! $template ) {
 			$template = $default_template;
 		}
-
 		return $template;
 	}
 
