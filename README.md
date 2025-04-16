@@ -275,7 +275,7 @@ Important Note: You **must** upgrade from your WPMU DEV Dashboard, rather than v
 
 ##### First-time install
 
-If you've never used Protected Content or Membership before, you'll install the plugin just as you would any other. You can visit the [Installing Plugins](https://wpmudev.com/docs/using-wordpress/installing-wordpress-plugins/) section in our comprehensive [WordPress and WordPress Multisite Manual](https://premium.wpmudev.org/wpmu-manual/) if you are new to WordPress. Congrats! You're ready to set up M2.
+If you've never used Protected Content or Membership before, you'll install the plugin just as you would any other. You can visit the [Installing Plugins](https://wpmudev.com/docs/using-wordpress/installing-wordpress-plugins/) section in our comprehensive [WordPress and WordPress Multisite Manual](https://wpmudev.com/docs/using-wordpress/) if you are new to WordPress. Congrats! You're ready to set up M2.
 
 ### Creating a Membership Site with M2
 
